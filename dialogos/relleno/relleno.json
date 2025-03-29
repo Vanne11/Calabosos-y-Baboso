@@ -1,0 +1,100 @@
+{
+  "fragmentos": [
+    {
+      "id": "narracion_mision",
+      "texto": "¿De verdad tengo que explicártelo todo? Bien, versión resumida: eres el/la \"héroe/heroína/heroine\" elegido/a para adentrarte en el Abismo de las Babosas y derrotar al Rey Baboso."
+    },
+    {
+      "id": "tendero_ebrio",
+      "texto": "¿El Abismo? *hic* ¡Ja! Nadie vuelve de ahí con... con vida. ¡Excepto yo! Fui tres... no, siete veces. O quizás fue un sueño. *hic*"
+    },
+    {
+      "id": "miedo_abismo",
+      "texto": "Todo el mundo sabe que el Abismo de las Babosas es una trampa mortal. Dicen que puedes oír los gritos de los aventureros que entraron hace décadas..."
+    },
+    {
+      "id": "quejas_protagonista",
+      "texto": "¿Por qué siempre tengo que ser yo? ¿No hay otros aventureros disponibles en todo el reino? ¿O es que yo tengo un letrero invisible que dice 'Voluntario para misiones suicidas'?"
+    },
+    {
+      "id": "sarcasmo_narrador",
+      "texto": "Oh, qué original. Otro 'héroe' que piensa que puede derrotar al Rey Baboso. Me pregunto si tendrás un final más creativo que los anteriores. Mis favoritos son los que se disuelven lentamente."
+    },
+    {
+      "id": "advertencia_nerly",
+      "texto": "Ten cuidado con las Babosas Ácidas. Su baba puede derretir el metal en segundos. Y ni hablar de lo que le hace a la piel humana..."
+    },
+    {
+      "id": "descripcion_abismo",
+      "texto": "El Abismo de las Babosas: un laberinto subterráneo que se extiende por kilómetros bajo las montañas, hogar de criaturas viscosas con un apetito voraz por todo lo que se mueve... especialmente si es humano."
+    },
+    {
+      "id": "descripcion_babosa_acida",
+      "texto": "Una enorme masa rojiza y brillante se arrastra hacia ti. Su cuerpo translúcido revela órganos internos pulsantes, y un líquido corrosivo gotea de lo que parece ser su boca."
+    },
+    {
+      "id": "descripcion_rey_baboso",
+      "texto": "El Rey Baboso: una montaña de carne gelatinosa del tamaño de una casa pequeña, con tentáculos que emergen de su masa principal. Su cuerpo translúcido muestra órganos extraños y, ocasionalmente, restos de sus víctimas."
+    },
+    {
+      "id": "descripcion_taberna",
+      "texto": "La taberna 'El Cerdo Desollado' es exactamente tan acogedora como suena su nombre. El olor a cerveza rancia y sudor se mezcla con el humo de pipas baratas. La clientela te mira como si fueras el plato principal."
+    },
+    {
+      "id": "tedio_guardias",
+      "texto": "Los guardias de la puerta te miran con el entusiasmo de quien ha pasado las últimas doce horas mirando una pared. Sus uniformes están tan arrugados como sus expresiones."
+    },
+    {
+      "id": "peligro_tienda",
+      "texto": "La 'tienda' parece más un almacén de objetos potencialmente letales que un negocio legítimo. Algunas de esas 'pociones' están burbujeando de manera bastante alarmante, y juraría que esa espada acaba de moverse sola."
+    },
+    {
+      "id": "babosa_arrastrando",
+      "texto": "La babosa se arrastra hacia ti, dejando un rastro brillante de fluido viscoso. Su movimiento es lento pero implacable, como una sentencia de muerte en cámara lenta."
+    },
+    {
+      "id": "muerte_por_babosa",
+      "texto": "Lo último que sientes es el abrazo húmedo de la babosa mientras su ácido comienza a disolverte. Es sorprendentemente indoloro después de los primeros segundos de agonía. Una pequeña bendición, supongo."
+    },
+    {
+      "id": "triunfo_final",
+      "texto": "El cristal en la frente del Rey Baboso se agrieta bajo tu golpe. Una luz cegadora emerge mientras la enorme criatura emite un chillido que resuena por todo el Abismo. Has logrado lo imposible: derrotar al Rey Baboso."
+    },
+    {
+      "id": "mago_callejero",
+      "texto": "El Mago de las Calles siempre aparece cuando menos lo esperas y desaparece cuando más lo necesitas. Sus 'trucos' van desde lo patético hasta lo inexplicablemente impresionante."
+    },
+    {
+      "id": "comida_taberna",
+      "texto": "El tabernero llama a esto 'estofado sorpresa'. La sorpresa es que es comestible... técnicamente. Mientras lo comes, sientes algo moverse en tu boca. Decides que era tu imaginación. TIENE que ser tu imaginación."
+    },
+    {
+      "id": "anciano_sabio",
+      "texto": "El anciano te mira con ojos que han visto demasiado. Su camiseta 'Sobreviví al Abismo' está tan desgastada que apenas se lee. Cuando habla, su voz suena como si no la hubiera usado en años."
+    },
+    {
+      "id": "reaccion_ciudad",
+      "texto": "Los ciudadanos de Viscaria reaccionan a tu regreso como si hubieran visto un fantasma. Para ser justos, nadie esperaba que volvieras con vida. Algunos parecen decepcionados de tener que pagar sus apuestas."
+    },
+    {
+      "id": "intro_babosas",
+      "texto": "Las babosas del Abismo no son como las babosas comunes de jardín. Son más grandes, más inteligentes, y definitivamente más mortíferas. Y lo peor: tienen gustos caros. Han desarrollado un paladar particular por la carne de aventurero."
+    },
+    {
+      "id": "consejo_sal",
+      "texto": "La sal es tu mejor amiga en el Abismo. Las babosas la odian casi tanto como tú odiarás todo lo viscoso después de esta aventura. Un puñado bien colocado puede disolver a una babosa en segundos."
+    },
+    {
+      "id": "punto_inflexion",
+      "texto": "Has llegado a un punto en tu aventura donde tienes que tomar una decisión importante. La buena noticia: cualquier opción podría llevarte a la gloria. La mala: todas tienen altas probabilidades de llevarte a una muerte dolorosa."
+    },
+    {
+      "id": "advertencia_guardia",
+      "texto": "Mira, no puedo detenerte si estás decidido/a a ir al Abismo. Pero al menos firma este documento eximiendo a la ciudad de responsabilidad por tu muerte. Y escribe la dirección de tus familiares para enviarles tus restos... si encontramos alguno."
+    },
+    {
+      "id": "lamento_babosas",
+      "texto": "A veces, en las profundidades del Abismo, puedes oír un sonido extraño, casi como un canto. Las Babosas Conscientes lo llaman 'El Lamento'. Dicen que es la voz colectiva de todas las babosas absorbidas por el Rey."
+    }
+  ]
+}
