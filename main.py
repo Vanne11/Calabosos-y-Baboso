@@ -260,8 +260,9 @@ def mostrar_inventario():
     
     console.print(tabla)
 
-# Procesar una secuencia de diálogo
 def mostrar_secuencia(secuencia):
+    ultimo_personaje = None
+    
     for dialogo in secuencia:
         personaje = dialogo.get("personaje", "???")
         texto_original = dialogo.get("texto", "...")
@@ -282,10 +283,17 @@ def mostrar_secuencia(secuencia):
         # Mostrar diálogo
         console.print(rich_text)
         
-        # Si hay pausa, esperar input
+        # Si cambia el personaje que habla, hacer una pausa
+        if ultimo_personaje != personaje and ultimo_personaje is not None:
+            input("\nPresiona Enter para continuar...")
+        
+        ultimo_personaje = personaje
+        
+        # Si hay pausa explícita, esperar input
         if dialogo.get("pausa", False):
             input("\nPresiona Enter para continuar...")
-
+            
+            
 # Procesar una tirada y mostrar el resultado
 def procesar_tirada(tirada):
     if not tirada:
