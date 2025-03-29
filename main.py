@@ -9,7 +9,6 @@ from rich.panel import Panel
 from rich.layout import Layout
 from rich.table import Table
 from rich.prompt import Prompt
-
 # Configuración
 CARPETA_BASE = "dialogos"
 ARCHIVO_RUTAS = "rutas.json"
