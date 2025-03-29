@@ -59,7 +59,7 @@
       "opciones": [
         {
           "texto": "Está bien, acepto la misión. ¿Cuál es el plan?",
-          "siguiente_ruta": "decision_inicial"
+          "siguiente_dialogo": "decision_inicial"
         },
         {
           "texto": "Ni hablar, buscaré una taberna y me emborracharé.",
@@ -129,7 +129,7 @@
       "opciones": [
         {
           "texto": "Vale, supongo que acepto. ¿Cuál es el plan?",
-          "siguiente_ruta": "decision_inicial"
+          "siguiente_dialogo": "decision_inicial"
         },
         {
           "texto": "Sigo sin estar convencido/a. Necesito pensarlo.",
@@ -160,7 +160,7 @@
       "opciones": [
         {
           "texto": "Con un deseo en juego, estoy dentro. ¿Cuál es el plan?",
-          "siguiente_ruta": "decision_inicial"
+          "siguiente_dialogo": "decision_inicial"
         },
         {
           "texto": "Suena demasiado bueno para ser verdad. Necesito una bebida.",
