@@ -3,7 +3,7 @@
     {
       "id": "plaza_principal",
       "nombre": "Plaza Principal",
-      "dialogo_tipo": "historia",
+      "dialogo_tipo": "introduccion",
       "dialogo_id": "encuentro_plaza",
       "escenario": {
         "descripcion": "Una bulliciosa plaza medieval con puestos de mercado y una fuente central.",
