@@ -1,0 +1,569 @@
+{
+  "tiradas": [
+    {
+      "id": "tirada_robo",
+      "descripcion": "El protagonista intenta robar a un noble",
+      "stat_principal": "Reputación",
+      "dificultad": 13,
+      "accion_descripcion": "Intentas deslizar tu mano en el bolsillo del noble mientras finge admirar una estatua...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Oh, esto es MAGNÍFICO! Has logrado no solo fallar estrepitosamente, sino que el noble al que intentabas robar resulta ser el Jefe de la Guardia disfrazado. ¡Felicidades por tu pésima suerte!"
+            },
+            {
+              "personaje": "JEFE DE GUARDIA",
+              "texto": "¡Ajá! ¡Te tengo, ratero! Estaba buscando precisamente a alguien como tú para una misión suicida. O vienes conmigo o te pudres en las mazmorras."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -30,
+            "Miedo": 20
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "mision_guardia"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NOBLE",
+              "texto": "¡Ladrón/a! ¡Guardias! ¡Guardias!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Oh, esto no pinta bien. Corre, BOB, ¡CORRE!"
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -15,
+            "Miedo": 15,
+            "Pipí acumulado": 10
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "persecucion_guardias"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tus dedos se acercan al bolsillo del noble, pero en el último momento te acobardas. Por suerte, nadie se da cuenta de tu patético intento."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu stat de 'Ganas de vivir' disminuye ligeramente al darte cuenta de que ni siquiera sirves como ladrón."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -5
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Apenas llevas cinco minutos limpiando cuando un caballo te muerde el hombro. Otro te pisa el pie. Un tercero te escupe algo verde y viscoso. Es oficial: los caballos te odian."
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "Mmm, no está mal. Duraste más que el anterior. Te daré 20 monedas por el esfuerzo."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -15,
+            "Miedo": 20
+          },
+          "objetos_ganados": ["20 Monedas", "Baba de Caballo"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con mucho, MUCHO cuidado, logras limpiar la mitad del establo antes de que un caballo decida que tu pelo es comestible. Terminas con el trabajo a medias y con un nuevo corte de pelo involuntario."
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "No está mal para ser tu primer día. Aquí tienes 40 monedas. Vuelve mañana si sobrevives a tu aventura."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -10,
+            "Reputación": 5
+          },
+          "objetos_ganados": ["40 Monedas"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Sorprendentemente, logras limpiar el establo sin incidentes mayores. Solo un pequeño chamuscado en tu capa y un mordisco superficial en el brazo. ¡Casi un éxito!"
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "¡Impresionante! No recuerdo la última vez que alguien terminó el trabajo con todas sus extremidades. Aquí tienes tus 70 monedas, te las has ganado."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -5,
+            "Reputación": 10
+          },
+          "objetos_ganados": ["70 Monedas"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¿Acaso tienes un talento especial con los animales? Los caballos mutantes parecen respetarte. Limpias el establo eficientemente y sin ningún incidente."
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "Esto... esto es increíble. Los caballos nunca se habían portado tan bien. Toma 90 monedas y este silbato especial. Podría serte útil si te encuentras con caballos salvajes."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 15
+          },
+          "objetos_ganados": ["90 Monedas", "Silbato para Caballos"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¿Qué está pasando? Los caballos mutantes no solo te dejan limpiar el establo, sino que parecen adorarte. Uno incluso te deja una pequeña bolsa que tenía escondida en su pesebre."
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "Esto es... sobrenatural. ¿Eres algún tipo de encantador de caballos? Toma 100 monedas y este amuleto. Lo encontré en el estómago de uno de los caballos el mes pasado."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 20,
+            "Ganas de vivir": 5
+          },
+          "objetos_ganados": ["100 Monedas", "Bolsa Misteriosa", "Amuleto Equino"],
+          "siguiente_ruta": "plaza_principal"
+        }
+      }
+    },
+    {
+      "id": "tirada_venta_relicario",
+      "descripcion": "El protagonista intenta vender el relicario familiar al tasador",
+      "stat_principal": "Reputación",
+      "dificultad": 12,
+      "accion_descripcion": "Intentas regatear con el tasador...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¿30 monedas? ¡Vale mucho más!"
+            },
+            {
+              "personaje": "TASADOR",
+              "texto": "¿Más? ¡JA! Ahora que lo miro mejor, parece falsificado. 15 monedas, y me estoy arriesgando."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -10
+          },
+          "objetos_ganados": ["15 Monedas"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "TASADOR",
+              "texto": "Tómalo o déjalo, chico/a. No tengo todo el día."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Supongo que no tengo otra opción."
+            }
+          ],
+          "efectos_stats": {},
+          "objetos_ganados": ["30 Monedas"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "TASADOR",
+              "texto": "Mira, te daré 40 monedas y es mi oferta final."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "De acuerdo, acepto."
+            }
+          ],
+          "efectos_stats": {},
+          "objetos_ganados": ["40 Monedas"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "TASADOR",
+              "texto": "Está bien, está bien. 65 monedas y te daré este mapa viejo que encontré en un cadáver la semana pasada."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Trato hecho."
+            }
+          ],
+          "efectos_stats": {},
+          "objetos_ganados": ["65 Monedas", "Mapa Sospechoso del Abismo"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "TASADOR",
+              "texto": "Has sabido negociar. 80 monedas y este amuleto de protección que nadie ha querido comprar."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Me parece justo."
+            }
+          ],
+          "efectos_stats": {},
+          "objetos_ganados": ["80 Monedas", "Amuleto de Protección Menor"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "TASADOR",
+              "texto": "Nunca pensé que diría esto, pero me has impresionado. 100 monedas, este mapa del Abismo y una daga ceremonial. Podrían serte útiles."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Excelente negocio."
+            }
+          ],
+          "efectos_stats": {},
+          "objetos_ganados": ["100 Monedas", "Mapa Detallado del Abismo", "Daga Ceremonial"],
+          "objetos_perdidos": ["Relicario Familiar"],
+          "siguiente_ruta": "plaza_principal"
+        }
+      }
+    },
+    {
+      "id": "tirada_intimidacion",
+      "descripcion": "El protagonista intenta intimidar a los guardias de la puerta",
+      "stat_principal": "Reputación",
+      "dificultad": 15,
+      "accion_descripcion": "Intentas intimidar a los guardias usando tu estatus de héroe/heroína elegido/a...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡Soy el/la héroe/heroína elegido/a! ¡Deben dejarme pasar!"
+            },
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "¡Ja! ¿Y yo soy el Rey de las Babosas. Cada semana aparece un 'elegido/a'."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "A las mazmorras con él/ella. Un día en la celda le enseñará respeto a la autoridad."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -20,
+            "Miedo": 15
+          },
+          "siguiente_dialogo": "mazmorras_ciudad"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "¿Y qué se supone que significa eso? Sin permiso no sales, 'elegido/a'."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "Si vuelves a insistir, pagarás una multa por desacato."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -10
+          },
+          "siguiente_dialogo": "buscar_permiso"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "Muy bonito discurso, pero necesitas un permiso como todo el mundo."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "Si eres tan importante, seguro que el administrador te lo concederá sin problemas."
+            }
+          ],
+          "efectos_stats": {},
+          "siguiente_dialogo": "buscar_permiso"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "Hmm... ciertamente tienes un aire... heroico."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "No podemos dejarte pasar sin permiso, pero podría señalarte a alguien que podría... eludirlo. Busca al Mago de las Calles en el callejón del Pescado Muerto."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 5
+          },
+          "siguiente_dialogo": "info_mago"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "Bueno, debo admitir que pareces más... competente que los otros 'elegidos'."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "Mira, no puedo dejarte pasar oficialmente, pero hay una entrada lateral que no vigilamos entre el cambio de turno. En una hora aproximadamente."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 10
+          },
+          "siguiente_dialogo": "acceso_lateral"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "¡Por los dioses! Puedo sentir la presencia del destino a tu alrededor."
+            },
+            {
+              "personaje": "GUARDIA 2",
+              "texto": "Y esos ojos... son los mismos que en la profecía."
+            },
+            {
+              "personaje": "GUARDIA 1",
+              "texto": "Pasa, héroe/heroína. Que los dioses te acompañen. Y... toma esto. Es una antigua reliquia familiar. Puede que te proteja."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 20,
+            "Miedo": -10
+          },
+          "objetos_ganados": ["Amuleto del Guardia"],
+          "siguiente_ruta": "camino_abismo"
+        }
+      }
+    }
+  ]
+}
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Lo has conseguido! Tus dedos ágiles extraen una pequeña bolsa con 50 monedas. No está mal para un principiante."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu stat de 'Reputación' baja, pero tus 'Ganas de vivir' aumentan. El crimen paga, aparentemente."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -10,
+            "Ganas de vivir": 5
+          },
+          "objetos_ganados": ["50 Monedas"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Impresionante! No solo consigues 80 monedas, sino también un pequeño amuleto que podría ser útil más adelante. O solo basura brillante, quién sabe."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu stat de 'Reputación' baja ligeramente, pero tu confianza aumenta."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -5,
+            "Miedo": -5
+          },
+          "objetos_ganados": ["80 Monedas", "Amuleto Extraño"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Por todas las babosas del abismo! Has robado 100 monedas, una llave misteriosa y un mapa parcial del Abismo. El noble ni siquiera se ha dado cuenta. Deberías considerar cambiar de profesión."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tus stats de 'Ganas de vivir' y 'Reputación' con el bajo mundo han aumentado considerablemente."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": 10
+          },
+          "objetos_ganados": ["100 Monedas", "Llave Misteriosa", "Mapa Parcial del Abismo"],
+          "siguiente_ruta": "plaza_principal"
+        }
+      }
+    },
+    {
+      "id": "tirada_regateo",
+      "descripcion": "El protagonista intenta regatear con el Tendero borracho",
+      "stat_principal": "Reputación",
+      "dificultad": 12,
+      "modificador_especial": "nivel de ebriedad del Tendero (1-5)",
+      "accion_descripcion": "Intentas convencer al Tendero de que te haga un descuento...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "¿QUÉ? ¿ESTÁS INTENTANDO ESTAFARME? *hic* ¡Mi abuelo murió por culpa de un regateo! *llora* ¡Todo me costará el doble para ti!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Vaya, has conseguido ofender profundamente a un hombre tan borracho que apenas puede mantenerse en pie. Eso es talento."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -10
+          },
+          "modificador_precio": 1.5,
+          "siguiente_dialogo": "compra_completada"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "¿Regatear? *hic* ¿REGATEAR? Mi precio es mi precio, amigo/a. Si no te gusta, *hic* la puerta está... está... ¿dónde está la puerta?"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Parece que has tocado una fibra sensible. O simplemente está demasiado borracho para entender el concepto de negociación."
+            }
+          ],
+          "efectos_stats": {},
+          "modificador_precio": 1.0,
+          "siguiente_dialogo": "compra_completada"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "*Te mira fijamente, o al menos lo intenta* No, no, no... Los precios son los precios. *hic* Mi último descuento le costó un dedo a un cliente. No preguntes cómo."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Bueno, al menos no te ha subido los precios. Considerando su estado, es prácticamente una victoria."
+            }
+          ],
+          "efectos_stats": {},
+          "modificador_precio": 1.0,
+          "siguiente_dialogo": "compra_completada"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "¿Sabes qué? *hic* Me caes bien. O quizás me recuerdas a alguien. O tal vez seas un espejismo. Sea como sea, te haré un pequeño descuento."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "El Tendero reduce los precios un 15%. No está mal para alguien que probablemente olvidará tu cara en cinco minutos."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 5
+          },
+          "modificador_precio": 0.85,
+          "siguiente_dialogo": "compra_completada"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "¡MI MEJOR AMIGO/A! *intenta abrazarte pero casi se cae* ¿Cómo podría cobrarte el precio completo? *hic* Descuento de amigos, ¡30% menos en todo!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "El Tendero está tan borracho que probablemente está perdiendo dinero. Aprovecha antes de que recupere la sobriedad o la cordura, lo que ocurra primero."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 10
+          },
+          "modificador_precio": 0.7,
+          "siguiente_dialogo": "compra_completada"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "TENDERO",
+              "texto": "*Comienza a llorar* Eres... *hic* eres igual que mi difunto/a hermano/a. *solloza* Llévate lo que quieras con un 50% de descuento. Y toma, *hic* esto era suyo/a."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "El Tendero te da una daga ornamentada mientras sigue llorando. Te sientes un poco mal por aprovecharte de su estado, pero oye, ¡negocios son negocios!"
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 5,
+            "Ganas de vivir": -5
+          },
+          "objetos_ganados": ["Daga Familiar"],
+          "modificador_precio": 0.5,
+          "siguiente_dialogo": "compra_completada"
+        }
+      }
+    },
+    {
+      "id": "tirada_limpieza_establos",
+      "descripcion": "El protagonista limpia los establos de caballos mutantes",
+      "stat_principal": "Miedo",
+      "modificador_inverso": true,
+      "dificultad": 14,
+      "accion_descripcion": "Te acercas con cautela a los caballos de guerra mutantes, preparado para limpiar sus establos...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Oh, BOB. No debiste acercarte tanto al trasero del caballo. Lo que parecía un simple resoplido resultó ser... bueno, digamos que ahora sabes por qué les llaman 'caballos de fuego'."
+            },
+            {
+              "personaje": "DUEÑO DEL ESTABLO",
+              "texto": "¡Santo cielo! No había visto una quemadura así desde... bueno, desde el último ayudante. Toma 10 monedas por las molestias y vete antes de que los demás caballos se emocionen."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -20,
+            "Miedo": 30
+          },
+          "objetos_ganados": ["10 Monedas"],
+          "efectos_temporales": ["Quemaduras de Tercer Grado"],
+          "siguiente_ruta": "plaza_principal"
