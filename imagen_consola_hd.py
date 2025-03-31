@@ -32,7 +32,7 @@ def verificar_pillow():
         return False
     return True
 
-def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
+def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None, aspect_ratio=0.5):
     """
     Muestra una imagen con alta resolución en la consola.
     Esta función utiliza caracteres Unicode de bloques para representar
@@ -42,6 +42,8 @@ def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
         ruta_imagen: Ruta al archivo de imagen
         ancho: Ancho deseado en caracteres (por defecto 100)
         alto: Alto deseado en caracteres (opcional)
+        aspect_ratio: Relación de aspecto de los caracteres en la terminal (ancho/alto)
+                      Valores típicos: 0.5 (terminal estándar), 1.0 (cuadrado perfecto)
     
     Returns:
         bool: True si la imagen se mostró correctamente
@@ -55,61 +57,66 @@ def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
         if imagen.mode != "RGB":
             imagen = imagen.convert("RGB")
         
-        # Calcular dimensiones
+        # Calcular dimensiones con corrección de aspecto
         ancho_original, alto_original = imagen.size
         if alto is None:
-            # Ajustar altura automáticamente (proporcional)
-            alto = int(alto_original * ancho / ancho_original)
+            # Ajustar altura considerando la relación de aspecto del carácter
+            # Los caracteres suelen ser más altos que anchos (aprox. 1:2 → aspect_ratio=0.5)
+            # Ajustamos para que la imagen se vea correctamente proporcionada
+            alto = int(alto_original * ancho / ancho_original / aspect_ratio)
         
         # Redimensionar imagen con alta calidad
-        imagen = imagen.resize((ancho, alto), Image.LANCZOS)
+        # Aumentamos la resolución horizontal para compensar caracteres rectangulares
+        imagen_ancho = ancho * 2  # 2 pixeles por carácter en horizontal
+        imagen_alto = alto * 2    # 2 pixeles por carácter en vertical
+        imagen = imagen.resize((imagen_ancho, imagen_alto), Image.LANCZOS)
         
         # Crear texto formateado
         texto = Text()
         
         # Método de bloques de cuadrícula avanzado
-        for y in range(0, alto, 2):
-            for x in range(0, ancho, 2):
+        for y in range(0, imagen_alto, 2):
+            for x in range(0, imagen_ancho, 2):
                 # Dividimos un bloque 2x2 de píxeles en 4 cuadrantes
                 # Cada cuadrante puede estar encendido o apagado
                 
                 # Obtener colores para los 4 cuadrantes (2x2 píxeles)
-                top_left = imagen.getpixel((x, y)) if x < ancho and y < alto else (0, 0, 0)
-                top_right = imagen.getpixel((x+1, y)) if x+1 < ancho and y < alto else (0, 0, 0)
-                bottom_left = imagen.getpixel((x, y+1)) if x < ancho and y+1 < alto else (0, 0, 0)
-                bottom_right = imagen.getpixel((x+1, y+1)) if x+1 < ancho and y+1 < alto else (0, 0, 0)
+                top_left = imagen.getpixel((x, y)) if x < imagen_ancho and y < imagen_alto else (0, 0, 0)
+                top_right = imagen.getpixel((x+1, y)) if x+1 < imagen_ancho and y < imagen_alto else (0, 0, 0)
+                bottom_left = imagen.getpixel((x, y+1)) if x < imagen_ancho and y+1 < imagen_alto else (0, 0, 0)
+                bottom_right = imagen.getpixel((x+1, y+1)) if x+1 < imagen_ancho and y+1 < imagen_alto else (0, 0, 0)
                 
                 # Calcular color promedio para fondo
                 r_bg = (top_left[0] + top_right[0] + bottom_left[0] + bottom_right[0]) // 4
                 g_bg = (top_left[1] + top_right[1] + bottom_left[1] + bottom_right[1]) // 4
                 b_bg = (top_left[2] + top_right[2] + bottom_left[2] + bottom_right[2]) // 4
                 
-                # Determinar qué carácter de bloque usar basado en la diferencia de colores
-                # Usamos caracteres Unicode de bloques de cuadrados
-                character = ' '
+                # Calcular brillo para cada cuadrante
+                # Usamos ponderación estándar para convertir RGB a brillo perceptual
+                def brillo(r, g, b):
+                    return 0.299 * r + 0.587 * g + 0.114 * b
                 
-                # Diferencias de brillo para determinar qué cuadrantes están "activos"
-                tl_bright = sum(top_left) // 3
-                tr_bright = sum(top_right) // 3
-                bl_bright = sum(bottom_left) // 3
-                br_bright = sum(bottom_right) // 3
-                avg_bright = (tl_bright + tr_bright + bl_bright + br_bright) // 4
+                tl_bright = brillo(top_left[0], top_left[1], top_left[2])
+                tr_bright = brillo(top_right[0], top_right[1], top_right[2])
+                bl_bright = brillo(bottom_left[0], bottom_left[1], bottom_left[2])
+                br_bright = brillo(bottom_right[0], bottom_right[1], bottom_right[2])
+                avg_bright = (tl_bright + tr_bright + bl_bright + br_bright) / 4
                 
-                threshold = 30  # Umbral para determinar si un cuadrante está activo
+                # Determinar qué cuadrantes están "activos" basado en diferencia de brillo
+                threshold = 20  # Valor menor = más sensible a cambios
                 
-                # Activar cuadrantes basado en brillo relativo al promedio
+                # Considerar cuadrantes como activos o inactivos según su brillo
                 quadrant_pattern = 0
-                if abs(tl_bright - avg_bright) > threshold:
+                if tl_bright > avg_bright + threshold or tl_bright < avg_bright - threshold:
                     quadrant_pattern |= 1  # Arriba izquierda
-                if abs(tr_bright - avg_bright) > threshold:
+                if tr_bright > avg_bright + threshold or tr_bright < avg_bright - threshold:
                     quadrant_pattern |= 2  # Arriba derecha
-                if abs(bl_bright - avg_bright) > threshold:
+                if bl_bright > avg_bright + threshold or bl_bright < avg_bright - threshold:
                     quadrant_pattern |= 4  # Abajo izquierda
-                if abs(br_bright - avg_bright) > threshold:
+                if br_bright > avg_bright + threshold or br_bright < avg_bright - threshold:
                     quadrant_pattern |= 8  # Abajo derecha
                 
                 # Mapear el patrón a un carácter de bloque Unicode
-                # Este mapeo aumenta dramáticamente la resolución efectiva
                 block_chars = {
                     0: ' ',      # Ningún cuadrante
                     1: '▘',      # Arriba izquierda
@@ -131,17 +138,16 @@ def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
                 
                 character = block_chars[quadrant_pattern]
                 
-                # Si no hay diferencias significativas, usar un solo carácter para ese bloque
-                if quadrant_pattern == 0 or quadrant_pattern == 15:
-                    if quadrant_pattern == 0:
-                        # Usar el espacio con color de fondo
-                        texto.append(' ', style=f"on rgb({r_bg},{g_bg},{b_bg})")
-                    else:
-                        # Usar bloque completo con color de fondo
-                        texto.append('█', style=f"rgb({r_bg},{g_bg},{b_bg})")
+                # Determinar colores para primer plano y fondo
+                if quadrant_pattern == 0:
+                    # Espacio en blanco con color de fondo promedio
+                    texto.append(' ', style=f"on rgb({r_bg},{g_bg},{b_bg})")
+                elif quadrant_pattern == 15:
+                    # Bloque completo
+                    texto.append('█', style=f"rgb({r_bg},{g_bg},{b_bg})")
                 else:
-                    # Determinar colores para primer plano y fondo
-                    # Calculamos colores para los cuadrantes "activos" e "inactivos"
+                    # Para cuadrantes parciales, necesitamos color de primer y segundo plano
+                    # Agrupar colores según si están en cuadrantes activos o inactivos
                     active_colors = []
                     inactive_colors = []
                     
@@ -152,7 +158,7 @@ def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
                         else:
                             inactive_colors.append(color)
                     
-                    # Promediar colores activos e inactivos
+                    # Promediar colores para determinar primer plano y fondo
                     if active_colors:
                         r_fg = sum(c[0] for c in active_colors) // len(active_colors)
                         g_fg = sum(c[1] for c in active_colors) // len(active_colors)
@@ -184,7 +190,8 @@ def mostrar_imagen_hd(ruta_imagen, ancho=100, alto=None):
     except Exception as e:
         console.print(f"[bold red]Error al procesar imagen HD: {str(e)}[/bold red]")
         return False
-
+        
+        
 def mostrar_imagen_ansi(ruta_imagen, ancho=200, alto=None):
     """
     Muestra una imagen utilizando el modo ANSI de 256 colores para máxima compatibilidad.
@@ -302,10 +309,10 @@ if __name__ == "__main__":
     if os.path.exists(ruta):
         # Mostrar con los diferentes modos
         console.print("\n[bold green]1. Mostrando en modo HD (bloques Unicode):[/bold green]")
-        mostrar_imagen_hd(ruta, 100)
+        mostrar_imagen_hd(ruta, 50,50)
         
-        console.print("\n[bold green]2. Mostrando en modo ANSI (256 colores):[/bold green]")
-        mostrar_imagen_ansi(ruta, 200)
+        #console.print("\n[bold green]2. Mostrando en modo ANSI (256 colores):[/bold green]")
+        #mostrar_imagen_ansi(ruta, 200)
         
         console.print("\n[bold]¿Cuál modo te funciona mejor?[/bold]")
         console.print("El modo HD usa caracteres Unicode y colores RGB True Color.")
