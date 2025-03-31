@@ -309,7 +309,7 @@ if __name__ == "__main__":
     if os.path.exists(ruta):
         # Mostrar con los diferentes modos
         console.print("\n[bold green]1. Mostrando en modo HD (bloques Unicode):[/bold green]")
-        mostrar_imagen_hd(ruta, 50,50)
+        mostrar_imagen_hd(ruta, 50,25)
         
         #console.print("\n[bold green]2. Mostrando en modo ANSI (256 colores):[/bold green]")
         #mostrar_imagen_ansi(ruta, 200)
