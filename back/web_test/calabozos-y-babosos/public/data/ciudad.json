@@ -1,0 +1,180 @@
+{
+  "tiradas": [
+    {
+      "id": "tirada_robo",
+      "descripcion": "El protagonista intenta robar a un noble",
+      "stat_principal": "Reputación",
+      "dificultad": 13,
+      "accion_descripcion": "Intentas deslizar tu mano en el bolsillo del noble...",
+      "resultados": {
+        "1-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Has fallado estrepitosamente! El noble te agarra la mano y grita pidiendo a los guardias."
+            },
+            {
+              "personaje": "NOBLE",
+              "texto": "¡Ladrón! ¡Guardias! ¡Guardias! ¡Este rufián ha intentado robarme!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Los guardias te rodean rápidamente. Esto no pinta bien."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -30,
+            "Miedo": 20
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu intento de robo es torpe. El noble se da cuenta de que algo no va bien, pero no está seguro de qué."
+            },
+            {
+              "personaje": "NOBLE",
+              "texto": "¿Qué crees que estás haciendo? ¡Aléjate de mí, plebeyo!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te alejas rápidamente, agradecido de no haber sido atrapado."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -10,
+            "Miedo": 5
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Consigues meter la mano en el bolsillo del noble sin que se dé cuenta, pero solo encuentras unas pocas monedas."
+            },
+            {
+              "personaje": "SISTEMA",
+              "texto": "Has obtenido 5 monedas de oro."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -5,
+            "Miedo": -5
+          },
+          "objetos_ganados": ["monedas_oro"],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "16-20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Un robo perfecto! Tus dedos ágiles extraen una bolsa llena de monedas sin que el noble sospeche nada."
+            },
+            {
+              "personaje": "SISTEMA",
+              "texto": "Has obtenido 50 monedas de oro y una llave misteriosa."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -5,
+            "Miedo": -10,
+            "Ganas de vivir": 10
+          },
+          "objetos_ganados": ["monedas_oro", "llave_misteriosa"],
+          "siguiente_ruta": "plaza_principal"
+        }
+      }
+    },
+    {
+      "id": "tirada_persuasion",
+      "descripcion": "El protagonista intenta persuadir al guardia",
+      "stat_principal": "Reputación",
+      "dificultad": 12,
+      "accion_descripcion": "Intentas convencer al guardia de que te deje pasar...",
+      "resultados": {
+        "1-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tus palabras salen atropelladas y poco convincentes. El guardia te mira con sospecha."
+            },
+            {
+              "personaje": "GUARDIA",
+              "texto": "¿Me tomas por tonto? Lárgate antes de que te arreste por intentar sobornar a un oficial."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": -15,
+            "Miedo": 10
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "6-11": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "El guardia parece dudar ante tus argumentos, pero finalmente niega con la cabeza."
+            },
+            {
+              "personaje": "GUARDIA",
+              "texto": "Lo siento, pero no puedo dejarte pasar. Son las órdenes que tengo."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 0,
+            "Miedo": 0
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "plaza_principal"
+        },
+        "12-17": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tus palabras parecen convencer al guardia, que mira a ambos lados antes de hacerse a un lado."
+            },
+            {
+              "personaje": "GUARDIA",
+              "texto": "Está bien, puedes pasar. Pero que no se entere nadie de que te he dejado, ¿entendido?"
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 10,
+            "Miedo": -5
+          },
+          "objetos_ganados": [],
+          "siguiente_ruta": "entrada_abismo"
+        },
+        "18-20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu elocuencia es impresionante. No solo convences al guardia de que te deje pasar, sino que además te ofrece su ayuda."
+            },
+            {
+              "personaje": "GUARDIA",
+              "texto": "Nunca había escuchado un argumento tan convincente. Toma, llévate mi amuleto de la suerte. Te será útil en el Abismo."
+            },
+            {
+              "personaje": "SISTEMA",
+              "texto": "Has obtenido el Amuleto de Protección del Guardia."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 20,
+            "Miedo": -10,
+            "Ganas de vivir": 5
+          },
+          "objetos_ganados": ["amuleto_proteccion"],
+          "siguiente_ruta": "entrada_abismo"
+        }
+      }
+    }
+  ]
+}

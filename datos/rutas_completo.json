@@ -1,0 +1,268 @@
+{
+  "rutas": [
+    {
+      "id": "introduccion",
+      "nombre": "Introducción",
+      "descripcion": "El comienzo de tu aventura en el Reino de Viscaria.",
+      "escenario": "intro_narrador",
+      "conexiones": ["plaza_principal"]
+    },
+    {
+      "id": "plaza_principal",
+      "nombre": "Plaza Principal",
+      "descripcion": "El corazón de Viscaria, lleno de gente y actividad.",
+      "escenario": "plaza_principal",
+      "conexiones": ["decision_inicial", "taberna", "negociacion"]
+    },
+    {
+      "id": "decision_inicial",
+      "nombre": "Decisión Inicial",
+      "descripcion": "Tu primera decisión importante en esta aventura.",
+      "escenario": "decision_inicial",
+      "conexiones": ["trabajar_establos", "vender_relicario", "robar_noble"]
+    },
+    {
+      "id": "trabajar_establos",
+      "nombre": "Trabajo en Establos",
+      "descripcion": "Buscas trabajo en los establos para conseguir dinero.",
+      "escenario": "establos",
+      "conexiones": ["limpieza_establos"]
+    },
+    {
+      "id": "limpieza_establos",
+      "nombre": "Limpieza de Establos",
+      "descripcion": "Te enfrentas a la tarea de limpiar establos de caballos mutantes.",
+      "escenario": "establos_interior",
+      "conexiones": ["tienda_tendero"],
+      "tirada": {
+        "stat": "miedo",
+        "inverso": true,
+        "dificultad": 14
+      }
+    },
+    {
+      "id": "vender_relicario",
+      "nombre": "Vender Relicario",
+      "descripcion": "Decides vender un relicario familiar para conseguir dinero.",
+      "escenario": "plaza_principal",
+      "conexiones": ["casa_empenos", "plaza_principal"]
+    },
+    {
+      "id": "casa_empenos",
+      "nombre": "Casa de Empeños",
+      "descripcion": "Visitas la casa de empeños para vender tu relicario.",
+      "escenario": "casa_empenos",
+      "conexiones": ["tienda_tendero"],
+      "tirada": {
+        "stat": "reputacion",
+        "dificultad": 12
+      }
+    },
+    {
+      "id": "robar_noble",
+      "nombre": "Robar al Noble",
+      "descripcion": "Intentas robar a un noble en el mercado.",
+      "escenario": "mercado",
+      "conexiones": ["tienda_tendero", "huida_guardias"],
+      "tirada": {
+        "stat": "reputacion",
+        "dificultad": 13
+      }
+    },
+    {
+      "id": "tienda_tendero",
+      "nombre": "Tienda del Tendero",
+      "descripcion": "La tienda de artículos para aventureros suicidas.",
+      "escenario": "tienda_interior",
+      "conexiones": ["regateo_tendero"]
+    },
+    {
+      "id": "regateo_tendero",
+      "nombre": "Regateo con el Tendero",
+      "descripcion": "Intentas conseguir un mejor precio para el equipo.",
+      "escenario": "tienda_interior",
+      "conexiones": ["compra_completada"],
+      "tirada": {
+        "stat": "reputacion",
+        "dificultad": 12,
+        "modificador": "ebriedad_tendero"
+      }
+    },
+    {
+      "id": "compra_completada",
+      "nombre": "Compra Completada",
+      "descripcion": "Has adquirido el equipo básico para tu aventura.",
+      "escenario": "tienda_interior",
+      "conexiones": ["callejon_lateral", "otra_tienda", "taberna"]
+    },
+    {
+      "id": "callejon_lateral",
+      "nombre": "Callejón Lateral",
+      "descripcion": "Un callejón oscuro y húmedo en tu camino hacia la puerta de la ciudad.",
+      "escenario": "callejon",
+      "conexiones": ["encuentro_nerly", "otro_encuentro", "plaza_principal"]
+    },
+    {
+      "id": "encuentro_nerly",
+      "nombre": "Encuentro con Nerly",
+      "descripcion": "Te encuentras con una babosa parlante llamada Nerly.",
+      "escenario": "callejon_nerly",
+      "conexiones": ["explicacion_nerly", "nerly_se_une", "motivacion_nerly"]
+    },
+    {
+      "id": "nerly_se_une",
+      "nombre": "Nerly se Une",
+      "descripcion": "Nerly decide unirse a tu aventura como guía.",
+      "escenario": "callejon_nerly",
+      "conexiones": ["puerta_ciudad"],
+      "tirada": {
+        "stat": "reputacion",
+        "dificultad": 15,
+        "condicion": "tiene_sal"
+      }
+    },
+    {
+      "id": "puerta_ciudad",
+      "nombre": "Puerta de la Ciudad",
+      "descripcion": "La gran puerta que separa la ciudad del mundo exterior.",
+      "escenario": "puerta_ciudad",
+      "conexiones": ["camino_abismo"]
+    },
+    {
+      "id": "camino_abismo",
+      "nombre": "Camino al Abismo",
+      "descripcion": "El sendero que lleva hacia el temido Abismo de las Babosas.",
+      "escenario": "camino_bosque",
+      "conexiones": ["informacion_rey", "taxonomia_babosa", "llegada_abismo"]
+    },
+    {
+      "id": "informacion_rey",
+      "nombre": "Información del Rey",
+      "descripcion": "Nerly te cuenta sobre el Rey Baboso y su historia.",
+      "escenario": "camino_bosque",
+      "conexiones": ["historia_nerly", "debilidades_rey", "llegada_abismo"]
+    },
+    {
+      "id": "taxonomia_babosa",
+      "nombre": "Taxonomía Babosa",
+      "descripcion": "Aprendes sobre los diferentes tipos de babosas que habitan el Abismo.",
+      "escenario": "camino_bosque",
+      "conexiones": ["consejos_combate", "motivacion_nerly", "llegada_abismo"]
+    },
+    {
+      "id": "llegada_abismo",
+      "nombre": "Llegada al Abismo",
+      "descripcion": "Por fin llegas a la entrada del temido Abismo de las Babosas.",
+      "escenario": "entrada_abismo",
+      "conexiones": ["consejos_anciano", "historia_anciano", "entrada_abismo"]
+    },
+    {
+      "id": "entrada_abismo",
+      "nombre": "Entrada al Abismo",
+      "descripcion": "Te preparas para adentrarte en el Abismo de las Babosas.",
+      "escenario": "entrada_abismo",
+      "conexiones": ["entrada_sigilosa", "encuentro_inmediato", "prueba_terreno"]
+    },
+    {
+      "id": "entrada_sigilosa",
+      "nombre": "Entrada Sigilosa",
+      "descripcion": "Decides entrar sigilosamente por un túnel lateral.",
+      "escenario": "tunel_lateral",
+      "conexiones": ["sala_entrada"],
+      "tirada": {
+        "stat": "miedo",
+        "dificultad": 12
+      }
+    },
+    {
+      "id": "sala_entrada",
+      "nombre": "Sala de Entrada",
+      "descripcion": "La primera cámara grande dentro del Abismo.",
+      "escenario": "sala_entrada",
+      "conexiones": ["cavernas_cria", "abismo_profundo", "grutas_cristal"]
+    },
+    {
+      "id": "grutas_cristal",
+      "nombre": "Grutas de Cristal",
+      "descripcion": "Una hermosa caverna llena de cristales brillantes.",
+      "escenario": "grutas_cristal",
+      "conexiones": ["lagrima_cristal", "tesoro_babosas", "sala_entrada"]
+    },
+    {
+      "id": "lagrima_cristal",
+      "nombre": "Lágrima de Cristal",
+      "descripcion": "Un enorme cristal con forma de lágrima que parece contener visiones.",
+      "escenario": "lagrima_cristal",
+      "conexiones": ["vision_mistica"]
+    },
+    {
+      "id": "vision_mistica",
+      "nombre": "Visión Mística",
+      "descripcion": "Tocas la Lágrima de Cristal y recibes visiones del pasado y futuro.",
+      "escenario": "vision_cristal",
+      "conexiones": ["corazon_abismo"],
+      "tirada": {
+        "stat": "ganas_de_vivir",
+        "dificultad": 15
+      }
+    },
+    {
+      "id": "corazon_abismo",
+      "nombre": "El Corazón del Abismo",
+      "descripcion": "La zona más profunda del Abismo, cerca de la sala del trono del Rey Baboso.",
+      "escenario": "corazon_abismo",
+      "conexiones": ["combate_guardianas", "pasaje_secreto", "plan_distraccion"]
+    },
+    {
+      "id": "pasaje_secreto",
+      "nombre": "Pasaje Secreto",
+      "descripcion": "Descubres un pasaje secreto para evitar a las Babosas Guardianas.",
+      "escenario": "pasaje_secreto",
+      "conexiones": ["sala_trono"],
+      "tirada": {
+        "stat": "pipi_acumulado",
+        "inverso": true,
+        "dificultad": 13
+      }
+    },
+    {
+      "id": "sala_trono",
+      "nombre": "Sala del Trono",
+      "descripcion": "La imponente sala donde el Rey Baboso espera en su trono de cristal.",
+      "escenario": "sala_trono",
+      "conexiones": ["confrontacion_rey"]
+    },
+    {
+      "id": "confrontacion_rey",
+      "nombre": "Confrontación con el Rey",
+      "descripcion": "El momento decisivo: te enfrentas cara a cara con el Rey Baboso.",
+      "escenario": "confrontacion_rey",
+      "conexiones": ["ataque_directo", "usar_artefacto", "negociar_rey"],
+      "tirada": {
+        "stat": "ganas_de_vivir",
+        "dificultad": 18
+      }
+    },
+    {
+      "id": "victoria_final",
+      "nombre": "Victoria Final",
+      "descripcion": "Has derrotado al Rey Baboso y salvado Viscaria.",
+      "escenario": "victoria",
+      "conexiones": ["epilogo"]
+    },
+    {
+      "id": "derrota_final",
+      "nombre": "Derrota Final",
+      "descripcion": "Has sido derrotado y te conviertes en una babosa más.",
+      "escenario": "derrota",
+      "conexiones": ["reiniciar"]
+    },
+    {
+      "id": "epilogo",
+      "nombre": "Epílogo",
+      "descripcion": "El final de tu aventura y las consecuencias de tus acciones.",
+      "escenario": "epilogo",
+      "conexiones": ["reiniciar"]
+    }
+  ]
+}

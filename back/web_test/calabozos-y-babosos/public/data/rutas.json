@@ -1,0 +1,74 @@
+{
+  "rutas": [
+    {
+      "id": "plaza_principal",
+      "nombre": "Plaza Principal",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_plaza",
+      "escenario": {
+        "descripcion": "Una bulliciosa plaza medieval con puestos de mercado y una fuente central.",
+        "ambiente": "Día soleado, mucho ruido de mercaderes y compradores",
+        "color_fondo": "#F5DEB3",
+        "color_texto": "#8B4513",
+        "elementos_destacados": ["fuente de piedra", "puestos de mercado", "guardias patrullando"],
+        "sonidos": ["multitud", "pregones", "caballos"]
+      }
+    },
+    {
+      "id": "tienda_tendero",
+      "nombre": "Tienda del Tendero",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_tendero",
+      "escenario": {
+        "descripcion": "Una pequeña tienda abarrotada de objetos extraños y pociones de dudosa procedencia.",
+        "ambiente": "Interior oscuro, olor a hierbas y polvo",
+        "color_fondo": "#5D4037",
+        "color_texto": "#FFD54F",
+        "elementos_destacados": ["estanterías desordenadas", "mostrador de madera", "gato dormido"],
+        "sonidos": ["campanilla de puerta", "madera crujiente", "ronroneo de gato"]
+      }
+    },
+    {
+      "id": "taberna_babosa",
+      "nombre": "Taberna La Babosa Borracha",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_taberna",
+      "escenario": {
+        "descripcion": "Una taberna ruidosa llena de aventureros, mercenarios y personajes de dudosa reputación.",
+        "ambiente": "Humo, olor a cerveza y comida grasienta",
+        "color_fondo": "#4E342E",
+        "color_texto": "#FFCC80",
+        "elementos_destacados": ["barra de bar", "mesas con aventureros", "chimenea encendida"],
+        "sonidos": ["risas", "jarras chocando", "música de bardo"]
+      }
+    },
+    {
+      "id": "entrada_abismo",
+      "nombre": "Entrada al Abismo de las Babosas",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_abismo",
+      "escenario": {
+        "descripcion": "Una enorme caverna oscura con formaciones rocosas que parecen colmillos. El suelo está cubierto de un limo brillante.",
+        "ambiente": "Frío, húmedo, con ecos inquietantes",
+        "color_fondo": "#263238",
+        "color_texto": "#4DB6AC",
+        "elementos_destacados": ["estalactitas", "rastros de baba", "huesos dispersos"],
+        "sonidos": ["goteo de agua", "viento silbante", "gruñidos distantes"]
+      }
+    },
+    {
+      "id": "sala_trono_rey_baboso",
+      "nombre": "Sala del Trono del Rey Baboso",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_rey_baboso",
+      "escenario": {
+        "descripcion": "Una enorme caverna con un trono hecho de huesos y baba cristalizada. El Rey Baboso, una monstruosa babosa del tamaño de un elefante, se desliza lentamente hacia ti.",
+        "ambiente": "Olor putrefacto, sonidos viscosos, poca luz",
+        "color_fondo": "#1A237E",
+        "color_texto": "#B39DDB",
+        "elementos_destacados": ["trono de huesos", "charcos de baba", "tesoros robados"],
+        "sonidos": ["burbujeo viscoso", "respiración pesada", "huesos crujiendo"]
+      }
+    }
+  ]
+}

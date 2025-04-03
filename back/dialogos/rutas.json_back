@@ -1,0 +1,256 @@
+{
+  "rutas": [
+    {
+      "id": "plaza_principal",
+      "nombre": "Plaza Principal",
+      "dialogo_tipo": "introduccion",
+      "dialogo_id": "encuentro_plaza",
+      "escenario": {
+        "descripcion": "Una bulliciosa plaza medieval con puestos de mercado y una fuente central.",
+        "ambiente": "Día soleado, mucho ruido de mercaderes y compradores",
+        "color_fondo": "#F5DEB3",
+        "color_texto": "#8B4513",
+        "elementos_destacados": ["fuente de piedra", "puestos de mercado", "guardias patrullando"],
+        "sonidos": ["multitud", "pregones", "caballos"]
+      }
+    },
+    {
+      "id": "tienda_tendero",
+      "nombre": "Artículos para Aventureros Suicidas",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_tendero",
+      "escenario": {
+        "descripcion": "Tienda desordenada llena de equipamiento de dudosa calidad. Huele a cuero rancio y alcohol.",
+        "ambiente": "Interior oscuro, desordenado y polvoriento",
+        "color_fondo": "#8B4513",
+        "color_texto": "#F5DEB3",
+        "elementos_destacados": ["mostrador astillado", "armas oxidadas", "pociones sospechosas", "tendero borracho"],
+        "sonidos": ["hipo del tendero", "madera crujiente", "botellas tintineando"]
+      }
+    },
+    {
+      "id": "callejon_lateral",
+      "nombre": "Callejón Oscuro",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_nerly",
+      "escenario": {
+        "descripcion": "Un callejón estrecho y húmedo entre edificios. Apenas entra la luz del sol.",
+        "ambiente": "Sombrío, húmedo y ligeramente amenazador",
+        "color_fondo": "#2F4F4F",
+        "color_texto": "#CCCCCC",
+        "elementos_destacados": ["charcos", "cajas viejas", "sombras misteriosas"],
+        "sonidos": ["goteo de agua", "roedores", "susurros lejanos"]
+      }
+    },
+    {
+      "id": "puerta_ciudad",
+      "nombre": "Puerta de la Ciudad",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_guardias",
+      "escenario": {
+        "descripcion": "Una gran puerta de madera y hierro custodiada por guardias de aspecto aburrido.",
+        "ambiente": "Transitado pero organizado, con guardias vigilando",
+        "color_fondo": "#8B8878",
+        "color_texto": "#F5F5DC",
+        "elementos_destacados": ["guardias bostezando", "puerta masiva", "cartel de advertencia"],
+        "sonidos": ["metal chirriante", "órdenes ocasionales", "suspiros de guardias"]
+      }
+    },
+    {
+      "id": "camino_abismo",
+      "nombre": "Camino al Abismo",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "camino_conversacion",
+      "escenario": {
+        "descripcion": "Sendero que serpentea por un bosque cada vez más húmedo y extraño.",
+        "ambiente": "Inquietante, con vegetación húmeda y viscosa",
+        "color_fondo": "#2E8B57",
+        "color_texto": "#FFFAF0",
+        "elementos_destacados": ["árboles húmedos", "hongos brillantes", "rastros de baba"],
+        "sonidos": ["viento entre árboles", "goteo constante", "crujidos extraños"]
+      }
+    },
+    {
+      "id": "entrada_abismo",
+      "nombre": "Entrada del Abismo",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "entrada_abismo",
+      "escenario": {
+        "descripcion": "Una enorme caverna en la ladera de una montaña. El suelo brilla con una sustancia viscosa.",
+        "ambiente": "Ominoso, húmedo, con olores extraños",
+        "color_fondo": "#483D8B",
+        "color_texto": "#E6E6FA",
+        "elementos_destacados": ["boca de caverna", "baba brillante", "anciano en una roca"],
+        "sonidos": ["goteo cavernoso", "viento silbante", "burbujeos ocasionales"]
+      }
+    },
+    {
+      "id": "sala_entrada_abismo",
+      "nombre": "Sala de Entrada del Abismo",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "primera_sala",
+      "escenario": {
+        "descripcion": "Cámara amplia iluminada por hongos bioluminiscentes. El suelo está cubierto de baba brillante.",
+        "ambiente": "Inquietante pero hermoso, luz azul-verdosa",
+        "color_fondo": "#191970",
+        "color_texto": "#7FFFD4",
+        "elementos_destacados": ["hongos luminosos", "tres pasajes", "huellas de babosas"],
+        "sonidos": ["ecos distantes", "burbujeos", "susurros extraños"]
+      }
+    },
+    {
+      "id": "grutas_cristal",
+      "nombre": "Grutas de Cristal",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "encuentro_cristal",
+      "escenario": {
+        "descripcion": "Cámara deslumbrante con paredes cubiertas de cristales multicolores que crean patrones hipnóticos.",
+        "ambiente": "Mágico, tranquilo, con luces danzantes",
+        "color_fondo": "#4B0082",
+        "color_texto": "#F0FFFF",
+        "elementos_destacados": ["cristales brillantes", "pedestal central", "patrones luminosos"],
+        "sonidos": ["tintineo cristalino", "zumbido bajo", "resonancia armónica"]
+      }
+    },
+    {
+      "id": "corazon_abismo",
+      "nombre": "Corazón del Abismo",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "profundidades_abismo",
+      "escenario": {
+        "descripcion": "Pasajes que se vuelven orgánicos, casi pulsantes. Las paredes parecen tejido vivo.",
+        "ambiente": "Inquietante, orgánico, pulsante",
+        "color_fondo": "#8B0000",
+        "color_texto": "#FFB6C1",
+        "elementos_destacados": ["paredes pulsantes", "órganos extraños", "babosas simbióticas"],
+        "sonidos": ["latidos", "respiración pesada", "susurros distorsionados"]
+      }
+    },
+    {
+      "id": "sala_trono",
+      "nombre": "Sala del Trono del Rey Baboso",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "confrontacion_rey",
+      "escenario": {
+        "descripcion": "Cámara enorme con techo abovedado sostenido por pilares de cristal vivo. El suelo está cubierto de baba iridiscente.",
+        "ambiente": "Opresivo, húmedo, con luz pulsante",
+        "color_fondo": "#800080",
+        "color_texto": "#E6E6FA",
+        "elementos_destacados": ["Rey Baboso", "pilares de cristal", "plataforma elevada", "babosas guardianas"],
+        "sonidos": ["burbujeos viscosos", "respiración monstruosa", "ecos distorsionados"]
+      }
+    },
+    {
+      "id": "taberna_cerdo",
+      "nombre": "Taberna 'El Cerdo Desollado'",
+      "dialogo_tipo": "secundarios",
+      "dialogo_id": "escena_taberna",
+      "escenario": {
+        "descripcion": "Taberna oscura y maloliente con clientela cuestionable. Mesas sucias y barra pegajosa.",
+        "ambiente": "Humo, risas ebrias, olor a cerveza y sudor",
+        "color_fondo": "#8B4513",
+        "color_texto": "#FFE4B5",
+        "elementos_destacados": ["bebidas sospechosas", "trofeos extraños", "tabernero malhumorado"],
+        "sonidos": ["conversaciones ruidosas", "jarras golpeando", "risas estridentes"]
+      }
+    },
+    {
+      "id": "casa_empenos",
+      "nombre": "Casa de Empeños",
+      "dialogo_tipo": "secundarios",
+      "dialogo_id": "vender_relicario",
+      "escenario": {
+        "descripcion": "Edificio decrépito lleno de objetos usados y de dudoso origen. El tasador tiene mirada sospechosa.",
+        "ambiente": "Polvoriento, apretado, ligeramente siniestro",
+        "color_fondo": "#696969",
+        "color_texto": "#DCDCDC",
+        "elementos_destacados": ["objetos amontonados", "tasador astuto", "mostrador sucio"],
+        "sonidos": ["campanilla de puerta", "objetos moviéndose", "susurros calculadores"]
+      }
+    },
+    {
+      "id": "establos_ciudad",
+      "nombre": "Establos de la Ciudad",
+      "dialogo_tipo": "secundarios",
+      "dialogo_id": "trabajo_establos",
+      "escenario": {
+        "descripcion": "Establos con caballos de guerra mutantes. El olor es insoportable y los caballos parecen agresivos.",
+        "ambiente": "Hediondo, peligroso, con relinchos inquietantes",
+        "color_fondo": "#A0522D",
+        "color_texto": "#F5DEB3",
+        "elementos_destacados": ["caballos mutantes", "heno sospechoso", "dueño nervioso"],
+        "sonidos": ["relinchos furiosos", "coces contra madera", "resoplidos amenazadores"]
+      }
+    },
+    {
+      "id": "alquimista_ciudad",
+      "nombre": "Taller del Alquimista",
+      "dialogo_tipo": "secundarios",
+      "dialogo_id": "prueba_pociones",
+      "escenario": {
+        "descripcion": "Laboratorio caótico lleno de hierbas, frascos burbujeantes y humo de colores extraños.",
+        "ambiente": "Humeante, con olores químicos y explosiones ocasionales",
+        "color_fondo": "#006400",
+        "color_texto": "#7FFF00",
+        "elementos_destacados": ["calderos burbujeantes", "frascos etiquetados", "alquimista despistado"],
+        "sonidos": ["burbujeos", "explosiones menores", "murmullos de recetas"]
+      }
+    },
+    {
+      "id": "tienda_abismo",
+      "nombre": "Sucursal Subterránea",
+      "dialogo_tipo": "secundarios",
+      "dialogo_id": "tendero_abismo",
+      "escenario": {
+        "descripcion": "Increíblemente, la misma tienda que en la ciudad, pero dentro del Abismo. El tendero sigue igual de borracho.",
+        "ambiente": "Surreal, desorientador, idéntico a la tienda original",
+        "color_fondo": "#8B4513",
+        "color_texto": "#F5DEB3",
+        "elementos_destacados": ["mismo tendero", "mismas mercancías", "imposible ubicación"],
+        "sonidos": ["hipo del tendero", "los mismos sonidos de la tienda original"]
+      }
+    },
+    {
+      "id": "celebracion_heroica",
+      "nombre": "Celebración en la Plaza",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "final_celebracion",
+      "escenario": {
+        "descripcion": "La plaza principal decorada con guirnaldas y banners. Una multitud celebra tu hazaña.",
+        "ambiente": "Festivo, alegre, con música y celebración",
+        "color_fondo": "#DAA520",
+        "color_texto": "#000080",
+        "elementos_destacados": ["estatua nueva", "alcalde con medalla", "ciudadanos celebrando"],
+        "sonidos": ["vítores", "música festiva", "discursos pomposos"]
+      }
+    },
+    {
+      "id": "cabana_retiro",
+      "nombre": "Cabaña de Retiro",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "final_retiro",
+      "escenario": {
+        "descripcion": "Una pequeña cabaña acogedora a las afueras de Viscaria, con un huerto bien cuidado.",
+        "ambiente": "Pacífico, hogareño, tranquilo",
+        "color_fondo": "#228B22",
+        "color_texto": "#8B4513",
+        "elementos_destacados": ["huerto próspero", "cabaña acogedora", "Nerly feliz"],
+        "sonidos": ["pájaros cantando", "brisa suave", "sonidos de jardinería"]
+      }
+    },
+    {
+      "id": "camino_aventuras",
+      "nombre": "Camino a Nuevas Aventuras",
+      "dialogo_tipo": "historia",
+      "dialogo_id": "final_aventuras",
+      "escenario": {
+        "descripcion": "Una colina con vistas a Viscaria. A lo lejos, las montañas brumosas prometen nuevas aventuras.",
+        "ambiente": "Esperanzador, misterioso, lleno de posibilidades",
+        "color_fondo": "#4682B4",
+        "color_texto": "#FFD700",
+        "elementos_destacados": ["horizonte lejano", "mochila de viaje", "Nerly emocionada"],
+        "sonidos": ["viento inspirador", "pasos decididos", "conversación animada"]
+      }
+    }
+  ]
+}

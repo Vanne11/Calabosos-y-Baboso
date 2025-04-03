@@ -1,0 +1,171 @@
+{
+  "dialogos": [
+    {
+      "id": "intro_juego",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Bienvenido a Calabozos y Babosos, una aventura donde tu valentía, astucia y ganas de vivir serán puestas a prueba.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "En un reino no muy lejano, la ciudad de Babosópolis ha sido aterrorizada durante generaciones por criaturas viscosas que habitan en el Abismo de las Babosas.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Cada cien años, el Rey Baboso despierta de su letargo para alimentarse de las ganas de vivir de los habitantes, convirtiéndolos en babosas sin mente que sirven a sus propósitos.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y adivina qué... han pasado exactamente cien años desde su último despertar.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "Tú eres un aventurero que ha llegado a Babosópolis en el peor momento posible. ¿Tendrás lo necesario para enfrentarte al Rey Baboso y salvar la ciudad? ¿O te convertirás en otra babosa sin voluntad en su ejército viscoso?"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Comenzar aventura",
+          "siguiente_ruta": "plaza_principal"
+        },
+        {
+          "texto": "Ver instrucciones",
+          "siguiente_dialogo": "instrucciones"
+        }
+      ]
+    },
+    {
+      "id": "instrucciones",
+      "secuencia": [
+        {
+          "personaje": "SISTEMA",
+          "texto": "INSTRUCCIONES DE JUEGO:",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "1. Navega por el mundo seleccionando opciones o escribiendo comandos.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "2. Mantén tus estadísticas bajo control:",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "   - Ganas de vivir: Si llega a 0, te conviertes en babosa.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "   - Hambre intensa: Aumenta con el tiempo, afecta tus Ganas de vivir.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "   - Pipí acumulado: Aumenta al beber, necesitarás encontrar baños.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "   - Miedo: Afecta tus tiradas de dados en situaciones peligrosas.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "   - Reputación: Determina cómo te tratan los habitantes.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "3. En situaciones de combate o desafío, se realizarán tiradas de dados automáticas basadas en tus estadísticas.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "4. Recoge objetos útiles para enfrentarte al Rey Baboso.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "5. Explora la ciudad para descubrir secretos y misiones secundarias."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Comenzar aventura",
+          "siguiente_ruta": "plaza_principal"
+        },
+        {
+          "texto": "Ver controles",
+          "siguiente_dialogo": "controles"
+        }
+      ]
+    },
+    {
+      "id": "controles",
+      "secuencia": [
+        {
+          "personaje": "SISTEMA",
+          "texto": "CONTROLES:",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "- Usa el ratón para seleccionar opciones de diálogo.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "- También puedes usar las teclas de flecha ARRIBA/ABAJO para navegar entre opciones y ENTER para seleccionar.",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "- Escribe comandos en el prompt cuando esté disponible. Comandos básicos:",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "  * inventario - Muestra los objetos que llevas",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "  * stats - Muestra tus estadísticas actuales",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "  * usar [objeto] - Utiliza un objeto de tu inventario",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "  * examinar - Observa con más detalle tu entorno",
+          "pausa": true
+        },
+        {
+          "personaje": "SISTEMA",
+          "texto": "  * ayuda - Muestra esta lista de comandos"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Comenzar aventura",
+          "siguiente_ruta": "plaza_principal"
+        },
+        {
+          "texto": "Volver a instrucciones",
+          "siguiente_dialogo": "instrucciones"
+        }
+      ]
+    }
+  ]
+}

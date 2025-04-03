@@ -1,0 +1,687 @@
+{
+  "dialogos": [
+    {
+      "id": "intro_narrador",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Desde tiempos inmemoriales, el Reino de Viscaria ha vivido aterrorizado por las criaturas que habitan el Abismo de las Babosas, una mazmorra tan profunda y retorcida como... eh, ¿estás prestando atención?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Por fin! Pensé que tendría que recitar toda la introducción yo solo. Necesitamos a alguien que protagonice esta historia y parece que ese alguien eres tú.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Vamos, vamos, elige un género y un nombre. Como si importara... igual te llamaré BOB.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Mmm... no es lo que hubiera elegido, pero supongo que servirás. ¡Bienvenido/a a Viscaria, BOB! ¿Qué? ¿No te gusta ese nombre? Pues qué pena. Yo soy tu Narrador/a y estaré aquí para... 'guiarte'."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Continuar",
+          "siguiente_ruta": "plaza_principal"
+        }
+      ]
+    },
+    {
+      "id": "plaza_principal",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Estás en Viscaria, obviamente. ¿La introducción no fue suficientemente clara? Y soy el Narrador/a, tu guía en esta aventura y, técnicamente, tu jefe. En cuanto a lo de BOB... me pareció simpático.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "No entiendo nada. ¿Qué se supone que debo hacer?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿De verdad tengo que explicártelo todo? Bien, versión resumida: eres el/la 'héroe/heroína/heroine' elegido/a para adentrarte en el Abismo de las Babosas y derrotar al Rey Baboso. Ya sabes, la típica aventura de calabozos, monstruos viscosos y muerte probable.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Y si me niego?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Qué adorable! Piensas que tienes elección. Mira, tengo un horario que cumplir y seis episodios más que narrar después de ti. Así que, ¿por las buenas o por las malas?"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Está bien, acepto la misión. ¿Cuál es el plan?",
+          "siguiente_ruta": "decision_inicial"
+        },
+        {
+          "texto": "Ni hablar, buscaré una taberna y me emborracharé.",
+          "siguiente_ruta": "taberna"
+        },
+        {
+          "texto": "¿Qué gano yo con todo esto?",
+          "siguiente_ruta": "negociacion"
+        }
+      ]
+    },
+    {
+      "id": "decision_inicial",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Está bien, acepto la misión. ¿Cuál es el plan?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Vaya, eso fue fácil. El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como héroe/heroína, bla, bla, bla. ¿Ves esa tienda de allí? La que tiene el letrero que dice 'ARTÍCULOS PARA AVENTUREROS SUICIDAS'. Sí, esa.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Espera, ¿con qué se supone que voy a comprar equipo? No tengo dinero.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Siempre hay algo, ¿verdad? Bien, supongo que tendrás que conseguir algo de dinero primero. Qué incómodo. Esto no estaba en el guión."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Buscaré algún trabajo rápido en la ciudad.",
+          "siguiente_ruta": "trabajar_establos"
+        },
+        {
+          "texto": "¿Hay algo de valor que pueda vender?",
+          "siguiente_ruta": "vender_relicario"
+        },
+        {
+          "texto": "Quizás podría... tomar prestado algo de dinero sin permiso.",
+          "siguiente_ruta": "robar_noble"
+        }
+      ]
+    },
+    {
+      "id": "trabajar_establos",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Buscaré algún trabajo rápido en la ciudad.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Qué iniciativa! Nada dice 'héroe legendario' como un trabajo temporal mal pagado.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El protagonista ve un tablón de anuncios en la plaza.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Veamos qué trabajos hay disponibles...",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Oh, las opciones son fascinantes: limpiador de establos, probador de pociones experimentales, o ayudante del verdugo. Elige sabiamente, aunque todas son igual de terribles."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Limpiaré establos. Suena lo menos peligroso.",
+          "siguiente_ruta": "limpieza_establos"
+        },
+        {
+          "texto": "Probaré pociones. Al menos será interesante.",
+          "siguiente_ruta": "prueba_pociones"
+        },
+        {
+          "texto": "Ayudaré al verdugo. Debe pagar bien.",
+          "siguiente_ruta": "ayudante_verdugo"
+        }
+      ]
+    },
+    {
+      "id": "vender_relicario",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Hay algo de valor que pueda vender?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Veamos... tienes tu ropa, tu dignidad, y... (revisando) ah, parece que tienes un relicario familiar en tu inventario. Qué conveniente que no lo mencionara antes.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Un relicario familiar? ¿De dónde salió?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Detalles, detalles. Es parte de tu trasfondo que acabo de inventar. Perteneció a tu abuela, quien derrotó a un dragón usando solo una cuchara de madera. O podrías vender tus zapatos, supongo."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Venderé el relicario, supongo.",
+          "siguiente_ruta": "casa_empenos"
+        },
+        {
+          "texto": "Mis zapatos no, los necesitaré para la aventura.",
+          "siguiente_ruta": "plaza_principal"
+        },
+        {
+          "texto": "¿No hay otra cosa que pueda vender?",
+          "siguiente_ruta": "otra_opcion_venta"
+        }
+      ]
+    },
+    {
+      "id": "robar_noble",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Quizás podría... tomar prestado algo de dinero sin permiso.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Qué escandaloso! El/la héroe/heroína elegido/a recurriendo al hurto. Me encanta este giro argumental.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Solo lo tomaré prestado. Lo devolveré... algún día.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Claro, claro. Hay un noble gordo y pomposo pavoneándose por el mercado. Sus bolsillos parecen llenos y su atención... en otra parte."
+        }
+      ],
+      "opciones": []
+    },
+    {
+      "id": "tienda_tendero",
+      "secuencia": [
+        {
+          "personaje": "TENDERO",
+          "texto": "¡Bienvenido/a a mi humilde es... estab... tienda! ¿Qué puedo ofrecerte para tu in-inevitable... es decir, emocionante aventura? *hic*",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Parece que nuestro amigo ha estado probando su propio inventario de pociones. Aprovecha para regatear.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Necesito equipo para adentrarme en el Abismo de las Babosas.",
+          "pausa": true
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "¿El Abismo? *hic* ¡Ja! Nadie vuelve de ahí con... con vida. ¡Excepto yo! Fui tres... no, siete veces. O quizás fue un sueño. *hic* De todas formas, tengo justo lo que necesitas.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Tendero coloca sobre el mostrador una espada oxidada, un zurrón hecho de un material sospechoso, y un pequeño saco de sal.",
+          "pausa": true
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "La mejor espada de todo Viscaria, un zurrón de escr... escro... piel de elefante muy espacioso, y sal. La sal es importante. Muy cara. Mata babosas.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Cuánto por todo?",
+          "pausa": true
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "Mmm... para ti... *hic* Normalmente serían 500 monedas de oro pero... *mira confundido una botella vacía* ¿Cuánto tienes?"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Tengo X monedas (Verdad - mostrar la cantidad real que tiene el jugador)",
+          "siguiente_ruta": "regateo_tendero"
+        },
+        {
+          "texto": "Tengo la mitad de lo que realmente tengo (Mentira para regatear)",
+          "siguiente_ruta": "regateo_tendero"
+        },
+        {
+          "texto": "¿Aceptas trueque? Tengo este... objeto (Ofrecer un objeto del inventario)",
+          "siguiente_ruta": "regateo_tendero"
+        }
+      ]
+    },
+    {
+      "id": "callejon_lateral",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "No tan rápido, BOB. Según el guión, ahora debes tomar un callejón inquietante y potencialmente peligroso porque... bueno, porque lo digo yo.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El callejón es oscuro y húmedo.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Por qué tengo que venir por aquí?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Desarrollo de personaje, atmósfera, tensión narrativa... escoge la excusa que más te guste.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Un sonido viscoso se escucha desde las sombras.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Qué fue eso?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Oh, debe ser una rata. O tal vez un asesino. O quizás... bueno, ¿por qué no vas a investigar?"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Investigar el sonido",
+          "siguiente_ruta": "encuentro_nerly"
+        },
+        {
+          "texto": "Ignorarlo y seguir adelante",
+          "siguiente_ruta": "otro_encuentro"
+        },
+        {
+          "texto": "Volver a la calle principal",
+          "siguiente_ruta": "plaza_principal"
+        }
+      ]
+    },
+    {
+      "id": "encuentro_nerly",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Al acercarse, el protagonista ve una pequeña babosa de color azul brillante.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Hola! ¿Eres el/la nuevo/a héroe/heroína/heroine?",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Una babosa que habla?",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Disculpa, pero el término 'babosa' es un poco despectivo. Prefiero 'entidad gastropódica semitranslúcida'. Pero puedes llamarme Nerly.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Genial, una babosa políticamente correcta. La historia se pone cada vez mejor.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "He oído que vas al Abismo. Puedo ayudarte. Conozco todos los caminos y las debilidades de los monstruos de allí. Sería tu guía."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿Por qué debería confiar en una babosa?",
+          "siguiente_ruta": "explicacion_nerly"
+        },
+        {
+          "texto": "Gracias, me vendría bien la ayuda.",
+          "siguiente_ruta": "nerly_se_une"
+        },
+        {
+          "texto": "¿Qué ganas tú con esto?",
+          "siguiente_ruta": "motivacion_nerly"
+        }
+      ]
+    },
+    {
+      "id": "nerly_se_une",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Gracias, me vendría bien la ayuda.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Excelente! Sabía que eras diferente. La mayoría solo intenta pisarme o echarme sal. A propósito, ¿no llevas sal contigo, verdad?",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Bueno, en realidad...",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Mantenla lejos de mí! Es mortal para mi especie. Pero no te preocupes, mientras la mantengas guardada, estaremos bien. Ahora, vamos hacia la puerta de la ciudad. Hay un guardia que debes convencer."
+        }
+      ],
+      "opciones": []
+    },
+    {
+      "id": "camino_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "El camino hacia el Abismo serpentea a través de un bosque cuyas hojas parecen demasiado húmedas para estar simplemente mojadas por la lluvia. El suelo se vuelve más blando y viscoso a medida que te acercas.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "No falta mucho. Cuando el suelo comience a brillar ligeramente en la oscuridad, sabrás que estamos cerca.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Por qué brilla?",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Rastros de baba. Algunos de los míos tienen... fugas. Y otros dejan rastros a propósito para marcar territorio.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Genial, estás siguiendo un sendero de moco fosforescente. Tu vida ha alcanzado un nuevo punto bajo, BOB."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Preguntar a Nerly sobre el Rey Baboso",
+          "siguiente_ruta": "informacion_rey"
+        },
+        {
+          "texto": "Preguntar sobre las diferentes babosas",
+          "siguiente_ruta": "taxonomia_babosa"
+        },
+        {
+          "texto": "Seguir avanzando en silencio",
+          "siguiente_ruta": "llegada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "llegada_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Una enorme caverna se abre en la ladera de una montaña. El suelo alrededor está cubierto de una sustancia brillante y viscosa. El aire huele a humedad y a algo dulce pero pútrido.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Hemos llegado. Esta es la entrada principal al Abismo.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Tachán! Contempla la glamorosa entrada al Abismo de las Babosas. Nótese el exquisito olor a descomposición y el encantador brillo de fluidos corporales de babosa.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Es... imponente.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Es un agujero en una montaña, BOB. No te emociones demasiado.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "A un lado de la entrada, hay un anciano sentado sobre una roca plana, fumando una pipa.",
+          "pausa": true
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "*cof cof* Así que otro aspirante a héroe, ¿eh? Déjame adivinar... ¿El Narrador te trajo?",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Puedes ver al Narrador?",
+          "pausa": true
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "Después de cinco intentos fallidos de aventura y tres muertes casi seguras, uno comienza a notar patrones. El Narrador es solo uno de los muchos seres que existen entre planos.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Ignora al viejo loco. Probablemente haya lamido demasiadas babosas alucinógenas.",
+          "pausa": true
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "El secreto está en no pisar lo verde... o lo morado... o lo transparente. En realidad, mejor no pises nada."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿Algún consejo útil para sobrevivir ahí dentro?",
+          "siguiente_ruta": "consejos_anciano"
+        },
+        {
+          "texto": "¿Por qué hay una camiseta que dice 'Sobreviví al Abismo'?",
+          "siguiente_ruta": "historia_anciano"
+        },
+        {
+          "texto": "Es hora de entrar",
+          "siguiente_ruta": "entrada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "entrada_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Entra de una vez. Tengo un horario que cumplir y después de ti tengo que narrar una historia sobre un conejo parlante con problemas existenciales.",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Cómo debería entrar?",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Hay varias formas. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, podríamos buscar un túnel lateral. Yo conozco varios pasajes secretos."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Voy a entrar sigilosamente.",
+          "siguiente_ruta": "entrada_sigilosa"
+        },
+        {
+          "texto": "¡A la carga!",
+          "siguiente_ruta": "encuentro_inmediato"
+        },
+        {
+          "texto": "Primero lanzaré algo para ver si es seguro.",
+          "siguiente_ruta": "prueba_terreno"
+        }
+      ]
+    },
+    {
+      "id": "vision_mistica",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Voy a tocarla. Si hay alguna posibilidad de obtener información útil, vale la pena el riesgo.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Ten cuidado. Las visiones pueden ser... intensas.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿Últimas palabras antes de potencialmente explotar en mil pedazos viscosos?",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El protagonista extiende la mano y toca suavemente la Lágrima de Cristal. Inmediatamente, una luz brillante inunda la cámara."
+        }
+      ],
+      "opciones": []
+    },
+    {
+      "id": "corazon_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Tras tu experiencia con la Lágrima de Cristal, sigues avanzando más profundamente en el Abismo. Los pasajes se vuelven más orgánicos, como si estuvieras dentro de un ser vivo gigante. La baba en las paredes pulsa con un ritmo similar a un latido.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Estamos entrando en el Corazón del Abismo. Pocos llegan tan lejos.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y aún menos regresan. Pero eso ya lo sabías, ¿verdad?",
+          "pausa": true
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Qué tan cerca estamos del Rey?",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Muy cerca. Su sala del trono debería estar pasando esa gran puerta de cristal al final del corredor.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Delante se ve una enorme puerta hecha de lo que parece cristal vivo, pulsando con luz interna. Dos enormes Babosas Guardianas flanquean la entrada.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Esas son las babosas más grandes que has visto hasta ahora. Cada una es del tamaño de un buey, con protuberancias que parecen armadura natural.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Babosas Guardianas. Extremadamente resistentes y completamente leales al Rey. No podremos pasar sin enfrentarlas o encontrar otra manera."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Enfrentarlas directamente",
+          "siguiente_ruta": "combate_guardianas"
+        },
+        {
+          "texto": "Buscar un pasaje alternativo",
+          "siguiente_ruta": "pasaje_secreto"
+        },
+        {
+          "texto": "Intentar distraerlas",
+          "siguiente_ruta": "plan_distraccion"
+        }
+      ]
+    },
+    {
+      "id": "pasaje_secreto",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Debe haber otra forma de entrar. No creo que podamos vencer a esas Guardianas en combate directo.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Tienes razón. Las Babosas Guardianas son casi invulnerables frontalmente. Hmm... Conozco las costumbres del Abismo. Debe haber un conducto de ventilación o algo similar.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿Ventilación? ¿En un abismo subterráneo? ¿En serio?",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Incluso las babosas necesitan aire fresco, ¿sabes? Especialmente cuando hay miles hacinadas en un espacio cerrado.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Nerly te guía a lo largo de la pared, buscando cuidadosamente.",
+          "pausa": true
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Aquí! Esta grieta... si la miras con atención, verás que no es natural. Fue creada deliberadamente.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Efectivamente, hay una estrecha grieta casi invisible en la pared, apenas lo suficientemente ancha para que pases arrastrándote.",
+          "pausa": true
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Genial. Más arrastre por túneles estrechos. Porque eso salió tan bien la última vez."
+        }
+      ],
+      "opciones": []
+    }
+  ]
+}

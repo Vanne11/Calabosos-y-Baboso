@@ -1,0 +1,998 @@
+{
+  "dialogos": [
+    {
+      "id": "camino_conversacion",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "El camino hacia el Abismo serpentea a través de un bosque cuyas hojas parecen demasiado húmedas para estar simplemente mojadas por la lluvia. El suelo se vuelve más blando y viscoso a medida que te acercas."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "No falta mucho. Cuando el suelo comience a brillar ligeramente en la oscuridad, sabrás que estamos cerca."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Por qué brilla?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Rastros de baba. Algunos de los míos tienen... fugas. Y otros dejan rastros a propósito para marcar territorio."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Genial, estás siguiendo un sendero de moco fosforescente. Tu vida ha alcanzado un nuevo punto bajo, BOB."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Preguntar a Nerly sobre el Rey Baboso",
+          "siguiente_dialogo": "informacion_rey"
+        },
+        {
+          "texto": "Preguntar sobre las diferentes babosas",
+          "siguiente_dialogo": "taxonomia_babosa"
+        },
+        {
+          "texto": "Seguir avanzando en silencio",
+          "siguiente_ruta": "entrada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "informacion_rey",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Cuéntame sobre el Rey Baboso. ¿Qué tan peligroso es?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "El Rey... (su voz baja a un susurro) Es enorme, al menos diez veces más grande que cualquier babosa que hayas visto. No siempre fue así. Según nuestras leyendas, era una babosa normal que descubrió una sustancia extraña en lo más profundo del Abismo."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Suena como una excusa típica. 'Oh, no es mi culpa ser un villano, encontré una sustancia extraña'."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "La sustancia lo transformó, le dio inteligencia y un hambre insaciable. Comenzó a absorber a otras babosas, creciendo con cada una. Las que no absorbía se volvían sus sirvientes. Su baba puede disolver metal en segundos."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Suena encantador. Definitivamente el tipo de criatura con la que querrías tomar un café."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Muchos héroes han intentado derrotarlo. Ninguno ha regresado."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Excepto tú, aparentemente. Qué coincidencia."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿Cómo es que conoces el Abismo tan bien?",
+          "siguiente_dialogo": "historia_nerly"
+        },
+        {
+          "texto": "¿Tiene alguna debilidad?",
+          "siguiente_dialogo": "debilidades_rey"
+        },
+        {
+          "texto": "Sigamos adelante",
+          "siguiente_ruta": "entrada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "taxonomia_babosa",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Qué tipos de babosas vamos a encontrar ahí dentro?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Oh, muchas especies. Están las Babosas Ácidas, que segregan un líquido corrosivo. Las Babosas Saltarinas, que pueden lanzarse sobre ti desde el techo. Las Babosas Gemelas, que si cortas una por la mitad, se convierten en dos."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Porque por supuesto que lo hacen."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Las Babosas Fantasma, que son semi-transparentes y pueden atravesar paredes. Las Babosas Explosivas, que... bueno, explotan cuando se sienten amenazadas."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Y tú qué tipo eres?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Yo soy... especial. Una mutación rara. Por eso puedo hablar y tengo este hermoso tono azulado. Somos muy pocos."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Obviamente. No hay muchas babosas que pasen el casting para roles protagónicos."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿Algún consejo para enfrentarlas?",
+          "siguiente_dialogo": "consejos_combate"
+        },
+        {
+          "texto": "¿Por qué me ayudas contra tu propia especie?",
+          "siguiente_dialogo": "motivacion_nerly_profunda"
+        },
+        {
+          "texto": "Continuemos, ya casi llegamos",
+          "siguiente_ruta": "entrada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "entrada_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Una enorme caverna se abre en la ladera de una montaña. El suelo alrededor está cubierto de una sustancia brillante y viscosa. El aire huele a humedad y a algo dulce pero pútrido."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Hemos llegado. Esta es la entrada principal al Abismo."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¡Tachán! Contempla la glamorosa entrada al Abismo de las Babosas. Nótese el exquisito olor a descomposición y el encantador brillo de fluidos corporales de babosa."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Es... imponente."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Es un agujero en una montaña, BOB. No te emociones demasiado."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "A un lado de la entrada, hay un anciano sentado sobre una roca plana, fumando una pipa."
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "*cof cof* Así que otro aspirante a héroe, ¿eh? Déjame adivinar... ¿El Narrador te trajo?"
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Puedes ver al Narrador?"
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "Después de cinco intentos fallidos de aventura y tres muertes casi seguras, uno comienza a notar patrones. El Narrador es solo uno de los muchos seres que existen entre planos."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Ignora al viejo loco. Probablemente haya lamido demasiadas babosas alucinógenas."
+        },
+        {
+          "personaje": "ANCIANO",
+          "texto": "El secreto está en no pisar lo verde... o lo morado... o lo transparente. En realidad, mejor no pises nada."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿Algún consejo útil para sobrevivir ahí dentro?",
+          "siguiente_dialogo": "consejos_anciano"
+        },
+        {
+          "texto": "¿Por qué hay una camiseta que dice 'Sobreviví al Abismo'?",
+          "siguiente_dialogo": "historia_anciano"
+        },
+        {
+          "texto": "Es hora de entrar",
+          "siguiente_dialogo": "entrada_al_abismo"
+        }
+      ]
+    },
+    {
+      "id": "entrada_al_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Entra de una vez. Tengo un horario que cumplir y después de ti tengo que narrar una historia sobre un conejo parlante con problemas existenciales."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Cómo debería entrar?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Hay varias formas. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, podríamos buscar un túnel lateral. Yo conozco varios pasajes secretos."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Voy a entrar sigilosamente.",
+          "siguiente_dialogo": "entrada_sigilosa"
+        },
+        {
+          "texto": "¡A la carga!",
+          "siguiente_dialogo": "encuentro_inmediato"
+        },
+        {
+          "texto": "Primero lanzaré algo para ver si es seguro.",
+          "siguiente_dialogo": "prueba_terreno"
+        }
+      ]
+    },
+    {
+      "id": "entrada_sigilosa",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Voy a entrar sigilosamente. Muéstrame uno de esos pasajes secretos, Nerly."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Excelente elección. Sígueme."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Nerly te guía hacia un pequeño agujero disimulado entre rocas, a unos veinte metros de la entrada principal."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Este túnel fue creado por Babosas Mineras. Son inofensivas, solo les gusta excavar."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El túnel es estrecho, húmedo y apesta. Básicamente, como entrar en las fosas nasales de un gigante con sinusitis."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Es... acogedor."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Es asqueroso, pero al menos no hay babosas hostiles a la vista. Aún."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El túnel se estrecha tanto que debes arrastrarte."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Cuidado con la cabeza. Y no toques las paredes. Algunas tienen esporas que pueden causarte alucinaciones."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿No es maravilloso? Ni siquiera necesitas lamer las babosas para drogarte aquí."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Intentar avanzar con cuidado",
+          "siguiente_tirada": "tirada_tunel"
+        }
+      ]
+    },
+    {
+      "id": "primera_sala",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "El túnel desemboca en una cámara amplia iluminada por hongos bioluminiscentes que crecen en las paredes. El suelo está cubierto de una fina capa de baba brillante."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Esta es la Sala de Entrada. Es relativamente segura, pero no te confíes. A veces hay patrullas de Babosas Centinela."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Curioso. Siempre me he preguntado cómo patrullan las babosas. ¿Se arrastran muy enérgicamente?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Las Centinelas son rápidas y tienen una visión excelente. Si nos ven, alertarán a las demás."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Hacia dónde deberíamos ir ahora?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Hay tres caminos. El pasaje de la izquierda lleva a las Cavernas de Cría, donde nacen las babosas. El central lleva más profundo en el Abismo, hacia el territorio del Rey. Y el de la derecha lleva a las Grutas de Cristal, donde algunas babosas almacenan tesoros."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Vamos por el pasaje izquierdo",
+          "siguiente_ruta": "cavernas_cria"
+        },
+        {
+          "texto": "Tomemos el camino central",
+          "siguiente_ruta": "corazon_abismo"
+        },
+        {
+          "texto": "El pasaje derecho suena interesante",
+          "siguiente_ruta": "grutas_cristal"
+        }
+      ]
+    },
+    {
+      "id": "encuentro_babosa",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Mientras consideras qué camino tomar, escuchas un sonido viscoso detrás de ti. Al voltear, ves una babosa rojiza del tamaño de un perro grande arrastrándose hacia ti."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Cuidado! Es una Babosa Ácida. Su secreción puede derretir metal."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Probablemente debería haber mencionado que el sigilo no es precisamente el punto fuerte de BOB."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Enfrentar a la babosa",
+          "siguiente_tirada": "tirada_combate_babosa"
+        },
+        {
+          "texto": "Intentar huir",
+          "siguiente_tirada": "tirada_huida_babosa"
+        },
+        {
+          "texto": "Preguntar a Nerly qué hacer",
+          "siguiente_dialogo": "consejo_nerly_combate"
+        }
+      ]
+    },
+    {
+      "id": "encuentro_cristal",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Siguiendo el camino, llegas a una cámara amplia cuyas paredes están cubiertas de cristales multicolores. La luz que emiten crea patrones hipnóticos en el suelo. Es sorprendentemente hermoso."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Las Grutas de Cristal. Este es uno de los pocos lugares hermosos del Abismo. Aquí es donde algunas babosas vienen a meditar."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Las babosas meditan?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Algunas especies sí. Especialmente las Babosas Iluminadas, que pueden vivir siglos y alcanzar un estado elevado de consciencia."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Babosas filosóficas. ¿Qué será lo próximo? ¿Ratas con doctorados?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "En el centro de la cámara hay un pedestal de cristal con algo que brilla intensamente."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Eso es... no puede ser. Es una Lágrima de Cristal. Se dice que están formadas por los pensamientos de la primera babosa que existió."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Suena como un artefacto legendario convenientemente colocado para que el héroe lo encuentre."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Si la tocas, podrías recibir una visión del pasado o del futuro. O podrías explotar. Las leyendas no son muy claras al respecto."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Tocar la Lágrima de Cristal",
+          "siguiente_dialogo": "vision_mistica"
+        },
+        {
+          "texto": "Dejar la Lágrima donde está",
+          "siguiente_dialogo": "rechazar_vision"
+        },
+        {
+          "texto": "Preguntarle a Nerly más sobre este lugar",
+          "siguiente_dialogo": "mas_info_grutas"
+        }
+      ]
+    },
+    {
+      "id": "vision_mistica",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Voy a tocarla. Si hay alguna posibilidad de obtener información útil, vale la pena el riesgo."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Ten cuidado. Las visiones pueden ser... intensas."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿Últimas palabras antes de potencialmente explotar en mil pedazos viscosos?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El protagonista extiende la mano y toca suavemente la Lágrima de Cristal. Inmediatamente, una luz brillante inunda la cámara."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Dejarme llevar por la visión",
+          "siguiente_tirada": "tirada_vision"
+        }
+      ]
+    },
+    {
+      "id": "profundidades_abismo",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "A medida que avanzas más profundamente en el Abismo, las paredes se vuelven más orgánicas, casi pulsantes. La baba en el suelo es más densa y hay extrañas formaciones que parecen órganos."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Estamos entrando en el Sistema Digestivo del Abismo. Así lo llamamos porque... bueno, muchos no salen."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Maravilloso. Estás literalmente caminando por las entrañas de una mazmorra. Tu carrera como aventurero/a alcanza nuevas cotas de glamour."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Este lugar es... perturbador."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Debemos tener cuidado. Aquí habitan las Babosas Simbióticas, que se fusionan con las paredes. A veces es difícil distinguir dónde termina la pared y dónde empieza la babosa."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Como si necesitaras más pesadillas."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Un sonido de burbujeo proviene de algún lugar adelante. Las luces bioluminiscentes parpadean, como si respondieran a una presencia."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Algo se acerca. Algo grande. Prepárate."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Escondernos",
+          "siguiente_dialogo": "intento_sigilo"
+        },
+        {
+          "texto": "Prepararnos para luchar",
+          "siguiente_dialogo": "enfrentamiento"
+        },
+        {
+          "texto": "Intentar comunicarnos con lo que sea que viene",
+          "siguiente_dialogo": "intento_comunicacion"
+        }
+      ]
+    },
+    {
+      "id": "confrontacion_rey",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Finalmente, llegas a la sala del trono del Rey Baboso. La cámara es enorme, con techo abovedado sostenido por pilares de cristal vivo. El suelo está cubierto de una gruesa capa de baba iridiscente, y en el centro, sobre una plataforma elevada, descansa una masa colosal y pulsante: el Rey Baboso."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Rey Baboso es... bueno, 'baboso' sería quedarse corto. Es una montaña de carne gelatinosa, al menos del tamaño de una casa pequeña. Su cuerpo translúcido revela órganos internos y objetos parcialmente digeridos, incluyendo lo que parecen ser armas y armaduras de aventureros menos afortunados."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "Puedo olerte, pequeño ser de carne. Tus pasos han perturbado mi dominio desde que entraste."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Así que puedes hablar."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "Puedo hacer muchas cosas que tus limitados sentidos no pueden comprender. He absorbido el conocimiento de cientos como tú."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "En su frente, justo como viste en la visión, hay un cristal brillante incrustado en su masa gelatinosa."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Ese es su punto débil. Si podemos alcanzarlo..."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "Y has traído a una traidora contigo. Una de mis propias creaciones, vuelta contra mí. Qué... decepcionante."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡No soy tu creación! Las Babosas Conscientes existíamos antes de que te convirtieras en este... monstruo."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "Tan ingenua. Todo en este Abismo es parte de mí. Incluida tú, pequeña rebelde."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Atacar directamente al cristal en su frente",
+          "siguiente_dialogo": "ataque_directo"
+        },
+        {
+          "texto": "Distraerlo mientras preparas un ataque más elaborado",
+          "siguiente_dialogo": "estrategia_distraccion"
+        },
+        {
+          "texto": "Intentar negociar",
+          "siguiente_dialogo": "negociacion_improbable"
+        }
+      ]
+    },
+    {
+      "id": "batalla_final",
+      "secuencia": [
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Se acabó el juego, Rey Baboso. He venido a detenerte."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "¿Detenerme? Ni siquiera puedes comprender lo que soy, lo que represento. Soy la evolución misma."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Rey comienza a pulsare, y de su masa emergen varios tentáculos babosos."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Cuidado! Puede atacar desde múltiples direcciones a la vez."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "Veamos qué te ha enseñado tu pequeña guía. Espero que sea más entretenido que el último 'héroe'."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¡A la batalla!",
+          "siguiente_tirada": "tirada_batalla_final"
+        }
+      ]
+    },
+    {
+      "id": "desenlace",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "El cristal en la frente del Rey Baboso se agrieta completamente tras tu ataque, emitiendo un resplandor cegador que llena toda la cámara."
+        },
+        {
+          "personaje": "REY BABOSO",
+          "texto": "¡NOOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El cuerpo del Rey comienza a desestabilizarse. Su masa gelatinosa se agita violentamente, perdiendo cohesión."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Está colapsando! ¡Tenemos que salir de aquí AHORA!"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El techo de la cámara comienza a derrumbarse mientras todo el Abismo tiembla."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Con el Rey derrotado, todo el Abismo parece estar reaccionando. Es como si la estructura misma estuviera conectada a su existencia."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Por aquí! Conozco una salida de emergencia."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Nerly te guía a través de un pasaje oculto mientras todo se derrumba a tu alrededor."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Qué pasará con las otras babosas?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Las que no estaban completamente bajo su control sobrevivirán. El Abismo existía antes que él, y seguirá existiendo. Solo que ahora, sin su tiranía."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Emerges del Abismo justo cuando la entrada principal colapsa detrás de ti en una nube de polvo y escombros. El suelo deja de temblar gradualmente."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Lo... lo logramos. Realmente lo derrotaste."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Así termina la gran aventura de BOB, el/la improbable héroe/heroína que, contra todo pronóstico, derrotó al Rey Baboso y salvó a Viscaria."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Regresar a la ciudad como héroe/heroína",
+          "siguiente_ruta": "celebracion_heroica"
+        },
+        {
+          "texto": "Continuar aventurándote con Nerly",
+          "siguiente_ruta": "camino_aventuras"
+        },
+        {
+          "texto": "Retirarte a una vida tranquila",
+          "siguiente_ruta": "cabana_retiro"
+        }
+      ]
+    },
+    {
+      "id": "final_aventuras",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Semanas después de la derrota del Rey Baboso, te encuentras en una colina con vistas a Viscaria. A tu lado, Nerly contempla el horizonte."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "La ciudad está a salvo ahora. Tu misión está cumplida."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Mi misión? Creo que fue más bien tuya. Buscabas liberar a tu gente."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Cierto, pero no podría haberlo hecho sin ti. Ahora las Babosas Conscientes están formando su propia sociedad en lo que queda del Abismo. Una sociedad pacífica."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Un imperio de baba democrático. ¿Quién lo hubiera imaginado?"
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Y qué hay de ti? ¿No deberías estar con ellos?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Podría, pero... he visto el mundo exterior ahora. He probado la aventura. Y sinceramente, me gusta estar contigo, BOB."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Oh, qué conmovedor. La babosa y el humano, unidos por la amistad y el exceso de moco."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Además, he oído rumores sobre otros reinos con sus propios problemas. Aparentemente, hay un Duque Hongo en las tierras del norte que está convirtiendo a sus súbditos en esporas andantes."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Estás sugiriendo que deberíamos ir a investigar?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¿Por qué no? Hacemos un buen equipo. Y ahora tienes una reputación que mantener."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Parece que mi contrato como narrador acaba de extenderse indefinidamente. Genial."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Miras hacia el horizonte, hacia las montañas brumosas del norte, y sientes una familiar chispa de emoción."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Sabes qué? Tienes razón. ¿Por qué detenernos ahora?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y así, nuestro dúo improbable de héroe/heroína y babosa parlante pone rumbo a nuevas aventuras, probablemente igual de ridículas y peligrosas que la última. Si sobreviven o no, bueno... esa es otra historia."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "CONTINUARÁ...",
+          "siguiente_dialogo": "fin_juego"
+        }
+      ]
+    },
+    {
+      "id": "final_retiro",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Meses después de la derrota del Rey Baboso, en una pequeña cabaña a las afueras de Viscaria..."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Contrario a lo que todos esperaban, nuestro/a héroe/heroína decidió que una aventura de casi muerte era suficiente para toda una vida. Con la recompensa obtenida por derrotar al Rey Baboso, compró una pequeña parcela de tierra y construyó una cabaña lejos del bullicio de la ciudad."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Te encontramos cultivando un pequeño huerto mientras Nerly se desliza alegremente entre las plantas, ayudando a mantenerlas libres de plagas."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "Nunca pensé que la vida tranquila pudiera ser tan satisfactoria. Sin babosas asesinas, sin reyes tiránicos, sin aventuras mortales..."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Te aburres?"
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¡Para nada! Es... refrescante. Además, las zanahorias son sorprendentemente interesantes desde la perspectiva de una babosa."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Un aventurero retirado y una babosa filosófica cultivando verduras. No era exactamente el final épico que tenía en mente cuando comencé a narrar esta historia."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Mientras conversas con Nerly, ves a alguien aproximándose por el camino. Para tu sorpresa, es el Tendero, inusualmente sobrio y bien vestido."
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "¡Saludos, héroe/heroína! ¿O debería decir, granjero/a?"
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Tendero. ¿Qué te trae por aquí?"
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "Negocios, siempre negocios. He abierto una sucursal en el pueblo cercano. 'Artículos para Granjeros Extremos'. Y quería ver cómo estaba mi cliente favorito."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Obviamente, 'ver cómo estabas' incluye intentar venderte algo."
+        },
+        {
+          "personaje": "TENDERO",
+          "texto": "Además, traigo noticias. La ciudad ha erigido una estatua en tu honor en la plaza principal. Bastante impresionante, aunque creo que exageraron un poco tus... proporciones heroicas."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "No necesito estatuas. Esto es suficiente para mí."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Miras alrededor, a tu pequeño rincón pacífico del mundo, y sientes una satisfacción que ninguna aventura podría igualar."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y así, nuestro/a héroe/heroína encontró lo que muchos buscan pero pocos encuentran: paz. Una paz bien merecida después de salvar al mundo... o al menos a una ciudad de mediano tamaño con problemas de babosas."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¿Sabes? Creo que esa estatua debería haberme incluido a mí también."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "La próxima vez que salvemos al mundo, exigiremos dos estatuas."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "¿La próxima vez? Pensé que estabas retirado/a."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Lo estoy. Pero nunca se sabe, ¿verdad?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y con esa ambigüedad perfectamente diseñada para una posible secuela, concluye nuestra historia de calabozos, babosas, y un/a héroe/heroína llamado/a 'BOB'... al menos por ahora."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "FIN",
+          "siguiente_dialogo": "fin_juego"
+        }
+      ]
+    },
+    {
+      "id": "final_celebracion",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Una semana después, la plaza principal de Viscaria está decorada con guirnaldas y banners. Una multitud se ha reunido para celebrar tu hazaña."
+        },
+        {
+          "personaje": "ALCALDE",
+          "texto": "¡Ciudadanos de Viscaria! ¡Hoy celebramos la derrota del terror que ha asolado nuestras tierras durante generaciones! ¡El Rey Baboso ha caído gracias a nuestro/a valiente héroe/heroína!"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "La multitud estalla en vítores y aplausos."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Mira nada más. De 'BOB el/la incompetente' a salvador/a del reino. Vaya ascenso en tu carrera."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "No habría podido hacerlo sin ti, sabes."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Oh, por favor. No te pongas sentimental ahora. Arruinarás mi reputación de narrador sarcástico y desalmado."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Alcalde te coloca una medalla y te entrega un pergamino."
+        },
+        {
+          "personaje": "ALCALDE",
+          "texto": "Por la presente, te nombramos Protector/a Oficial de Viscaria, con todos los privilegios y responsabilidades que conlleva."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Traducción: más trabajo, misma paga."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Entre la multitud, ves algunas caras familiares: el Tendero (sorprendentemente sobrio), el Mago de las Calles que te da un guiño cómplice, e incluso Ian, que parece estar vendiendo 'Auténticos Recuerdos del Abismo' a turistas."
+        },
+        {
+          "personaje": "NERLY",
+          "texto": "¿Y ahora qué?"
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Ahora... ahora vivimos, supongo. Sin miedo, sin un Rey Baboso acechando en las sombras."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Hasta que llegue la próxima amenaza apocalíptica, claro. Que, conociendo a estos reinos de fantasía, será en aproximadamente... dos semanas."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Y supongo que estarás ahí para narrarla, verdad?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Alguien tiene que hacerlo. No es como si tuviera otras opciones de carrera después de tantos años en este negocio."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Mientras la celebración continúa, miras hacia las montañas donde se encuentra el Abismo, ahora parcialmente colapsado. Un sentimiento de paz y logro te invade."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y así, nuestro/a héroe/heroína improbable finalmente encontró su lugar en el mundo. Aunque sigo pensando que 'BOB' es un nombre terrible."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Es bueno que no sea mi verdadero nombre, entonces."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Detalles, detalles..."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "FIN",
+          "siguiente_dialogo": "fin_juego"
+        }
+      ]
+    },
+    {
+      "id": "fin_juego",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Has completado la aventura de Calabozos y Babosos. ¿Quieres jugar de nuevo con un personaje diferente o explorar otros finales?"
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "Jugar de nuevo",
+          "siguiente_dialogo": "prologo_narrador"
+        },
+        {
+          "texto": "Salir del juego",
+          "accion": "salir"
+        }
+      ]
+    },
+    {
+      "id": "final_secreto",
+      "secuencia": [
+        {
+          "personaje": "NARRADOR",
+          "texto": "Te encuentras solo/a, descansando después de tu gran aventura, cuando sientes una presencia familiar."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Así que... lo lograste. Superaste todas mis pruebas, todas mis trampas narrativas."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Quién eres realmente? Has estado conmigo desde el principio, pero nunca te he visto."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El aire frente a ti se distorsiona, y una figura comienza a materializarse. Para tu sorpresa, no es humana, sino una babosa enorme, antigua y majestuosa, con patrones iridiscentes que cambian constantemente."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Soy el Verdadero Rey Baboso. O lo era, antes de que 'él' usurpara mi trono."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "Pero... ¿por qué no lo dijiste? ¿Por qué la charada?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Porque necesitaba un héroe, pero no cualquier héroe. Necesitaba uno que pudiera pensar por sí mismo, que cuestionara la narrativa. El impostor no solo robó mi trono, robó la historia misma. Corrompió la realidad del Abismo."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Entonces todo fue... una prueba?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Una prueba, un juego, una enseñanza. Tú elegiste tu camino a cada paso, a pesar de mis intentos de influir en ti. Eso te hace único/a."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Narrador, ahora revelado como el Verdadero Rey, se acerca flotando."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Y ahora, te ofrezco un regalo: la verdad. El mundo es más grande, más extraño y más maravilloso de lo que te he mostrado. Hay otros reinos, otras historias, esperando a un/a protagonista."
+        },
+        {
+          "personaje": "PROTAGONISTA",
+          "texto": "¿Y quieres que sea yo?"
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Quiero que seas tú quien decida. Siempre has tenido esa libertad, incluso cuando pretendía que no. Ese es el verdadero poder de un héroe: la capacidad de elegir."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "El Verdadero Rey comienza a desvanecerse."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Hasta la próxima historia, 'BOB'. Y recuerda: las babosas no siempre son lo que parecen."
+        },
+        {
+          "personaje": "NARRADOR",
+          "texto": "Con un último guiño, el Narrador desaparece, dejándote con más preguntas que respuestas, pero también con una extraña sensación de posibilidades infinitas."
+        }
+      ],
+      "opciones": [
+        {
+          "texto": "¿FIN?",
+          "siguiente_dialogo": "fin_juego"
+        }
+      ]
+    }
+  ]
+}
+    

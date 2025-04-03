@@ -1,0 +1,776 @@
+"siguiente_ruta": "grutas_cristal"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "La Lágrima te muestra imágenes confusas y perturbadoras. Ves el Abismo expandiéndose, devorando ciudades enteras. Ves a Nerly... ¿traicionándote? ¿O salvándote? Las imágenes son demasiado borrosas para estar seguro."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Eso fue... horrible."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¿Qué viste? Estás pálido/a."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -15,
+            "Miedo": 15,
+            "Desconfianza hacia Nerly": 10
+          },
+          "siguiente_ruta": "grutas_cristal"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "La Lágrima se calienta en tu mano, pero las visiones son fragmentadas, como un rompecabezas incompleto. Ves al Rey Baboso, una sala del trono hecha de cristales similares a estos, y algo sobre una debilidad... pero la imagen se desvanece antes de que puedas entenderla."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Vi algo, pero no fue muy claro."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Las visiones a veces son así. Confusas."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 5,
+            "Ganas de vivir": -5
+          },
+          "siguiente_ruta": "grutas_cristal"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "La Lágrima brilla suavemente mientras te muestra imágenes del pasado. Ves cómo el Abismo era originalmente una pequeña cueva, cómo una extraña sustancia cayó del cielo y transformó a una babosa ordinaria en el Rey. Ves sus primeros días de conquista."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Ahora entiendo mejor contra qué nos enfrentamos."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Eso confirma las leyendas antiguas. El Rey no siempre fue así."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -10,
+            "Reputación": 5
+          },
+          "conocimientos_ganados": ["Origen del Rey Baboso"],
+          "siguiente_ruta": "grutas_cristal"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "La Lágrima pulsa con energía antigua mientras te revela secretos tanto del pasado como del futuro. Ves claramente al Rey Baboso en su sala del trono, rodeado de cristales que amplifican su poder. Y lo más importante: ves su punto débil, un pequeño cristal incrustado en su frente que controla toda su masa."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡Lo vi! Sé cómo derrotarlo."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Eso es increíble! Pocos reciben visiones tan claras."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -15,
+            "Reputación": 10,
+            "Ganas de vivir": 10
+          },
+          "conocimientos_ganados": ["Punto débil del Rey Baboso"],
+          "siguiente_ruta": "grutas_cristal"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "La Lágrima se ilumina con un resplandor sobrenatural, elevándose ligeramente de tu mano. Te muestra no solo el pasado y un posible futuro, sino también el presente: ves exactamente dónde está el Rey ahora, qué protecciones tiene, y el camino más seguro para llegar a él. El cristal en su frente es su centro de control, y además descubres que si combinas sal con el residuo de las Babosas Cristalinas, puedes crear un proyectil que atravesará sus defensas."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Es... perfecto. Sé exactamente qué hacer."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Nunca había oído de una visión tan completa. ¡Debes tener un vínculo especial con el Abismo!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Cuando la visión termina, descubres que la Lágrima se ha fragmentado en pequeños cristales que caen en tu mano, perfectos para crear el arma que necesitas."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -20,
+            "Reputación": 20,
+            "Ganas de vivir": 15
+          },
+          "conocimientos_ganados": ["Plan completo para derrotar al Rey Baboso"],
+          "objetos_ganados": ["Fragmentos de la Lágrima de Cristal"],
+          "siguiente_ruta": "grutas_cristal"
+        }
+      }
+    },
+    {
+      "id": "tirada_batalla_final",
+      "descripcion": "El enfrentamiento final contra el Rey Baboso",
+      "stat_principal": "Miedo",
+      "modificador_inverso": true,
+      "dificultad": 16,
+      "accion_descripcion": "Te enfrentas al Rey Baboso en combate mortal, intentando atacar el cristal en su frente...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "El miedo te paraliza por completo. Los tentáculos del Rey se lanzan hacia ti desde todas direcciones."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡No puedo... moverme!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Un tentáculo te atrapa por la pierna y te eleva en el aire. El Rey te acerca a lo que parece ser su boca, un enorme orificio pulsante."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "Tu sabor me dirá tus secretos. Todos los secretos."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡NO!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "En el último segundo, Nerly se arroja contra el tentáculo que te sostiene, segregando una sustancia ácida que lo corroe. Caes al suelo, gravemente herido pero vivo."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -30,
+            "Miedo": 25
+          },
+          "efectos_temporales": ["Gravemente Herido"],
+          "siguiente_dialogo": "segundo_intento_rey"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Intentas acercarte al Rey, pero sus tentáculos son demasiado rápidos y numerosos. Uno te golpea en el pecho, enviándote volando contra una columna de cristal."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Es... demasiado fuerte."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "¿Eso es todo? ¿Este es el gran héroe que venía a derrotarme? Patético."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Levántate! Aún podemos hacerlo, pero necesitas recuperarte."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -20,
+            "Miedo": 15
+          },
+          "efectos_temporales": ["Herido"],
+          "siguiente_dialogo": "segundo_intento_rey"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te mueves rápidamente, esquivando varios tentáculos, pero el Rey anticipa tu estrategia. Cuando estás a punto de alcanzar una posición ventajosa, una explosión de baba ácida te obliga a retroceder."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "Predecible. Todos atacan de la misma manera."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Necesitamos cambiar de táctica! Sus defensas frontales son demasiado fuertes."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 5
+          },
+          "efectos_temporales": ["Estrategia Comprometida"],
+          "siguiente_dialogo": "cambio_tactica"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Moviéndote con determinación, logras esquivar la mayoría de los ataques del Rey. Un tentáculo te roza el hombro, causando una quemadura menor, pero logras acercarte lo suficiente para ver claramente el cristal en su frente."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Lo estás haciendo! ¡Continúa así!"
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "Impresionante. Hace tiempo que no tenía un adversario tan... persistente."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -5,
+            "Reputación": 5
+          },
+          "efectos_temporales": ["Posición Ventajosa"],
+          "siguiente_dialogo": "ataque_final"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con una combinación de valor y agilidad, te mueves entre los tentáculos del Rey como si estuvieras bailando. Logras saltar sobre uno, usándolo como puente para acercarte aún más."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡Ahora, Nerly!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Nerly lanza una pequeña proyección de su propio cuerpo, que se adhiere a los ojos del Rey, cegándolo temporalmente."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "¡Mis ojos! ¡Traidora insignificante!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con el Rey temporalmente cegado, logras alcanzar una posición perfecta para atacar el cristal."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -15,
+            "Reputación": 10,
+            "Ganas de vivir": 5
+          },
+          "efectos_temporales": ["Posición de Ataque Ideal"],
+          "siguiente_dialogo": "ataque_final"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "El tiempo parece ralentizarse. Te mueves con una precisión sobrehumana, como si cada paso hubiera sido ensayado mil veces. Los tentáculos del Rey parecen lentos y predecibles."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "¿Qué? ¿Cómo estás evitando todos mis ataques?"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con un movimiento fluido, saltas sobre un tentáculo, rebotando a otro, y finalmente te impulsas directamente hacia la frente del Rey. En pleno vuelo, sacas tu arma y la diriges hacia el cristal."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡AHORA!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Tu golpe es perfecto, impactando directamente en el centro del cristal, que comienza a agrietarse, emanando una luz cegadora."
+            },
+            {
+              "personaje": "REY BABOSO",
+              "texto": "¡IMPOSIBLE!"
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -25,
+            "Reputación": 20,
+            "Ganas de vivir": 15
+          },
+          "efectos_temporales": ["Golpe Crítico al Rey"],
+          "siguiente_dialogo": "desenlace"
+        }
+      }
+    },
+    {
+      "id": "tirada_huida_babosa",
+      "descripcion": "El protagonista intenta huir de la Babosa Ácida",
+      "stat_principal": "Pipí acumulado",
+      "modificador_inverso": true,
+      "dificultad": 14,
+      "accion_descripcion": "Intentas correr por el suelo resbaladizo mientras la babosa segrega ácido hacia ti...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "En tu desesperación por huir, tus pies resbalan en la baba del suelo. Caes de espaldas justo cuando la babosa dispara un chorro de ácido."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡AAAAHHH!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "El ácido impacta directamente en tu pecho. La agonía es indescriptible mientras sientes que se derrite a través de tu ropa y piel."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Resiste! ¡Tengo que sacarte de aquí!"
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -40,
+            "Miedo": 30
+          },
+          "efectos_temporales": ["Quemadura Química Severa"],
+          "siguiente_dialogo": "rescate_nerly"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Corres tan rápido como puedes, pero el pánico hace que tropieces y caigas. La babosa se acerca rápidamente."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Rueda a la izquierda! ¡AHORA!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Apenas logras evitar un chorro de ácido rodando, pero parte de él salpica tu pierna, quemando a través de la tela de tu pantalón."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 20,
+            "Ganas de vivir": -10
+          },
+          "efectos_temporales": ["Quemadura Leve"],
+          "siguiente_dialogo": "intervención_nerly"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te alejas torpemente, resbalando en el suelo viscoso pero manteniéndote a una distancia apenas segura de la babosa."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡No podemos simplemente huir! Tenemos que enfrentarla o nos perseguirá."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa avanza lentamente pero implacablemente hacia ti, dejando un rastro humeante."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 10
+          },
+          "siguiente_dialogo": "decision_combate"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Logras mantener el equilibrio mientras corres, creando una buena distancia entre tú y la babosa."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Por aquí! ¡Detrás de esta columna de cristal!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te refugias temporalmente, ganando tiempo para pensar en un plan."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -5
+          },
+          "siguiente_dialogo": "plan_estrategia"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te mueves con sorprendente agilidad, esquivando el ataque ácido y encontrando un lugar elevado donde la babosa no puede alcanzarte."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Bien pensado. Las Babosas Ácidas no pueden trepar superficies lisas verticales."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Desde tu posición ventajosa, puedes ver que la babosa está custodiando algo brillante."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -10,
+            "Reputación": 5
+          },
+          "siguiente_dialogo": "descubrimiento_objeto"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con un movimiento que sorprende incluso a Nerly, no solo escapas del peligro, sino que conduces a la babosa directamente hacia una grieta en el suelo."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa cae por la grieta, emitiendo un chillido de sorpresa que resuena en la caverna."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Eso fue... brillante. Nunca se me hubiera ocurrido. Las Babosas Ácidas tienen muy mala visión hacia abajo."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "En el lugar donde estaba la babosa, encuentras un objeto extraño, como si lo hubiera estado protegiendo."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -20,
+            "Reputación": 15,
+            "Ganas de vivir": 5
+          },
+          "objetos_ganados": ["Llave de Cristal"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        }
+      }
+    }
+  ]
+}{
+  "tiradas": [
+    {
+      "id": "tirada_combate_babosa",
+      "descripcion": "El protagonista enfrenta a una Babosa Ácida",
+      "stat_principal": "Miedo",
+      "modificador_inverso": true,
+      "dificultad": 13,
+      "accion_descripcion": "Una babosa gigante de color rojizo se arrastra hacia ti, segregando un líquido corrosivo...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te quedas paralizado por el miedo mientras la babosa se acerca. Intentas alcanzar tu sal, pero tus manos tiemblan tanto que dejas caer todo tu zurrón."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa segrega un líquido verdoso que comienza a disolver tu bota derecha. El dolor es indescriptible."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡NO! ¡Aléjate de BOB, traidor de la especie!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "En un acto de valentía, Nerly se lanza contra la babosa hostil, distrayéndola lo suficiente para que puedas escapar, aunque cojeando y con quemaduras graves."
+            }
+          ],
+          "efectos_stats": {
+            "Ganas de vivir": -30,
+            "Miedo": 25
+          },
+          "efectos_temporales": ["Trauma Psíquico"],
+          "siguiente_ruta": "grutas_cristal"stats": {
+            "Ganas de vivir": -15,
+            "Miedo": 25
+          },
+          "efectos_temporales": ["Quemadura por Ácido"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Entras en pánico y lanzas tu saco de sal en dirección general a la babosa, pero tu puntería es terrible. La mayoría de la sal cae lejos del objetivo."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa se abalanza sobre ti, y apenas logras esquivarla, pero en el proceso te caes y te lastimas el tobillo."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Cuidado! Esta especie es particularmente agresiva. Tienes que apuntar a la parte central, donde está concentrado su sistema nervioso."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 15
+          },
+          "efectos_temporales": ["Tobillo Torcido"],
+          "objetos_perdidos": ["50% de tu Sal"],
+          "siguiente_tirada": "tirada_segundo_intento_babosa"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Reaccionas con nerviosismo pero logras sacar un puñado de sal de tu zurrón. Lo lanzas contra la babosa, acertando parcialmente."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa emite un chillido extraño y se retuerce cuando la sal hace contacto, pero sólo has dañado una pequeña parte de su cuerpo."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Sigue! ¡Necesitas más sal para detenerla completamente!"
+            }
+          ],
+          "efectos_stats": {},
+          "siguiente_tirada": "tirada_segundo_intento_babosa"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Mantienes la calma y sacas tu sal con determinación. Lanzas un puñado bien dirigido hacia la babosa."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La sal hace contacto con la mayoría del cuerpo de la babosa, que inmediatamente comienza a burbujear y contraerse, emitiendo un sonido similar a agua hirviendo."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Bien hecho! Esa era una Babosa Ácida Común, una de las más agresivas pero también de las más débiles."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 5,
+            "Miedo": -5
+          },
+          "objetos_ganados": ["Residuo Ácido"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con precisión y sangre fría, tomas tu saco de sal y calculas el momento exacto para atacar."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Lanzas la sal directamente al centro de la babosa, que instantáneamente comienza a disolverse con un chillido agónico."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Impresionante! Tienes talento natural para esto. La mayoría de los aventureros novatos acaban disueltos en su primer encuentro."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Al disolverse, la babosa deja tras de sí una pequeña gema que brillaba dentro de su cuerpo."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 10,
+            "Miedo": -10
+          },
+          "objetos_ganados": ["Gema Gástrica"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "El tiempo parece ralentizarse. Con una calma sobrenatural, evalúas a la babosa y notas un patrón en sus movimientos, una debilidad en su anatomía."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con un movimiento fluido, lanzas una cantidad mínima pero precisa de sal exactamente en el punto central de la babosa, donde sus nervios se concentran."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "La babosa se congela instantáneamente, luego se cristaliza desde adentro hacia afuera, convirtiéndose en una estatua extrañamente hermosa antes de desmoronarse."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "(Asombrada) Nunca... nunca había visto algo así. La sal normalmente disuelve, no cristaliza. Tienes un don, BOB."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Entre los restos cristalizados encuentras un objeto extraño, como un pequeño huevo translúcido."
+            }
+          ],
+          "efectos_stats": {
+            "Reputación": 20,
+            "Miedo": -20,
+            "Ganas de vivir": 10
+          },
+          "objetos_ganados": ["Huevo de Cristal"],
+          "habilidades_ganadas": ["Punto Vital Baboso"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        }
+      }
+    },
+    {
+      "id": "tirada_tunel",
+      "descripcion": "El protagonista intenta arrastrarse por un túnel estrecho en el Abismo",
+      "stat_principal": "Miedo",
+      "dificultad": 12,
+      "accion_descripcion": "Te arrastras por un túnel extremadamente estrecho en la oscuridad...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "En tu nerviosismo, apoyas la mano directamente sobre un parche de esporas brillantes. Inmediatamente sientes un hormigueo subiendo por tu brazo."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "Uh oh..."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Las próximas horas son... interesantes. Conversas filosóficamente con tu zurrón, juras ver colores que no existen, y en algún momento intentas convencer a Nerly de que en realidad eres una babosa atrapada en un cuerpo humano."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 30,
+            "Ganas de vivir": -20
+          },
+          "efectos_temporales": ["Alucinaciones"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "2-5": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "El túnel se estrecha tanto que quedas atascado. Entras en pánico, te retuerces, y solo consigues quedarte más atrapado."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Cálmate! Respira profundo. Espera, voy a buscar ayuda."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Pasas una hora humillante atrapado antes de que Nerly regrese con algunas Babosas Lubricantes que... bueno, mejor no preguntes qué hacen exactamente, pero logran liberarte."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 15,
+            "Reputación": -15,
+            "Pipí acumulado": 10
+          },
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "6-10": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Avanzas lentamente, rozando ocasionalmente las paredes. Afortunadamente, no tocas ninguna espora, pero el proceso es agotador."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Casi llegamos. Solo un poco más."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Eventualmente llegas al final del túnel, cubierto de sudor y con algunos rasguños menores."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": 5,
+            "Hambre intensa": 5
+          },
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "11-15": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con cautela pero determinación, te arrastras por el túnel evitando cuidadosamente las esporas y los puntos más estrechos."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Lo estás haciendo muy bien. Muchos humanos se asustan en estos túneles."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Llegas al final sin incidentes, aunque algo cansado por el esfuerzo."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -5,
+            "Reputación": 5
+          },
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "16-19": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "Te mueves con sorprendente agilidad a través del túnel, como si hubieras nacido para arrastrarte en espacios estrechos. Nerly parece impresionada."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "Guau, nunca había visto a un humano moverse así en estos túneles. Eres como una babosa honoraria."
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "No estoy seguro de que eso sea un cumplido, pero lo tomaremos como tal."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -10,
+            "Reputación": 10,
+            "Hambre intensa": -5
+          },
+          "siguiente_ruta": "sala_entrada_abismo"
+        },
+        "20": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "No solo navegas el túnel con una gracia sobrenatural, sino que mientras avanzas, notas un pequeño brillo inusual en una grieta de la pared."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¿Qué es eso?"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Con cuidado, extraes un pequeño cristal que parece contener luz líquida. Es hermoso y, según la expresión de Nerly, valioso."
+            },
+            {
+              "personaje": "NERLY",
+              "texto": "¡Un Corazón de Babosa Cristalina! Son extremadamente raros. Tienen propiedades curativas y pueden repeler a ciertas babosas agresivas."
+            }
+          ],
+          "efectos_stats": {
+            "Miedo": -20,
+            "Reputación": 15,
+            "Ganas de vivir": 10
+          },
+          "objetos_ganados": ["Corazón de Babosa Cristalina"],
+          "siguiente_ruta": "sala_entrada_abismo"
+        }
+      }
+    },
+    {
+      "id": "tirada_vision",
+      "descripcion": "El protagonista experimenta una visión al tocar la Lágrima de Cristal",
+      "stat_principal": "Ganas de vivir",
+      "dificultad": 15,
+      "accion_descripcion": "Tu mente es arrastrada a través del tiempo y el espacio mientras la Lágrima de Cristal te muestra visiones...",
+      "resultados": {
+        "1": {
+          "secuencia": [
+            {
+              "personaje": "NARRADOR",
+              "texto": "¡Tu mente colapsa bajo el peso de imágenes caóticas y terribles! Ves mil futuros posibles, todos terminando en desastre. En cada uno, el Rey Baboso triunfa y el mundo se ahoga en baba."
+            },
+            {
+              "personaje": "PROTAGONISTA",
+              "texto": "¡NOOOOO!"
+            },
+            {
+              "personaje": "NARRADOR",
+              "texto": "Cuando la visión termina, te encuentras en el suelo, temblando. Parte de tu cabello se ha vuelto blanco por el shock, y sientes como si hubieras envejecido diez años en segundos."
+            }
+          ],
+          "efectos_
