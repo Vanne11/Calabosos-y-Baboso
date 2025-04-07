@@ -77,15 +77,26 @@ const OptionLine = styled.div`
   font-weight: bold;
 `;
 
-// Componente para formatear textos con colores Rich style
+/// Componente para formatear textos con estilo tipo Rich
 const RichText = ({ content }) => {
-  // Buscar patrones para colorear - similar a Rich en Python
+  if (typeof content !== 'string') {
+    try {
+      return <>{JSON.stringify(content)}</>;
+    } catch (e) {
+      return <span style={{ color: 'red' }}>[Contenido inválido]</span>;
+    }
+  }
+
   const formatSpecialText = (text) => {
-    // Reemplazamos cadenas como [red]texto[/red] con spans coloreados
-    // Similar a la sintaxis de Rich en Python
-    
-    // Definimos los patrones y sus estilos correspondientes
+    let formattedText = text;
+
     const patterns = [
+      {
+        // Enlaces tipo: [link=https://...]texto[/link]
+        regex: /\[link=(.*?)\](.*?)\[\/link\]/g,
+        replace: (match, href, content) =>
+          `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: #8be9fd; text-decoration: underline;">${content}</a>`
+      },
       { regex: /\[red\](.*?)\[\/red\]/g, style: 'color: #FF5252;' },
       { regex: /\[green\](.*?)\[\/green\]/g, style: 'color: #4CAF50;' },
       { regex: /\[blue\](.*?)\[\/blue\]/g, style: 'color: #2196F3;' },
@@ -101,17 +112,18 @@ const RichText = ({ content }) => {
       { regex: /\[underline\](.*?)\[\/underline\]/g, style: 'text-decoration: underline;' },
       { regex: /\[highlight\](.*?)\[\/highlight\]/g, style: 'background-color: rgba(255, 255, 0, 0.3); padding: 0 2px;' },
     ];
-    
-    // Reemplazamos cada patrón con spans estilizados
-    let formattedText = text;
-    
-    patterns.forEach(({ regex, style }) => {
-      formattedText = formattedText.replace(regex, (match, content) => 
-        `<span style="${style}">${content}</span>`
-      );
+
+    patterns.forEach(({ regex, style, replace }) => {
+      if (replace) {
+        formattedText = formattedText.replace(regex, replace);
+      } else {
+        formattedText = formattedText.replace(regex, (match, content) =>
+          `<span style="${style}">${content}</span>`
+        );
+      }
     });
-    
-    // También podemos reemplazar emoji shortcodes con emojis reales
+
+    // Emojis especiales
     formattedText = formattedText
       .replace(/:snail:/g, '🐌')
       .replace(/:slime:/g, '🧪')
@@ -122,14 +134,15 @@ const RichText = ({ content }) => {
       .replace(/:skull:/g, '💀')
       .replace(/:key:/g, '🔑')
       .replace(/:door:/g, '🚪');
-    
-    // Para HTML personalizado (como spans coloreados), usamos dangerouslySetInnerHTML
-    // Solo es seguro porque controlamos el contenido y no permitimos HTML arbitrario del usuario
+
     return <span dangerouslySetInnerHTML={{ __html: formattedText }} />;
   };
-  
+
   return formatSpecialText(content);
 };
+
+
+
 
 // Componente para tablas Rich
 const RichTable = styled.div`

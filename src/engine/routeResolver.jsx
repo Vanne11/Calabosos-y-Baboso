@@ -1,309 +1,390 @@
-// engine/routeResolver.jsx
-// El corazón del motor narrativo, resuelve rutas y evalúa condiciones
+// src/engine/routeResolver.jsx
+// Resolvedor de rutas mejorado con sistema de depuración
 
-import { 
-  findRouteById, 
-  findScenarioById, 
-  findDialogById, 
-  findWidgetById, 
-  findConditionById 
-} from './gameLoader';
-import { markRouteAsVisited, markDialogAsSeen, advanceTime } from './gameState';
+import { logDebug, isDebugActive } from './debugSystem';
+import { findDialogById, findWidgetById, getScenarioById } from './gameLoader';
 
-// Procesa una ruta y ejecuta sus acciones
-export const processRoute = (routeId, gameData, gameState, handlers = {}) => {
-  const { 
-    updateGameState, 
-    setCurrentScenario, 
-    showDialog, 
-    showWidget 
-  } = handlers;
-  
-  // Buscar la ruta en los datos del juego
-  const route = findRouteById(routeId, gameData.routes);
-  if (!route) {
-    console.error(`Ruta no encontrada: ${routeId}`);
+/**
+ * Procesa una ruta del juego
+ * @param {string} routeId - ID de la ruta a procesar
+ * @param {object} gameData - Datos del juego
+ * @param {object} gameState - Estado actual del juego
+ * @param {object} handlers - Funciones para manipular la interfaz
+ * @returns {boolean} - Éxito o fracaso del procesamiento
+ */
+export const processRoute = (routeId, gameData, gameState, handlers) => {
+  if (!gameData || !routeId) {
+    if (isDebugActive()) {
+      logDebug(`Intento de procesar ruta inválida: ${routeId}`, 'ERROR');
+    }
     return false;
   }
+
+  if (isDebugActive()) {
+    logDebug(`Procesando ruta: ${routeId}`, 'ROUTE');
+  }
+
+  // Buscar la ruta en los datos del juego
+  const route = gameData.routes.find(r => r.id === routeId);
   
-  // Verificar si la ruta tiene una condición
+  if (!route) {
+    if (isDebugActive()) {
+      logDebug(`Ruta no encontrada: ${routeId}`, 'ERROR');
+    }
+    return false;
+  }
+
+  if (isDebugActive()) {
+    logDebug(`Ruta encontrada: ${routeId}`, 'ROUTE');
+    
+    if (route.condition) {
+      logDebug(`Condición de ruta: ${route.condition}`, 'ROUTE');
+    }
+    
+    if (route.actions && route.actions.length > 0) {
+      logDebug(`Acciones de ruta: ${route.actions.join(', ')}`, 'ROUTE');
+    }
+  }
+
+  // Verificar condición de la ruta si existe
   if (route.condition && route.condition !== 'default') {
-    const conditionResult = checkCondition(route.condition, gameData, gameState);
+    const conditionResult = checkCondition(route.condition, gameState);
+    
     if (!conditionResult.success) {
-      console.log(`Condición de ruta no cumplida: ${route.condition}`);
+      if (isDebugActive()) {
+        logDebug(`Condición de ruta no cumplida: ${route.condition}`, 'CONDITION');
+      }
       
-      // Si hay una ruta alternativa definida, procesarla en su lugar
+      // Si hay ruta alternativa, procesarla
       if (conditionResult.alternativeRoute) {
+        if (isDebugActive()) {
+          logDebug(`Redirigiendo a ruta alternativa: ${conditionResult.alternativeRoute}`, 'ROUTE');
+        }
         return processRoute(conditionResult.alternativeRoute, gameData, gameState, handlers);
+      }
+      
+      // Si hay mensaje de fallo, mostrarlo
+      if (conditionResult.failMessage && handlers.addToTerminal) {
+        handlers.addToTerminal({
+          type: 'system',
+          content: conditionResult.failMessage
+        });
       }
       
       return false;
     }
   }
-  
+
   // Marcar la ruta como visitada
-  if (updateGameState) {
-    updateGameState(prevState => markRouteAsVisited(prevState, routeId));
+  if (gameState && !gameState.visitedRoutes?.includes(routeId)) {
+    // Esta lógica debería estar en el manejador de estado del juego
+    if (handlers.updateGameState) {
+      handlers.updateGameState(prevState => ({
+        ...prevState,
+        visitedRoutes: [...(prevState.visitedRoutes || []), routeId]
+      }));
+      
+      if (isDebugActive()) {
+        logDebug(`Ruta marcada como visitada: ${routeId}`, 'STATE');
+      }
+    }
   }
-  
-  // Ejecutar las acciones de la ruta en orden
-  executeActions(route.actions, gameData, gameState, handlers);
-  
+
+  // Procesar cada acción de la ruta
+  if (route.actions && route.actions.length > 0) {
+    for (const actionId of route.actions) {
+      if (isDebugActive()) {
+        logDebug(`Procesando acción: ${actionId}`, 'ACTION');
+      }
+
+      // Buscar si es un escenario
+      const scenario = getScenarioById(actionId, gameData.scenarios);
+      if (scenario) {
+        if (isDebugActive()) {
+          logDebug(`Mostrando escenario: ${actionId}`, 'SCENARIO');
+        }
+        
+        if (handlers.setCurrentScenario) {
+          handlers.setCurrentScenario(scenario);
+        }
+        continue;
+      }
+
+      // Buscar si es un diálogo
+      const dialog = findDialogById(actionId, gameData.dialogs);
+      if (dialog) {
+        if (isDebugActive()) {
+          logDebug(`Mostrando diálogo: ${actionId}`, 'DIALOG');
+        }
+        
+        if (handlers.showDialog) {
+          handlers.showDialog(dialog);
+        }
+        continue;
+      }
+
+      // Buscar si es un widget
+      const widget = findWidgetById(actionId, gameData.widgets);
+      if (widget) {
+        if (isDebugActive()) {
+          logDebug(`Mostrando widget: ${actionId} (tipo: ${widget.type})`, 'WIDGET');
+          logDebug(`Buscando widget: ${actionId} → ${widget ? 'ENCONTRADO' : 'NO ENCONTRADO'}`, 'DEBUG');
+
+        }
+      
+        if (widget.type === 'choice' && Array.isArray(widget.options)) {
+          if (handlers.addToTerminal) {
+            handlers.addToTerminal({ type: 'system', content: '[cyan][bold]Elige una opción:[/bold][/cyan]' });
+      
+            widget.options.forEach((opt, idx) => {
+              const label = opt.label || `Opción ${idx + 1}`;
+              const key = opt.key || `${idx + 1}`;
+              handlers.addToTerminal({
+                type: 'system',
+                content: `[yellow]${key}.[/yellow] ${label}`
+              });
+            });
+          }
+      
+          if (handlers.updateGameState) {
+            handlers.updateGameState(prev => ({
+              ...prev,
+              awaitingChoice: {
+                widgetId: widget.id,
+                options: widget.options
+              }
+            }));
+          }
+      
+          return true; // detenemos el procesamiento hasta que el jugador elija
+        }
+      
+        // Si es otro tipo de widget, se muestra con showWidget (por compatibilidad)
+        if (handlers.showWidget) {
+          handlers.showWidget(widget);
+        }
+      
+        continue;
+      }
+
+      // Si llegamos aquí, la acción no fue encontrada
+      if (isDebugActive()) {
+        logDebug(`Acción no encontrada: ${actionId}`, 'WARNING');
+      }
+    }
+  }
+
   return true;
 };
 
-// Ejecuta las acciones de una ruta
-const executeActions = (actions, gameData, gameState, handlers) => {
-  const { 
-    updateGameState, 
-    setCurrentScenario, 
-    showDialog, 
-    showWidget 
-  } = handlers;
-  
-  // No hay acciones que ejecutar
-  if (!actions || actions.length === 0) {
-    return;
+/**
+ * Verifica si se cumple una condición
+ * @param {string} conditionId - ID de la condición a verificar
+ * @param {object} gameState - Estado actual del juego
+ * @returns {object} - Resultado de la verificación
+ */
+export const checkCondition = (conditionId, gameState) => {
+  // Para el modo debug, registrar la verificación
+  if (isDebugActive()) {
+    logDebug(`Verificando condición: ${conditionId || 'ninguna'}`, 'CONDITION');
   }
   
-  // Ejecutar cada acción en secuencia
-  for (const actionId of actions) {
-    // Comprobar si es un escenario
-    const scenario = findScenarioById(actionId, gameData.scenarios);
-    if (scenario) {
-      if (!scenario.condition || checkCondition(scenario.condition, gameData, gameState).success) {
-        if (setCurrentScenario) {
-          setCurrentScenario(scenario);
-        }
-      }
-      continue;
-    }
-    
-    // Comprobar si es un diálogo
-    const dialog = findDialogById(actionId, gameData.dialogs);
-    if (dialog) {
-      if (!dialog.condition || checkCondition(dialog.condition, gameData, gameState).success) {
-        if (showDialog) {
-          showDialog(dialog);
-        }
-        
-        // Marcar el diálogo como visto
-        if (updateGameState) {
-          updateGameState(prevState => markDialogAsSeen(prevState, actionId));
-        }
-      }
-      continue;
-    }
-    
-    // Comprobar si es un widget
-    const widget = findWidgetById(actionId, gameData.widgets);
-    if (widget) {
-      if (!widget.condition || checkCondition(widget.condition, gameData, gameState).success) {
-        if (showWidget) {
-          showWidget(widget);
-        }
-      }
-      continue;
-    }
-    
-    // Si llegamos aquí, la acción no existe
-    console.warn(`Acción no encontrada: ${actionId}`);
-  }
-  
-  // Avanzar el tiempo del juego después de procesar todas las acciones
-  if (updateGameState) {
-    updateGameState(prevState => advanceTime(prevState, gameData));
-  }
-};
-
-// Verifica si se cumple una condición
-export const checkCondition = (conditionId, gameData, gameState) => {
   // Si no hay condición o es 'default', se cumple automáticamente
   if (!conditionId || conditionId === 'default') {
     return { success: true };
   }
+
+  // Buscar la condición en el juego
+  const condition = gameState?.game?.conditions?.find(c => c.id === conditionId);
   
-  // Buscar la condición en los datos del juego
-  const condition = findConditionById(conditionId, gameData.conditions);
   if (!condition) {
-    console.error(`Condición no encontrada: ${conditionId}`);
-    return { success: false };
+    if (isDebugActive()) {
+      logDebug(`Condición no encontrada: ${conditionId}`, 'WARNING');
+    }
+    return { success: true }; // Por defecto asumimos éxito
   }
+
+  // Evaluar la condición según sus criterios
+  // Este es un sistema simplificado, la implementación real puede ser más compleja
+  let success = true;
   
-  // Verificar los criterios de la condición
-  const criteria = condition.criteria || {};
-  
-  // Criterio 'always': siempre se cumple
-  if (criteria.always === true) {
-    return { success: true };
-  }
-  
-  // Criterio 'stats': verifica estadísticas del jugador
-  if (criteria.stats) {
-    for (const [stat, requirement] of Object.entries(criteria.stats)) {
-      const statValue = gameState.stats[stat] || 0;
-      
-      // Requisito puede ser un número o una comparación
-      if (typeof requirement === 'number') {
-        if (statValue < requirement) {
-          return { 
-            success: false, 
-            message: condition.failure?.message,
-            alternativeRoute: condition.failure?.alternative_route
-          };
+  if (condition.criteria) {
+    // Condición de siempre verdadera
+    if (condition.criteria.always === true) {
+      if (isDebugActive()) {
+        logDebug(`Condición ${conditionId} es always=true`, 'CONDITION');
+      }
+      return { success: true };
+    }
+    
+    // Verificar inventario
+    if (condition.criteria.inventory && Array.isArray(condition.criteria.inventory)) {
+      for (const item of condition.criteria.inventory) {
+        if (!gameState.inventory?.includes(item)) {
+          if (isDebugActive()) {
+            logDebug(`Falta ítem en inventario: ${item}`, 'CONDITION');
+          }
+          success = false;
+          break;
         }
-      } else if (typeof requirement === 'string') {
-        // Comparación como ">50", "<=30", etc.
-        const operator = requirement.match(/^([<>=]+)/)[1];
-        const value = parseInt(requirement.replace(/^[<>=]+/, ''), 10);
+      }
+    }
+    
+    // Verificar flags
+    if (condition.criteria.flags && typeof condition.criteria.flags === 'object') {
+      for (const [flag, value] of Object.entries(condition.criteria.flags)) {
+        if (gameState.flags?.[flag] !== value) {
+          if (isDebugActive()) {
+            logDebug(`Flag no coincide: ${flag}=${value}`, 'CONDITION');
+          }
+          success = false;
+          break;
+        }
+      }
+    }
+    
+    // Verificar estadísticas
+    if (condition.criteria.stats && typeof condition.criteria.stats === 'object') {
+      for (const [stat, valueStr] of Object.entries(condition.criteria.stats)) {
+        // Permitir comparaciones como ">50", "<=30", etc.
+        const match = valueStr.match(/^([<>=]{1,2})(\d+)$/);
         
-        if (!evaluateComparison(statValue, operator, value)) {
-          return { 
-            success: false, 
-            message: condition.failure?.message,
-            alternativeRoute: condition.failure?.alternative_route
-          };
-        }
-      }
-    }
-  }
-  
-  // Criterio 'inventory': verifica ítems en el inventario
-  if (criteria.inventory) {
-    for (const item of criteria.inventory) {
-      if (!gameState.inventory.includes(item)) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-    }
-  }
-  
-  // Criterio 'flags': verifica banderas (flags)
-  if (criteria.flags) {
-    for (const [flag, required] of Object.entries(criteria.flags)) {
-      if (gameState.flags[flag] !== required) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-    }
-  }
-  
-  // Criterio 'visited_routes': verifica rutas visitadas
-  if (criteria.visited_routes) {
-    for (const route of criteria.visited_routes) {
-      if (!gameState.visitedRoutes.includes(route)) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-    }
-  }
-  
-  // Criterio 'unvisited_routes': verifica rutas NO visitadas
-  if (criteria.unvisited_routes) {
-    for (const route of criteria.unvisited_routes) {
-      if (gameState.visitedRoutes.includes(route)) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-    }
-  }
-  
-  // Criterio 'seen_dialogs': verifica diálogos vistos
-  if (criteria.seen_dialogs) {
-    for (const dialog of criteria.seen_dialogs) {
-      if (!gameState.seenDialogs.includes(dialog)) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-    }
-  }
-  
-  // Criterio 'characters': verifica estado de personajes
-  if (criteria.characters) {
-    for (const [charId, requirements] of Object.entries(criteria.characters)) {
-      const character = gameState.characters[charId];
-      
-      if (!character) {
-        return { 
-          success: false, 
-          message: condition.failure?.message,
-          alternativeRoute: condition.failure?.alternative_route
-        };
-      }
-      
-      for (const [attribute, requirement] of Object.entries(requirements)) {
-        if (typeof requirement === 'boolean') {
-          if (character[attribute] !== requirement) {
-            return { 
-              success: false, 
-              message: condition.failure?.message,
-              alternativeRoute: condition.failure?.alternative_route
-            };
-          }
-        } else if (typeof requirement === 'string' && requirement.match(/^[<>=]+/)) {
-          // Comparación como ">50", "<=30", etc.
-          const operator = requirement.match(/^([<>=]+)/)[1];
-          const value = parseInt(requirement.replace(/^[<>=]+/, ''), 10);
+        if (match) {
+          const [, operator, valueNum] = match;
+          const statValue = gameState.stats?.[stat] || 0;
+          const compareValue = parseInt(valueNum, 10);
           
-          if (!evaluateComparison(character[attribute] || 0, operator, value)) {
-            return { 
-              success: false, 
-              message: condition.failure?.message,
-              alternativeRoute: condition.failure?.alternative_route
-            };
+          let satisfies = false;
+          switch (operator) {
+            case '>': satisfies = statValue > compareValue; break;
+            case '<': satisfies = statValue < compareValue; break;
+            case '>=': satisfies = statValue >= compareValue; break;
+            case '<=': satisfies = statValue <= compareValue; break;
+            case '=':
+            case '==': satisfies = statValue === compareValue; break;
+            default: satisfies = false;
+          }
+          
+          if (!satisfies) {
+            if (isDebugActive()) {
+              logDebug(`Condición de stat no cumplida: ${stat} ${operator} ${valueNum} (valor actual: ${statValue})`, 'CONDITION');
+            }
+            success = false;
+            break;
+          }
+        } else {
+          // Comparación simple de igualdad
+          const statValue = gameState.stats?.[stat] || 0;
+          const compareValue = parseInt(valueStr, 10);
+          
+          if (statValue !== compareValue) {
+            if (isDebugActive()) {
+              logDebug(`Stat no coincide: ${stat}=${valueStr} (valor actual: ${statValue})`, 'CONDITION');
+            }
+            success = false;
+            break;
           }
         }
       }
     }
-  }
-  
-  // Criterio 'time': verifica condiciones de tiempo
-  if (criteria.time) {
-    if (criteria.time.phase && gameState.time.currentPhase !== criteria.time.phase) {
-      return { 
-        success: false, 
-        message: condition.failure?.message,
-        alternativeRoute: condition.failure?.alternative_route
-      };
+    
+    // Verificar rutas visitadas
+    if (condition.criteria.visited_routes && Array.isArray(condition.criteria.visited_routes)) {
+      for (const route of condition.criteria.visited_routes) {
+        if (!gameState.visitedRoutes?.includes(route)) {
+          if (isDebugActive()) {
+            logDebug(`Ruta no visitada: ${route}`, 'CONDITION');
+          }
+          success = false;
+          break;
+        }
+      }
+    }
+    
+    // Verificar rutas NO visitadas
+    if (condition.criteria.unvisited_routes && Array.isArray(condition.criteria.unvisited_routes)) {
+      for (const route of condition.criteria.unvisited_routes) {
+        if (gameState.visitedRoutes?.includes(route)) {
+          if (isDebugActive()) {
+            logDebug(`Ruta ya visitada: ${route}`, 'CONDITION');
+          }
+          success = false;
+          break;
+        }
+      }
+    }
+    
+    // Verificar diálogos vistos
+    if (condition.criteria.seen_dialogs && Array.isArray(condition.criteria.seen_dialogs)) {
+      for (const dialog of condition.criteria.seen_dialogs) {
+        if (!gameState.seenDialogs?.includes(dialog)) {
+          if (isDebugActive()) {
+            logDebug(`Diálogo no visto: ${dialog}`, 'CONDITION');
+          }
+          success = false;
+          break;
+        }
+      }
+    }
+    
+    // Verificar fase temporal
+    if (condition.criteria.time && condition.criteria.time.phase) {
+      if (gameState.time?.currentPhase !== condition.criteria.time.phase) {
+        if (isDebugActive()) {
+          logDebug(`Fase temporal no coincide: ${condition.criteria.time.phase} (actual: ${gameState.time?.currentPhase})`, 'CONDITION');
+        }
+        success = false;
+      }
     }
   }
   
-  // Si llegamos aquí, todos los criterios se cumplen
-  return { success: true };
+  // Si la condición falla y hay configuración de fallo
+  if (!success && condition.failure) {
+    if (isDebugActive()) {
+      logDebug(`Condición fallida: ${conditionId}`, 'CONDITION');
+      if (condition.failure.message) {
+        logDebug(`Mensaje de fallo: ${condition.failure.message}`, 'CONDITION');
+      }
+      if (condition.failure.alternative_route) {
+        logDebug(`Ruta alternativa: ${condition.failure.alternative_route}`, 'CONDITION');
+      }
+    }
+    
+    return {
+      success: false,
+      failMessage: condition.failure.message,
+      alternativeRoute: condition.failure.alternative_route
+    };
+  }
+  
+  // Para el modo debug, registrar el resultado final
+  if (isDebugActive()) {
+    logDebug(`Resultado final de condición ${conditionId}: ${success ? 'verdadero' : 'falso'}`, 'CONDITION');
+  }
+  
+  return { success };
 };
 
-// Evalúa una comparación numérica
-const evaluateComparison = (value, operator, target) => {
-  switch (operator) {
-    case '>':
-      return value > target;
-    case '>=':
-      return value >= target;
-    case '<':
-      return value < target;
-    case '<=':
-      return value <= target;
-    case '==':
-    case '=':
-      return value === target;
-    case '!=':
-      return value !== target;
-    default:
-      return false;
+/**
+ * Encuentra una ruta por su ID
+ * @param {string} routeId - ID de la ruta a buscar
+ * @param {array} routes - Lista de rutas disponibles
+ * @returns {object|null} - La ruta encontrada o null
+ */
+export const findRouteById = (routeId, routes) => {
+  if (!routes || !Array.isArray(routes) || !routeId) {
+    return null;
   }
+  
+  const route = routes.find(r => r.id === routeId);
+  
+  if (isDebugActive()) {
+    if (route) {
+      logDebug(`Ruta encontrada: ${routeId}`, 'ROUTE');
+    } else {
+      logDebug(`Ruta no encontrada: ${routeId}`, 'WARNING');
+    }
+  }
+  
+  return route;
 };

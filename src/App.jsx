@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import Terminal from './components/Terminal/Terminal.jsx'
 import { processCommand } from './engine/commandHandler.jsx'
 import { createInitialState } from './engine/gameState.jsx'
+import { delay } from './utils/delay';
+import { waitForEnter } from './utils/waitForEnter.js';
+import { setDebugOutputHandler, isDebugActive, logDebug } from './engine/debugSystem';
 
 
 const AppContainer = styled.div`
@@ -17,7 +20,8 @@ const AppContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
-  height: 4rem;
+  height: 4rem;  // Manejar comandos del terminal
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
   margin-right: 0.5rem;
   vertical-align: bottom;
 `;
@@ -178,6 +182,79 @@ const CloseButton = styled.button`
   }
 `;
 
+const SpeedSlider = styled.div`
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: #1e1e2f;
+  border: 1px solid #444;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  z-index: 999;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  color: white;
+`;
+
+const SpeedSelect = styled.select`
+  margin-left: 0.5rem;
+  background: #2a2a3d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  font-family: inherit;
+`;
+
+const VolumeControl = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 1.5rem;
+`;
+
+const VolumeSlider = styled.input`
+  width: 100px;
+  margin: 0 0.5rem;
+  appearance: none;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #bd93f9;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #bd93f9;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+`;
+
+export const preloadImages = (paths = []) => {
+  return Promise.all(paths.map(src => new Promise(resolve => {
+    const img = new Image();
+    img.src = src;
+    img.onload = resolve;
+    img.onerror = resolve; // no frena si falla
+  })));
+};
+
+
+const preloadAssets = [
+  'images/about/about1.png',
+  'images/about/about2.png',
+];
+
 // Componente para mostrar las stats del juego
 const StatsDisplay = ({ gameState }) => {
   if (!gameState || !gameState.stats) return null;
@@ -204,6 +281,8 @@ const StatsDisplay = ({ gameState }) => {
     </>
   );
 };
+
+
 
 // Secuencia de inicio estilo Linux
 const bootSequence = [
@@ -272,6 +351,11 @@ Todo se diseñó en un PC. ¿Te imaginas desarrollando en una pantalla de 5 pulg
 `;
 
 function App() {
+  const [showEnterPrompt, setShowEnterPrompt] = useState(false);
+  const [volume, setVolume] = useState(50); // volumen inicial al 50%
+
+  const [speedMultiplier, setSpeedMultiplier] = useState(1); // 1x por defecto
+
   const [awaitingUser, setAwaitingUser] = useState(false);
   const [awaitingPassword, setAwaitingPassword] = useState(false);
   const [tempUser, setTempUser] = useState('');
@@ -300,6 +384,33 @@ function App() {
   const startupMessagesEndRef = useRef(null);
 
 
+  // ✅ Se define arriba para que esté disponible globalmente
+  const addToTerminal = (entry) => {
+    if (typeof entry === 'object' && entry !== null && 'type' in entry && 'content' in entry) {
+      setTerminalHistory(prev => [...prev, entry]);
+    } else {
+      setTerminalHistory(prev => [...prev, { type: 'system', content: String(entry) }]);
+    }
+  };
+
+
+  useEffect(() => {
+    // Configurar el manejador de salida de depuración para enviar los mensajes a la terminal
+    setDebugOutputHandler((debugMessage) => {
+      // Verificar que addToTerminal existe y es una función
+      if (typeof addToTerminal === 'function') {
+        addToTerminal({
+          type: 'system',
+          content: debugMessage.content
+        });
+      } else {
+        console.warn('addToTerminal no está disponible para mensajes de depuración');
+      }
+    });
+    
+    // Log inicial del sistema de depuración
+    logDebug('Sistema de depuración inicializado', 'INFO', true);
+  }, []);
 
   // Comprobar si es un dispositivo móvil
   useEffect(() => {
@@ -331,9 +442,15 @@ function App() {
     let currentIndex = 0;
     let timer;
 
+    // 🔄 Precargar imágenes mientras arranca
+    preloadImages(preloadAssets)
+      .then(() => console.log('✅ Imágenes precargadas'))
+      .catch(() => console.warn('⚠️ Algunas imágenes fallaron al precargar'));
+
+
     const showNextMessage = () => {
       if (currentIndex < bootSequence.length) {
-        console.log("bootSequence actual:", bootSequence[currentIndex]);
+        //console.log("bootSequence actual:", bootSequence[currentIndex]);
 
         // Añadir el siguiente mensaje a la secuencia
         setStartupMessages(prev => [...prev, bootSequence[currentIndex]]);
@@ -372,6 +489,8 @@ function App() {
     // Limpieza
     return () => clearTimeout(timer);
   }, [showStartup]);
+
+
 
   // Capturar clics en la ventana para devolver el foco al terminal
   useEffect(() => {
@@ -427,28 +546,6 @@ function App() {
     }
   }, [startupMessages]);
 
-  // Limpiar historial del terminal
-  const clearHistory = () => {
-    setTerminalHistory([{ type: 'system', content: '[dim]Terminal limpiada. Como tus esperanzas.[/dim]' }]);
-  };
-
-  // Resetear terminal al estado inicial
-  const resetTerminal = () => {
-    setTerminalHistory([
-      { type: 'system', content: '[red]Sesión finalizada.[/red]' },
-      { type: 'system', content: ' ' },
-      ...loginSequence,
-      ...linuxWelcomeMessage
-    ]);
-  };
-
-  // Añadir mensaje a la terminal
-  const addToTerminal = (content, type = 'system') => {
-    setTerminalHistory(prev => [...prev, { type, content }]);
-  };
-
-  // Manejar comandos del terminal
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleCommand = async (command) => {
     if (awaitingUser) {
@@ -472,6 +569,8 @@ function App() {
       ]);
 
       setInputType('text');
+      terminalRef.current?.clearInput(); // ← ✅ limpia el campo
+
       setAwaitingPassword(false);
       setLoggedUser(tempUser);
 
@@ -489,28 +588,60 @@ function App() {
       ];
 
       for (const entry of loginSequenceDramatica) {
-        await delay(entry.delay);
+        await delay(entry.delay, speedMultiplier); // ✅ se ajusta con el multiplicador
         setTerminalHistory(prev => [...prev, entry]);
+
         setTimeout(() => {
           terminalRef.current?.focus();
-        }, 10);
+        }, 10); // esto no necesita modificarse
       }
-
       return '';
     }
 
-    // manejo normal de comandos
-    const response = await processCommand(command, gameState, {
-      setGameData,
-      setCurrentImage,
-      setCurrentRoute,
-      setGameLoaded,
-      clearHistory,
-      addToTerminal: (content) => setTerminalHistory(prev => [...prev, { type: 'system', content }]),
-      resetTerminal
-    });
+    // Registrar el comando en el sistema de depuración si está activado
+    if (isDebugActive()) {
+      logDebug(`Comando recibido: ${command}`, 'COMMAND');
+    }
 
-    return response;
+    // manejo normal de comandos
+    try {
+      const response = await processCommand(command, gameState, {
+        setGameData,
+        setCurrentImage,
+        setCurrentRoute,
+        setGameLoaded,
+        clearHistory: () => terminalRef.current?.clearHistory(),
+        addToTerminal,
+        resetTerminal: () => {
+          setTerminalHistory([
+            { type: 'system', content: '[red]Sesión finalizada.[/red]' },
+            { type: 'system', content: ' ' },
+            ...loginSequence,
+            ...linuxWelcomeMessage
+          ]);
+        },
+        speedMultiplier,
+        setShowEnterPrompt,
+        waitForEnter,
+        volume
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Error procesando comando:', error);
+      
+      // Registrar el error en el sistema de depuración
+      if (isDebugActive()) {
+        logDebug(`Error procesando comando: ${error.message}`, 'ERROR', true);
+      }
+      
+      addToTerminal({
+        type: 'error',
+        content: `[red]Error: ${error.message}[/red]`
+      });
+      
+      return `[red]Error: ${error.message}[/red]`;
+    }
   };
 
 
@@ -522,8 +653,8 @@ function App() {
       {showStartup && (
         <StartupOverlay $fading={startupFading}>
           {/*<BabosLogo>🐌 BabosOS</BabosLogo>*/}
-              <LogoImage src="images/logo.png" alt="Logo" />
-              BabosOS
+          <LogoImage src="images/logo.png" alt="Logo" />
+          BabosOS
           <StartupMessages>
             {startupMessages.filter(Boolean).map((msg, index) => (
               <StartupMessage key={index} $color={msg.color || '#ffffff'}>
@@ -586,10 +717,41 @@ function App() {
           gameData={gameData}
           currentRoute={currentRoute}
           setCurrentRoute={setCurrentRoute}
-          inputType={inputType} // <-- agrega esta línea
+          inputType={inputType}
+          speedMultiplier
+          showEnterPrompt={showEnterPrompt}
+          setShowEnterPrompt={setShowEnterPrompt}
+          waitForEnter
+          volume
 
         />
       </TerminalContainer>
+      <SpeedSlider>
+        Velocidad:
+        <SpeedSelect
+          value={speedMultiplier}
+          onChange={(e) => setSpeedMultiplier(Number(e.target.value))}
+        >
+          <option value={0.5}>0.5x</option>
+          <option value={1}>1x</option>
+          <option value={2}>2x</option>
+          <option value={3}>3x</option>
+        </SpeedSelect>
+
+        <VolumeControl>
+          <label htmlFor="volume">Volumen:</label>
+          <VolumeSlider
+            type="range"
+            id="volume"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+          />
+          <span>{volume}%</span>
+        </VolumeControl>
+      </SpeedSlider>
+
     </AppContainer>
   );
 }

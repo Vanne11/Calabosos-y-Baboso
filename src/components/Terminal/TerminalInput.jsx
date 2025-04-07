@@ -64,6 +64,7 @@ const TerminalInput = forwardRef(({
         ref={ref}
         placeholder={placeholder}
         disabled={disabled}
+        autoComplete={type === 'password' ? 'current-password' : 'username'} 
       />
     </InputContainer>
   );

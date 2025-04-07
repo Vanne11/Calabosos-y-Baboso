@@ -1,5 +1,5 @@
 // components/Terminal/Terminal.jsx
-// Terminal interactiva con detección de Tab
+// Terminal interactiva con detección de Tab e integración de depuración
 
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
@@ -8,6 +8,8 @@ import TerminalOutput from './TerminalOutput';
 import { processRoute } from '../../engine/routeResolver';
 import { findDialogById, findWidgetById } from '../../engine/gameLoader';
 import { applyModifiers, markDialogAsSeen } from '../../engine/gameState';
+// Importar el sistema de depuración
+import { isDebugActive, logDebug } from '../../engine/debugSystem';
 
 const TerminalContainer = styled.div`
   flex: 1;
@@ -106,7 +108,13 @@ const Terminal = forwardRef((props, ref) => {
     setGameState,
     gameData,
     currentRoute,
-    setCurrentRoute
+    setCurrentRoute,
+    inputType = 'text',
+    speedMultiplier = 1,
+    showEnterPrompt,
+    setShowEnterPrompt,
+    waitForEnter,
+    volume = 50
   } = props;
 
   const [inputValue, setInputValue] = useState('');
@@ -115,11 +123,29 @@ const Terminal = forwardRef((props, ref) => {
   const [dialogLines, setDialogLines] = useState([]);
   const [currentOptions, setCurrentOptions] = useState(null);
   const [isProcessingRoute, setIsProcessingRoute] = useState(false);
-  const [showEnterPrompt, setShowEnterPrompt] = useState(false);
   const [tabCount, setTabCount] = useState(0);
 
   const inputRef = useRef(null);
   const outputRef = useRef(null);
+
+  // Limpiar historial del terminal
+  const clearHistory = () => {
+    // Si el modo debug está activo, no permitimos limpiar la terminal
+    if (isDebugActive()) {
+      setHistory(prev => [...prev, { 
+        type: 'system', 
+        content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]' 
+      }]);
+      
+      // Registrar el intento
+      logDebug('Intento de limpiar la terminal rechazado (modo debug activo)', 'SYSTEM', true);
+      
+      return;
+    }
+    
+    // Si el debug está desactivado, permitimos limpiar normalmente
+    setHistory([{ type: 'system', content: '[dim]Terminal limpiada. Como tus esperanzas.[/dim]' }]);
+  };
 
   // Inicializar historial si se proporciona desde fuera
   useEffect(() => {
@@ -135,6 +161,12 @@ const Terminal = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     focus: () => {
       inputRef.current?.focus();
+    },
+    clearInput: () => {
+      setInputValue('');
+    },
+    clearHistory: () => {
+      clearHistory(); // Usar nuestra función modificada que respeta el modo debug
     }
   }));
 
@@ -168,10 +200,18 @@ const Terminal = forwardRef((props, ref) => {
 
     setIsProcessingRoute(true);
 
+    // Log de depuración cuando se cambia de ruta
+    if (isDebugActive()) {
+      logDebug(`Navegando a ruta: ${currentRoute}`, 'ROUTE');
+    }
+
     const processCurrentRoute = async () => {
       const route = gameData.routes.find(r => r.id === currentRoute);
       if (!route) {
         setIsProcessingRoute(false);
+        if (isDebugActive()) {
+          logDebug(`Error: Ruta no encontrada: ${currentRoute}`, 'ERROR');
+        }
         return;
       }
 
@@ -197,6 +237,9 @@ const Terminal = forwardRef((props, ref) => {
         // Buscar si es un widget (opciones)
         const widget = findWidgetById(actionId, gameData.widgets);
         if (widget && widget.type === 'button') {
+          if (isDebugActive()) {
+            logDebug(`Renderizando widget de botones: ${actionId}`, 'WIDGET');
+          }
           setCurrentOptions(widget);
           break; // Detenemos el procesamiento de acciones cuando hay opciones
         }
@@ -222,6 +265,11 @@ const Terminal = forwardRef((props, ref) => {
   // Mostrar un diálogo en la terminal
   const showDialog = async (dialog) => {
     if (!dialog || !dialog.content) return;
+
+    // Log de depuración cuando se muestra un diálogo
+    if (isDebugActive() && dialog) {
+      logDebug(`Mostrando diálogo: ${dialog.id || 'sin id'} (${dialog.character || 'sin personaje'})`, 'DIALOG');
+    }
 
     // Determinar qué líneas mostrar (filtrar por condiciones si es necesario)
     const validLines = dialog.content.filter(line => {
@@ -304,6 +352,11 @@ const Terminal = forwardRef((props, ref) => {
 
   // Manejar selección de opción
   const handleOptionSelect = (option) => {
+    // Log de depuración cuando se selecciona una opción
+    if (isDebugActive() && option) {
+      logDebug(`Opción seleccionada: "${option.text}" -> ${option.destination || 'sin destino'}`, 'OPTION');
+    }
+
     // Mostrar la opción seleccionada
     setHistory(prev => [...prev, {
       type: 'option',
@@ -314,6 +367,10 @@ const Terminal = forwardRef((props, ref) => {
     // Aplicar modificadores si existen
     if (option.modifiers && setGameState) {
       setGameState(prevState => applyModifiers(prevState, option.modifiers));
+
+      if (isDebugActive() && option.modifiers) {
+        logDebug(`Aplicando modificadores: ${JSON.stringify(option.modifiers)}`, 'STATE');
+      }
     }
 
     // Ir a la ruta especificada
@@ -380,6 +437,11 @@ const Terminal = forwardRef((props, ref) => {
     // Si no hay texto, no hacer nada
     if (!inputValue.trim()) return;
 
+    // Log de depuración cuando se ejecuta un comando
+    if (isDebugActive()) {
+      logDebug(`Comando ejecutado: ${inputValue}`, 'COMMAND');
+    }
+
     // Añadir comando a la historia
     setHistory(prev => [
       ...prev,
@@ -389,7 +451,17 @@ const Terminal = forwardRef((props, ref) => {
 
     // Comando para limpiar la pantalla
     if (inputValue.toLowerCase() === 'clear') {
-      setHistory([{ type: 'system', content: '[dim]Terminal limpiada. Al menos puedes mantener algo ordenado.[/dim]' }]);
+      // Verificar si el debug está activo antes de limpiar
+      if (isDebugActive()) {
+        setHistory(prev => [...prev, { 
+          type: 'system', 
+          content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]' 
+        }]);
+        logDebug('Intento de comando clear rechazado (modo debug activo)', 'SYSTEM', true);
+      } else {
+        setHistory([{ type: 'system', content: '[dim]Terminal limpiada. Al menos puedes mantener algo ordenado.[/dim]' }]);
+      }
+      
       setInputValue('');
       inputRef.current?.focus(); // Mantener foco
       return;
@@ -398,12 +470,20 @@ const Terminal = forwardRef((props, ref) => {
     // Procesar comando y añadir respuesta
     try {
       const response = await onCommand(inputValue);
-      setHistory(prev => [
-        ...prev,
-        { type: 'response', content: response }
-      ]);
+      
+      if (response) {
+        setHistory(prev => [
+          ...prev,
+          { type: 'response', content: response }
+        ]);
+      }
+      
       setTimeout(forceScrollToBottom, 50);
     } catch (error) {
+      if (isDebugActive()) {
+        logDebug(`Error al procesar comando: ${error.message}`, 'ERROR');
+      }
+
       setHistory(prev => [
         ...prev,
         {
@@ -475,9 +555,8 @@ const Terminal = forwardRef((props, ref) => {
         ref={inputRef}
         placeholder={currentDialog ? "Presiona Enter para continuar..." : ""}
         disabled={false}
-        type={props.inputType || 'text'} // <-- añade exactamente esto
+        type={inputType}
       />
-
     </TerminalContainer>
   );
 });

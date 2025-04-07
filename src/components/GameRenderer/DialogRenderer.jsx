@@ -101,6 +101,13 @@ const DialogRenderer = ({ dialog, gameState, onComplete }) => {
     });
     
     setDisplayedLines(processedLines);
+    if (processedLines.length > 0) {
+      const timer = setTimeout(() => {
+        if (!isLastLine) setCurrentLine(1);
+      }, 1500 / (dialog.speedMultiplier || 1)); // ⚡ usá prop si la pasás o estado global
+    
+      return () => clearTimeout(timer);
+    }
   }, [dialog, gameState]);
   
   // Determinar si estamos en la última línea
