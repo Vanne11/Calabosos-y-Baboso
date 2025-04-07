@@ -1,0 +1,8 @@
+{
+  "cycle": {
+    "duration": 1,
+    "phases": ["morning", "afternoon", "night"],
+    "initial": "morning"
+  },
+  "events": []
+}

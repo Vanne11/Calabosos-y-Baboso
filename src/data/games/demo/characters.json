@@ -1,0 +1,10 @@
+{
+  "characters": [
+    {
+      "id": "narrator",
+      "name": "Narrador Malévolo",
+      "description": "Un narrador con más ego que tú y mejores líneas de diálogo.",
+      "image": "/images/dialogs/narrator.png"
+    }
+  ]
+}

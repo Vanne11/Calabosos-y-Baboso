@@ -1,0 +1,31 @@
+{
+  "dialogs": [
+    {
+      "id": "intro",
+      "character": "narrator",
+      "image": "/images/dialogs/narrator.png",
+      "content": [
+        "Bienvenido a la demo más patética de la historia.",
+        "Estás en una habitación. Hay una puerta. ¿Qué vas a hacer al respecto?"
+      ]
+    },
+    {
+      "id": "description",
+      "character": "narrator",
+      "image": "/images/dialogs/narrator.png",
+      "content": [
+        "Miras alrededor. La habitación es tan vacía como tus ambiciones.",
+        "Hay una puerta. Probablemente conduce a más decepciones."
+      ]
+    },
+    {
+      "id": "ending",
+      "character": "narrator",
+      "image": "/images/dialogs/narrator.png",
+      "content": [
+        "¡Enhorabuena! Has terminado esta demostración.",
+        "Si esperabas algo más, deberías revisar tus expectativas."
+      ]
+    }
+  ]
+}

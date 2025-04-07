@@ -1,0 +1,38 @@
+{
+  "widgets": [
+    {
+      "id": "button_choice",
+      "type": "button",
+      "options": [
+        {
+          "text": "Mirar alrededor",
+          "destination": "look_around"
+        },
+        {
+          "text": "Abrir la puerta",
+          "destination": "end"
+        }
+      ]
+    },
+    {
+      "id": "button_back",
+      "type": "button",
+      "options": [
+        {
+          "text": "Volver",
+          "destination": "start"
+        }
+      ]
+    },
+    {
+      "id": "button_restart",
+      "type": "button",
+      "options": [
+        {
+          "text": "Reiniciar esta maravilla",
+          "destination": "start"
+        }
+      ]
+    }
+  ]
+}

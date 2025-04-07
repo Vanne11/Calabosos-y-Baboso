@@ -1,0 +1,13 @@
+{
+  "scenarios": [
+    {
+      "id": "room",
+      "image": "/images/scenarios/room.png",
+      "variants": {
+        "morning": "Una habitación vacía y deprimente. Como tu vida.",
+        "afternoon": "La misma habitación, pero con sombras más largas.",
+        "night": "Oscuridad. Como tu futuro."
+      }
+    }
+  ]
+}

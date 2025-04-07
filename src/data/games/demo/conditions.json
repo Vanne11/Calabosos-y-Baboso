@@ -1,0 +1,11 @@
+{
+  "conditions": [
+    {
+      "id": "default",
+      "description": "Condición que siempre es verdadera",
+      "criteria": {
+        "always": true
+      }
+    }
+  ]
+}

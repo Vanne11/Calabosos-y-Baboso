@@ -1,0 +1,19 @@
+{
+  "routes": [
+    {
+      "id": "start",
+      "condition": "default",
+      "actions": ["room", "intro", "button_choice"]
+    },
+    {
+      "id": "look_around",
+      "condition": "default",
+      "actions": ["room", "description", "button_back"]
+    },
+    {
+      "id": "end",
+      "condition": "default",
+      "actions": ["room", "ending", "button_restart"]
+    }
+  ]
+}
