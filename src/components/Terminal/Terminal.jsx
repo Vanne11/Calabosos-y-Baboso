@@ -114,7 +114,9 @@ const Terminal = forwardRef((props, ref) => {
     showEnterPrompt,
     setShowEnterPrompt,
     waitForEnter,
-    volume = 50
+    volume = 50,
+    isLoginPrompt = false  // <-- Asegúrate de recibir esta prop
+
   } = props;
 
   const [inputValue, setInputValue] = useState('');
@@ -128,21 +130,26 @@ const Terminal = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   const outputRef = useRef(null);
 
+  // En Terminal.jsx, añadir estos estados
+  const [commandHistory, setCommandHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [savedInput, setSavedInput] = useState('');
+
   // Limpiar historial del terminal
   const clearHistory = () => {
     // Si el modo debug está activo, no permitimos limpiar la terminal
     if (isDebugActive()) {
-      setHistory(prev => [...prev, { 
-        type: 'system', 
-        content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]' 
+      setHistory(prev => [...prev, {
+        type: 'system',
+        content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]'
       }]);
-      
+
       // Registrar el intento
       logDebug('Intento de limpiar la terminal rechazado (modo debug activo)', 'SYSTEM', true);
-      
+
       return;
     }
-    
+
     // Si el debug está desactivado, permitimos limpiar normalmente
     setHistory([{ type: 'system', content: '[dim]Terminal limpiada. Como tus esperanzas.[/dim]' }]);
   };
@@ -416,6 +423,38 @@ const Terminal = forwardRef((props, ref) => {
 
       setTimeout(forceScrollToBottom, 50);
     }
+    // Navegación con flechas en historial de comandos
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+
+      // Si es la primera vez que presiona flecha arriba, guardar el input actual
+      if (historyIndex === -1 && inputValue.trim()) {
+        setSavedInput(inputValue);
+      }
+
+      // Ir al comando anterior si hay historial disponible
+      if (commandHistory.length > 0 && historyIndex < commandHistory.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setInputValue(commandHistory[commandHistory.length - 1 - newIndex]);
+      }
+    }
+    else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+
+      // Si estamos navegando en el historial
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setInputValue(commandHistory[commandHistory.length - 1 - newIndex]);
+      }
+      // Si llegamos al final del historial, restaurar el input guardado
+      else if (historyIndex === 0) {
+        setHistoryIndex(-1);
+        setInputValue(savedInput);
+        setSavedInput('');
+      }
+    }
   };
 
   // Manejar entrada de comandos
@@ -437,6 +476,19 @@ const Terminal = forwardRef((props, ref) => {
     // Si no hay texto, no hacer nada
     if (!inputValue.trim()) return;
 
+ // Solo guardar comandos en el historial si no es login ni password
+ if (!isLoginPrompt && inputType !== 'password') {
+  // Añadir al historial de comandos navegables
+  setCommandHistory(prev => {
+    // Evitar duplicados consecutivos
+    if (prev.length > 0 && prev[prev.length - 1] === inputValue) return prev;
+    return [...prev, inputValue];
+  });
+  // Resetear índice de navegación
+  setHistoryIndex(-1);
+  setSavedInput('');
+}
+
     // Log de depuración cuando se ejecuta un comando
     if (isDebugActive()) {
       logDebug(`Comando ejecutado: ${inputValue}`, 'COMMAND');
@@ -453,15 +505,15 @@ const Terminal = forwardRef((props, ref) => {
     if (inputValue.toLowerCase() === 'clear') {
       // Verificar si el debug está activo antes de limpiar
       if (isDebugActive()) {
-        setHistory(prev => [...prev, { 
-          type: 'system', 
-          content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]' 
+        setHistory(prev => [...prev, {
+          type: 'system',
+          content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]'
         }]);
         logDebug('Intento de comando clear rechazado (modo debug activo)', 'SYSTEM', true);
       } else {
         setHistory([{ type: 'system', content: '[dim]Terminal limpiada. Al menos puedes mantener algo ordenado.[/dim]' }]);
       }
-      
+
       setInputValue('');
       inputRef.current?.focus(); // Mantener foco
       return;
@@ -470,14 +522,14 @@ const Terminal = forwardRef((props, ref) => {
     // Procesar comando y añadir respuesta
     try {
       const response = await onCommand(inputValue);
-      
+
       if (response) {
         setHistory(prev => [
           ...prev,
           { type: 'response', content: response }
         ]);
       }
-      
+
       setTimeout(forceScrollToBottom, 50);
     } catch (error) {
       if (isDebugActive()) {

@@ -723,7 +723,7 @@ function App() {
           setShowEnterPrompt={setShowEnterPrompt}
           waitForEnter
           volume
-
+          isLoginPrompt={awaitingUser} // <-- Añadir esta prop
         />
       </TerminalContainer>
       <SpeedSlider>
