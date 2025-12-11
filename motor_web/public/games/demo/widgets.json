@@ -1,0 +1,363 @@
+{
+  "widgets": [
+    {
+      "id": "widget_elegir_genero",
+      "type": "button",
+      "options": [
+        {
+          "text": "Masculino",
+          "destination": "pedir_nombre",
+          "modifiers": {
+            "stats": {"genero": "masculino"}
+          }
+        },
+        {
+          "text": "Femenino",
+          "destination": "pedir_nombre",
+          "modifiers": {
+            "stats": {"genero": "femenino"}
+          }
+        },
+        {
+          "text": "No binario",
+          "destination": "pedir_nombre",
+          "modifiers": {
+            "stats": {"genero": "no_binario"}
+          }
+        },
+        {
+          "text": "Otro",
+          "destination": "pedir_nombre",
+          "modifiers": {
+            "stats": {"genero": "otro"}
+          }
+        }
+      ]
+    },
+    {
+      "id": "widget_input_nombre",
+      "type": "input",
+      "prompt": "Escribe tu nombre:",
+      "saveAs": "nombre_jugador",
+      "destination": "reaccion_narrador"
+    },
+    {
+      "id": "widget_continuar_plaza",
+      "type": "button",
+      "options": [
+        {
+          "text": "Continuar",
+          "destination": "plaza_principal"
+        }
+      ]
+    },
+    {
+      "id": "widget_plaza_opciones",
+      "type": "button",
+      "options": [
+        {
+          "text": "Está bien, acepto la misión. ¿Cuál es el plan?",
+          "destination": "decision_inicial"
+        },
+        {
+          "text": "Ni hablar, buscaré una taberna y me emborracharé.",
+          "destination": "decision_inicial"
+        },
+        {
+          "text": "¿Qué gano yo con todo esto?",
+          "destination": "decision_inicial"
+        }
+      ]
+    },
+    {
+      "id": "widget_conseguir_dinero",
+      "type": "button",
+      "options": [
+        {
+          "text": "Buscaré algún trabajo rápido en la ciudad.",
+          "destination": "trabajar_establos_inicio"
+        },
+        {
+          "text": "¿Hay algo de valor que pueda vender?",
+          "destination": "vender_relicario_inicio"
+        },
+        {
+          "text": "Quizás podría... tomar prestado algo de dinero sin permiso.",
+          "destination": "robar_noble"
+        }
+      ]
+    },
+    {
+      "id": "widget_elegir_trabajo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Limpiaré establos. Suena lo menos peligroso.",
+          "destination": "trabajar_establos"
+        },
+        {
+          "text": "Probaré pociones. Al menos será interesante.",
+          "destination": "trabajar_establos"
+        },
+        {
+          "text": "Ayudaré al verdugo. Debe pagar bien.",
+          "destination": "trabajar_establos"
+        }
+      ]
+    },
+    {
+      "id": "widget_tirada_establos",
+      "type": "button",
+      "options": [
+        {
+          "text": "🎲 Hacer tirada (CRÍTICO - 20)",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (ÉXITO NOTABLE - 16-19)",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (ÉXITO LEVE - 11-15)",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (FRACASO LEVE - 6-10)",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (FRACASO GRAVE - 2-5)",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (PIFIA - 1)",
+          "destination": "tienda_tendero"
+        }
+      ]
+    },
+    {
+      "id": "widget_vender_opciones",
+      "type": "button",
+      "options": [
+        {
+          "text": "Venderé el relicario, supongo.",
+          "destination": "vender_relicario"
+        },
+        {
+          "text": "Mis zapatos no, los necesitaré para la aventura.",
+          "destination": "decision_inicial"
+        },
+        {
+          "text": "¿No hay otra cosa que pueda vender?",
+          "destination": "vender_relicario"
+        }
+      ]
+    },
+    {
+      "id": "widget_tirada_empenos",
+      "type": "button",
+      "options": [
+        {
+          "text": "🎲 Hacer tirada (18-20) - Gran éxito",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (12-17) - Éxito",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (6-11) - Fracaso",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (2-5) - Fracaso grave",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Hacer tirada (1) - Pifia",
+          "destination": "tienda_tendero"
+        }
+      ]
+    },
+    {
+      "id": "widget_tirada_robo",
+      "type": "button",
+      "options": [
+        {
+          "text": "🎲 Intentar robar (16-20) - Éxito perfecto",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Intentar robar (11-15) - Éxito parcial",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Intentar robar (6-10) - Fracaso",
+          "destination": "tienda_tendero"
+        },
+        {
+          "text": "🎲 Intentar robar (1-5) - Atrapado",
+          "destination": "tienda_tendero"
+        }
+      ]
+    },
+    {
+      "id": "widget_despues_tienda",
+      "type": "button",
+      "options": [
+        {
+          "text": "Ir al callejón lateral",
+          "destination": "callejon_lateral"
+        }
+      ]
+    },
+    {
+      "id": "widget_callejon_opciones",
+      "type": "button",
+      "options": [
+        {
+          "text": "Investigar el sonido",
+          "destination": "encuentro_nerly"
+        },
+        {
+          "text": "Ignorarlo y seguir adelante",
+          "destination": "encuentro_nerly"
+        },
+        {
+          "text": "Volver a la calle principal",
+          "destination": "encuentro_nerly"
+        }
+      ]
+    },
+    {
+      "id": "widget_nerly_opciones",
+      "type": "button",
+      "options": [
+        {
+          "text": "¿Por qué debería confiar en una babosa?",
+          "destination": "nerly_se_une"
+        },
+        {
+          "text": "Gracias, me vendría bien la ayuda.",
+          "destination": "nerly_se_une"
+        },
+        {
+          "text": "¿Qué ganas tú con esto?",
+          "destination": "nerly_se_une"
+        }
+      ]
+    },
+    {
+      "id": "widget_ir_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Ir hacia el Abismo",
+          "destination": "camino_abismo"
+        }
+      ]
+    },
+    {
+      "id": "widget_seguir_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Continuar hacia el Abismo",
+          "destination": "llegada_abismo"
+        }
+      ]
+    },
+    {
+      "id": "widget_opciones_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Hablar con el anciano",
+          "destination": "hablar_anciano"
+        },
+        {
+          "text": "Entrar directamente al Abismo",
+          "destination": "entrar_abismo"
+        }
+      ]
+    },
+    {
+      "id": "widget_entrar_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Entrar al Abismo",
+          "destination": "entrar_abismo"
+        }
+      ]
+    },
+    {
+      "id": "widget_dentro_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Entrar sigilosamente",
+          "destination": "sala_entrada"
+        },
+        {
+          "text": "¡A la carga!",
+          "destination": "sala_entrada"
+        },
+        {
+          "text": "Lanzar algo primero para probar",
+          "destination": "sala_entrada"
+        }
+      ]
+    },
+    {
+      "id": "widget_explorar_abismo",
+      "type": "button",
+      "options": [
+        {
+          "text": "Ir a las Cavernas de Cría",
+          "destination": "grutas_cristal"
+        },
+        {
+          "text": "Bajar al Abismo Profundo",
+          "destination": "grutas_cristal"
+        },
+        {
+          "text": "Explorar las Grutas de Cristal",
+          "destination": "grutas_cristal"
+        }
+      ]
+    },
+    {
+      "id": "widget_grutas_opciones",
+      "type": "button",
+      "options": [
+        {
+          "text": "Tocar la Lágrima de Cristal",
+          "destination": "final"
+        },
+        {
+          "text": "Ignorar el cristal y seguir adelante",
+          "destination": "final"
+        },
+        {
+          "text": "Volver a la sala anterior",
+          "destination": "final"
+        }
+      ]
+    },
+    {
+      "id": "widget_reiniciar",
+      "type": "button",
+      "options": [
+        {
+          "text": "Reiniciar la demo",
+          "destination": "start"
+        },
+        {
+          "text": "Volver al inicio",
+          "destination": "start"
+        }
+      ]
+    }
+  ]
+}
