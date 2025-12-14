@@ -128,6 +128,10 @@ const Terminal = forwardRef((props, ref) => {
   const [currentOptions, setCurrentOptions] = useState(null);
   const [isProcessingRoute, setIsProcessingRoute] = useState(false);
   const [tabCount, setTabCount] = useState(0);
+  const [currentActionIndex, setCurrentActionIndex] = useState(0);
+  const [currentRouteActions, setCurrentRouteActions] = useState([]); // Nuevo estado para almacenar las acciones de la ruta actual
+  const [currentProcessedActionIndex, setCurrentProcessedActionIndex] = useState(-1); // Nuevo estado para almacenar el índice de la acción procesada
+
 
   const inputRef = useRef(null);
   const outputRef = useRef(null);
@@ -213,203 +217,246 @@ const Terminal = forwardRef((props, ref) => {
     setShowEnterPrompt(!!currentDialog);
   }, [currentDialog]);
 
-  // Procesar la ruta actual cuando cambia
+  // Función para procesar la siguiente acción en la ruta
+  const processNextAction = async (actionIndex, actions) => {
+    if (actionIndex >= actions.length) {
+      // Todas las acciones de la ruta han sido procesadas
+      if (isDebugActive()) {
+        logDebug(`Todas las acciones de la ruta ${currentRoute} han sido procesadas.`, 'ROUTE');
+      }
+      setIsProcessingRoute(false); // Route processing finished
+      return;
+    }
+
+    const actionId = actions[actionIndex];
+    setCurrentActionIndex(actionIndex); // Actualizar el índice de la acción actual
+
+    // Buscar si es un escenario
+    const scenario = getScenarioById(actionId, gameData.scenarios);
+    if (scenario) {
+      if (isDebugActive()) {
+        logDebug(`Mostrando escenario: ${actionId}`, 'SCENARIO');
+      }
+
+      // Mostrar imagen del escenario si existe
+      if (scenario.image && setCurrentImage) {
+        setCurrentImage(scenario.image);
+        if (isDebugActive()) {
+          logDebug(`Imagen de escenario cargada: ${scenario.image}`, 'SCENARIO');
+        }
+      }
+
+      // Obtener la descripción del escenario
+      // Soporta tanto 'variants' (por fase del día) como 'description' (descripción única)
+      let description;
+      if (scenario.variants) {
+        const timePhase = gameState?.time?.phase || 'morning';
+        description = scenario.variants[timePhase] || scenario.variants.morning || 'Sin descripción';
+      } else {
+        description = scenario.description || 'Sin descripción';
+      }
+
+      // Mostrar el escenario como mensaje del sistema con formato destacado
+      addSystemMessage(`[bold cyan]═══════════════════════════════════════════[/bold cyan]`);
+      addSystemMessage(`[bold yellow]📍 ${scenario.name || scenario.id || 'Escenario'}[/bold yellow]`);
+      addSystemMessage(`[bold cyan]═══════════════════════════════════════════[/bold cyan]`);
+      addSystemMessage('');
+      addSystemMessage(`[white]${description}[/white]`);
+      addSystemMessage(''); // Línea en blanco
+
+      // Continuar con la siguiente acción inmediatamente después de mostrar el escenario
+      processNextAction(actionIndex + 1, actions);
+      return;
+    }
+
+    // Buscar si es un diálogo
+    const dialog = findDialogById(actionId, gameData.dialogs);
+    if (dialog) {
+      // showDialog ahora es una promesa que se resuelve cuando el diálogo termina
+      await showDialog(dialog);
+
+      // Marcar diálogo como visto
+      setGameState(prevState => markDialogAsSeen(prevState, actionId));
+
+      // Continuar con la siguiente acción después de que el diálogo haya terminado
+      processNextAction(actionIndex + 1, actions);
+      return;
+    }
+
+    // Buscar si es un widget (opciones, formulario o input)
+    const widget = findWidgetById(actionId, gameData.widgets);
+    if (widget) {
+      if (isDebugActive()) {
+        logDebug(`Renderizando widget tipo ${widget.type}: ${actionId}`, 'WIDGET');
+      }
+      setCurrentOptions(widget);
+      setCurrentRouteActions(actions); // Almacenar las acciones de la ruta actual
+      setCurrentProcessedActionIndex(actionIndex); // Almacenar el índice de la acción actual (el widget)
+      setIsProcessingRoute(false); // La ruta se detiene para que el usuario interactúe con el widget
+      return; // Detenemos el procesamiento de acciones cuando hay opciones
+    }
+
+    // Si la acción no fue reconocida
+    if (isDebugActive()) {
+      logDebug(`Advertencia: Acción no reconocida en ruta ${currentRoute}: ${actionId}`, 'WARNING');
+    }
+    addSystemMessage(`[yellow]Advertencia: Acción desconocida: ${actionId}. Saltando.[/yellow]`);
+    processNextAction(actionIndex + 1, actions); // Intentar procesar la siguiente acción
+  };
+
+  // Procesar la ruta actual cuando cambia, o cuando una acción individual termina
   useEffect(() => {
     if (!gameData || !currentRoute || !setGameState) return;
-    if (isProcessingRoute) return;
+    if (isProcessingRoute) {
+      if (isDebugActive()) {
+        logDebug(`isProcessingRoute es true. Saliendo de useEffect para evitar re-ejecución.`, 'DEBUG');
+      }
+      return;
+    }
 
-    setIsProcessingRoute(true);
+    // Resetear el índice de acción cuando cambia la ruta
+    setCurrentActionIndex(0);
+    setIsProcessingRoute(true); // Bloquear procesamiento mientras se carga la ruta
 
     // Log de depuración cuando se cambia de ruta
     if (isDebugActive()) {
       logDebug(`Navegando a ruta: ${currentRoute}`, 'ROUTE');
     }
 
-    const processCurrentRoute = async () => {
-      const route = gameData.routes.find(r => r.id === currentRoute);
-      if (!route) {
-        setIsProcessingRoute(false);
-        if (isDebugActive()) {
-          logDebug(`Error: Ruta no encontrada: ${currentRoute}`, 'ERROR');
-        }
-        return;
-      }
-
-      // Limpiar estado actual de diálogo (no limpiamos opciones aquí porque se establecen durante el procesamiento)
-      setCurrentDialog(null);
-
-      // Mostrar mensaje de la ruta solo en modo debug
-      if (isDebugActive()) {
-        addSystemMessage(`[dim]Procesando ruta: ${currentRoute}[/dim]`);
-      }
-
-      // Procesar acciones de la ruta
-      for (const actionId of route.actions) {
-        // Buscar si es un escenario
-        const scenario = getScenarioById(actionId, gameData.scenarios);
-        if (scenario) {
-          if (isDebugActive()) {
-            logDebug(`Mostrando escenario: ${actionId}`, 'SCENARIO');
-          }
-
-          // Mostrar imagen del escenario si existe
-          if (scenario.image && setCurrentImage) {
-            setCurrentImage(scenario.image);
-            if (isDebugActive()) {
-              logDebug(`Imagen de escenario cargada: ${scenario.image}`, 'SCENARIO');
-            }
-          }
-
-          // Obtener la descripción del escenario
-          // Soporta tanto 'variants' (por fase del día) como 'description' (descripción única)
-          let description;
-          if (scenario.variants) {
-            const timePhase = gameState?.time?.phase || 'morning';
-            description = scenario.variants[timePhase] || scenario.variants.morning || 'Sin descripción';
-          } else {
-            description = scenario.description || 'Sin descripción';
-          }
-
-          // Mostrar el escenario como mensaje del sistema con formato destacado
-          addSystemMessage(`[bold cyan]═══════════════════════════════════════════[/bold cyan]`);
-          addSystemMessage(`[bold yellow]📍 ${scenario.name || scenario.id || 'Escenario'}[/bold yellow]`);
-          addSystemMessage(`[bold cyan]═══════════════════════════════════════════[/bold cyan]`);
-          addSystemMessage('');
-          addSystemMessage(`[white]${description}[/white]`);
-          addSystemMessage(''); // Línea en blanco
-
-          continue;
-        }
-
-        // Buscar si es un diálogo
-        const dialog = findDialogById(actionId, gameData.dialogs);
-        if (dialog) {
-          await showDialog(dialog);
-
-          // Marcar diálogo como visto
-          setGameState(prevState => markDialogAsSeen(prevState, actionId));
-          continue;
-        }
-
-        // Buscar si es un widget (opciones, formulario o input)
-        const widget = findWidgetById(actionId, gameData.widgets);
-        if (widget && (widget.type === 'button' || widget.type === 'form' || widget.type === 'input')) {
-          if (isDebugActive()) {
-            logDebug(`Renderizando widget tipo ${widget.type}: ${actionId}`, 'WIDGET');
-          }
-          setCurrentOptions(widget);
-          break; // Detenemos el procesamiento de acciones cuando hay opciones
-        }
-      }
-
+    const route = gameData.routes.find(r => r.id === currentRoute);
+    if (!route) {
       setIsProcessingRoute(false);
-    };
+      if (isDebugActive()) {
+        logDebug(`Error: Ruta no encontrada: ${currentRoute}`, 'ERROR');
+      }
+      addSystemMessage(`[red]Error: Ruta no encontrada: ${currentRoute}[/red]`);
+      return;
+    }
 
-    processCurrentRoute();
-  }, [currentRoute, gameData, setGameState, isProcessingRoute]);
+    // Limpiar estado actual de diálogo y opciones al iniciar una nueva ruta
+    setCurrentDialog(null);
+    setCurrentOptions(null);
+    setCurrentImage(null); // Limpiar imagen al cambiar de ruta
 
-  // Mantener el foco después de renderizar
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    // Mostrar mensaje de la ruta solo en modo debug
+    if (isDebugActive()) {
+      addSystemMessage(`[dim]Iniciando procesamiento de ruta: ${currentRoute}[/dim]`);
+    }
+
+    // Iniciar el procesamiento de acciones
+    processNextAction(0, route.actions);
+
+  }, [currentRoute, gameData, setGameState]); // isProcessingRoute removido de las dependencias
 
   // Añadir mensaje del sistema a la historia
   const addSystemMessage = (message) => {
-    setHistory(prev => [...prev, { type: 'system', content: message }]);
+    const messageObject = typeof message === 'string' ? { type: 'system', content: message } : message;
+    setHistory(prev => [...prev, messageObject]);
     setTimeout(forceScrollToBottom, 50);
   };
 
   // Mostrar un diálogo en la terminal
   const showDialog = async (dialog) => {
-    if (!dialog || !dialog.content) return;
-
-    // Log de depuración cuando se muestra un diálogo
-    if (isDebugActive() && dialog) {
-      logDebug(`Mostrando diálogo: ${dialog.id || 'sin id'} (${dialog.character || 'sin personaje'})`, 'DIALOG');
+    if (!dialog || !dialog.content) {
+      if (isDebugActive()) {
+        logDebug(`Advertencia: Intento de mostrar diálogo nulo o sin contenido.`, 'WARNING');
+      }
+      return Promise.resolve(); // Resuelve inmediatamente si el diálogo es inválido
     }
 
-    // Determinar qué líneas mostrar (filtrar por condiciones si es necesario)
-    const validLines = dialog.content.filter(line => {
-      // Si es un string, siempre se muestra
-      if (typeof line === 'string') return true;
+    // Log de depuración cuando se muestra un diálogo
+    if (isDebugActive()) {
+      logDebug(`Iniciando diálogo: ${dialog.id || 'sin id'} (${dialog.character || 'sin personaje'})`, 'DIALOG');
+    }
 
-      // Si es un objeto con condición, se debería verificar la condición
-      // Por simplicidad, ahora mostramos todas las líneas
+    // Filtrar líneas por condiciones
+    const validLines = dialog.content.filter(line => {
+      if (typeof line === 'string') return true;
+      // TODO: Implementar lógica de evaluación de condiciones para líneas de diálogo
+      // Por ahora, mostrar todas las líneas de objetos también
       return true;
     });
 
-    setCurrentDialog(dialog);
-    setDialogLines(validLines);
+    if (validLines.length === 0) {
+      if (isDebugActive()) {
+        logDebug(`Advertencia: Diálogo "${dialog.id}" sin líneas válidas.`, 'WARNING');
+      }
+      return Promise.resolve(); // Resuelve inmediatamente si no hay líneas válidas
+    }
 
-    // Mostrar el nombre del personaje
+    // Resetear el índice del diálogo actual
+    setCurrentDialogIndex(0);
+
+    // Si hay un personaje, mostrar su nombre primero
     if (dialog.character) {
-      setHistory(prev => [...prev, {
+      addSystemMessage({
         type: 'dialogHeader',
         content: dialog.character
-      }]);
-      setTimeout(forceScrollToBottom, 50);
-    }
-
-    // Mostrar la primera línea
-    if (validLines.length > 0) {
-      const firstLine = typeof validLines[0] === 'string'
-        ? validLines[0]
-        : validLines[0].text || '';
-
-      setHistory(prev => [...prev, {
-        type: 'dialog',
-        content: firstLine
-      }]);
-      setTimeout(forceScrollToBottom, 50);
-
-      // Si hay más líneas, esperamos a que el usuario continúe
-      if (validLines.length > 1) {
-        setCurrentDialogIndex(1);
-      } else {
-        setCurrentDialog(null);
-      }
-    }
-
-    // Esperamos a que se complete el diálogo antes de continuar
-    // Solo esperamos si hay más de una línea
-    if (validLines.length > 1) {
-      return new Promise(resolve => {
-        dialogCompleteResolve.current = resolve;
       });
     }
 
-    return Promise.resolve();
+    // Mostrar la primera línea inmediatamente
+    const firstLine = typeof validLines[0] === 'string'
+      ? validLines[0]
+      : validLines[0].text || '';
+    addSystemMessage({
+      type: 'dialog',
+      content: firstLine
+    });
+
+    // Si hay más líneas, establecer el diálogo actual y esperar al usuario
+    if (validLines.length > 1) {
+      setCurrentDialog(dialog);
+      setDialogLines(validLines);
+      // Retornar una promesa que se resolverá cuando todo el diálogo haya terminado
+      return new Promise(resolve => {
+        dialogCompleteResolve.current = resolve;
+      });
+    } else {
+      // Si solo hay una línea, el diálogo termina inmediatamente
+      setCurrentDialog(null);
+      setDialogLines([]);
+      return Promise.resolve();
+    }
   };
 
   // Continuar mostrando el diálogo
   const continueDialog = () => {
-    if (!currentDialog || currentDialogIndex >= dialogLines.length) {
+    // Si no hay diálogo activo o ya se mostraron todas las líneas
+    if (!currentDialog || currentDialogIndex >= dialogLines.length - 1) {
+      if (isDebugActive()) {
+        logDebug(`Diálogo finalizado o no activo. currentDialog: ${currentDialog?.id}, currentDialogIndex: ${currentDialogIndex}, dialogLines.length: ${dialogLines.length}`, 'DIALOG');
+      }
       setCurrentDialog(null);
       setCurrentDialogIndex(0);
-      // Resolver la promesa si existe
+      setDialogLines([]); // Limpiar las líneas del diálogo
       if (dialogCompleteResolve.current) {
-        dialogCompleteResolve.current();
+        dialogCompleteResolve.current(); // Resolver la promesa
         dialogCompleteResolve.current = null;
       }
       return;
     }
 
-    const line = dialogLines[currentDialogIndex];
+    // Mover al siguiente índice
+    const nextIndex = currentDialogIndex + 1;
+    setCurrentDialogIndex(nextIndex);
+
+    const line = dialogLines[nextIndex];
     const text = typeof line === 'string' ? line : line.text || '';
 
-    setHistory(prev => [...prev, {
+    addSystemMessage({
       type: 'dialog',
       content: text
-    }]);
-    setTimeout(forceScrollToBottom, 50);
+    });
 
-    setCurrentDialogIndex(currentDialogIndex + 1);
-
-    if (currentDialogIndex >= dialogLines.length - 1) {
-      // Era la última línea
+    // Si esta es la última línea
+    if (nextIndex >= dialogLines.length - 1) {
+      if (isDebugActive()) {
+        logDebug(`Última línea del diálogo "${currentDialog.id}" mostrada.`, 'DIALOG');
+      }
       setCurrentDialog(null);
-      setCurrentDialogIndex(0);
-      // Resolver la promesa si existe
+      setDialogLines([]);
+      // Resolver la promesa para que `processNextAction` pueda continuar
       if (dialogCompleteResolve.current) {
         dialogCompleteResolve.current();
         dialogCompleteResolve.current = null;
@@ -435,18 +482,28 @@ const Terminal = forwardRef((props, ref) => {
     if (option.modifiers && setGameState) {
       setGameState(prevState => applyModifiers(prevState, option.modifiers));
 
-      if (isDebugActive() && option.modifiers) {
+      if (isDebugActive()) {
         logDebug(`Aplicando modificadores: ${JSON.stringify(option.modifiers)}`, 'STATE');
       }
     }
 
-    // Ir a la ruta especificada
-    if (option.destination && setCurrentRoute) {
-      setCurrentRoute(option.destination);
-    }
-
     // Limpiar opciones actuales
     setCurrentOptions(null);
+
+    // Ir a la ruta especificada
+    if (option.destination && option.destination !== currentRoute) {
+      // Si la opción lleva a una nueva ruta, el useEffect de currentRoute se encargará
+      setCurrentRoute(option.destination);
+    } else {
+      // Si no hay destino, o el destino es la misma ruta,
+      // continuar procesando las acciones restantes en la ruta actual
+      if (currentRouteActions.length > 0 && currentProcessedActionIndex !== -1) {
+        processNextAction(currentProcessedActionIndex + 1, currentRouteActions);
+      } else {
+        // Si no hay más acciones en la ruta, la ruta ha terminado
+        setIsProcessingRoute(false);
+      }
+    }
   };
 
   // Manejar envío de formulario
@@ -489,13 +546,23 @@ const Terminal = forwardRef((props, ref) => {
       }
     }
 
-    // Ir a la ruta especificada
-    if (widget.destination && setCurrentRoute) {
-      setCurrentRoute(widget.destination);
-    }
-
     // Limpiar widget actual
     setCurrentOptions(null);
+
+    // Ir a la ruta especificada
+    if (widget.destination && widget.destination !== currentRoute) {
+      // Si la opción lleva a una nueva ruta, el useEffect de currentRoute se encargará
+      setCurrentRoute(widget.destination);
+    } else {
+      // Si no hay destino, o el destino es la misma ruta,
+      // continuar procesando las acciones restantes en la ruta actual
+      if (currentRouteActions.length > 0 && currentProcessedActionIndex !== -1) {
+        processNextAction(currentProcessedActionIndex + 1, currentRouteActions);
+      } else {
+        // Si no hay más acciones en la ruta, la ruta ha terminado
+        setIsProcessingRoute(false);
+      }
+    }
   };
 
   // Manejar eventos de teclado para la detección de Tab
@@ -609,8 +676,16 @@ const Terminal = forwardRef((props, ref) => {
       }
 
       // Ir a la ruta de destino
-      if (currentOptions.destination && setCurrentRoute) {
+      if (currentOptions.destination && currentOptions.destination !== currentRoute) {
         setCurrentRoute(currentOptions.destination);
+      } else {
+        // Si no hay destino, o el destino es la misma ruta, continuar
+        if (currentRouteActions.length > 0 && currentProcessedActionIndex !== -1) {
+          processNextAction(currentProcessedActionIndex + 1, currentRouteActions);
+        } else {
+          // Si no hay más acciones en la ruta, la ruta ha terminado
+          setIsProcessingRoute(false);
+        }
       }
 
       // Limpiar widget actual
