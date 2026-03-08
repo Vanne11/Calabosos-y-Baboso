@@ -1,7 +1,7 @@
 // components/terminal/TerminalInput.tsx
 // Input de la terminal
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import styled from 'styled-components';
 
 const InputContainer = styled.form`
@@ -45,7 +45,11 @@ interface TerminalInputProps {
   autoFocus?: boolean;
 }
 
-const TerminalInput: React.FC<TerminalInputProps> = ({
+export interface TerminalInputHandle {
+  focus: () => void;
+}
+
+const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(({
   prompt,
   value,
   onChange,
@@ -55,8 +59,12 @@ const TerminalInput: React.FC<TerminalInputProps> = ({
   type = 'text',
   disabled = false,
   autoFocus = true,
-}) => {
+}, ref) => {
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+  }));
 
   useEffect(() => {
     if (autoFocus) {
@@ -86,6 +94,6 @@ const TerminalInput: React.FC<TerminalInputProps> = ({
       />
     </InputContainer>
   );
-};
+});
 
 export default TerminalInput;

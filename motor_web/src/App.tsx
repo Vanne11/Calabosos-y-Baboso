@@ -23,6 +23,7 @@ const App: React.FC = () => {
   const addEntry = useAppStore((s) => s.addEntry);
   const addCommandToHistory = useAppStore((s) => s.addCommandToHistory);
   const pendingResult = useAppStore((s) => s.pendingResult);
+  const playerState = useAppStore((s) => s.playerState);
 
   const [inputValue, setInputValue] = useState('');
 
@@ -107,13 +108,20 @@ const App: React.FC = () => {
     sendAction({ type: 'roll_dice' });
   };
 
-  // Determine prompt
+  // Determine prompt - in game mode, derive from player state
+  let promptName = username;
+  if (phase === 'game' && playerState) {
+    const override = playerState.stats._prompt;
+    const charName = playerState.stats.nombre_jugador;
+    if (override) promptName = String(override);
+    else if (charName) promptName = String(charName);
+  }
   const prompt = isLogin
     ? loginStep === 'password'
       ? 'Contraseña >'
       : 'Login >'
-    : username
-      ? `[${username}@cyb] >`
+    : promptName
+      ? `[${promptName}@cyb] >`
       : 'cyb >';
 
   // Determine input type

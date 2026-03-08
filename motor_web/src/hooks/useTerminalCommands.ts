@@ -4,6 +4,7 @@
 import { useCallback } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { useDebugStore } from '../store/useDebugStore';
+import { useEditorStore } from '../editor/store/useEditorStore';
 import { parseCommand } from '../engine/CommandParser';
 import { loadGame, listGames } from '../engine/GameLoader';
 import { GameEngine } from '../engine/GameEngine';
@@ -15,6 +16,7 @@ export function useTerminalCommands() {
   const clearHistory = useAppStore((s) => s.clearHistory);
   const setEngine = useAppStore((s) => s.setEngine);
   const setGameManifest = useAppStore((s) => s.setGameManifest);
+  const setGameBasePath = useAppStore((s) => s.setGameBasePath);
   const setPhase = useAppStore((s) => s.setPhase);
   const setCurrentImage = useAppStore((s) => s.setCurrentImage);
   const resetGame = useAppStore((s) => s.resetGame);
@@ -47,7 +49,7 @@ export function useTerminalCommands() {
 [yellow][bold]/about[/bold][/yellow] - Información sobre el [italic]glorioso[/italic] Motor Baboso.
 [yellow][bold]/run [game][/bold][/yellow] - Corre un juego. Ejemplo: [cyan]/run demo[/cyan]. ¿Serás capaz de escribirlo correctamente?
 [yellow][bold]/list[/bold][/yellow] - Muestra los juegos disponibles. Spoiler: hay pocos.
-[yellow][bold]/editor[/bold][/yellow] o [yellow][bold]/create[/bold][/yellow] - Abre el editor visual de historias. Para los que creen que pueden crear algo decente.
+[yellow][bold]/editor [game][/bold][/yellow] o [yellow][bold]/create[/bold][/yellow] - Abre el editor visual de historias. Con nombre de juego lo carga para editar. Ejemplo: [cyan]/editor demo[/cyan].
 [yellow][bold]/debug[/bold][/yellow] - Activa el modo de depuración. Para ver opciones escribe [cyan]/debug[/cyan] sin argumentos.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona como siempre lo haces. Cierra la sesión.
 
@@ -104,16 +106,20 @@ export function useTerminalCommands() {
 
         case 'editor':
         case 'create':
-          addEntry({
-            type: 'system',
-            content: '[yellow]Abriendo el editor visual de historias...[/yellow]',
-          });
-          addEntry({
-            type: 'system',
-            content: '[dim]Prepárate para crear algo que probablemente nadie jugará.[/dim]',
-          });
-          await delay(500, speed);
-          setPhase('editor');
+          if (args.length > 0) {
+            await handleEditorWithGame(args[0]);
+          } else {
+            addEntry({
+              type: 'system',
+              content: '[yellow]Abriendo el editor visual de historias...[/yellow]',
+            });
+            addEntry({
+              type: 'system',
+              content: '[dim]Prepárate para crear algo que probablemente nadie jugará.[/dim]',
+            });
+            await delay(500, speed);
+            setPhase('editor');
+          }
           break;
 
         case 'debug':
@@ -230,10 +236,12 @@ export function useTerminalCommands() {
       });
 
       const { manifest, scenes } = await loadGame(gameName);
-      const engine = new GameEngine(manifest, scenes);
+      const basePath = `games/${gameName}`;
+      const engine = new GameEngine(manifest, scenes, basePath);
 
       setEngine(engine);
       setGameManifest(manifest);
+      setGameBasePath(basePath);
       setPhase('game');
 
       if (!debugActive) {
@@ -356,6 +364,21 @@ export function useTerminalCommands() {
           content: `[yellow]Subcomando debug desconocido: ${args[0]}[/yellow]`,
         });
     }
+  };
+
+  const handleEditorWithGame = async (gameName: string) => {
+    addEntry({
+      type: 'system',
+      content: `[yellow]Cargando "${gameName}" en el editor...[/yellow]`,
+    });
+    addEntry({
+      type: 'system',
+      content: '[dim]Abriendo el editor... intenta no romper nada.[/dim]',
+    });
+
+    useEditorStore.getState().setPendingGameImport(gameName);
+    await delay(500, speed);
+    setPhase('editor');
   };
 
   return { processCommand };

@@ -1,10 +1,10 @@
 // components/terminal/Terminal.tsx
 // Terminal principal - solo renderizado, la lógica está en hooks
 
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import TerminalHistory from './TerminalHistory';
-import TerminalInput from './TerminalInput';
+import TerminalInput, { TerminalInputHandle } from './TerminalInput';
 import { useAppStore } from '../../store/useAppStore';
 
 const TerminalContainer = styled.div`
@@ -18,27 +18,43 @@ const TerminalContainer = styled.div`
   overflow: hidden;
   border: 1px solid ${(props) => props.theme.terminal.border};
   cursor: text;
-  max-height: 50vh;
-  min-height: 200px;
+  min-height: 0;
   position: relative;
 `;
 
-const EnterPrompt = styled.div`
+const EnterPrompt = styled.button`
   position: absolute;
-  right: 20px;
-  bottom: 60px;
+  right: 10px;
+  bottom: 50px;
   background-color: ${(props) => props.theme.terminal.accent};
   color: ${(props) => props.theme.terminal.background};
-  padding: 4px 8px;
+  border: none;
+  padding: 8px 14px;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
   animation: pulse 1.5s infinite;
   box-shadow: 0 0 10px ${(props) => props.theme.terminal.accent}40;
+  z-index: 10;
 
   @keyframes pulse {
     0% { opacity: 0.7; }
     50% { opacity: 1; }
     100% { opacity: 0.7; }
+  }
+
+  .mobile-text { display: none; }
+
+  @media (max-width: 768px) {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: 50px;
+    padding: 12px 24px;
+    font-size: 1rem;
+
+    .desktop-text { display: none; }
+    .mobile-text { display: inline; }
   }
 `;
 
@@ -64,9 +80,10 @@ const Terminal: React.FC<TerminalProps> = ({
   children,
 }) => {
   const showEnterPrompt = useAppStore((s) => s.showEnterPrompt);
+  const inputRef = useRef<TerminalInputHandle>(null);
 
   const handleContainerClick = () => {
-    // Focus is handled by the input autoFocus
+    inputRef.current?.focus();
   };
 
   return (
@@ -76,10 +93,14 @@ const Terminal: React.FC<TerminalProps> = ({
       </TerminalHistory>
 
       {showEnterPrompt && (
-        <EnterPrompt>Presiona ENTER para continuar</EnterPrompt>
+        <EnterPrompt>
+          <span className="desktop-text">Presiona ENTER para continuar</span>
+          <span className="mobile-text">Toca aquí para continuar</span>
+        </EnterPrompt>
       )}
 
       <TerminalInput
+        ref={inputRef}
         prompt={prompt}
         value={inputValue}
         onChange={onInputChange}

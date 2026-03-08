@@ -42,7 +42,6 @@ export function parseRichText(text: string): RichSegment[] {
   }
 
   const segments: RichSegment[] = [];
-  const tagRegex = /\[(\/?)(bold|italic|dim|red|green|blue|yellow|purple|cyan|white|orange|pink|link=[^\]]*)\]/g;
 
   let lastIndex = 0;
   let bold = false;
@@ -50,8 +49,43 @@ export function parseRichText(text: string): RichSegment[] {
   let dim = false;
   let colorStack: string[] = [];
 
+  // Helper to apply a single tag token
+  function applyTag(token: string, isClosing: boolean) {
+    if (token === 'bold') {
+      bold = !isClosing;
+    } else if (token === 'italic') {
+      italic = !isClosing;
+    } else if (token === 'dim') {
+      dim = !isClosing;
+    } else if (token.startsWith('link=')) {
+      if (!isClosing) {
+        colorStack.push(COLOR_MAP['cyan'] || '#8be9fd');
+      } else {
+        colorStack.pop();
+      }
+    } else if (COLOR_MAP[token]) {
+      if (!isClosing) {
+        colorStack.push(COLOR_MAP[token]);
+      } else {
+        colorStack.pop();
+      }
+    }
+  }
+
+  // Simpler approach: match any [...] tag and parse its contents
+  const simpleTagRegex = /\[(\/?)([\w\s=]+)\]/g;
   let match: RegExpExecArray | null;
-  while ((match = tagRegex.exec(processed)) !== null) {
+  while ((match = simpleTagRegex.exec(processed)) !== null) {
+    const fullContent = match[2].trim();
+    const isClosing = match[1] === '/';
+
+    // Split the tag content into tokens and check if all are valid
+    const tokens = fullContent.split(/\s+/);
+    const validTokens = ['bold', 'italic', 'dim', ...Object.keys(COLOR_MAP)];
+    const allValid = tokens.every(t => validTokens.includes(t) || t.startsWith('link='));
+
+    if (!allValid) continue; // Skip unknown tags, leave them as literal text
+
     // Add text before this tag
     if (match.index > lastIndex) {
       const segText = processed.slice(lastIndex, match.index);
@@ -66,29 +100,9 @@ export function parseRichText(text: string): RichSegment[] {
       }
     }
 
-    const isClosing = match[1] === '/';
-    const tag = match[2];
-
-    if (tag === 'bold') {
-      bold = !isClosing;
-    } else if (tag === 'italic') {
-      italic = !isClosing;
-    } else if (tag === 'dim') {
-      dim = !isClosing;
-    } else if (tag.startsWith('link=')) {
-      // Links: just treat as colored text
-      if (!isClosing) {
-        colorStack.push(COLOR_MAP['cyan'] || '#8be9fd');
-      } else {
-        colorStack.pop();
-      }
-    } else {
-      // Color tag
-      if (!isClosing) {
-        colorStack.push(COLOR_MAP[tag] || '#ffffff');
-      } else {
-        colorStack.pop();
-      }
+    // Apply all tokens in the compound tag
+    for (const token of tokens) {
+      applyTag(token, isClosing);
     }
 
     lastIndex = match.index + match[0].length;

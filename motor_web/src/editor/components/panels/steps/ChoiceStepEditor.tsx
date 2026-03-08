@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import type { ChoiceStep, ChoiceOption } from '../../../../types/game';
 import TerminalInput from '../../shared/TerminalInput';
+import GotoSelect from '../../shared/GotoSelect';
 import EffectsEditor from './EffectsEditor';
 import ConditionEditor from './ConditionEditor';
 
@@ -50,11 +51,10 @@ const ChoiceStepEditor: React.FC<ChoiceStepEditorProps> = ({ step, onChange }) =
             onChange={(text) => updateOption(i, { ...opt, text })}
           />
 
-          <TerminalInput
+          <GotoSelect
             label="Ir a (goto)"
             value={opt.goto || ''}
             onChange={(goto) => updateOption(i, { ...opt, goto: goto || undefined })}
-            placeholder="scene_id"
           />
 
           <EffectsEditor

@@ -17,6 +17,8 @@ export type TerminalEntryType =
 export interface TerminalEntry {
   type: TerminalEntryType;
   content: string;
+  image?: string;
+  firstAppearance?: boolean;
 }
 
 export interface TerminalCommand {

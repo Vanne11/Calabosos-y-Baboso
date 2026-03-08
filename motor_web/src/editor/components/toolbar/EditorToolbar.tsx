@@ -8,13 +8,19 @@ import { useAppStore } from '../../../store/useAppStore';
 import TerminalButton from '../shared/TerminalButton';
 import ProjectSettingsModal from './ProjectSettingsModal';
 import ValidationPanel from './ValidationPanel';
+import ProjectDashboard from './ProjectDashboard';
 import { saveEditorProject } from '../../utils/editorStorage';
 import { exportProjectZip } from '../../utils/exportProject';
 import { exportToGameFiles } from '../../utils/exportProject';
 import { validateProject } from '../../utils/validation';
+import { autoLayout } from '../../utils/autoLayout';
 import { GameEngine } from '../../../engine/GameEngine';
 
-const EditorToolbar: React.FC = () => {
+interface EditorToolbarProps {
+  onSearch?: () => void;
+}
+
+const EditorToolbar: React.FC<EditorToolbarProps> = ({ onSearch }) => {
   const project = useEditorStore((s) => s.project);
   const nodes = useEditorStore((s) => s.nodes);
   const isDirty = useEditorStore((s) => s.isDirty);
@@ -29,8 +35,12 @@ const EditorToolbar: React.FC = () => {
   const clearHistory = useAppStore((s) => s.clearHistory);
   const addEntry = useAppStore((s) => s.addEntry);
 
+  const setNodes = useEditorStore((s) => s.setNodes);
+  const recalculateEdges = useEditorStore((s) => s.recalculateEdges);
+
   const [showSettings, setShowSettings] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Auto-save con debounce de 5s
@@ -111,6 +121,12 @@ const EditorToolbar: React.FC = () => {
     setPhase('game');
   };
 
+  const handleAutoLayout = () => {
+    const arranged = autoLayout(nodes);
+    setNodes(arranged);
+    setTimeout(() => recalculateEdges(), 0);
+  };
+
   const handleBack = async () => {
     if (isDirty) {
       await doSave();
@@ -140,14 +156,25 @@ const EditorToolbar: React.FC = () => {
             {warningCount > 0 && <WarnBadge>{warningCount}?</WarnBadge>}
           </IssuesBadge>
         )}
-        <TerminalButton size="sm" onClick={handleSave} disabled={!isDirty}>
+        <TerminalButton size="sm" onClick={handleSave} data-save-btn disabled={!isDirty}>
           Guardar
         </TerminalButton>
         <TerminalButton size="sm" onClick={handleExport}>
-          Exportar ZIP
+          Exportar
         </TerminalButton>
         <TerminalButton size="sm" onClick={handleValidate}>
           Validar
+        </TerminalButton>
+        <TerminalButton size="sm" onClick={handleAutoLayout}>
+          Organizar
+        </TerminalButton>
+        {onSearch && (
+          <TerminalButton size="sm" onClick={onSearch}>
+            Buscar
+          </TerminalButton>
+        )}
+        <TerminalButton size="sm" onClick={() => setShowDashboard(true)}>
+          Dashboard
         </TerminalButton>
         <TerminalButton variant="primary" size="sm" onClick={handleTest}>
           Probar
@@ -159,6 +186,7 @@ const EditorToolbar: React.FC = () => {
 
       {showSettings && <ProjectSettingsModal onClose={() => setShowSettings(false)} />}
       {showValidation && <ValidationPanel onClose={() => setShowValidation(false)} />}
+      {showDashboard && <ProjectDashboard onClose={() => setShowDashboard(false)} />}
     </ToolbarContainer>
   );
 };

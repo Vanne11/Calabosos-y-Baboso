@@ -21,12 +21,25 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.stats = newStats;
   }
 
+  // setStats: asigna valores absolutos (no suma)
+  if (effects.setStats) {
+    const newStats = { ...newState.stats };
+    for (const [key, value] of Object.entries(effects.setStats)) {
+      newStats[key] = value;
+    }
+    newState.stats = newStats;
+  }
+
   if (effects.flags) {
     newState.flags = { ...newState.flags, ...effects.flags };
   }
 
   if (effects.inventory) {
     newState.inventory = [...newState.inventory, ...effects.inventory];
+  }
+
+  if (effects.clearInventory) {
+    newState.inventory = [];
   }
 
   if (effects.removeInventory) {

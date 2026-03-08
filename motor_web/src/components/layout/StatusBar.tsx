@@ -1,13 +1,15 @@
 // components/layout/StatusBar.tsx
-// Barra de estado con stats del jugador
+// Barra de estado con stats del jugador, avatar del protagonista y compañeros
 
 import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import HoverPreview from '../ui/HoverPreview';
 
 const Bar = styled.div`
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.5rem 1rem;
   background-color: ${(props) => props.theme.widgets.background};
   border: 1px solid ${(props) => props.theme.widgets.border};
@@ -16,10 +18,45 @@ const Bar = styled.div`
   transition: all 0.5s ease;
 `;
 
+const PartyGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+`;
+
+
+const CompanionName = styled.span`
+  font-size: 0.75rem;
+  color: ${(props) => props.theme.terminal.success || '#50fa7b'};
+  flex-shrink: 0;
+`;
+
+const PlayerName = styled.span`
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: ${(props) => props.theme.accent};
+  flex-shrink: 0;
+`;
+
+const Separator = styled.div`
+  width: 1px;
+  height: 24px;
+  background-color: ${(props) => props.theme.widgets.border};
+  flex-shrink: 0;
+`;
+
+const StatsArea = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+  gap: 0 1rem;
+`;
+
 const StatItem = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 1rem;
 `;
 
 const StatLabel = styled.span`
@@ -44,6 +81,8 @@ const STAT_LABELS: Record<string, string> = {
 
 const StatusBar: React.FC = () => {
   const playerState = useAppStore((s) => s.playerState);
+  const engine = useAppStore((s) => s.engine);
+  const gameBasePath = useAppStore((s) => s.gameBasePath);
   const phase = useAppStore((s) => s.phase);
 
   if (phase !== 'game' || !playerState) return null;
@@ -52,17 +91,48 @@ const StatusBar: React.FC = () => {
     ([key, val]) => typeof val === 'number' && key in STAT_LABELS
   );
 
+  // Protagonist from engine (role-based)
+  const protagonist = engine?.getProtagonist?.();
+  const rawImage = protagonist?.image || playerState.stats._protagonist_image;
+  const protagonistImage = typeof rawImage === 'string'
+    ? (rawImage.startsWith(gameBasePath) ? rawImage : `${gameBasePath}/${rawImage}`)
+    : null;
+  const playerName = typeof playerState.stats.nombre_jugador === 'string'
+    ? playerState.stats.nombre_jugador
+    : null;
+
+  // Active companions (role-based, dynamic)
+  const companions = engine?.getActiveCompanions?.() || [];
+
+  const resolveImage = (img?: string) => {
+    if (!img) return null;
+    return img.startsWith(gameBasePath) ? img : `${gameBasePath}/${img}`;
+  };
+
   return (
     <Bar>
-      <div>Fase: {playerState.time.phase}</div>
-      <div style={{ display: 'flex' }}>
+      <PartyGroup>
+        {protagonistImage && <HoverPreview key={protagonistImage} src={protagonistImage} alt="Protagonista" size={32} />}
+        {playerName && <PlayerName>{playerName}</PlayerName>}
+        {companions.map((comp) => {
+          const compImg = resolveImage(comp.image);
+          return (
+            <React.Fragment key={comp.id}>
+              <Separator />
+              {compImg && <HoverPreview src={compImg} alt={comp.name} size={32} />}
+              <CompanionName>{comp.name}</CompanionName>
+            </React.Fragment>
+          );
+        })}
+      </PartyGroup>
+      <StatsArea>
         {numericStats.map(([key, value]) => (
           <StatItem key={key}>
             <StatLabel>{STAT_LABELS[key] || key}:</StatLabel>
             <StatValue>{String(value)}</StatValue>
           </StatItem>
         ))}
-      </div>
+      </StatsArea>
     </Bar>
   );
 };

@@ -33,6 +33,7 @@ interface TerminalHistoryProps {
 
 const TerminalHistory: React.FC<TerminalHistoryProps> = ({ children }) => {
   const history = useAppStore((s) => s.history);
+  const fadeBeforeIndex = useAppStore((s) => s.fadeBeforeIndex);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ const TerminalHistory: React.FC<TerminalHistoryProps> = ({ children }) => {
   return (
     <OutputWrapper ref={ref}>
       {history.map((entry, i) => (
-        <TerminalEntryComponent key={i} entry={entry} />
+        <TerminalEntryComponent key={i} entry={entry} faded={i < fadeBeforeIndex} />
       ))}
       {children}
     </OutputWrapper>

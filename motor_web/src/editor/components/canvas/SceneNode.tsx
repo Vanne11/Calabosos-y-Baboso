@@ -1,39 +1,88 @@
 // editor/components/canvas/SceneNode.tsx
-// Nodo custom "ventana de terminal" para escenas
+// Nodo custom "ventana de terminal" para escenas con info enriquecida
 
 import React, { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import styled from 'styled-components';
 import type { SceneFlowNode } from '../../types/editor';
-import { getStepSummary, getNodeDestinations } from '../../types/editor';
+import { getNodeDestinations } from '../../types/editor';
+import { useEditorStore } from '../../store/useEditorStore';
+
+const STEP_ICONS: Record<string, string> = {
+  dialog: '\u{1F4AC}',
+  choice: '\u{1F500}',
+  dice: '\u{1F3B2}',
+  input: '\u{2328}\u{FE0F}',
+  effects: '\u{2728}',
+};
 
 const SceneNode: React.FC<NodeProps<SceneFlowNode>> = ({ data, selected }) => {
   const { sceneId, scene, isStart } = data;
-  const summary = getStepSummary(scene.sequence);
+  const issues = useEditorStore((s) => s.issues);
+
   const destinations = getNodeDestinations(scene.sequence);
   const scenarioName = scene.scenario?.name || 'Sin escenario';
 
+  // Preview de primera línea de diálogo
+  let dialogPreview = '';
+  for (const step of scene.sequence) {
+    if (step.type === 'dialog' && step.lines.length > 0) {
+      dialogPreview = step.lines[0].replace(/\[.*?\]/g, '').slice(0, 40);
+      if (step.lines[0].length > 40) dialogPreview += '...';
+      break;
+    }
+  }
+
+  // Iconos de tipos de steps
+  const stepIcons = scene.sequence.map((s) => STEP_ICONS[s.type] || '?');
+
+  // Issues para esta escena
+  const sceneIssues = issues.filter((i) => i.sceneId === sceneId);
+  const errorCount = sceneIssues.filter((i) => i.severity === 'error').length;
+  const warnCount = sceneIssues.filter((i) => i.severity === 'warning').length;
+
+  // Badge de imagen
+  const hasImage = !!scene.scenario?.image;
+
   return (
     <NodeContainer $selected={!!selected} $isStart={isStart}>
-      <Handle type="target" position={Position.Top} style={handleStyle} />
+      <Handle id="target-top" type="target" position={Position.Top} style={handleStyle} />
+      <Handle id="target-left" type="target" position={Position.Left} style={handleStyle} />
+      <Handle id="target-right" type="target" position={Position.Right} style={handleStyle} />
+      <Handle id="target-bottom" type="target" position={Position.Bottom} style={handleStyle} />
       <NodeHeader $isStart={isStart}>
-        {isStart && <StartBadge>START</StartBadge>}
-        <SceneId>{sceneId}</SceneId>
+        <HeaderLeft>
+          {isStart && <StartBadge>START</StartBadge>}
+          <SceneId>{sceneId}</SceneId>
+        </HeaderLeft>
+        <HeaderRight>
+          {hasImage && <ImageBadge title="Tiene imagen">img</ImageBadge>}
+          {errorCount > 0 && <ErrorBadge title={`${errorCount} errores`}>{errorCount}!</ErrorBadge>}
+          {warnCount > 0 && <WarnBadge title={`${warnCount} warnings`}>{warnCount}?</WarnBadge>}
+        </HeaderRight>
       </NodeHeader>
       <NodeBody>
         <ScenarioLine>&gt; {scenarioName}</ScenarioLine>
-        {summary && <SummaryLine>&gt; {summary}</SummaryLine>}
+        {stepIcons.length > 0 && (
+          <StepIconsRow>{stepIcons.join(' ')}</StepIconsRow>
+        )}
+        {dialogPreview && (
+          <DialogPreview>"{dialogPreview}"</DialogPreview>
+        )}
         {destinations.length > 0 && (
           <DestLine>
-            &gt; &rarr; {destinations.join(', ')}
+            &rarr; {destinations.join(', ')}
           </DestLine>
         )}
         {scene.sequence.length === 0 && (
-          <EmptyLine>&gt; (vacía)</EmptyLine>
+          <EmptyLine>&gt; (vacia)</EmptyLine>
         )}
       </NodeBody>
-      <Handle type="source" position={Position.Bottom} style={handleStyle} />
+      <Handle id="source-top" type="source" position={Position.Top} style={handleStyle} />
+      <Handle id="source-left" type="source" position={Position.Left} style={handleStyle} />
+      <Handle id="source-right" type="source" position={Position.Right} style={handleStyle} />
+      <Handle id="source-bottom" type="source" position={Position.Bottom} style={handleStyle} />
     </NodeContainer>
   );
 };
@@ -63,7 +112,22 @@ const NodeHeader = styled.div<{ $isStart: boolean }>`
   border-bottom: 1px solid #4a3664;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 `;
 
 const StartBadge = styled.span`
@@ -73,19 +137,46 @@ const StartBadge = styled.span`
   color: #1a0e29;
   border-radius: 2px;
   font-weight: bold;
+  flex-shrink: 0;
+`;
+
+const ImageBadge = styled.span`
+  font-size: 8px;
+  padding: 1px 4px;
+  background: rgba(139, 233, 253, 0.15);
+  color: #8be9fd;
+  border-radius: 2px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+`;
+
+const ErrorBadge = styled.span`
+  font-size: 9px;
+  padding: 1px 4px;
+  color: #ff5555;
+  font-weight: bold;
+`;
+
+const WarnBadge = styled.span`
+  font-size: 9px;
+  padding: 1px 4px;
+  color: #f1fa8c;
+  font-weight: bold;
 `;
 
 const SceneId = styled.span`
   font-size: 12px;
   font-weight: bold;
   color: #c67dff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const NodeBody = styled.div`
   padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 `;
 
 const ScenarioLine = styled.div`
@@ -96,9 +187,18 @@ const ScenarioLine = styled.div`
   text-overflow: ellipsis;
 `;
 
-const SummaryLine = styled.div`
+const StepIconsRow = styled.div`
   font-size: 10px;
-  color: #b3a5cc;
+  letter-spacing: 2px;
+`;
+
+const DialogPreview = styled.div`
+  font-size: 10px;
+  color: #8be9fd;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const DestLine = styled.div`

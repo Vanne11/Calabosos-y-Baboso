@@ -7,7 +7,15 @@ import { useEditorStore } from '../../store/useEditorStore';
 import TerminalInput from '../shared/TerminalInput';
 import TerminalButton from '../shared/TerminalButton';
 import TagInput from '../shared/TagInput';
-import type { CharacterDef } from '../../../types/game';
+import AssetPicker from '../shared/AssetPicker';
+import type { CharacterDef, CharacterRole, ItemDef } from '../../../types/game';
+
+const ROLE_OPTIONS: { value: CharacterRole; label: string; hint: string }[] = [
+  { value: 'npc', label: 'NPC', hint: 'Personaje normal del mundo' },
+  { value: 'narrator', label: 'Narrador', hint: 'Habla en estilo sistema, sin avatar en barra' },
+  { value: 'protagonist', label: 'Protagonista', hint: 'Su imagen aparece en la barra de estado' },
+  { value: 'companion', label: 'Compañero', hint: 'Aparece junto al protagonista cuando se une' },
+];
 
 interface ProjectSettingsModalProps {
   onClose: () => void;
@@ -16,7 +24,7 @@ interface ProjectSettingsModalProps {
 const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) => {
   const project = useEditorStore((s) => s.project);
   const updateProject = useEditorStore((s) => s.updateProject);
-  const [tab, setTab] = useState<'general' | 'characters' | 'stats'>('general');
+  const [tab, setTab] = useState<'general' | 'characters' | 'items' | 'stats'>('general');
 
   if (!project) return null;
 
@@ -31,6 +39,7 @@ const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) 
         <TabBar>
           <Tab $active={tab === 'general'} onClick={() => setTab('general')}>General</Tab>
           <Tab $active={tab === 'characters'} onClick={() => setTab('characters')}>Personajes</Tab>
+          <Tab $active={tab === 'items'} onClick={() => setTab('items')}>Items</Tab>
           <Tab $active={tab === 'stats'} onClick={() => setTab('stats')}>Stats</Tab>
         </TabBar>
 
@@ -64,60 +73,190 @@ const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) 
 
           {tab === 'characters' && (
             <Section>
-              {Object.entries(project.characters).map(([id, char]) => (
-                <CharBlock key={id}>
-                  <CharHeader>
-                    <CharId>{id}</CharId>
-                    <DelBtn onClick={() => {
-                      const { [id]: _, ...rest } = project.characters;
-                      updateProject({ characters: rest });
-                    }}>x</DelBtn>
-                  </CharHeader>
-                  <TerminalInput
-                    label="Nombre"
-                    value={char.name}
-                    onChange={(name) => {
-                      updateProject({
-                        characters: { ...project.characters, [id]: { ...char, name } },
-                      });
-                    }}
-                  />
-                  <TerminalInput
-                    label="Descripción"
-                    value={char.description}
-                    onChange={(description) => {
-                      updateProject({
-                        characters: { ...project.characters, [id]: { ...char, description } },
-                      });
-                    }}
-                  />
-                  <TerminalInput
-                    label="Imagen"
-                    value={char.image || ''}
-                    onChange={(image) => {
-                      updateProject({
-                        characters: {
-                          ...project.characters,
-                          [id]: { ...char, image: image || undefined },
-                        },
-                      });
-                    }}
-                    placeholder="/images/personaje.png"
-                  />
-                </CharBlock>
-              ))}
+              {Object.entries(project.characters).map(([id, char]) => {
+                const updateChar = (patch: Partial<CharacterDef>) => {
+                  updateProject({
+                    characters: { ...project.characters, [id]: { ...char, ...patch } },
+                  });
+                };
+                const role = char.role || 'npc';
+                return (
+                  <CharBlock key={id}>
+                    <CharHeader>
+                      <CharId>{id}</CharId>
+                      <RoleBadge $role={role}>{ROLE_OPTIONS.find(r => r.value === role)?.label || role}</RoleBadge>
+                      <DelBtn onClick={() => {
+                        const { [id]: _, ...rest } = project.characters;
+                        updateProject({ characters: rest });
+                      }}>x</DelBtn>
+                    </CharHeader>
+
+                    <TerminalInput
+                      label="Nombre"
+                      value={char.name}
+                      onChange={(name) => updateChar({ name })}
+                    />
+                    <TerminalInput
+                      label="Descripción"
+                      value={char.description}
+                      onChange={(description) => updateChar({ description })}
+                    />
+
+                    {/* Rol */}
+                    <FieldGroup>
+                      <FieldLabel>Rol</FieldLabel>
+                      <RoleSelect
+                        value={role}
+                        onChange={(e) => updateChar({ role: e.target.value as CharacterRole })}
+                      >
+                        {ROLE_OPTIONS.map((r) => (
+                          <option key={r.value} value={r.value}>{r.label}</option>
+                        ))}
+                      </RoleSelect>
+                      <RoleHint>{ROLE_OPTIONS.find(r => r.value === role)?.hint}</RoleHint>
+                    </FieldGroup>
+
+                    {/* Imagen principal */}
+                    <FieldGroup>
+                      <FieldLabel>Imagen</FieldLabel>
+                      <AssetPicker
+                        value={char.image || ''}
+                        onChange={(image) => updateChar({ image: image || undefined })}
+                      />
+                    </FieldGroup>
+
+                    {/* Compañero: flag de unión */}
+                    {role === 'companion' && (
+                      <FieldGroup>
+                        <FieldLabel>Flag de unión</FieldLabel>
+                        <TerminalInput
+                          value={char.joinFlag || ''}
+                          onChange={(joinFlag) => updateChar({ joinFlag: joinFlag || undefined })}
+                          placeholder="ej: nerly_joined"
+                        />
+                        <RoleHint>Cuando este flag sea true, el compañero aparece en la barra de estado junto al protagonista</RoleHint>
+                      </FieldGroup>
+                    )}
+
+                    {/* Protagonista: imágenes alternativas */}
+                    {role === 'protagonist' && (
+                      <FieldGroup>
+                        <FieldLabel>Imágenes alternativas</FieldLabel>
+                        <RoleHint>
+                          El jugador puede elegir entre estas imágenes. Usa un step de tipo "choice" con efecto stats: {'{'}"_protagonist_image": "ruta"{'}'} para cambiar la imagen del protagonista.
+                        </RoleHint>
+                        {Object.entries(char.altImages || {}).map(([altKey, altPath]) => (
+                          <AltImageRow key={altKey}>
+                            <AltImageLabel
+                              value={altKey}
+                              onChange={(e) => {
+                                const { [altKey]: val, ...rest } = char.altImages || {};
+                                updateChar({ altImages: { ...rest, [e.target.value]: val } });
+                              }}
+                              placeholder="etiqueta"
+                            />
+                            <AssetPicker
+                              value={altPath}
+                              onChange={(newPath) => {
+                                updateChar({
+                                  altImages: { ...(char.altImages || {}), [altKey]: newPath },
+                                });
+                              }}
+                            />
+                            <DelBtn onClick={() => {
+                              const { [altKey]: _, ...rest } = char.altImages || {};
+                              updateChar({ altImages: Object.keys(rest).length ? rest : undefined });
+                            }}>x</DelBtn>
+                          </AltImageRow>
+                        ))}
+                        <TerminalButton
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const altKey = `opcion_${Object.keys(char.altImages || {}).length + 1}`;
+                            updateChar({
+                              altImages: { ...(char.altImages || {}), [altKey]: '' },
+                            });
+                          }}
+                        >
+                          + Agregar imagen alternativa
+                        </TerminalButton>
+                      </FieldGroup>
+                    )}
+                  </CharBlock>
+                );
+              })}
               <TerminalButton
                 variant="ghost"
                 size="sm"
                 onClick={() => {
                   const newId = `personaje_${Object.keys(project.characters).length + 1}`;
-                  const newChar: CharacterDef = { name: 'Nuevo Personaje', description: '' };
+                  const newChar: CharacterDef = { name: 'Nuevo Personaje', description: '', role: 'npc' };
                   updateProject({
                     characters: { ...project.characters, [newId]: newChar },
                   });
                 }}
               >
                 + Agregar personaje
+              </TerminalButton>
+            </Section>
+          )}
+
+          {tab === 'items' && (
+            <Section>
+              <RoleHint>
+                Define los items que pueden aparecer en el inventario. El ID debe coincidir con el que usas en effects.inventory.
+              </RoleHint>
+              {Object.entries(project.items || {}).map(([id, item]) => {
+                const updateItem = (patch: Partial<ItemDef>) => {
+                  updateProject({
+                    items: { ...project.items, [id]: { ...item, ...patch } },
+                  });
+                };
+                return (
+                  <CharBlock key={id}>
+                    <CharHeader>
+                      <CharId>{id}</CharId>
+                      <DelBtn onClick={() => {
+                        const { [id]: _, ...rest } = project.items;
+                        updateProject({ items: rest });
+                      }}>x</DelBtn>
+                    </CharHeader>
+                    <TerminalInput
+                      label="Nombre"
+                      value={item.name}
+                      onChange={(name) => updateItem({ name })}
+                    />
+                    <TerminalInput
+                      label="Descripción"
+                      value={item.description}
+                      onChange={(description) => updateItem({ description })}
+                      multiline
+                      rows={2}
+                    />
+                    <FieldGroup>
+                      <FieldLabel>Imagen</FieldLabel>
+                      <AssetPicker
+                        value={item.image || ''}
+                        onChange={(image) => updateItem({ image: image || undefined })}
+                        accept="image"
+                      />
+                    </FieldGroup>
+                  </CharBlock>
+                );
+              })}
+              <TerminalButton
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const newId = `item_${Object.keys(project.items || {}).length + 1}`;
+                  const newItem: ItemDef = { name: 'Nuevo Item', description: 'Un objeto misterioso.' };
+                  updateProject({
+                    items: { ...(project.items || {}), [newId]: newItem },
+                  });
+                }}
+              >
+                + Agregar item
               </TerminalButton>
             </Section>
           )}
@@ -383,4 +522,82 @@ const DelBtn = styled.button`
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 13px;
+`;
+
+const RoleBadge = styled.span<{ $role: string }>`
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-weight: bold;
+  flex-shrink: 0;
+  background: ${(p) =>
+    p.$role === 'protagonist' ? 'rgba(198,125,255,0.2)' :
+    p.$role === 'companion' ? 'rgba(80,250,123,0.2)' :
+    p.$role === 'narrator' ? 'rgba(241,250,140,0.2)' :
+    'rgba(255,255,255,0.1)'};
+  color: ${(p) =>
+    p.$role === 'protagonist' ? p.theme.terminal.accent :
+    p.$role === 'companion' ? p.theme.terminal.success :
+    p.$role === 'narrator' ? p.theme.terminal.warning :
+    p.theme.terminal.accentDim};
+  border: 1px solid ${(p) =>
+    p.$role === 'protagonist' ? p.theme.terminal.accent :
+    p.$role === 'companion' ? p.theme.terminal.success :
+    p.$role === 'narrator' ? p.theme.terminal.warning :
+    p.theme.terminal.border};
+`;
+
+const FieldGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const FieldLabel = styled.span`
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: ${(p) => p.theme.terminal.accentDim};
+  text-transform: uppercase;
+`;
+
+const RoleSelect = styled.select`
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  background: ${(p) => p.theme.terminal.background};
+  border: 1px solid ${(p) => p.theme.terminal.border};
+  color: ${(p) => p.theme.terminal.text};
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  &:focus { border-color: ${(p) => p.theme.terminal.accent}; }
+`;
+
+const RoleHint = styled.span`
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: ${(p) => p.theme.terminal.accentDim};
+  font-style: italic;
+  line-height: 1.3;
+`;
+
+const AltImageRow = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const AltImageLabel = styled.input`
+  width: 80px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  padding: 4px 6px;
+  background: ${(p) => p.theme.terminal.background};
+  border: 1px solid ${(p) => p.theme.terminal.border};
+  color: ${(p) => p.theme.terminal.text};
+  border-radius: 2px;
+  outline: none;
+  flex-shrink: 0;
+  &:focus { border-color: ${(p) => p.theme.terminal.accent}; }
 `;

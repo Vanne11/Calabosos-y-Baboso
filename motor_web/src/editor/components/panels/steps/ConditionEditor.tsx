@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import type { StepCondition } from '../../../../types/game';
 import TagInput from '../../shared/TagInput';
 import TerminalButton from '../../shared/TerminalButton';
+import { useProjectContext } from '../../../hooks/useProjectContext';
 
 interface ConditionEditorProps {
   condition?: StepCondition;
@@ -14,6 +15,7 @@ interface ConditionEditorProps {
 
 const ConditionEditor: React.FC<ConditionEditorProps> = ({ condition, onChange }) => {
   const [expanded, setExpanded] = useState(!!condition);
+  const ctx = useProjectContext();
 
   if (!expanded) {
     return (
@@ -62,10 +64,14 @@ const ConditionEditor: React.FC<ConditionEditorProps> = ({ condition, onChange }
           Stats (ej: &gt;=50)
           <AddBtn onClick={() => updateStats('nueva_stat', '>=0')}>+</AddBtn>
         </SubLabel>
+        <datalist id="cond-stats-list">
+          {ctx.stats.map((s) => <option key={s} value={s} />)}
+        </datalist>
         {Object.entries(cond.stats || {}).map(([key, val]) => (
           <Row key={key}>
             <Input
               value={key}
+              list="cond-stats-list"
               onChange={(e) => {
                 const { [key]: oldVal, ...rest } = cond.stats || {};
                 onChange({ ...cond, stats: { ...rest, [e.target.value]: oldVal } });
@@ -86,10 +92,14 @@ const ConditionEditor: React.FC<ConditionEditorProps> = ({ condition, onChange }
           Flags
           <AddBtn onClick={() => updateFlags('flag', true)}>+</AddBtn>
         </SubLabel>
+        <datalist id="cond-flags-list">
+          {ctx.flags.map((f) => <option key={f} value={f} />)}
+        </datalist>
         {Object.entries(cond.flags || {}).map(([key, val]) => (
           <Row key={key}>
             <Input
               value={key}
+              list="cond-flags-list"
               onChange={(e) => {
                 const { [key]: oldVal, ...rest } = cond.flags || {};
                 onChange({ ...cond, flags: { ...rest, [e.target.value]: oldVal } });

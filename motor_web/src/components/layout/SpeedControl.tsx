@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { audioManager } from '../../engine/AudioManager';
 
 const Container = styled.div`
   position: fixed;
@@ -89,7 +90,11 @@ const SpeedControl: React.FC = () => {
           min="0"
           max="100"
           value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            setVolume(v);
+            audioManager.volume = v / 100;
+          }}
         />
         <span>{volume}%</span>
       </VolumeContainer>

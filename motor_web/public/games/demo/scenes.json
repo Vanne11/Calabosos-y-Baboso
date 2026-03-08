@@ -4,6 +4,7 @@
       "scenario": {
         "name": "Introducción",
         "image": "images/scenarios/intro.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
         "description": "El comienzo de tu aventura en Viscaria"
       },
       "sequence": [
@@ -19,10 +20,10 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Masculino", "effects": { "stats": { "genero": "masculino" } }, "goto": "pedir_nombre" },
-            { "text": "Femenino", "effects": { "stats": { "genero": "femenino" } }, "goto": "pedir_nombre" },
-            { "text": "No binario", "effects": { "stats": { "genero": "no_binario" } }, "goto": "pedir_nombre" },
-            { "text": "Otro", "effects": { "stats": { "genero": "otro" } }, "goto": "pedir_nombre" }
+            { "text": "Masculino", "effects": { "stats": { "genero": "masculino", "_protagonist_image": "images/dialogs/protagonist_male.png" } }, "goto": "pedir_nombre" },
+            { "text": "Femenino", "effects": { "stats": { "genero": "femenino", "_protagonist_image": "images/dialogs/protagonist_female.png" } }, "goto": "pedir_nombre" },
+            { "text": "No binario", "effects": { "stats": { "genero": "no_binario", "_protagonist_image": "images/dialogs/protagonist_andro.png" } }, "goto": "pedir_nombre" },
+            { "text": "Otro", "effects": { "stats": { "genero": "otro", "_protagonist_image": "images/dialogs/protagonist_andro.png" } }, "goto": "pedir_nombre" }
           ]
         }
       ]
@@ -32,6 +33,7 @@
       "scenario": {
         "name": "Introducción",
         "image": "images/scenarios/intro.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
         "description": "El comienzo de tu aventura en Viscaria"
       },
       "sequence": [
@@ -56,6 +58,7 @@
       "scenario": {
         "name": "Introducción",
         "image": "images/scenarios/intro.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
         "description": "El comienzo de tu aventura en Viscaria"
       },
       "sequence": [
@@ -70,6 +73,10 @@
           ]
         },
         {
+          "type": "effects",
+          "effects": { "stats": { "_prompt": "bob" } }
+        },
+        {
           "type": "choice",
           "options": [
             { "text": "Continuar", "goto": "plaza_principal" }
@@ -82,38 +89,87 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg",
         "description": "El corazón de Viscaria, lleno de gente y actividad"
       },
       "sequence": [
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?"]
+          "type": "choice",
+          "options": [
+            { "text": "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?", "effects": { "flags": { "plaza_1_confused": true }, "stats": { "fear": 5 } } },
+            { "text": "Esto tiene que ser un error... Yo no debería estar aquí.", "effects": { "flags": { "plaza_1_error": true }, "stats": { "fear": 5 } } },
+            { "text": "¡Oye! ¿Quién te dio permiso de llamarme BOB?", "effects": { "flags": { "plaza_1_angry": true }, "stats": { "reputation": 5 } } }
+          ]
         },
         {
           "type": "dialog",
           "character": "narrator",
+          "condition": { "flags": { "plaza_1_confused": true } },
           "lines": ["Estás en Viscaria, obviamente. ¿La introducción no fue suficientemente clara? Y soy el Narrador, tu guía en esta aventura y, técnicamente, tu jefe. En cuanto a lo de BOB... me pareció simpático."]
         },
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["No entiendo nada. ¿Qué se supone que debo hacer?"]
+          "character": "narrator",
+          "condition": { "flags": { "plaza_1_error": true } },
+          "lines": ["¿Error? No, no. Aquí no hay errores. Bueno, excepto tú quizás. Estás exactamente donde debes estar: Viscaria. Y yo soy el Narrador, tu guía y tu mayor pesadilla."]
         },
         {
           "type": "dialog",
           "character": "narrator",
+          "condition": { "flags": { "plaza_1_angry": true } },
+          "lines": ["¿Permiso? ¡Ja! Soy el Narrador, no necesito permiso para nada. Y te llamo BOB porque me da la gana. Estás en Viscaria, por cierto, por si te interesa más que quejarte."]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "No entiendo nada. ¿Qué se supone que debo hacer?", "effects": { "flags": { "plaza_2_lost": true } } },
+            { "text": "Vale, Narrador... ¿Y qué se supone que hago aquí?", "effects": { "flags": { "plaza_2_resigned": true } } },
+            { "text": "Genial, un narrador. ¿Al menos me puedes explicar qué pinto aquí?", "effects": { "flags": { "plaza_2_sarcastic": true } } }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "plaza_2_lost": true } },
           "lines": ["¿De verdad tengo que explicártelo todo? Bien, versión resumida: eres el héroe elegido para adentrarte en el Abismo de las Babosas y derrotar al Rey Baboso. Ya sabes, la típica aventura de calabozos, monstruos viscosos y muerte probable."]
         },
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Y si me niego?"]
+          "character": "narrator",
+          "condition": { "flags": { "plaza_2_resigned": true } },
+          "lines": ["Así me gusta, con actitud derrotista. Versión corta: entras al Abismo de las Babosas, matas al Rey Baboso, y vuelves como héroe. O no vuelves. Estadísticamente es más probable lo segundo."]
         },
         {
           "type": "dialog",
           "character": "narrator",
+          "condition": { "flags": { "plaza_2_sarcastic": true } },
+          "lines": ["¡Oh, sarcasmo! Qué refrescante. Mira, te lo pongo fácil: hay un Abismo lleno de babosas, un Rey Baboso al fondo, y tú tienes que matarlo. ¿Necesitas un dibujito también?"]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "¿Y si me niego?", "effects": { "flags": { "plaza_3_refuse": true } } },
+            { "text": "¿Héroe? ¿Yo? Creo que me confundes con alguien competente.", "effects": { "flags": { "plaza_3_humble": true } } },
+            { "text": "¿Babosas? ¿En serio? ¿No había dragones disponibles?", "effects": { "flags": { "plaza_3_dragons": true } } }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "plaza_3_refuse": true } },
           "lines": ["¡Qué adorable! Piensas que tienes elección. Mira, tengo un horario que cumplir y seis episodios más que narrar después de ti. Así que, ¿por las buenas o por las malas?"]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "plaza_3_humble": true } },
+          "lines": ["En eso estamos de acuerdo, pero eres lo único que tengo. El último héroe se resbaló con baba de babosa y cayó por un barranco. El anterior a ese... bueno, no preguntes. El punto es: vas a ir quieras o no."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "plaza_3_dragons": true } },
+          "lines": ["Los dragones están en otra franquicia, BOB. Aquí tenemos babosas. Babosas gigantes, babosas venenosas, babosas que escupen ácido... ¿Ves? Mucho más creativo. Y más viscoso. Ahora, lo importante:"]
         },
         {
           "type": "choice",
@@ -130,23 +186,22 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg",
         "description": "El corazón de Viscaria, lleno de gente y actividad"
       },
       "sequence": [
-        {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Está bien, acepto la misión. ¿Cuál es el plan?"]
-        },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": ["Vaya, eso fue fácil. El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como héroe, bla, bla, bla. ¿Ves esa tienda de allí? La que tiene el letrero que dice 'ARTÍCULOS PARA AVENTUREROS SUICIDAS'. Sí, esa."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Espera, ¿con qué se supone que voy a comprar equipo? No tengo dinero."]
+          "type": "choice",
+          "options": [
+            { "text": "Espera, ¿con qué compro equipo? No tengo dinero." },
+            { "text": "Perfecto. Un momento... ¿Tengo dinero siquiera?" },
+            { "text": "Suena fácil. Demasiado fácil. ¿Cuál es la trampa?" }
+          ]
         },
         {
           "type": "dialog",
@@ -156,9 +211,9 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Buscaré algún trabajo rápido en la ciudad.", "goto": "trabajar_establos_inicio" },
+            { "text": "Buscaré algún trabajo rápido en la ciudad.", "effects": { "stats": { "hunger": 5 } }, "goto": "trabajar_establos_inicio" },
             { "text": "¿Hay algo de valor que pueda vender?", "goto": "vender_relicario_inicio" },
-            { "text": "Quizás podría... tomar prestado algo de dinero sin permiso.", "goto": "robar_noble" }
+            { "text": "Quizás podría... tomar prestado algo de dinero sin permiso.", "effects": { "stats": { "fear": 10 } }, "goto": "robar_noble" }
           ]
         }
       ]
@@ -168,14 +223,10 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg",
         "description": "El corazón de Viscaria, lleno de gente y actividad"
       },
       "sequence": [
-        {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Buscaré algún trabajo rápido en la ciudad."]
-        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -185,9 +236,12 @@
           ]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Veamos qué trabajos hay disponibles..."]
+          "type": "choice",
+          "options": [
+            { "text": "Veamos qué trabajos hay disponibles..." },
+            { "text": "A ver... ¿Qué ofrecen en este antro?" },
+            { "text": "Esto es humillante, pero necesito el dinero." }
+          ]
         },
         {
           "type": "dialog",
@@ -197,9 +251,9 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Limpiaré establos. Suena lo menos peligroso.", "goto": "trabajar_establos" },
-            { "text": "Probaré pociones. Al menos será interesante.", "goto": "trabajar_establos" },
-            { "text": "Ayudaré al verdugo. Debe pagar bien.", "goto": "trabajar_establos" }
+            { "text": "Limpiaré establos. Suena lo menos peligroso.", "effects": { "flags": { "trabajo_establos": true } }, "goto": "trabajar_establos" },
+            { "text": "Probaré pociones. Al menos será interesante.", "effects": { "flags": { "trabajo_pociones": true } }, "goto": "trabajar_establos" },
+            { "text": "Ayudaré al verdugo. Debe pagar bien.", "effects": { "flags": { "trabajo_verdugo": true } }, "goto": "trabajar_establos" }
           ]
         }
       ]
@@ -209,19 +263,36 @@
       "scenario": {
         "name": "Establos",
         "image": "images/scenarios/establos.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
         "description": "Establos malolientes llenos de caballos mutantes"
       },
       "sequence": [
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Limpiaré establos. Suena lo menos peligroso."]
+          "character": "narrator",
+          "condition": { "flags": { "trabajo_establos": true } },
+          "lines": [
+            "Llegas a los establos. El olor es... memorable. Los caballos parecen tener tres ojos y escupen fuego ocasionalmente.",
+            "El dueño de los establos te mira con una mezcla de esperanza y lástima."
+          ]
         },
         {
           "type": "dialog",
           "character": "narrator",
+          "condition": { "flags": { "trabajo_pociones": true } },
           "lines": [
-            "Llegas a los establos. El olor es... memorable. Los caballos parecen tener tres ojos y escupen fuego ocasionalmente.",
+            "Llegas al laboratorio de pociones. El olor es... interesante. Hay frascos burbujeando por todas partes y algo verde que se mueve solo.",
+            "Pero resulta que el alquimista se fue de vacaciones. El único trabajo disponible es... limpiar establos. Sorpresa.",
+            "El dueño de los establos te mira con una mezcla de esperanza y lástima."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "trabajo_verdugo": true } },
+          "lines": [
+            "Llegas a la plaza del verdugo. Resulta que el verdugo tiene el día libre. Aparentemente, incluso los verdugos tienen sindicato.",
+            "El único trabajo disponible es... sí, limpiar establos. El universo conspira contra ti, BOB.",
             "El dueño de los establos te mira con una mezcla de esperanza y lástima."
           ]
         },
@@ -250,22 +321,22 @@
           "results": {
             "critical_success": {
               "text": "¡CRÍTICO! Los caballos mutantes te obedecen como si fueras su líder espiritual. El dueño está tan impresionado que te paga el triple.",
-              "effects": { "stats": { "reputation": 15 } },
+              "effects": { "stats": { "reputation": 15, "dinero": 30, "hunger": 10, "pee": 10 } },
               "goto": "tienda_tendero"
             },
             "success": {
               "text": "Logras limpiar los establos sin perder ningún miembro. El dueño te paga lo justo.",
-              "effects": { "stats": { "reputation": 5 } },
+              "effects": { "stats": { "reputation": 5, "dinero": 15, "hunger": 10, "pee": 10 } },
               "goto": "tienda_tendero"
             },
             "failure": {
               "text": "Un caballo te pisa y otro te escupe fuego en la cara. El dueño te paga... por lástima.",
-              "effects": { "stats": { "will_to_live": -10 } },
+              "effects": { "stats": { "will_to_live": -10, "dinero": 5, "hunger": 15, "pee": 10 } },
               "goto": "tienda_tendero"
             },
             "critical_failure": {
               "text": "¡PIFIA! Casi mueres aplastado por una estampida de caballos mutantes. El dueño te paga lo mínimo mientras llama a una ambulancia.",
-              "effects": { "stats": { "will_to_live": -20 } },
+              "effects": { "stats": { "will_to_live": -20, "dinero": 2, "hunger": 15, "pee": 10 } },
               "goto": "tienda_tendero"
             }
           }
@@ -277,13 +348,13 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg",
         "description": "El corazón de Viscaria, lleno de gente y actividad"
       },
       "sequence": [
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Hay algo de valor que pueda vender?"]
+          "type": "effects",
+          "effects": { "inventory": ["relicario_familiar"] }
         },
         {
           "type": "dialog",
@@ -291,9 +362,12 @@
           "lines": ["Veamos... tienes tu ropa, tu dignidad, y... (revisando) ah, parece que tienes un relicario familiar en tu inventario. Qué conveniente que no lo mencionara antes."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Un relicario familiar? ¿De dónde salió?"]
+          "type": "choice",
+          "options": [
+            { "text": "¿Un relicario familiar? ¿De dónde salió?" },
+            { "text": "¿Me estás diciendo que tenía cosas y no me avisaste?" },
+            { "text": "Conveniente, sí... ¿Algo más que hayas 'olvidado' mencionar?" }
+          ]
         },
         {
           "type": "dialog",
@@ -315,14 +389,10 @@
       "scenario": {
         "name": "Casa de Empeños",
         "image": "images/scenarios/casa_empenos.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
         "description": "Una tienda oscura llena de objetos de dudosa procedencia"
       },
       "sequence": [
-        {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Venderé el relicario, supongo."]
-        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -338,6 +408,14 @@
             "¿Qué traes para vender? Espero que sea algo que valga la pena mi tiempo.",
             "[El prestamista examina el relicario con una lupa]",
             "Hmm... interesante. Parece antiguo. ¿Cuánto pides por él?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "No lo sé... ¿Qué me ofreces?" },
+            { "text": "Es una reliquia familiar. Vale una fortuna." },
+            { "text": "Lo suficiente para equipo de aventurero, al menos." }
           ]
         },
         {
@@ -357,22 +435,22 @@
           "results": {
             "critical_success": {
               "text": "¡CRÍTICO! El prestamista cree que el relicario perteneció a la realeza. Te paga una fortuna.",
-              "effects": { "stats": { "reputation": 10 } },
+              "effects": { "stats": { "reputation": 10, "dinero": 50 }, "removeInventory": ["relicario_familiar"] },
               "goto": "tienda_tendero"
             },
             "success": {
               "text": "Logras un buen trato. El prestamista te paga un precio justo.",
-              "effects": { "stats": { "reputation": 5 } },
+              "effects": { "stats": { "reputation": 5, "dinero": 25 }, "removeInventory": ["relicario_familiar"] },
               "goto": "tienda_tendero"
             },
             "failure": {
               "text": "El prestamista te estafa descaradamente. Apenas recibes unas monedas.",
-              "effects": { "stats": { "reputation": -5 } },
+              "effects": { "stats": { "reputation": -5, "dinero": 8 }, "removeInventory": ["relicario_familiar"] },
               "goto": "tienda_tendero"
             },
             "critical_failure": {
               "text": "¡PIFIA! El prestamista te convence de que le debes dinero a ÉL. Sales con menos de lo que entraste.",
-              "effects": { "stats": { "reputation": -10 } },
+              "effects": { "stats": { "reputation": -10, "dinero": 1 }, "removeInventory": ["relicario_familiar"] },
               "goto": "tienda_tendero"
             }
           }
@@ -384,23 +462,22 @@
       "scenario": {
         "name": "Mercado",
         "image": "images/scenarios/mercado.png",
+        "music": "audio/rpgchip05_pavane.ogg",
         "description": "El mercado bullicioso de Viscaria"
       },
       "sequence": [
-        {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Quizás podría... tomar prestado algo de dinero sin permiso."]
-        },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": ["¡Qué escandaloso! El héroe elegido recurriendo al hurto. Me encanta este giro argumental."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Solo lo tomaré prestado. Lo devolveré... algún día."]
+          "type": "choice",
+          "options": [
+            { "text": "Solo lo tomaré prestado. Lo devolveré... algún día." },
+            { "text": "Tiempos desesperados requieren medidas desesperadas." },
+            { "text": "No me juzgues, tú me metiste en esto." }
+          ]
         },
         {
           "type": "dialog",
@@ -419,22 +496,22 @@
           "results": {
             "critical_success": {
               "text": "¡CRÍTICO! Robas la bolsa entera sin que nadie se dé cuenta. Eres el Robin Hood de Viscaria.",
-              "effects": { "stats": { "reputation": -5 }, "inventory": ["bolsa_monedas"] },
+              "effects": { "stats": { "reputation": -5, "dinero": 40, "fear": 5 }, "inventory": ["bolsa_monedas"] },
               "goto": "tienda_tendero"
             },
             "success": {
               "text": "Logras robar algunas monedas. No es mucho, pero servirá.",
-              "effects": { "stats": { "reputation": -5 } },
+              "effects": { "stats": { "reputation": -5, "dinero": 20, "fear": 10 } },
               "goto": "tienda_tendero"
             },
             "failure": {
               "text": "El noble te descubre pero no le importa lo suficiente como para llamar a la guardia.",
-              "effects": { "stats": { "reputation": -10 } },
+              "effects": { "stats": { "reputation": -10, "dinero": 5, "fear": 15 } },
               "goto": "tienda_tendero"
             },
             "critical_failure": {
               "text": "¡PIFIA! Te atrapan. Los guardias te dan una paliza y te quitan lo poco que tenías.",
-              "effects": { "stats": { "reputation": -15, "will_to_live": -10 } },
+              "effects": { "stats": { "reputation": -15, "will_to_live": -10, "fear": 15 } },
               "goto": "tienda_tendero"
             }
           }
@@ -446,6 +523,7 @@
       "scenario": {
         "name": "Tienda de Aventureros",
         "image": "images/scenarios/tienda.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
         "description": "Tienda de 'Artículos para Aventureros Suicidas'"
       },
       "sequence": [
@@ -468,9 +546,12 @@
           "lines": ["Parece que nuestro amigo ha estado probando su propio inventario de pociones. Aprovecha para regatear."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Necesito equipo para adentrarme en el Abismo de las Babosas."]
+          "type": "choice",
+          "options": [
+            { "text": "Necesito equipo para adentrarme en el Abismo de las Babosas." },
+            { "text": "¿Tienes algo que pueda mantenerme vivo ahí abajo?" },
+            { "text": "Dame lo mejor que tengas. Bueno, lo mejor que pueda pagar." }
+          ]
         },
         {
           "type": "dialog",
@@ -487,21 +568,22 @@
           "character": "tendero",
           "lines": [
             "La mejor espada de todo Viscaria, un zurrón de escr... escro... piel de elefante muy espacioso, y sal. La sal es importante. Muy cara. Mata babosas.",
-            "Mmm... para ti... *hic* Normalmente serían 500 monedas de oro pero... *mira confundido una botella vacía* Acepto lo que tengas."
+            "Mmm... para ti... *hic* Normalmente serían 500 monedas de oro pero... *mira confundido una botella vacía* Acepto lo que tengas. No sé contar muy bien ahora mismo."
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "El Tendero toma todo tu dinero y te entrega el equipo. Técnicamente fue un intercambio justo. Técnicamente.",
-            "[Has obtenido: Espada Oxidada, Zurrón Espacioso, Sal Anti-Babosas]"
+            "El Tendero intenta contar tus monedas pero pierde la cuenta al llegar a tres. Te cobra 5 monedas por todo. Probablemente le has estafado, pero está demasiado borracho para darse cuenta.",
+            "[Has obtenido: Espada Oxidada, Zurrón Espacioso, Sal Anti-Babosas] [-5 monedas]"
           ]
         },
         {
           "type": "effects",
           "effects": {
-            "inventory": ["espada_oxidada", "zurron_espacioso", "sal_anti_babosas"]
+            "inventory": ["espada_oxidada", "zurron_espacioso", "sal_anti_babosas"],
+            "stats": { "dinero": -5 }
           }
         },
         {
@@ -517,9 +599,14 @@
       "scenario": {
         "name": "Callejón Oscuro",
         "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
         "description": "Un callejón oscuro y húmedo"
       },
       "sequence": [
+        {
+          "type": "effects",
+          "effects": { "stats": { "fear": 5, "pee": 5 } }
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -529,34 +616,68 @@
           ]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Por qué tengo que venir por aquí?"]
-        },
-        {
-          "type": "dialog",
-          "character": "narrator",
-          "lines": [
-            "Desarrollo de personaje, atmósfera, tensión narrativa... escoge la excusa que más te guste.",
-            "Un sonido viscoso se escucha desde las sombras."
+          "type": "choice",
+          "options": [
+            { "text": "¿Por qué tengo que venir por aquí?", "effects": { "flags": { "callejon_1_why": true } } },
+            { "text": "Esto no me da buena espina...", "effects": { "flags": { "callejon_1_bad": true } } },
+            { "text": "Genial, un callejón oscuro. ¿Qué puede salir mal?", "effects": { "flags": { "callejon_1_sarcasm": true } } }
           ]
         },
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Qué fue eso?"]
+          "character": "narrator",
+          "condition": { "flags": { "callejon_1_why": true } },
+          "lines": ["Desarrollo de personaje, atmósfera, tensión narrativa... escoge la excusa que más te guste."]
         },
         {
           "type": "dialog",
           "character": "narrator",
-          "lines": ["Oh, debe ser una rata. O tal vez un asesino. O quizás... bueno, ¿por qué no vas a investigar?"]
+          "condition": { "flags": { "callejon_1_bad": true } },
+          "lines": ["Tu instinto no es tan inútil como el resto de ti. Pero tranquilo, lo peor que puede pasar es... bueno, hay una lista larga."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_1_sarcasm": true } },
+          "lines": ["¡Así se habla! Con esa actitud seguro que sobrevives... a los primeros cinco metros, al menos."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": ["Un sonido viscoso se escucha desde las sombras."]
         },
         {
           "type": "choice",
           "options": [
-            { "text": "Investigar el sonido", "goto": "encuentro_nerly" },
-            { "text": "Ignorarlo y seguir adelante", "goto": "encuentro_nerly" },
-            { "text": "Volver a la calle principal", "goto": "encuentro_nerly" }
+            { "text": "¿Qué fue eso?", "effects": { "flags": { "callejon_2_what": true } } },
+            { "text": "No me gusta ese sonido...", "effects": { "flags": { "callejon_2_nope": true } } },
+            { "text": "Seguro es solo una rata. ¿Verdad?", "effects": { "flags": { "callejon_2_rat": true } } }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_2_what": true } },
+          "lines": ["Oh, debe ser una rata. O tal vez un asesino. O quizás... bueno, ¿por qué no vas a investigar?"]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_2_nope": true } },
+          "lines": ["A nadie le gusta, BOB. Pero estamos aquí y el guión dice que debes avanzar. Así que mueve esos pies."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_2_rat": true } },
+          "lines": ["Sí, sí, una rata. Una rata grande, viscosa y que deja un rastro brillante. Totalmente una rata. ¿Vamos a ver?"]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Investigar el sonido", "effects": { "flags": { "callejon_3_investigate": true } }, "goto": "encuentro_nerly" },
+            { "text": "Ignorarlo y seguir adelante", "effects": { "flags": { "callejon_3_ignore": true } }, "goto": "encuentro_nerly" },
+            { "text": "Volver a la calle principal", "effects": { "flags": { "callejon_3_back": true } }, "goto": "encuentro_nerly" }
           ]
         }
       ]
@@ -566,13 +687,27 @@
       "scenario": {
         "name": "Callejón Oscuro",
         "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
         "description": "Un callejón oscuro y húmedo"
       },
       "sequence": [
         {
           "type": "dialog",
           "character": "narrator",
-          "lines": ["Al acercarse, el protagonista ve una pequeña babosa de color azul brillante."]
+          "condition": { "flags": { "callejon_3_investigate": true } },
+          "lines": ["Te acercas con cautela al origen del sonido y ves una pequeña babosa de color azul brillante."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_3_ignore": true } },
+          "lines": ["Intentas ignorarlo, pero el sonido te sigue. Te das la vuelta y ves una pequeña babosa de color azul brillante siguiéndote."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "callejon_3_back": true } },
+          "lines": ["Ja, bonito intento. Pero algo viscoso te bloquea el paso. Una pequeña babosa de color azul brillante te mira desde el suelo."]
         },
         {
           "type": "dialog",
@@ -580,14 +715,30 @@
           "lines": ["¡Hola! ¿Eres el nuevo héroe?"]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Una babosa que habla?"]
+          "type": "choice",
+          "options": [
+            { "text": "¿Una babosa que habla?", "effects": { "flags": { "nerly_1_shock": true }, "stats": { "fear": 5, "will_to_live": -5 } } },
+            { "text": "¿'Nuevo'? ¿Cuántos ha habido antes que yo?", "effects": { "flags": { "nerly_1_count": true }, "stats": { "fear": 5, "will_to_live": -5 } } },
+            { "text": "¿Héroe? Más bien víctima involuntaria.", "effects": { "flags": { "nerly_1_victim": true }, "stats": { "fear": 5 } } }
+          ]
         },
         {
           "type": "dialog",
           "character": "nerly",
+          "condition": { "flags": { "nerly_1_shock": true } },
           "lines": ["Disculpa, pero el término 'babosa' es un poco despectivo. Prefiero 'entidad gastropódica semitranslúcida'. Pero puedes llamarme Nerly."]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "condition": { "flags": { "nerly_1_count": true } },
+          "lines": ["Eh... unos cuantos. No te preocupes por los detalles. Lo importante es que TÚ estás aquí. Soy Nerly, por cierto. Entidad gastropódica semitranslúcida, para ser exactos."]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "condition": { "flags": { "nerly_1_victim": true } },
+          "lines": ["¡Ja! Me caes bien, eres honesto. Soy Nerly, entidad gastropódica semitranslúcida. Y sí, sé lo que piensas: 'es una babosa'. Pero prefiero el término técnico."]
         },
         {
           "type": "dialog",
@@ -602,9 +753,9 @@
         {
           "type": "choice",
           "options": [
-            { "text": "¿Por qué debería confiar en una babosa?", "goto": "nerly_se_une" },
-            { "text": "Gracias, me vendría bien la ayuda.", "goto": "nerly_se_une" },
-            { "text": "¿Qué ganas tú con esto?", "goto": "nerly_se_une" }
+            { "text": "¿Por qué debería confiar en una babosa?", "effects": { "flags": { "nerly_2_trust": true } }, "goto": "nerly_se_une" },
+            { "text": "Gracias, me vendría bien la ayuda.", "effects": { "flags": { "nerly_2_accept": true } }, "goto": "nerly_se_une" },
+            { "text": "¿Qué ganas tú con esto?", "effects": { "flags": { "nerly_2_motive": true } }, "goto": "nerly_se_une" }
           ]
         }
       ]
@@ -614,23 +765,40 @@
       "scenario": {
         "name": "Callejón Oscuro",
         "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
         "description": "Un callejón oscuro y húmedo"
       },
       "sequence": [
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Gracias, me vendría bien la ayuda."]
+          "character": "nerly",
+          "condition": { "flags": { "nerly_2_trust": true } },
+          "lines": ["Porque soy la única que conoce el Abismo por dentro y no quiere matarte. Eso debería ser suficiente, ¿no?"]
         },
         {
           "type": "dialog",
           "character": "nerly",
-          "lines": ["¡Excelente! Sabía que eras diferente. La mayoría solo intenta pisarme o echarme sal. A propósito, ¿no llevas sal contigo, verdad?"]
+          "condition": { "flags": { "nerly_2_accept": true } },
+          "lines": ["¡Excelente! Sabía que eras diferente. La mayoría solo intenta pisarme o echarme sal."]
         },
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Bueno, en realidad..."]
+          "character": "nerly",
+          "condition": { "flags": { "nerly_2_motive": true } },
+          "lines": ["Digamos que tengo mis razones. El Rey Baboso no es exactamente popular entre los de mi especie. Nos obliga a trabajar en las minas de baba. Es... degradante."]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": ["A propósito, ¿no llevas sal contigo, verdad?"]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Bueno, en realidad..." },
+            { "text": "¿Sal? ¿Yo? Noooo... para nada..." },
+            { "text": "Puede que tenga un saquito por ahí..." }
+          ]
         },
         {
           "type": "dialog",
@@ -656,9 +824,14 @@
       "scenario": {
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
         "description": "La entrada al temido Abismo de las Babosas"
       },
       "sequence": [
+        {
+          "type": "effects",
+          "effects": { "stats": { "hunger": 10, "pee": 5 } }
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -670,14 +843,30 @@
           "lines": ["No falta mucho. Cuando el suelo comience a brillar ligeramente en la oscuridad, sabrás que estamos cerca."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Por qué brilla?"]
+          "type": "choice",
+          "options": [
+            { "text": "¿Por qué brilla el suelo?", "effects": { "flags": { "camino_1_glow": true } } },
+            { "text": "Esto es cada vez más asqueroso...", "effects": { "flags": { "camino_1_gross": true } } },
+            { "text": "¿Estamos cerca? Porque mis zapatos se están disolviendo.", "effects": { "flags": { "camino_1_shoes": true } } }
+          ]
         },
         {
           "type": "dialog",
           "character": "nerly",
+          "condition": { "flags": { "camino_1_glow": true } },
           "lines": ["Rastros de baba. Algunos de los míos tienen... fugas. Y otros dejan rastros a propósito para marcar territorio."]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "condition": { "flags": { "camino_1_gross": true } },
+          "lines": ["Es baba, sí. Es lo que hacemos. No es como si los humanos fueran ejemplo de higiene tampoco, ¿eh?"]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "condition": { "flags": { "camino_1_shoes": true } },
+          "lines": ["Tranquilo, eso es solo la baba ácida de las babosas exploradoras. Es inofensiva... para los pies. Para el calzado, no tanto."]
         },
         {
           "type": "dialog",
@@ -697,6 +886,7 @@
       "scenario": {
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
         "description": "La entrada al temido Abismo de las Babosas"
       },
       "sequence": [
@@ -716,17 +906,35 @@
           "lines": ["¡Tachán! Contempla la glamorosa entrada al Abismo de las Babosas. Nótese el exquisito olor a descomposición y el encantador brillo de fluidos corporales de babosa."]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["Es... imponente."]
+          "type": "choice",
+          "options": [
+            { "text": "Es... imponente.", "effects": { "flags": { "abismo_1_impressed": true } } },
+            { "text": "Huele a muerte. Literalmente.", "effects": { "flags": { "abismo_1_smell": true } } },
+            { "text": "Todavía estoy a tiempo de dedicarme a la agricultura...", "effects": { "flags": { "abismo_1_regret": true } } }
+          ]
         },
         {
           "type": "dialog",
           "character": "narrator",
-          "lines": [
-            "Es un agujero en una montaña, BOB. No te emociones demasiado.",
-            "A un lado de la entrada, hay un anciano sentado sobre una roca plana, fumando una pipa."
-          ]
+          "condition": { "flags": { "abismo_1_impressed": true } },
+          "lines": ["Es un agujero en una montaña, BOB. No te emociones demasiado."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "abismo_1_smell": true } },
+          "lines": ["Técnicamente huele a baba fermentada con notas de descomposición orgánica. Los sommeliers de olores lo llaman 'bouquet de mazmorra'. Yo lo llamo 'razón para no entrar'."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "abismo_1_regret": true } },
+          "lines": ["La agricultura en Viscaria implica cultivar hongos babosos en cuevas. No es exactamente una mejora. Además, ya estás aquí."]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": ["A un lado de la entrada, hay un anciano sentado sobre una roca plana, fumando una pipa."]
         },
         {
           "type": "choice",
@@ -742,6 +950,7 @@
       "scenario": {
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
         "description": "La entrada al temido Abismo de las Babosas"
       },
       "sequence": [
@@ -751,16 +960,38 @@
           "lines": ["*cof cof* Así que otro aspirante a héroe, ¿eh? Déjame adivinar... ¿El Narrador te trajo?"]
         },
         {
-          "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Puedes ver al Narrador?"]
+          "type": "choice",
+          "options": [
+            { "text": "¿Puedes ver al Narrador?", "effects": { "flags": { "anciano_1_see": true } } },
+            { "text": "¿Cómo sabes del Narrador?", "effects": { "flags": { "anciano_1_how": true } } },
+            { "text": "¿'Otro'? ¿Cuántos han venido antes?", "effects": { "flags": { "anciano_1_others": true } } }
+          ]
         },
         {
           "type": "dialog",
           "character": "anciano",
+          "condition": { "flags": { "anciano_1_see": true } },
           "lines": [
             "Después de cinco intentos fallidos de aventura y tres muertes casi seguras, uno comienza a notar patrones. El Narrador es solo uno de los muchos seres que existen entre planos.",
             "El secreto está en no pisar lo verde... o lo morado... o lo transparente. En realidad, mejor no pises nada."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "condition": { "flags": { "anciano_1_how": true } },
+          "lines": [
+            "Cuando llevas tanto tiempo como yo sentado frente a una mazmorra, empiezas a notar cosas. Voces sarcásticas que vienen de ninguna parte, héroes que aparecen de la nada...",
+            "Un consejo: no pises lo verde. Ni lo morado. Ni lo transparente. En realidad, mejor no pises nada."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "condition": { "flags": { "anciano_1_others": true } },
+          "lines": [
+            "¿Cuántos? Dejé de contar después del decimoctavo. Algunos valientes, otros tontos, la mayoría ambas cosas.",
+            "Un consejo que ninguno siguió: no pises lo verde. Ni lo morado. Ni lo transparente. Mejor no pises nada."
           ]
         },
         {
@@ -781,6 +1012,7 @@
       "scenario": {
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
         "description": "La entrada al temido Abismo de las Babosas"
       },
       "sequence": [
@@ -791,20 +1023,15 @@
         },
         {
           "type": "dialog",
-          "character": "protagonist",
-          "lines": ["¿Cómo debería entrar?"]
-        },
-        {
-          "type": "dialog",
           "character": "nerly",
-          "lines": ["Hay varias formas. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, podríamos buscar un túnel lateral. Yo conozco varios pasajes secretos."]
+          "lines": ["Hay varias formas de entrar. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, podríamos buscar un túnel lateral. Yo conozco varios pasajes secretos."]
         },
         {
           "type": "choice",
           "options": [
-            { "text": "Entrar sigilosamente", "goto": "sala_entrada" },
-            { "text": "¡A la carga!", "goto": "sala_entrada" },
-            { "text": "Lanzar algo primero para probar", "goto": "sala_entrada" }
+            { "text": "Entrar sigilosamente", "effects": { "flags": { "entrada_stealth": true }, "stats": { "fear": -5 } }, "goto": "sala_entrada" },
+            { "text": "¡A la carga!", "effects": { "flags": { "entrada_charge": true }, "stats": { "will_to_live": 10, "fear": -5 } }, "goto": "sala_entrada" },
+            { "text": "Lanzar algo primero para probar", "effects": { "flags": { "entrada_test": true }, "stats": { "fear": 5 } }, "goto": "sala_entrada" }
           ]
         }
       ]
@@ -814,16 +1041,41 @@
       "scenario": {
         "name": "Sala de Entrada",
         "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
         "description": "Primera cámara dentro del Abismo"
       },
       "sequence": [
         {
           "type": "dialog",
           "character": "narrator",
+          "condition": { "flags": { "entrada_stealth": true } },
           "lines": [
-            "Estás dentro del Abismo. La sala es amplia, con paredes cubiertas de una sustancia viscosa que pulsa levemente.",
-            "Hay tres túneles que se ramifican desde aquí. Nerly señala cada uno."
+            "Te deslizas silenciosamente hacia el interior. Impresionante. Nadie te ha visto. Aunque eso podría ser porque no hay nadie aquí.",
+            "La sala es amplia, con paredes cubiertas de una sustancia viscosa que pulsa levemente."
           ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "entrada_charge": true } },
+          "lines": [
+            "Entras gritando como un poseso. Tu grito de guerra resuena por las cavernas. Tres babosas que estaban durmiendo se despiertan sobresaltadas y huyen aterradas. Victoria... supongo.",
+            "La sala es amplia, con paredes cubiertas de una sustancia viscosa que pulsa levemente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "entrada_test": true } },
+          "lines": [
+            "Lanzas una piedra al interior. Rebota tres veces y golpea algo que hace '¡glub!'. Silencio. Parece seguro. O eso, o lo que has golpeado está esperando a que entres.",
+            "La sala es amplia, con paredes cubiertas de una sustancia viscosa que pulsa levemente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": ["Hay tres túneles que se ramifican desde aquí. Nerly señala cada uno."]
         },
         {
           "type": "dialog",
@@ -836,9 +1088,9 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Ir a las Cavernas de Cría", "goto": "grutas_cristal" },
-            { "text": "Bajar al Abismo Profundo", "goto": "grutas_cristal" },
-            { "text": "Explorar las Grutas de Cristal", "goto": "grutas_cristal" }
+            { "text": "Ir a las Cavernas de Cría", "effects": { "flags": { "sala_cria": true } }, "goto": "grutas_cristal" },
+            { "text": "Bajar al Abismo Profundo", "effects": { "flags": { "sala_profundo": true } }, "goto": "grutas_cristal" },
+            { "text": "Explorar las Grutas de Cristal", "effects": { "flags": { "sala_grutas": true } }, "goto": "grutas_cristal" }
           ]
         }
       ]
@@ -848,9 +1100,34 @@
       "scenario": {
         "name": "Grutas de Cristal",
         "image": "images/scenarios/grutas_cristal.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
         "description": "Cavernas brillantes llenas de cristales"
       },
       "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "sala_cria": true } },
+          "lines": [
+            "Te diriges a las Cavernas de Cría, pero Nerly te detiene justo a tiempo. Resulta que está lleno de babosas madre protegiendo huevos. Acabarías disuelto en ácido en segundos.",
+            "Así que, por eliminación, acabas en las Grutas de Cristal. Qué sorpresa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "sala_profundo": true } },
+          "lines": [
+            "Intentas bajar al Abismo Profundo, pero el túnel está bloqueado por una masa gelatinosa que no parece tener intención de moverse. Nerly sugiere no tocarla.",
+            "Cambio de planes: las Grutas de Cristal será."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "sala_grutas": true } },
+          "lines": ["Buena elección. Probablemente la menos mortal de las tres. Probablemente."]
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -875,9 +1152,9 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Tocar la Lágrima de Cristal", "goto": "final" },
-            { "text": "Ignorar el cristal y seguir adelante", "goto": "final" },
-            { "text": "Volver a la sala anterior", "goto": "final" }
+            { "text": "Tocar la Lágrima de Cristal", "effects": { "flags": { "grutas_touch": true } }, "goto": "final" },
+            { "text": "Ignorar el cristal y seguir adelante", "effects": { "flags": { "grutas_ignore": true } }, "goto": "final" },
+            { "text": "Volver a la sala anterior", "effects": { "flags": { "grutas_back": true } }, "goto": "final" }
           ]
         }
       ]
@@ -887,9 +1164,37 @@
       "scenario": {
         "name": "Desenlace Final",
         "image": "images/scenarios/final.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
         "description": "El desenlace de tu aventura"
       },
       "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "grutas_touch": true } },
+          "lines": [
+            "Tocas la Lágrima de Cristal. Una visión te invade: ves al Rey Baboso sentado en un trono de mucosidad, riendo. Luego todo se vuelve blanco.",
+            "Cuando recuperas la vista, te sientes... diferente. Como si supieras algo que antes no sabías, pero no pudieras recordar qué."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "grutas_ignore": true } },
+          "lines": [
+            "Pasas de largo el cristal gigante que brilla con el poder de mil soles. Nerly te mira con una mezcla de alivio y decepción.",
+            "Prudente. Aburrido, pero prudente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "condition": { "flags": { "grutas_back": true } },
+          "lines": [
+            "Intentas volver, pero las grutas son un laberinto cristalino. Cada reflejo te confunde más.",
+            "Al final acabas exactamente donde empezaste. El cristal te mira. Tú lo miras. Es incómodo."
+          ]
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -912,7 +1217,7 @@
           "type": "choice",
           "options": [
             { "text": "Reiniciar la demo", "goto": "start" },
-            { "text": "Volver al inicio", "goto": "start" }
+            { "text": "Salir del juego", "goto": "_quit" }
           ]
         }
       ]

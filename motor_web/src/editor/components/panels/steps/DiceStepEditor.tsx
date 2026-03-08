@@ -4,8 +4,10 @@ import React from 'react';
 import styled from 'styled-components';
 import type { DiceStep, DiceOutcome } from '../../../../types/game';
 import TerminalInput from '../../shared/TerminalInput';
+import GotoSelect from '../../shared/GotoSelect';
 import EffectsEditor from './EffectsEditor';
 import ConditionEditor from './ConditionEditor';
+import { useProjectContext } from '../../../hooks/useProjectContext';
 
 interface DiceStepEditorProps {
   step: DiceStep;
@@ -13,6 +15,8 @@ interface DiceStepEditorProps {
 }
 
 const DiceStepEditor: React.FC<DiceStepEditorProps> = ({ step, onChange }) => {
+  const ctx = useProjectContext();
+
   const updateOutcome = (
     key: 'success' | 'failure' | 'critical_success' | 'critical_failure',
     outcome: DiceOutcome | undefined
@@ -56,11 +60,10 @@ const DiceStepEditor: React.FC<DiceStepEditorProps> = ({ step, onChange }) => {
           value={outcome.text}
           onChange={(text) => updateOutcome(key, { ...outcome, text })}
         />
-        <TerminalInput
+        <GotoSelect
           label="Ir a (goto)"
           value={outcome.goto || ''}
           onChange={(goto) => updateOutcome(key, { ...outcome, goto: goto || undefined })}
-          placeholder="scene_id"
         />
         <EffectsEditor
           effects={outcome.effects || {}}
@@ -85,12 +88,20 @@ const DiceStepEditor: React.FC<DiceStepEditorProps> = ({ step, onChange }) => {
       />
 
       <Row>
-        <TerminalInput
-          label="Stat"
-          value={step.stat}
-          onChange={(stat) => onChange({ ...step, stat })}
-          placeholder="will_to_live"
-        />
+        <StatSelect>
+          <StatLabel>Stat</StatLabel>
+          <StatInput
+            value={step.stat}
+            onChange={(e) => onChange({ ...step, stat: e.target.value })}
+            list="dice-stats-list"
+            placeholder="will_to_live"
+          />
+          <datalist id="dice-stats-list">
+            {ctx.stats.map((s) => (
+              <option key={s} value={s} />
+            ))}
+          </datalist>
+        </StatSelect>
         <SmallInput>
           <TerminalInput
             label="Dificultad"
@@ -201,4 +212,30 @@ const RemoveBtn = styled.button`
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 13px;
+`;
+
+const StatSelect = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const StatLabel = styled.span`
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: ${(p) => p.theme.terminal.accentDim};
+  text-transform: uppercase;
+`;
+
+const StatInput = styled.input`
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  background: ${(p) => p.theme.terminal.background};
+  border: 1px solid ${(p) => p.theme.terminal.border};
+  color: ${(p) => p.theme.terminal.text};
+  border-radius: 2px;
+  outline: none;
+  &:focus { border-color: ${(p) => p.theme.terminal.accent}; }
 `;

@@ -6,6 +6,7 @@ import type { TerminalEntry } from '../types/terminal';
 import type { PlayerState, StepResult } from '../types/engine';
 import type { GameEngine } from '../engine/GameEngine';
 import type { GameManifest } from '../types/game';
+import { audioManager } from '../engine/AudioManager';
 
 export type AppPhase = 'boot' | 'login' | 'shell' | 'game' | 'editor';
 
@@ -42,6 +43,10 @@ interface AppStore {
   gameManifest: GameManifest | null;
   setGameManifest: (manifest: GameManifest | null) => void;
 
+  // Game base path (e.g. "games/demo")
+  gameBasePath: string;
+  setGameBasePath: (path: string) => void;
+
   // Current scene
   currentScene: string;
   setCurrentScene: (scene: string) => void;
@@ -59,6 +64,14 @@ interface AppStore {
   setSpeed: (speed: number) => void;
   volume: number;
   setVolume: (volume: number) => void;
+
+  // Fade old entries
+  fadeBeforeIndex: number;
+  fadeOldEntries: () => void;
+
+  // Seen characters (for first-time image display)
+  seenCharacters: Set<string>;
+  markCharacterSeen: (id: string) => void;
 
   // UI states
   showEnterPrompt: boolean;
@@ -115,6 +128,10 @@ export const useAppStore = create<AppStore>((set) => ({
   gameManifest: null,
   setGameManifest: (gameManifest) => set({ gameManifest }),
 
+  // Game base path
+  gameBasePath: '',
+  setGameBasePath: (gameBasePath) => set({ gameBasePath }),
+
   // Scene
   currentScene: '',
   setCurrentScene: (currentScene) => set({ currentScene }),
@@ -133,6 +150,20 @@ export const useAppStore = create<AppStore>((set) => ({
   volume: 50,
   setVolume: (volume) => set({ volume }),
 
+  // Fade old entries
+  fadeBeforeIndex: 0,
+  fadeOldEntries: () => set((s) => ({ fadeBeforeIndex: s.history.length })),
+
+  // Seen characters
+  seenCharacters: new Set<string>(),
+  markCharacterSeen: (id) =>
+    set((s) => {
+      if (s.seenCharacters.has(id)) return s;
+      const next = new Set(s.seenCharacters);
+      next.add(id);
+      return { seenCharacters: next };
+    }),
+
   // UI
   showEnterPrompt: false,
   setShowEnterPrompt: (showEnterPrompt) => set({ showEnterPrompt }),
@@ -149,10 +180,22 @@ export const useAppStore = create<AppStore>((set) => ({
       engine: null,
       playerState: null,
       gameManifest: null,
+      gameBasePath: '',
       currentScene: '',
       pendingResult: null,
       currentImage: null,
+      fadeBeforeIndex: 0,
+      seenCharacters: new Set<string>(),
       phase: s.returnToEditor ? 'editor' : 'shell',
       returnToEditor: false,
     })),
 }));
+
+// Stop music whenever we leave the game phase
+let prevPhase: AppPhase = useAppStore.getState().phase;
+useAppStore.subscribe((state) => {
+  if (prevPhase === 'game' && state.phase !== 'game') {
+    audioManager.stop();
+  }
+  prevPhase = state.phase;
+});

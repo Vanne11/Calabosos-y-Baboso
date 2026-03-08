@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import type { Effects } from '../../../../types/game';
 import TagInput from '../../shared/TagInput';
+import { useProjectContext } from '../../../hooks/useProjectContext';
 
 interface EffectsEditorProps {
   effects: Effects;
@@ -13,6 +14,7 @@ interface EffectsEditorProps {
 }
 
 const EffectsEditor: React.FC<EffectsEditorProps> = ({ effects, onChange, label }) => {
+  const ctx = useProjectContext();
   const stats = effects.stats || {};
   const flags = effects.flags || {};
   const inventory = effects.inventory || [];
@@ -55,10 +57,14 @@ const EffectsEditor: React.FC<EffectsEditorProps> = ({ effects, onChange, label 
           Stats
           <AddBtn onClick={addStat}>+</AddBtn>
         </SubLabel>
+        <datalist id="eff-stats-list">
+          {ctx.stats.map((s) => <option key={s} value={s} />)}
+        </datalist>
         {Object.entries(stats).map(([key, val]) => (
           <StatRow key={key}>
             <StatInput
               value={key}
+              list="eff-stats-list"
               onChange={(e) => {
                 const { [key]: oldVal, ...rest } = stats;
                 onChange({ ...effects, stats: { ...rest, [e.target.value]: oldVal } });
@@ -81,10 +87,14 @@ const EffectsEditor: React.FC<EffectsEditorProps> = ({ effects, onChange, label 
           Flags
           <AddBtn onClick={addFlag}>+</AddBtn>
         </SubLabel>
+        <datalist id="eff-flags-list">
+          {ctx.flags.map((f) => <option key={f} value={f} />)}
+        </datalist>
         {Object.entries(flags).map(([key, val]) => (
           <StatRow key={key}>
             <StatInput
               value={key}
+              list="eff-flags-list"
               onChange={(e) => {
                 const { [key]: oldVal, ...rest } = flags;
                 onChange({ ...effects, flags: { ...rest, [e.target.value]: oldVal } });

@@ -1,5 +1,5 @@
 // components/layout/ImagePanel.tsx
-// Panel de imagen / logo
+// Panel de imagen / logo - se adapta a su contenedor
 
 import React from 'react';
 import styled from 'styled-components';
@@ -9,15 +9,31 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid ${(props) => props.theme.terminal.border};
+  background-color: ${(props) => props.theme.terminal.background};
 `;
 
 const ScenarioImage = styled.img`
-  max-width: 100%;
-  max-height: 200px;
-  object-fit: contain;
+  width: 120%;
+  height: 100%;
+  object-fit: cover;
+  animation: panImage 30s ease-in-out forwards;
+
+  @keyframes panImage {
+    0% {
+      object-position: 0% 50%;
+    }
+    50% {
+      object-position: 100% 50%;
+    }
+    100% {
+      object-position: 50% 50%;
+    }
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -51,7 +67,7 @@ const ImagePanel: React.FC = () => {
   if (currentImage) {
     return (
       <Container>
-        <ScenarioImage src={currentImage} alt="Escenario actual" />
+        <ScenarioImage key={currentImage} src={currentImage} alt="Escenario actual" />
       </Container>
     );
   }

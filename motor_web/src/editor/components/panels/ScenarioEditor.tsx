@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import type { ScenarioDef } from '../../../types/game';
 import TerminalInput from '../shared/TerminalInput';
+import AssetPicker from '../shared/AssetPicker';
 
 interface ScenarioEditorProps {
   scenario: ScenarioDef | undefined;
@@ -38,11 +39,10 @@ const ScenarioEditor: React.FC<ScenarioEditorProps> = ({ scenario, onChange }) =
         rows={3}
       />
 
-      <TerminalInput
-        label="Imagen (path)"
+      <AssetPicker
+        label="Imagen"
         value={scenario.image || ''}
         onChange={(image) => onChange({ ...scenario, image: image || undefined })}
-        placeholder="/images/escena.png"
       />
 
       <RemoveBtn onClick={() => onChange(undefined)}>

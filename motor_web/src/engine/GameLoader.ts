@@ -35,14 +35,45 @@ export async function loadGame(gameName: string): Promise<LoadedGame> {
     throw new Error(`Juego "${gameName}" no tiene escena "start" en scenes.json`);
   }
 
+  // Resolve relative image paths to full paths
+  resolveImagePaths(scenes, basePath);
+  resolveManifestImagePaths(manifest, basePath);
+
   return { manifest, scenes };
 }
 
+function resolveImagePaths(scenes: ScenesFile, basePath: string): void {
+  for (const scene of Object.values(scenes.scenes)) {
+    if (scene.scenario?.image) {
+      scene.scenario.image = `${basePath}/${scene.scenario.image}`;
+    }
+    if (scene.scenario?.music) {
+      scene.scenario.music = `${basePath}/${scene.scenario.music}`;
+    }
+  }
+}
+
+function resolveManifestImagePaths(manifest: GameManifest, basePath: string): void {
+  for (const char of Object.values(manifest.characters)) {
+    if (char.image) {
+      char.image = `${basePath}/${char.image}`;
+    }
+  }
+}
+
 export async function listGames(): Promise<{ name: string; description: string; author: string; version: string }[]> {
-  const possibleGames = ['demo', 'Calabosos y Babosos'];
+  // Intentar cargar índice dinámico
+  let gameNames: string[];
+  try {
+    const index = await fetchJson<{ games: string[] }>('games/index.json');
+    gameNames = index.games;
+  } catch {
+    // Fallback a lista conocida
+    gameNames = ['demo', 'Calabosos y Babosos'];
+  }
 
   const results = await Promise.all(
-    possibleGames.map(async (name) => {
+    gameNames.map(async (name) => {
       try {
         const info = await fetchJson<GameManifest>(`games/${name}/game.json`);
         return {

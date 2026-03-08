@@ -1,45 +1,51 @@
 // editor/components/canvas/EditorCanvas.tsx
 // Wrapper ReactFlow con configuración del editor
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   ReactFlow,
   Background,
   Controls,
   MiniMap,
   BackgroundVariant,
-  applyNodeChanges,
 } from '@xyflow/react';
-import type { NodeChange, NodeMouseHandler, NodeTypes, EdgeTypes } from '@xyflow/react';
+import type { NodeMouseHandler, NodeTypes, EdgeTypes } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import styled from 'styled-components';
 import { useEditorStore } from '../../store/useEditorStore';
 import SceneNode from './SceneNode';
+import SpecialNode from './SpecialNode';
 import CustomEdge from './CustomEdge';
+import SceneSearch from './SceneSearch';
 import type { SceneFlowNode, SceneNodeData } from '../../types/editor';
 
-const EditorCanvas: React.FC = () => {
+interface EditorCanvasProps {
+  showSearch: boolean;
+  onCloseSearch: () => void;
+  onNodeDoubleClick?: (nodeId: string) => void;
+}
+
+const EditorCanvas: React.FC<EditorCanvasProps> = ({ showSearch, onCloseSearch, onNodeDoubleClick }) => {
   const nodes = useEditorStore((s) => s.nodes);
   const edges = useEditorStore((s) => s.edges);
-  const setNodes = useEditorStore((s) => s.setNodes);
+  const onNodesChange = useEditorStore((s) => s.onNodesChange);
   const setSelectedNodeId = useEditorStore((s) => s.setSelectedNodeId);
 
-  const nodeTypes = useMemo<NodeTypes>(() => ({ sceneNode: SceneNode as any }), []);
+  const nodeTypes = useMemo<NodeTypes>(() => ({ sceneNode: SceneNode as any, specialNode: SpecialNode as any }), []);
   const edgeTypes = useMemo<EdgeTypes>(() => ({ customEdge: CustomEdge as any }), []);
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange<SceneFlowNode>[]) => {
-      const updated = applyNodeChanges(changes, nodes);
-      setNodes(updated);
-    },
-    [nodes, setNodes]
-  );
 
   const onNodeClick: NodeMouseHandler<SceneFlowNode> = useCallback(
     (_event, node) => {
       setSelectedNodeId(node.id);
     },
     [setSelectedNodeId]
+  );
+
+  const onNodeDblClick: NodeMouseHandler<SceneFlowNode> = useCallback(
+    (_event, node) => {
+      onNodeDoubleClick?.(node.id);
+    },
+    [onNodeDoubleClick]
   );
 
   const onPaneClick = useCallback(() => {
@@ -53,6 +59,7 @@ const EditorCanvas: React.FC = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onNodeClick={onNodeClick}
+        onNodeDoubleClick={onNodeDblClick}
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
@@ -68,6 +75,7 @@ const EditorCanvas: React.FC = () => {
         />
         <MiniMap
           nodeColor={(node) => {
+            if (node.type === 'specialNode') return '#ff5555';
             const data = node.data as SceneNodeData;
             return data?.isStart ? '#50fa7b' : '#c67dff';
           }}
@@ -75,6 +83,7 @@ const EditorCanvas: React.FC = () => {
           maskColor="rgba(26, 14, 41, 0.7)"
         />
       </ReactFlow>
+      <SceneSearch visible={showSearch} onClose={onCloseSearch} />
     </CanvasWrapper>
   );
 };
@@ -82,8 +91,10 @@ const EditorCanvas: React.FC = () => {
 export default EditorCanvas;
 
 const CanvasWrapper = styled.div`
-  flex: 1;
+  width: 100%;
+  height: 100%;
   background: #0d0618;
+  position: relative;
 
   .react-flow__node {
     cursor: pointer;

@@ -1,7 +1,7 @@
 // editor/components/panels/SequenceEditor.tsx
 // Lista reordenable de steps con editores inline
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import type { SequenceStep } from '../../../types/game';
 import { useEditorStore } from '../../store/useEditorStore';
@@ -12,6 +12,19 @@ import ChoiceStepEditor from './steps/ChoiceStepEditor';
 import DiceStepEditor from './steps/DiceStepEditor';
 import InputStepEditor from './steps/InputStepEditor';
 import EffectsStepEditor from './steps/EffectsStepEditor';
+import BranchStepEditor from './steps/BranchStepEditor';
+import RandomStepEditor from './steps/RandomStepEditor';
+import CheckStepEditor from './steps/CheckStepEditor';
+import ShopStepEditor from './steps/ShopStepEditor';
+import CombatStepEditor from './steps/CombatStepEditor';
+import NotifyStepEditor from './steps/NotifyStepEditor';
+import WaitStepEditor from './steps/WaitStepEditor';
+import SoundStepEditor from './steps/SoundStepEditor';
+import CraftStepEditor from './steps/CraftStepEditor';
+import PuzzleStepEditor from './steps/PuzzleStepEditor';
+import ExamineStepEditor from './steps/ExamineStepEditor';
+import UseItemStepEditor from './steps/UseItemStepEditor';
+import TimedChoiceStepEditor from './steps/TimedChoiceStepEditor';
 
 interface SequenceEditorProps {
   nodeId: string;
@@ -24,6 +37,19 @@ const STEP_LABELS: Record<SequenceStep['type'], string> = {
   dice: 'Dado',
   input: 'Input',
   effects: 'Efectos',
+  branch: 'Bifurcación',
+  random: 'Aleatorio',
+  check: 'Comprobación',
+  shop: 'Tienda',
+  combat: 'Combate',
+  notify: 'Notificación',
+  wait: 'Espera',
+  sound: 'Sonido',
+  craft: 'Crafteo',
+  puzzle: 'Puzzle',
+  examine: 'Examinar',
+  use_item: 'Usar Item',
+  timed_choice: 'Elección Timed',
 };
 
 const STEP_COLORS: Record<SequenceStep['type'], string> = {
@@ -32,6 +58,19 @@ const STEP_COLORS: Record<SequenceStep['type'], string> = {
   dice: '#ffb86c',
   input: '#50fa7b',
   effects: '#f1fa8c',
+  branch: '#ff79c6',
+  random: '#ffb86c',
+  check: '#bd93f9',
+  shop: '#f1fa8c',
+  combat: '#ff5555',
+  notify: '#50fa7b',
+  wait: '#8be9fd',
+  sound: '#ffb86c',
+  craft: '#f1fa8c',
+  puzzle: '#ff79c6',
+  examine: '#8be9fd',
+  use_item: '#50fa7b',
+  timed_choice: '#ff5555',
 };
 
 const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
@@ -39,6 +78,8 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
   const addStep = useEditorStore((s) => s.addStep);
   const removeStep = useEditorStore((s) => s.removeStep);
   const moveStep = useEditorStore((s) => s.moveStep);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const renderStepEditor = (step: SequenceStep, index: number) => {
     const handleChange = (updated: SequenceStep) => {
@@ -56,6 +97,32 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
         return <InputStepEditor step={step} onChange={handleChange as any} />;
       case 'effects':
         return <EffectsStepEditor step={step} onChange={handleChange as any} />;
+      case 'branch':
+        return <BranchStepEditor step={step} onChange={handleChange as any} />;
+      case 'random':
+        return <RandomStepEditor step={step} onChange={handleChange as any} />;
+      case 'check':
+        return <CheckStepEditor step={step} onChange={handleChange as any} />;
+      case 'shop':
+        return <ShopStepEditor step={step} onChange={handleChange as any} />;
+      case 'combat':
+        return <CombatStepEditor step={step} onChange={handleChange as any} />;
+      case 'notify':
+        return <NotifyStepEditor step={step} onChange={handleChange as any} />;
+      case 'wait':
+        return <WaitStepEditor step={step} onChange={handleChange as any} />;
+      case 'sound':
+        return <SoundStepEditor step={step} onChange={handleChange as any} />;
+      case 'craft':
+        return <CraftStepEditor step={step} onChange={handleChange as any} />;
+      case 'puzzle':
+        return <PuzzleStepEditor step={step} onChange={handleChange as any} />;
+      case 'examine':
+        return <ExamineStepEditor step={step} onChange={handleChange as any} />;
+      case 'use_item':
+        return <UseItemStepEditor step={step} onChange={handleChange as any} />;
+      case 'timed_choice':
+        return <TimedChoiceStepEditor step={step} onChange={handleChange as any} />;
     }
   };
 
@@ -66,7 +133,33 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
       </SectionHeader>
 
       {steps.map((step, i) => (
-        <StepWrapper key={i}>
+        <StepWrapper
+          key={i}
+          draggable
+          $isDragging={dragIndex === i}
+          $isDragOver={dragOverIndex === i}
+          onDragStart={(e) => {
+            setDragIndex(i);
+            e.dataTransfer.effectAllowed = 'move';
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOverIndex(i);
+          }}
+          onDragLeave={() => setDragOverIndex(null)}
+          onDrop={(e) => {
+            e.preventDefault();
+            if (dragIndex !== null && dragIndex !== i) {
+              moveStep(nodeId, dragIndex, i);
+            }
+            setDragIndex(null);
+            setDragOverIndex(null);
+          }}
+          onDragEnd={() => {
+            setDragIndex(null);
+            setDragOverIndex(null);
+          }}
+        >
           <TerminalPanel
             title={`#${i + 1} ${STEP_LABELS[step.type]}`}
             actions={
@@ -113,6 +206,45 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
         <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'effects')}>
           + Efectos
         </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'branch')}>
+          + Bifurcación
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'random')}>
+          + Aleatorio
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'check')}>
+          + Comprobación
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'shop')}>
+          + Tienda
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'combat')}>
+          + Combate
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'notify')}>
+          + Notificación
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'wait')}>
+          + Espera
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'sound')}>
+          + Sonido
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'craft')}>
+          + Crafteo
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'puzzle')}>
+          + Puzzle
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'examine')}>
+          + Examinar
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'use_item')}>
+          + Usar Item
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'timed_choice')}>
+          + Timed Choice
+        </TerminalButton>
       </AddStepRow>
     </Wrapper>
   );
@@ -139,8 +271,16 @@ const SectionTitle = styled.span`
   font-weight: bold;
 `;
 
-const StepWrapper = styled.div`
+const StepWrapper = styled.div<{ $isDragging?: boolean; $isDragOver?: boolean }>`
   position: relative;
+  opacity: ${(p) => (p.$isDragging ? 0.4 : 1)};
+  border-top: ${(p) => (p.$isDragOver ? `2px solid ${p.theme.terminal.accent}` : '2px solid transparent')};
+  cursor: grab;
+  transition: opacity 0.15s;
+
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 const StepIndicator = styled.div<{ $color: string }>`

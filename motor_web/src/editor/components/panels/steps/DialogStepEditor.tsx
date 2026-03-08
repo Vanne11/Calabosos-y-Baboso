@@ -3,9 +3,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { DialogStep } from '../../../../types/game';
-import TerminalInput from '../../shared/TerminalInput';
 import TerminalSelect from '../../shared/TerminalSelect';
 import ConditionEditor from './ConditionEditor';
+import RichTextInput from './RichTextInput';
 import { useEditorStore } from '../../../store/useEditorStore';
 
 interface DialogStepEditorProps {
@@ -50,11 +50,13 @@ const DialogStepEditor: React.FC<DialogStepEditorProps> = ({ step, onChange }) =
         </LinesHeader>
         {step.lines.map((line, i) => (
           <LineRow key={i}>
-            <LineInput
-              value={line}
-              onChange={(e) => updateLine(i, e.target.value)}
-              placeholder={`Línea ${i + 1}...`}
-            />
+            <LineInputWrapper>
+              <RichTextInput
+                value={line}
+                onChange={(val) => updateLine(i, val)}
+                placeholder={`Línea ${i + 1}...`}
+              />
+            </LineInputWrapper>
             {step.lines.length > 1 && (
               <RemoveBtn onClick={() => removeLine(i)}>x</RemoveBtn>
             )}
@@ -118,20 +120,8 @@ const LineRow = styled.div`
   align-items: center;
 `;
 
-const LineInput = styled.input`
+const LineInputWrapper = styled.div`
   flex: 1;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  padding: 4px 8px;
-  background: ${(p) => p.theme.terminal.background};
-  border: 1px solid ${(p) => p.theme.terminal.border};
-  color: ${(p) => p.theme.terminal.text};
-  border-radius: 2px;
-  outline: none;
-
-  &:focus {
-    border-color: ${(p) => p.theme.terminal.accent};
-  }
 `;
 
 const RemoveBtn = styled.button`

@@ -9,6 +9,7 @@ import TerminalButton from '../shared/TerminalButton';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import ScenarioEditor from './ScenarioEditor';
 import SequenceEditor from './SequenceEditor';
+import { SPECIAL_DESTINATIONS } from '../canvas/SpecialNode';
 
 const ScenePanel: React.FC = () => {
   const selectedNodeId = useEditorStore((s) => s.selectedNodeId);
@@ -26,6 +27,20 @@ const ScenePanel: React.FC = () => {
       <EmptyPanel>
         <EmptyText>Selecciona una escena para editarla</EmptyText>
         <EmptyHint>Haz clic en un nodo del canvas</EmptyHint>
+      </EmptyPanel>
+    );
+  }
+
+  // Nodos especiales: mostrar info readonly
+  if (selectedNode.type === 'specialNode') {
+    const specialDef = SPECIAL_DESTINATIONS[selectedNode.data.sceneId];
+    return (
+      <EmptyPanel>
+        <EmptyText>{specialDef?.icon} {specialDef?.label || selectedNode.data.sceneId}</EmptyText>
+        <EmptyHint>{specialDef?.description || 'Destino especial del sistema'}</EmptyHint>
+        <EmptyHint style={{ marginTop: 8, opacity: 0.5 }}>
+          Usa este destino en los "Ir a" de tus escenas para conectar aquí.
+        </EmptyHint>
       </EmptyPanel>
     );
   }

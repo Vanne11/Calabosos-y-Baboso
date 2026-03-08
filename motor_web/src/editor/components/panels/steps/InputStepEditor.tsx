@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import type { InputStep } from '../../../../types/game';
 import TerminalInput from '../../shared/TerminalInput';
+import GotoSelect from '../../shared/GotoSelect';
 import ConditionEditor from './ConditionEditor';
 
 interface InputStepEditorProps {
@@ -28,11 +29,10 @@ const InputStepEditor: React.FC<InputStepEditorProps> = ({ step, onChange }) => 
         placeholder="player_name"
       />
 
-      <TerminalInput
+      <GotoSelect
         label="Ir a (goto)"
         value={step.goto || ''}
         onChange={(goto) => onChange({ ...step, goto: goto || undefined })}
-        placeholder="scene_id"
       />
 
       <ConditionEditor
