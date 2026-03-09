@@ -48,5 +48,26 @@
 
 ---
 
+## Mantenimiento de la documentación
+
+Esta wiki debe mantenerse sincronizada con el código. Al hacer cambios significativos:
+
+1. **Identificar qué docs afecta** — Tipos nuevos → `step-result.md`, campos de JSON → `formato-datos.md`, paso nuevo/modificado → `pasos/`, comando nuevo → `comandos.md`, estado nuevo → `store.md`, etc.
+2. **Actualizar los archivos correspondientes** — No dejar docs desactualizados.
+3. **Registrar el commit abajo** — Añadir una línea al historial con el hash, descripción y archivos tocados.
+
+### Historial de cambios documentados
+
+| Commit | Descripción | Archivos wiki actualizados |
+|---|---|---|
+| `1d50b4f` | Migración de DOCS.md monolítico a wiki (43 archivos) | Creación inicial de toda la wiki |
+| `ae592b0` | Craft terminal: 5 acciones, mesa dinámica, IN[N] global | `pasos/craft.md`, `step-result.md`, `store.md`, `comandos.md` |
+| `57fc39d` | Widget dimming, overlay inventario expandido | `store.md`, `comandos.md`, `step-result.md` |
+| `8cfc40d` | Update ITEMS.md | N/A (solo assets) |
+
+**Último commit documentado:** `8cfc40d`
+
+---
+
 *Documentación generada para Motor Baboso v0.1.0 — Calabosos y Babosos*
-*Última actualización: 2026-03-08*
+*Última actualización: 2026-03-09*

@@ -61,7 +61,7 @@ type PlayerAction =
   | { type: 'craft_apply'; substance: string; target: string } // Aplicar sustancia
   | { type: 'craft_cut'; item: string }          // Cortar item
   | { type: 'craft_chop'; item: string }         // Picar item
-  | { type: 'craft_pickup'; item: string }       // Recoger de la mesa
+  | { type: 'craft_pickup'; index: number }       // Recoger de la mesa (por índice)
   | { type: 'craft_exit' }                       // Salir de craft
   | { type: 'puzzle_attempt'; answer: string | string[] }  // Intentar puzzle
   | { type: 'puzzle_exit' }                      // Rendirse en puzzle

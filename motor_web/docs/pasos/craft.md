@@ -103,7 +103,7 @@ interface CraftPrompt {
 | { type: 'craft_apply'; substance: string; target: string }  // Aplicar
 | { type: 'craft_cut'; item: string }             // Cortar
 | { type: 'craft_chop'; item: string }            // Picar
-| { type: 'craft_pickup'; item: string }           // Recoger de la mesa
+| { type: 'craft_pickup'; index: number }           // Recoger de la mesa (por índice)
 | { type: 'craft_exit' }                           // Salir
 ```
 

@@ -29,6 +29,7 @@ Store centralizado que maneja todo el estado de la aplicación.
 | `returnToEditor` | `boolean` | Volver al editor al cerrar juego (test mode) |
 | `pendingSlotAction` | `{ type: 'save' \| 'load'; slots: number } \| null` | Acción de slot pendiente (menú save/load) |
 | `inventoryExpanded` | `boolean` | Overlay expandido del inventario visible |
+| `widgetDimmed` | `boolean` | Atenúa el widget activo temporalmente (al usar `/` comandos) |
 | `showMobileWarning` | `boolean` | Aviso de dispositivo móvil |
 
 ## Acciones
