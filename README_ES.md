@@ -2,10 +2,10 @@
   <img src="public/images/logo.png" alt="Calabosos y Babosos Logo" width="200">
 </p>
 
-<h1 align="center">Calabosos y Babosos</h1>
+<h1 align="center">Motor Baboso</h1>
 
 <p align="center">
-  <em>La plataforma terminal viscosa para aventuras textuales con imagenes que el mundo no sabia que necesitaba.</em>
+  <em>Un motor de ficcion interactiva viscoso para el navegador. Crea aventuras textuales con imagenes, tiradas de dados, combate, crafteo, puzzles, y una terminal que te juzga. Porque el mundo necesitaba otro motor de juegos que nadie pidio.</em>
 </p>
 
 <p align="center">
@@ -21,106 +21,114 @@
 
 ---
 
-<p align="center">
-  <img src="public/games/demo/images/scenarios/intro.png" alt="Escenario intro" width="700">
-</p>
+## ¿Que es Motor Baboso?
 
-¡Bienvenido al Motor Baboso! Una plataforma de terminal interactiva impulsada por React + Vite, diseñada para cargar y ejecutar juegos textuales con imagenes. Con mas ego que logica, el sistema esta optimizado para crear y disfrutar aventuras narrativas grotescas, gloriosas y absolutamente jugables desde el navegador.
+**Motor Baboso** es un motor para crear y ejecutar juegos de ficcion interactiva en el navegador. No es un juego — es la cosa que *ejecuta* juegos. Pensalo como un RPG Maker con opiniones demasiado fuertes, terminal sarcastica y complejo de superioridad.
 
-Si estas aca, ya tomaste una decision de vida cuestionable. Felicidades.
+Definis tu juego entero en JSON (escenas, dialogos, items, arboles de habilidades, encuentros de combate, puzzles...) y el motor se encarga del resto: renderizado, manejo de estado, tiradas de dados, guardado/carga, audio, todo. No necesitas escribir codigo para hacer un juego. Solo JSON y decisiones de vida cuestionables.
 
----
+### ¿Que podes construir con esto?
 
-## ¿Que es esta cosa?
+- Aventuras textuales con imagenes y narrativa ramificada
+- RPGs con stats, niveles, XP, arboles de habilidades, rasgos y relaciones
+- Juegos con mecanicas de dados D20, combate por turnos, tiendas y crafteo
+- Juegos de puzzles con codigos, acertijos, candados y secuencias
+- Cualquier cosa narrativa, realmente. Al motor no le importa tu genero. Al Narrador, por otro lado...
 
-**Calabosos y Babosos** es un motor de ficcion interactiva para navegador disfrazado de terminal retro. Porque las aventuras de texto plano son para gente sin ambicion, esta viene con:
+### Actualmente viene con dos demos:
 
-- **Narrativa ramificada** con multiples caminos y decisiones del jugador (la ilusion del libre albedrio, que emocionante)
-- **Sistema de dados D20** con modificadores de estadisticas y chequeos de habilidad (porque tu destino deberia depender de matematicas que no entiendes)
-- **Combate por turnos**, tiendas, crafteo, puzzles, y 18 tipos de pasos (si, dieciocho. Tenemos problemas de compromiso con la simplicidad)
-- **Sistemas RPG**: niveles, XP, arboles de habilidades, rasgos, relaciones (tu personaje tendra mas crecimiento personal que tu en toda tu vida)
-- **Un narrador sarcastico** que rompe la cuarta pared y juzga cada decision que tomas
-- **Editor visual de historias** con ReactFlow (para gente que cree que puede hacer mejores juegos que nosotros. Spoiler: no pueden)
-- **Estetica pixel-art** con escenas preciosas hechas a mano (lo unico bonito de este proyecto)
-
-¿El objetivo? Derrotar al **Rey Baboso** en el *Abismo de las Babosas* dentro del reino de **Viscaria**. Controlas a **BOB**. Buena suerte. La vas a necesitar. El Narrador definitivamente no te va a ayudar.
-
-<p align="center">
-  <img src="public/games/demo/images/scenarios/plaza.png" alt="La Plaza de Viscaria" width="700">
-</p>
+- **Calabosos y Babosos** — Una aventura de fantasia satirica en el reino de Viscaria donde controlas a BOB intentando derrotar al Rey Baboso. Narrativa completa con tiendas, combate, NPCs, y un narrador que te odia con pasion.
+- **Demo Tecnica** — Un showcase tecnico que demuestra los 18 tipos de pasos: puzzles, crafteo, combate, opciones con tiempo, pantallas de subir nivel, y mas.
 
 ---
 
 ## Capturas de Pantalla
 
 <p align="center">
-  <img src="public/games/demo/images/scenarios/mercado.png" alt="El Mercado" width="45%">
+  <img src="public/images/screenshots/terminal.png" alt="Terminal de juego" width="45%">
   &nbsp;
-  <img src="public/games/demo/images/scenarios/grutas_cristal.png" alt="Grutas de Cristal" width="45%">
+  <img src="public/images/screenshots/editor.png" alt="Editor visual de historias" width="45%">
 </p>
 
 <p align="center">
-  <img src="public/games/demo/images/scenarios/callejon.png" alt="Callejon Oscuro" width="45%">
+  <img src="public/images/screenshots/game.png" alt="Escena del juego" width="45%">
   &nbsp;
-  <img src="public/games/demo/images/scenarios/entrada_abismo.png" alt="Entrada al Abismo" width="45%">
+  <img src="public/images/screenshots/combat.png" alt="Combate o widget interactivo" width="45%">
 </p>
 
 <p align="center">
-  <sub>Todas las escenas renderizadas en precioso pixel art. Lo unico aca que no te va a decepcionar.</sub>
+  <sub>La terminal, el editor visual, y escenas del juego. Casi se ve profesional si entrecerras los ojos.</sub>
 </p>
 
 ---
 
-## Conoce al Elenco (Vas a Desear No Haberlo Hecho)
-
-<p align="center">
-  <img src="public/games/demo/images/dialogs/narrator.png" alt="El Narrador" width="180">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/dialogs/nerly.png" alt="Nerly" width="180">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/dialogs/anciano.png" alt="El Anciano" width="180">
-</p>
-
-<p align="center">
-  <b>El Narrador</b> (te odia) &bull; <b>Nerly la Babosa</b> (te tolera) &bull; <b>El Anciano</b> (te tiene lastima)
-</p>
-
-> Si, podes discutir con el Narrador. Y si, el siempre es mas inteligente y mas sexy que vos.
-
----
-
-## Instalacion Pegajosa
+## Inicio Rapido
 
 ```bash
-# Arrastrarte al directorio como la babosa que sos
-cd motor_web
-
-# Instalar dependencias porque nunca tenemos suficientes node_modules
-npm install
-
-# Lanzar el sufrimiento
-npm run dev
+# Clonar el repo (ya estas aca, genio)
+npm install          # Arrastrarte al abismo de dependencias
+npm run dev          # Lanzar en localhost:5173 (donde las esperanzas van a morir)
 ```
 
-Abri `http://localhost:5173` y preparate para una experiencia viscosa. Si no sabes usar una terminal, este juego te va a odiar tanto como nosotros.
+Eso es todo. Ya no hay `cd motor_web` — todo vive en la raiz porque nos reorganizamos como adultos. Casi.
 
 ---
 
-## Stack Tecnologico (El Pegamento que Mantiene Este Desastre Unido)
+## Caracteristicas (Las Que Nos Enorgullecen, Al Menos)
 
-| Tecnologia | Proposito |
-|---|---|
-| **React 19** + **TypeScript 5.9** | UI y tipado (aparentando que somos profesionales) |
-| **Vite 6.2** | Bundler y dev server (porque reinventar la rueda es para gente sin imaginacion) |
-| **Zustand 5.0** | Estado global (alias: registro detallado de tus fracasos) |
-| **@xyflow/react 12.10** | Editor visual de historias (para gente que cree que arrastrar cajitas es "diseño de juegos") |
-| **styled-components 6.1** | CSS-in-JS (porque hasta las babosas merecen verse lindas) |
-| **localforage** | Persistencia local via IndexedDB (tus malas decisiones te van a seguir para siempre) |
-| **jszip + file-saver** | Export/import (tus esperanzas y sueños, empaquetados en un ZIP) |
+### La Terminal
+
+Todo corre dentro de una terminal Linux falsa. Secuencia de arranque, prompt de login, comandos de shell — la experiencia completa de cosplay de hacker. Escribi `help` y fingi que sabes lo que haces.
+
+### El Motor
+
+TypeScript puro. Cero dependencias de React. Usa generadores asincronos (`async *enterScene()`) para yield-ear objetos `StepResult` que la UI renderiza. La UI responde con `PlayerAction` cuando necesita input. Separacion limpia. El motor no sabe que es un DOM, y es mas feliz asi.
+
+### 18 Tipos de Pasos
+
+Porque 17 no era suficiente y 19 se sentia avaroso:
+
+| Tipo | Que hace | ¿Input? |
+|---|---|---|
+| `dialog` | Muestra dialogo de personaje (preparate para insultos) | No |
+| `choice` | El jugador elige una opcion (la ilusion de control) | Si |
+| `dice` | Tirada D20 con modificadores (que las matematicas arruinen tu dia) | Si |
+| `input` | Texto libre (vamos a juzgar tu ortografia) | Si |
+| `effects` | Aplica consecuencias en silencio (¡sorpresa!) | No |
+| `branch` | Rutea automaticamente segun condiciones | No |
+| `random` | Resultado aleatorio con pesos (como la vida, pero mas justo) | No |
+| `check` | Chequeo determinista de stat (spoiler: vas a fallar) | No |
+| `shop` | Interfaz compra/venta (capitalismo en la fantasia) | Si |
+| `combat` | Combate por turnos (la violencia siempre es una opcion) | Si |
+| `notify` | Notificacion visual (malas noticias, generalmente) | No |
+| `wait` | Pausa dramatica (matando esperanzas lentamente) | No |
+| `sound` | Efecto de sonido (el trauma necesita banda sonora) | No |
+| `craft` | Combinar items (jugar al alquimista de mentira) | Si |
+| `puzzle` | Codigo/acertijo/candado/secuencia (cerebro no incluido) | Si |
+| `examine` | Inspeccionar entorno (toca todo, arrepentite) | Si |
+| `use_item` | Usar item en objetivo, estilo LucasArts | Si |
+| `timed_choice` | Opciones con temporizador (simulador de panico) | Si |
+| `level_up` | Subir nivel / elegir skills (progreso falso) | Si |
+
+### El Editor Visual
+
+Un editor completo de drag-and-drop construido con ReactFlow. Crea escenas, conectalas, edita los 18 tipos de pasos visualmente, valida tu juego, exporta/importa proyectos. Es como un diagrama de flujo pero que realmente hace algo util.
+
+### Sistemas RPG
+
+Niveles, XP, arboles de habilidades, rasgos, relaciones entre personajes con puntajes de afinidad, eventos temporales, ciclos dia/noche. Tus personajes van a tener mas crecimiento personal que vos en toda tu vida.
+
+### Guardado/Carga
+
+Guardado libre, basado en checkpoints, o por slots. Impulsado por localforage (IndexedDB). Tus malas decisiones van a persistir entre sesiones del navegador. De nada.
+
+### Audio
+
+Musica de fondo con crossfade, tracks por escena, efectos de sonido. Porque un buen trauma necesita una banda sonora apropiada.
 
 ---
 
-## Arquitectura (El "Cerebro", Si las Babosas Tuvieran Cerebro)
+## Arquitectura
 
 ```
 React UI (componentes, widgets, terminal)
@@ -129,40 +137,12 @@ React UI (componentes, widgets, terminal)
     ↕
 GameEngine (TypeScript puro, generadores asincronos)
     ├── ConditionEvaluator    (juzga cada movimiento tuyo)
-    ├── EffectsApplier        (aplica las consecuencias que te mereces)
-    ├── DiceRoller            (decide tu destino con frias matematicas)
-    └── AudioManager          (banda sonora para tu sufrimiento)
+    ├── EffectsApplier        (aplica lo que te mereces)
+    ├── DiceRoller            (frias matematicas)
+    └── AudioManager          (banda sonora del sufrimiento)
 ```
 
-El `GameEngine` es **TypeScript puro** sin ninguna dependencia de React. Usa `async *enterScene()` como generador que yield-ea objetos `StepResult` para que la UI los renderize. La UI responde con `sendAction(PlayerAction)` cuando necesita input del jugador.
-
 En otras palabras: el motor piensa porque vos claramente no podes.
-
----
-
-## 18 Tipos de Pasos Narrativos (Porque 17 No Era Suficiente)
-
-| Tipo | Descripcion | Input del Jugador |
-|---|---|---|
-| `dialog` | Dialogo de personaje (preparate para insultos) | No (Enter) |
-| `choice` | Opciones del jugador (la ilusion de control) | Si |
-| `dice` | Tirada D20 con modificadores (tu destino en un numero) | Si |
-| `input` | Entrada de texto libre (si, vamos a juzgar tu ortografia) | Si |
-| `effects` | Aplicar efectos silenciosamente (¡sorpresa, consecuencias!) | No |
-| `branch` | Bifurcacion automatica por condiciones (el motor decide por vos) | No |
-| `random` | Resultado aleatorio con pesos (como la vida, pero mas justo) | No |
-| `check` | Comprobacion determinista de stat (spoiler: vas a fallar) | No |
-| `shop` | Interfaz de compra/venta (capitalismo, hasta en la fantasia) | Si |
-| `combat` | Combate por turnos (la violencia siempre es una opcion) | Si |
-| `notify` | Notificacion visual (malas noticias, generalmente) | No |
-| `wait` | Pausa dramatica (matando tus esperanzas lentamente) | No |
-| `sound` | Efecto de sonido (banda sonora para tu miseria) | No |
-| `craft` | Combinar items (jugar al alquimista de mentira) | Si |
-| `puzzle` | Acertijo/codigo/candado/secuencia (cerebro no incluido) | Si |
-| `examine` | Inspeccionar entorno (toca todo, arrepentite despues) | Si |
-| `use_item` | Usar item en objetivo, estilo LucasArts (impuesto a la nostalgia) | Si |
-| `timed_choice` | Opciones con temporizador (simulador de panico) | Si |
-| `level_up` | Subir nivel / seleccion de skills (falsa sensacion de progreso) | Si |
 
 ---
 
@@ -173,56 +153,28 @@ boot → login → shell → game
                  └──── editor
 ```
 
-| Fase | Descripcion |
+| Fase | Que pasa |
 |---|---|
-| `boot` | Secuencia de arranque animada estilo Linux (para maximo roleplay de "hacker") |
-| `login` | Prompt sarcastico de usuario/contraseña (toda respuesta es incorrecta) |
+| `boot` | Arranque animado estilo Linux (maximo roleplay de hacker) |
+| `login` | Prompt sarcastico (toda respuesta es incorrecta) |
 | `shell` | Terminal libre donde fingis que sabes comandos |
 | `game` | Empieza el sufrimiento de verdad |
-| `editor` | Editor visual de historias (crea tu propio sufrimiento para otros) |
-
----
-
-## Comandos de Terminal
-
-### Shell (sin juego activo)
-
-| Comando | Descripcion |
-|---|---|
-| `help` | Muestra ayuda que realmente no te va a ayudar |
-| `run [juego]` | Ejecuta un juego |
-| `list` | Lista juegos disponibles juzgandolos en silencio |
-| `editor [juego]` | Abre el editor visual |
-| `debug` | Muestra el estado interno (spoiler: es patetico) |
-| `clear` | Limpia la pantalla. Si solo pudieras limpiar tu historial de decisiones... |
-| `about` | Pantalla About con musica |
-| `quit` / `exit` | Admiti tu derrota |
-
-### In-Game (durante partida, prefijo `/`)
-
-| Comando | Descripcion |
-|---|---|
-| `/help` | Ayuda de la partida |
-| `/save` | Guarda tu progreso para futuros arrepentimientos |
-| `/load` | Carga una partida para revivir tus fracasos |
-| `/history` | Ultimas 50 entradas narrativas (tu registro de traumas) |
-| `/debug` | Modo debug, si te atreves |
-| `/quit` | Escapar del sufrimiento (temporalmente) |
+| `editor` | Editor visual de historias (crea sufrimiento para otros) |
 
 ---
 
 ## Formato de Datos del Juego
 
-Los juegos se definen con 2 archivos JSON en `public/games/{nombre}/`, porque archivos de texto plano serian demasiado sencillos y no queremos eso, ¿verdad?
+Un juego son solo 2 archivos JSON en `public/games/{nombre}/`. Eso es todo. Sin codigo, sin compilacion, sin dignidad.
 
-**game.json** — Manifiesto con personajes, items, stats, arboles de habilidades, rasgos, configuracion de guardado
+**game.json** — Manifiesto: personajes, items, stats, arboles de habilidades, rasgos, config de guardado
 
 **scenes.json** — Todas las escenas con secuencias de los 18 tipos de pasos
 
 ```jsonc
 {
   "scenes": {
-    "start": {                          // OBLIGATORIO: toda aventura empieza aca
+    "start": {
       "scenario": { "name": "Inicio", "image": "images/plaza.png" },
       "sequence": [
         { "type": "dialog", "character": "narrator", "lines": ["Bienvenido. Te ves perdido. Como siempre."] },
@@ -236,56 +188,40 @@ Los juegos se definen con 2 archivos JSON en `public/games/{nombre}/`, porque ar
 }
 ```
 
----
-
-## Tu Deplorable Inventario
-
-<p align="center">
-  <img src="public/games/demo/images/items/espada_oxidada.png" alt="Espada Oxidada" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/sal_anti_babosas.png" alt="Sal Anti-Babosas" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/relicario_familiar.png" alt="Relicario Familiar" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/bolsa_monedas.png" alt="Bolsa de Monedas" width="120">
-</p>
-
-<p align="center">
-  <sub>Espada Oxidada (tetanos incluido) &bull; Sal Anti-Babosas (crimen de guerra) &bull; Relicario Familiar (daño emocional) &bull; Bolsa de Monedas (perpetuamente vacia)</sub>
-</p>
+¿Queres hacer un juego? Escribi JSON. ¿La cagaste con el JSON? El motor te lo va a hacer saber. Sarcasticamente.
 
 ---
 
 ## Documentacion (Para los Valientes y los Tontos)
 
-La documentacion tecnica completa vive en el directorio [`docs/`](docs/). Leela. O no. Al Narrador le da igual.
+La documentacion tecnica completa vive en [`docs/`](docs/). Leela. O no. Al Narrador le da igual.
 
 ### Sistemas Centrales
 - [Arquitectura](docs/arquitectura.md) — Como se sostiene esta abominacion
 - [Game Engine](docs/game-engine.md) — El "cerebro" de la operacion
 - [Game Loop](docs/game-loop.md) — El ciclo infinito de sufrimiento
-- [Game Loader](docs/game-loader.md) — Carga juegos y juzga tus decisiones de diseño
-- [Player State](docs/player-state.md) — Un registro detallado de tus fracasos
-- [Store (Zustand)](docs/store.md) — Donde se persiste tu trauma
+- [Game Loader](docs/game-loader.md) — Carga juegos, juzga tu diseño
+- [Player State](docs/player-state.md) — Un registro de tus fracasos
+- [Store (Zustand)](docs/store.md) — Donde se persiste el trauma
 
 ### Mecanicas de Juego
-- [Formato de Datos](docs/formato-datos.md) — Estructuras JSON (no seas creativo, creativo = roto)
+- [Formato de Datos](docs/formato-datos.md) — Estructuras JSON (creativo = roto)
 - [Condiciones](docs/condiciones.md) — Logica del infierno
 - [Efectos](docs/efectos.md) — Consecuencias que te mereces
-- [Sistema de Dados](docs/dados.md) — Deja que las matematicas decidan tu destino
-- [Navegacion & Goto](docs/navegacion.md) — A donde ir (porque claramente no podes decidir)
-- [Sistemas RPG](docs/rpg.md) — XP, Skills, Rasgos (el crecimiento de tu personaje, a diferencia del tuyo)
+- [Sistema de Dados](docs/dados.md) — Las matematicas deciden tu destino
+- [Navegacion & Goto](docs/navegacion.md) — A donde ir (no podes decidir)
+- [Sistemas RPG](docs/rpg.md) — XP, Skills, Rasgos
 - [Guardado/Carga](docs/guardado.md) — Inmortaliza tus errores
 - [Audio](docs/audio.md) — Banda sonora para cada trauma
 
 ### UI y Presentacion
 - [Fases de la Aplicacion](docs/fases.md) — Etapas del duelo, explicadas
 - [Comandos de Terminal](docs/comandos.md) — Para fingir que sos hacker
-- [Formato Rich Text](docs/rich-text.md) — Haciendo que contenido mediocre se vea elegante
+- [Formato Rich Text](docs/rich-text.md) — Contenido mediocre con aspecto elegante
 - [Referencia StepResult](docs/step-result.md) — Lo que el motor te escupe
 - [Estructura de Archivos](docs/estructura-archivos.md) — Donde vive (y muere) todo
 - [Stack Tecnologico](docs/stack.md) — El pegamento y la cinta adhesiva
-- [Editor Visual](docs/editor.md) — Arrastra cajitas, llámalo diseño de juegos
+- [Editor Visual](docs/editor.md) — Arrastra cajitas, llámalo diseño
 
 ### Los 18 Tipos de Pasos
 - [Dialog](docs/pasos/dialog.md) &bull; [Choice](docs/pasos/choice.md) &bull; [Dice](docs/pasos/dice.md) &bull; [Input](docs/pasos/input.md) &bull; [Effects](docs/pasos/effects.md) &bull; [Branch](docs/pasos/branch.md) &bull; [Random](docs/pasos/random.md) &bull; [Check](docs/pasos/check.md)
@@ -301,54 +237,66 @@ La documentacion tecnica completa vive en el directorio [`docs/`](docs/). Leela.
 
 ```
 Calabosos-y-Baboso/
-├── motor_web/                  Motor web (~18.000 lineas TS)
-│   ├── src/
-│   │   ├── engine/             El "cerebro" (si las babosas tuvieran cerebro)
-│   │   ├── types/              Definiciones de tipos (aparentando seriedad)
-│   │   ├── hooks/              Hooks de React (game loop, terminal, boot)
-│   │   ├── store/              Zustand stores (tu trauma, persistido)
-│   │   ├── components/         Pedazos de interfaz
-│   │   ├── editor/             Editor visual de historias (~5.900 lineas)
-│   │   ├── styles/             Temas de "oscuro" a "mas oscuro"
-│   │   └── utils/              Rich text parser, helpers ("parches de emergencia")
-│   └── public/games/           Juegos disponibles
-│       ├── demo/               Demo completa (hecha por profesionales, duele mas)
-│       └── demo2/              Demo de dungeon
-├── docs/                       Wiki tecnica (~40 documentos)
-├── back/                       Terminal Python legacy (el registro fosil)
-└── CLAUDE.md                   Instrucciones para asistente IA
+├── src/
+│   ├── engine/             Motor TypeScript puro (el "cerebro")
+│   ├── types/              Definiciones de tipos
+│   ├── hooks/              Hooks de React (game loop, terminal, boot)
+│   ├── store/              Zustand stores (trauma, persistido)
+│   ├── components/         UI (terminal, widgets, layout)
+│   ├── editor/             Editor visual de historias (~5.900 lineas)
+│   ├── styles/             Temas de "oscuro" a "mas oscuro"
+│   └── utils/              Rich text parser, helpers
+├── public/games/           Juegos disponibles
+│   ├── demo/               Demo "Calabosos y Babosos"
+│   └── demo2/              Demo tecnica (los 18 tipos de pasos)
+├── docs/                   Wiki tecnica (~40 documentos)
+├── back/                   Terminal Python legacy (el registro fosil)
+└── CLAUDE.md               Instrucciones para asistente IA
 ```
+
+---
+
+## Stack Tecnologico
+
+| Tecnologia | Por que |
+|---|---|
+| **React 19** + **TypeScript 5.9** | UI y tipos (aparentando profesionalismo) |
+| **Vite 6.2** | Bundler rapido (reinventar la rueda es para gente sin imaginacion) |
+| **Zustand 5.0** | Estado global (registro de tus fracasos) |
+| **@xyflow/react 12.10** | Editor visual (arrastrar cajitas = "diseño de juegos") |
+| **styled-components 6.1** | CSS-in-JS (hasta las babosas merecen verse lindas) |
+| **localforage** | Persistencia IndexedDB (las malas decisiones te siguen para siempre) |
+| **jszip + file-saver** | Export/import (esperanzas y sueños en un ZIP) |
 
 ---
 
 ## Desarrollo
 
 ```bash
-cd motor_web
-npm install          # Primera vez (arrastrarte al abismo de dependencias)
-npm run dev          # Dev server en localhost:5173 (donde las esperanzas van a morir)
+npm install          # Primera vez (abraza el abismo de node_modules)
+npm run dev          # Dev server en localhost:5173
 npm run build        # Build de produccion (asumiendo que llegas tan lejos)
-npm run lint         # ESLint (siempre va a encontrar algo de que quejarse. Siempre.)
+npm run lint         # ESLint (siempre encuentra algo de que quejarse)
 ```
 
 ### Ramas Git
 
-- **main** — Release estable (relativamente hablando)
+- **main** — Estable (relativamente hablando)
 - **cyb-web** — Desarrollo activo (caos en progreso)
 
 ---
 
 ## Resolucion de Problemas (alias "Caracteristicas")
 
-**"Mi juego se cuelga en cierta escena"** — No es un bug, es una metafora de como la vida se detiene en los peores momentos. (Solucion real: probablemente tenes una condicion circular o referencia invalida)
+**"Mi juego se cuelga en cierta escena"** — No es un bug, es una metafora de como la vida se detiene en los peores momentos. (Solucion real: condicion circular o referencia invalida)
 
-**"Las imagenes no cargan"** — ¿Consideraste que el motor esta protegiendo a los jugadores de tu "arte"? (Solucion real: verifica las rutas, deben ser relativas a la carpeta del juego)
+**"Las imagenes no cargan"** — El motor esta protegiendo a los jugadores de tu "arte". (Solucion real: verifica las rutas, deben ser relativas a la carpeta del juego)
 
-**"El narrador me insulta demasiado"** — Eso no es un bug, es una caracteristica. De hecho esta siendo amable.
+**"El narrador me insulta demasiado"** — Eso no es un bug. Es una caracteristica. De hecho esta siendo amable.
 
-**"No puedo avanzar en el juego"** — Bienvenido a la vida real. (Solucion real: usa `debug` para ver que condiciones no se cumplen)
+**"No puedo avanzar"** — Bienvenido a la vida real. (Solucion real: usa `debug` para ver condiciones no cumplidas)
 
-**"El JSON dice que tiene errores pero se ve bien"** — Lo interesante de la perfeccion es que es imposible de alcanzar, especialmente para vos. (Solucion real: usa un validador externo, hay comas fantasma por ahi)
+**"Mi JSON tiene errores pero se ve bien"** — La perfeccion es imposible de alcanzar, especialmente para vos. (Solucion real: validador externo, hay comas fantasma al acecho)
 
 ---
 
@@ -359,7 +307,7 @@ npm run lint         # ESLint (siempre va a encontrar algo de que quejarse. Siem
 </p>
 
 <p align="center">
-  Hecho con amor (y baba) por <b>Nicolas & Vanessa</b>
+  Construido con amor (y baba) por <b>Nicolas & Vanessa</b>
 </p>
 
 ---
@@ -370,7 +318,7 @@ MIT — Con clausula babosa: si usas este motor para hacer un juego serio o, peo
 
 ---
 
-> *"Has llegado al final de este README infinito. Tus stats de lectura aumentaron en +5. Tu dignidad, probablemente no. Y recorda: no es solo un juego, es una terminal para cargar juegos. La diferencia es viscosa pero importante. Como tantas cosas en la vida, este proyecto es solo un cascaron vacio esperando a que lo llenes con contenido... igual que tu existencia."*
+> *"Has llegado al final de este README. Tus stats de lectura aumentaron en +5. Tu dignidad, probablemente no. Recorda: esto no es un juego, es un motor que ejecuta juegos. La diferencia es viscosa pero importante. Como tantas cosas en la vida, este proyecto es solo un cascaron vacio esperando a que lo llenes con contenido... igual que tu existencia."*
 
 Disfruta el abismo. Te estara esperando.
 

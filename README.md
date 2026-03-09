@@ -2,10 +2,10 @@
   <img src="public/images/logo.png" alt="Calabosos y Babosos Logo" width="200">
 </p>
 
-<h1 align="center">Calabosos y Babosos</h1>
+<h1 align="center">Motor Baboso</h1>
 
 <p align="center">
-  <em>The slimy terminal platform for text adventures with images that the world didn't know it needed.</em>
+  <em>A slimy interactive fiction engine for the browser. Build text adventures with images, dice rolls, combat, crafting, puzzles, and a terminal that judges you. Because the world needed another game engine nobody asked for.</em>
 </p>
 
 <p align="center">
@@ -21,106 +21,114 @@
 
 ---
 
-<p align="center">
-  <img src="public/games/demo/images/scenarios/intro.png" alt="Stage intro" width="700">
-</p>
+## What Is Motor Baboso?
 
-Welcome to the Slimy Engine! A React + Vite interactive terminal platform, designed to load and run text adventures with images. With more ego than logic, the system is optimized for creating and enjoying grotesque, glorious, and absolutely playable narrative adventures right from the browser.
+**Motor Baboso** is a browser-based engine for creating and playing interactive fiction games. It's not a game — it's the thing that *runs* games. Think of it as an overly opinionated, terminally sarcastic RPG Maker that lives inside a fake Linux terminal.
 
-If you're here, you've already made a questionable life decision. Congratulations.
+You define your entire game in JSON (scenes, dialogues, items, skill trees, combat encounters, puzzles...) and the engine handles the rest: rendering, state management, dice rolls, save/load, audio, the works. No code required to make a game. Just JSON and questionable life choices.
 
----
+### What can you build with it?
 
-## What Even Is This?
+- Text adventures with images and branching narratives
+- RPGs with stats, levels, XP, skill trees, traits, and relationships
+- Games with D20 dice mechanics, turn-based combat, shops, and crafting
+- Puzzle games with codes, riddles, locks, and sequences
+- Anything narrative-driven, really. The engine doesn't judge your genre. The Narrator, on the other hand...
 
-**Calabosos y Babosos** (Dungeons & Slugs) is a browser-based interactive fiction engine disguised as a retro terminal. Because plain text adventures are for people with no ambition, this one comes with:
+### Currently ships with two demos:
 
-- **Branching narrative** with multiple paths and player choices (the illusion of free will, how exciting)
-- **D20 dice system** with stat modifiers and skill checks (because your fate should depend on math you don't understand)
-- **Turn-based combat**, shops, crafting, puzzles, and 18 step types (yes, eighteen. We have commitment issues with simplicity)
-- **RPG systems**: levels, XP, skill trees, traits, relationships (your character will have more personal growth than you ever will)
-- **A sarcastic narrator** who breaks the fourth wall and judges every decision you make
-- **Visual story editor** powered by ReactFlow (for people who think they can make better games than us. Spoiler: they can't)
-- **Pixel-art aesthetic** with gorgeous hand-crafted scenes (the only beautiful thing in this project)
-
-The goal? Defeat the **Slug King** in the *Abyss of Slugs* within the kingdom of **Viscaria**. You play as **BOB**. Good luck. You'll need it. The Narrator certainly won't help you.
-
-<p align="center">
-  <img src="public/games/demo/images/scenarios/plaza.png" alt="The Plaza of Viscaria" width="700">
-</p>
+- **Calabosos y Babosos** — A satirical fantasy adventure in the kingdom of Viscaria where you play as BOB trying to defeat the Slug King. Full narrative with shops, combat, NPCs, and a narrator who hates your guts.
+- **Demo Tecnica** — A technical showcase demonstrating all 18 step types: puzzles, crafting, combat, timed choices, level-up screens, and more.
 
 ---
 
 ## Screenshots
 
 <p align="center">
-  <img src="public/games/demo/images/scenarios/mercado.png" alt="The Market" width="45%">
+  <img src="public/images/screenshots/terminal.png" alt="Terminal gameplay" width="45%">
   &nbsp;
-  <img src="public/games/demo/images/scenarios/grutas_cristal.png" alt="Crystal Grottos" width="45%">
+  <img src="public/images/screenshots/editor.png" alt="Visual story editor" width="45%">
 </p>
 
 <p align="center">
-  <img src="public/games/demo/images/scenarios/callejon.png" alt="Dark Alley" width="45%">
+  <img src="public/images/screenshots/game.png" alt="In-game scene" width="45%">
   &nbsp;
-  <img src="public/games/demo/images/scenarios/entrada_abismo.png" alt="Abyss Entrance" width="45%">
+  <img src="public/images/screenshots/combat.png" alt="Combat or interactive widget" width="45%">
 </p>
 
 <p align="center">
-  <sub>All scenes rendered in beautiful pixel art. The only thing here that won't disappoint you.</sub>
+  <sub>The terminal, the visual editor, and in-game scenes. It almost looks professional if you squint.</sub>
 </p>
 
 ---
 
-## Meet the Cast (You'll Wish You Hadn't)
-
-<p align="center">
-  <img src="public/games/demo/images/dialogs/narrator.png" alt="The Narrator" width="180">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/dialogs/nerly.png" alt="Nerly" width="180">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/dialogs/anciano.png" alt="The Elder" width="180">
-</p>
-
-<p align="center">
-  <b>The Narrator</b> (hates you) &bull; <b>Nerly the Slug</b> (tolerates you) &bull; <b>The Elder</b> (pities you)
-</p>
-
-> Yes, you can argue with the Narrator. And yes, he is always smarter and more handsome than you.
-
----
-
-## Slimy Installation
+## Quick Start
 
 ```bash
-# Crawl into the directory like the slug you are
-cd motor_web
-
-# Install dependencies because we never have enough node_modules
-npm install
-
-# Launch the suffering
-npm run dev
+# Clone the repo (you're already here, genius)
+npm install          # Drag yourself into the dependency abyss
+npm run dev          # Launch at localhost:5173 (where hopes go to die)
 ```
 
-Open `http://localhost:5173` and prepare for a viscous experience. If you don't know how to use a terminal, this game will hate you as much as we do.
+That's it. No `cd motor_web` anymore — everything lives at the root because we reorganized like adults. Almost.
 
 ---
 
-## Tech Stack (The Glue Holding This Mess Together)
+## Features (The Ones We're Proud Of, Anyway)
 
-| Technology | Purpose |
-|---|---|
-| **React 19** + **TypeScript 5.9** | UI & type safety (pretending we're professionals) |
-| **Vite 6.2** | Bundler & dev server (because reinventing the wheel is for unimaginative people) |
-| **Zustand 5.0** | Global state (a.k.a. detailed registry of your failures) |
-| **@xyflow/react 12.10** | Visual story editor (for people who think dragging boxes is "game design") |
-| **styled-components 6.1** | CSS-in-JS (because even slugs deserve to look pretty) |
-| **localforage** | Local persistence via IndexedDB (your bad decisions will follow you forever) |
-| **jszip + file-saver** | Export/import (your hopes and dreams, packaged in a ZIP) |
+### The Terminal
+
+The whole thing runs inside a fake Linux terminal. Boot sequence, login prompt, shell commands — the full hacker cosplay experience. Type `help` and pretend you know what you're doing.
+
+### The Engine
+
+Pure TypeScript. Zero React dependencies. Uses async generators (`async *enterScene()`) to yield `StepResult` objects that the UI renders. The UI sends back `PlayerAction` when it needs input. Clean separation. The engine doesn't know what a DOM is, and it's happier that way.
+
+### 18 Step Types
+
+Because 17 wasn't enough and 19 felt greedy:
+
+| Type | What it does | Needs input? |
+|---|---|---|
+| `dialog` | Shows character dialogue (prepare for insults) | No |
+| `choice` | Player picks an option (the illusion of control) | Yes |
+| `dice` | D20 roll with modifiers (let math ruin your day) | Yes |
+| `input` | Free text (we will judge your spelling) | Yes |
+| `effects` | Silently applies consequences (surprise!) | No |
+| `branch` | Auto-routes based on conditions | No |
+| `random` | Weighted random outcome (like life, but fairer) | No |
+| `check` | Deterministic stat check (spoiler: you'll fail) | No |
+| `shop` | Buy/sell interface (capitalism in fantasy) | Yes |
+| `combat` | Turn-based combat (violence is always an option) | Yes |
+| `notify` | Visual notification (bad news, usually) | No |
+| `wait` | Dramatic pause (killing hopes slowly) | No |
+| `sound` | Sound effect (trauma needs a soundtrack) | No |
+| `craft` | Combine items (play pretend alchemist) | Yes |
+| `puzzle` | Code/riddle/lock/sequence (brain not included) | Yes |
+| `examine` | Inspect environment (touch everything, regret it) | Yes |
+| `use_item` | Use item on target, LucasArts-style | Yes |
+| `timed_choice` | Options with a timer (panic simulator) | Yes |
+| `level_up` | Level up / pick skills (false progress) | Yes |
+
+### The Visual Editor
+
+A full drag-and-drop story editor built with ReactFlow. Create scenes, connect them, edit all 18 step types visually, validate your game, export/import projects. It's like a flowchart but it actually does something useful.
+
+### RPG Systems
+
+Levels, XP, skill trees, traits, character relationships with affinity scores, timed events, day/night cycles. Your characters will have more personal growth than you ever will.
+
+### Save/Load
+
+Free save, checkpoint-based, or slot-based saving. Powered by localforage (IndexedDB). Your bad decisions will persist across browser sessions. You're welcome.
+
+### Audio
+
+Background music with crossfade, per-scene tracks, sound effects. Because good trauma needs a proper soundtrack.
 
 ---
 
-## Architecture (The "Brain", If Slugs Had Brains)
+## Architecture
 
 ```
 React UI (components, widgets, terminal)
@@ -129,40 +137,12 @@ React UI (components, widgets, terminal)
     ↕
 GameEngine (pure TypeScript, async generators)
     ├── ConditionEvaluator    (judges your every move)
-    ├── EffectsApplier        (applies consequences you deserve)
-    ├── DiceRoller            (decides your fate with cold mathematics)
-    └── AudioManager          (soundtrack for your suffering)
+    ├── EffectsApplier        (applies what you deserve)
+    ├── DiceRoller            (cold mathematics)
+    └── AudioManager          (soundtrack for suffering)
 ```
 
-The `GameEngine` is **pure TypeScript** with zero React dependencies. It uses `async *enterScene()` as a generator that yields `StepResult` objects for the UI to render. The UI responds with `sendAction(PlayerAction)` when player input is needed.
-
 In other words: the engine does the thinking because you clearly can't.
-
----
-
-## 18 Narrative Step Types (Because 17 Wasn't Enough)
-
-| Type | Description | Player Input |
-|---|---|---|
-| `dialog` | Character dialogue (prepare for insults) | No (Enter) |
-| `choice` | Player options (the illusion of control) | Yes |
-| `dice` | D20 roll with modifiers (your destiny in a number) | Yes |
-| `input` | Free text input (yes, we'll judge your spelling) | Yes |
-| `effects` | Apply effects silently (surprise consequences!) | No |
-| `branch` | Auto-branch by conditions (the engine decides for you) | No |
-| `random` | Weighted random outcome (like life, but more fair) | No |
-| `check` | Deterministic stat check (spoiler: you'll fail) | No |
-| `shop` | Buy/sell interface (capitalism, even in fantasy) | Yes |
-| `combat` | Turn-based combat (violence is always an option) | Yes |
-| `notify` | Visual notification (bad news, usually) | No |
-| `wait` | Dramatic pause (killing your hopes slowly) | No |
-| `sound` | Sound effect (a soundtrack for your misery) | No |
-| `craft` | Combine items (play pretend alchemist) | Yes |
-| `puzzle` | Riddle/code/lock/sequence (brain not included) | Yes |
-| `examine` | Inspect environment (touch everything, regret it) | Yes |
-| `use_item` | Use item on target, LucasArts-style (nostalgia tax) | Yes |
-| `timed_choice` | Timed options (panic simulator) | Yes |
-| `level_up` | Level up / skill selection (false sense of progress) | Yes |
 
 ---
 
@@ -173,56 +153,28 @@ boot → login → shell → game
                  └──── editor
 ```
 
-| Phase | Description |
+| Phase | What happens |
 |---|---|
-| `boot` | Animated Linux-style boot sequence (for maximum "hacker" roleplay) |
-| `login` | Sarcastic username/password prompt (every answer is wrong) |
+| `boot` | Animated Linux boot (maximum hacker roleplay) |
+| `login` | Sarcastic prompt (every answer is wrong) |
 | `shell` | Free terminal where you pretend to know commands |
 | `game` | The actual suffering begins |
-| `editor` | Visual story editor (create your own suffering for others) |
-
----
-
-## Terminal Commands
-
-### Shell (no active game)
-
-| Command | Description |
-|---|---|
-| `help` | Shows help that won't actually help you |
-| `run [game]` | Run a game |
-| `list` | Lists available games while silently judging them |
-| `editor [game]` | Opens visual editor |
-| `debug` | Shows internal state (spoiler: it's pathetic) |
-| `clear` | Clears the screen. If only you could clear your decision history... |
-| `about` | About screen with music |
-| `quit` / `exit` | Admit defeat |
-
-### In-Game (prefix with `/`)
-
-| Command | Description |
-|---|---|
-| `/help` | In-game help |
-| `/save` | Save your progress for future regret |
-| `/load` | Load a save to relive your failures |
-| `/history` | Last 50 narrative entries (your trauma log) |
-| `/debug` | Debug mode, if you dare |
-| `/quit` | Escape the suffering (temporarily) |
+| `editor` | Visual story editor (create suffering for others) |
 
 ---
 
 ## Game Data Format
 
-Games are defined by 2 JSON files in `public/games/{name}/`, because plain text files would be too simple and we can't have that, can we?
+A game is just 2 JSON files in `public/games/{name}/`. That's it. No code, no compilation, no dignity.
 
-**game.json** — Manifest with characters, items, stats, skill trees, traits, save config
+**game.json** — Manifest: characters, items, stats, skill trees, traits, save config
 
 **scenes.json** — All scenes with sequences of the 18 step types
 
 ```jsonc
 {
   "scenes": {
-    "start": {                          // REQUIRED: every game begins here
+    "start": {
       "scenario": { "name": "Start", "image": "images/plaza.png" },
       "sequence": [
         { "type": "dialog", "character": "narrator", "lines": ["Welcome. You look lost. As usual."] },
@@ -236,45 +188,29 @@ Games are defined by 2 JSON files in `public/games/{name}/`, because plain text 
 }
 ```
 
----
-
-## Your Deplorable Inventory
-
-<p align="center">
-  <img src="public/games/demo/images/items/espada_oxidada.png" alt="Rusty Sword" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/sal_anti_babosas.png" alt="Anti-Slug Salt" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/relicario_familiar.png" alt="Family Locket" width="120">
-  &nbsp;&nbsp;
-  <img src="public/games/demo/images/items/bolsa_monedas.png" alt="Coin Bag" width="120">
-</p>
-
-<p align="center">
-  <sub>Rusty Sword (tetanus included) &bull; Anti-Slug Salt (war crime) &bull; Family Locket (emotional damage) &bull; Coin Bag (perpetually empty)</sub>
-</p>
+Want to make a game? Write JSON. Screw up the JSON? The engine will tell you about it. Sarcastically.
 
 ---
 
 ## Documentation (For the Brave and the Foolish)
 
-Full technical documentation lives in the [`docs/`](docs/) directory. Read it. Or don't. The Narrator doesn't care.
+Full technical docs live in [`docs/`](docs/). Read them. Or don't. The Narrator doesn't care.
 
 ### Core Systems
-- [Architecture](docs/arquitectura.md) — How this abomination is held together
+- [Architecture](docs/arquitectura.md) — How this abomination holds together
 - [Game Engine](docs/game-engine.md) — The "brain" of the operation
 - [Game Loop](docs/game-loop.md) — The infinite cycle of suffering
-- [Game Loader](docs/game-loader.md) — Loads games and judges your design choices
-- [Player State](docs/player-state.md) — A detailed record of your failures
-- [Store (Zustand)](docs/store.md) — Where your trauma is persisted
+- [Game Loader](docs/game-loader.md) — Loads games, judges your design
+- [Player State](docs/player-state.md) — A record of your failures
+- [Store (Zustand)](docs/store.md) — Where trauma is persisted
 
 ### Game Mechanics
-- [Data Format](docs/formato-datos.md) — JSON structures (don't get creative, creative = broken)
+- [Data Format](docs/formato-datos.md) — JSON structures (creative = broken)
 - [Conditions](docs/condiciones.md) — Logic from hell
 - [Effects](docs/efectos.md) — Consequences you deserve
-- [Dice System](docs/dados.md) — Let math decide your fate
-- [Navigation & Goto](docs/navegacion.md) — Where to go (because you clearly can't decide)
-- [RPG Systems](docs/rpg.md) — XP, Skills, Traits (your character's growth, unlike yours)
+- [Dice System](docs/dados.md) — Math decides your fate
+- [Navigation & Goto](docs/navegacion.md) — Where to go (you can't decide)
+- [RPG Systems](docs/rpg.md) — XP, Skills, Traits
 - [Save/Load](docs/guardado.md) — Immortalize your mistakes
 - [Audio](docs/audio.md) — Soundtrack for every trauma
 
@@ -301,52 +237,66 @@ Full technical documentation lives in the [`docs/`](docs/) directory. Read it. O
 
 ```
 Calabosos-y-Baboso/
-├── motor_web/                  Web engine (~18,000 lines TS)
-│   ├── src/
-│   │   ├── engine/             The "brain" (if slugs had brains)
-│   │   ├── types/              Type definitions (pretending we're serious)
-│   │   ├── hooks/              React hooks (game loop, terminal, boot)
-│   │   ├── store/              Zustand stores (your trauma, persisted)
-│   │   ├── components/         UI pieces (a.k.a. "chunks of interface")
-│   │   ├── editor/             Visual story editor (~5,900 lines)
-│   │   ├── styles/             Themes from "dark" to "darker"
-│   │   └── utils/              Rich text parser, helpers ("emergency patches")
-│   └── public/games/           Available games
-│       ├── demo/               Full demo (made by professionals, so it hurts more)
-│       └── demo2/              Dungeon demo
-├── docs/                       Technical wiki (~40 docs)
-├── back/                       Legacy Python terminal (the fossil record)
-└── CLAUDE.md                   AI assistant instructions
+├── src/
+│   ├── engine/             Pure TypeScript engine (the "brain")
+│   ├── types/              Type definitions
+│   ├── hooks/              React hooks (game loop, terminal, boot)
+│   ├── store/              Zustand stores (trauma, persisted)
+│   ├── components/         UI (terminal, widgets, layout)
+│   ├── editor/             Visual story editor (~5,900 lines)
+│   ├── styles/             Themes from "dark" to "darker"
+│   └── utils/              Rich text parser, helpers
+├── public/games/           Available games
+│   ├── demo/               "Calabosos y Babosos" full demo
+│   └── demo2/              Technical demo (all 18 step types)
+├── docs/                   Technical wiki (~40 docs)
+├── back/                   Legacy Python terminal (the fossil record)
+└── CLAUDE.md               AI assistant instructions
 ```
+
+---
+
+## Tech Stack
+
+| Technology | Why |
+|---|---|
+| **React 19** + **TypeScript 5.9** | UI & types (pretending we're professionals) |
+| **Vite 6.2** | Fast bundler (reinventing wheels is for the unimaginative) |
+| **Zustand 5.0** | State management (registry of your failures) |
+| **@xyflow/react 12.10** | Visual editor (dragging boxes = "game design") |
+| **styled-components 6.1** | CSS-in-JS (even slugs deserve to look pretty) |
+| **localforage** | IndexedDB persistence (bad decisions follow you forever) |
+| **jszip + file-saver** | Export/import (hopes and dreams in a ZIP) |
 
 ---
 
 ## Development
 
 ```bash
-cd motor_web
-npm install          # First time (drag yourself into the dependency abyss)
-npm run dev          # Dev server at localhost:5173 (where hopes go to die)
+npm install          # First time (embrace the node_modules abyss)
+npm run dev          # Dev server at localhost:5173
 npm run build        # Production build (assuming you get this far)
-npm run lint         # ESLint (it will find things to complain about. Always.)
+npm run lint         # ESLint (it always finds something to complain about)
 ```
 
 ### Git Branches
 
-- **main** — Stable release (relatively speaking)
+- **main** — Stable (relatively speaking)
 - **cyb-web** — Active development (chaos in progress)
 
 ---
 
 ## Troubleshooting (a.k.a. "Features")
 
-**"My game crashes at a certain scene"** — It's not a bug, it's a metaphor for how life stops at the worst moments. (Real fix: you probably have a circular condition or invalid reference)
+**"My game crashes at a certain scene"** — It's not a bug, it's a metaphor for how life stops at the worst moments. (Real fix: circular condition or invalid reference)
 
-**"Images won't load"** — Have you considered that the engine is protecting players from your "art"? (Real fix: check your paths, they must be relative to the game folder)
+**"Images won't load"** — The engine is protecting players from your "art". (Real fix: check paths, must be relative to the game folder)
 
-**"The narrator insults me too much"** — That's not a bug, that's a feature. He's actually being nice.
+**"The narrator insults me too much"** — That's not a bug. That's a feature. He's being nice, actually.
 
-**"I can't progress in the game"** — Welcome to real life. (Real fix: use `debug` to check which conditions aren't met)
+**"I can't progress"** — Welcome to real life. (Real fix: use `debug` to check unmet conditions)
+
+**"My JSON has errors but looks fine"** — Perfection is impossible to achieve, especially for you. (Real fix: external JSON validator, ghost commas are lurking)
 
 ---
 
@@ -357,7 +307,7 @@ npm run lint         # ESLint (it will find things to complain about. Always.)
 </p>
 
 <p align="center">
-  Made with love (and slime) by <b>Nicolas & Vanessa</b>
+  Built with love (and slime) by <b>Nicolas & Vanessa</b>
 </p>
 
 ---
@@ -368,7 +318,7 @@ MIT — With the slimy clause: if you use this engine to make a serious or *educ
 
 ---
 
-> *"You've reached the end of this infinite README. Your reading stats increased by +5. Your dignity, probably not. And remember: it's not just a game, it's a terminal for loading games. The difference is viscous but important. Like many things in life, this project is just an empty shell waiting for you to fill it with content... just like your existence."*
+> *"You've reached the end of this README. Your reading stats increased by +5. Your dignity, probably not. Remember: this is not a game, it's an engine that runs games. The difference is viscous but important. Like many things in life, this project is just an empty shell waiting for you to fill it with content... just like your existence."*
 
 Enjoy the abyss. It'll be waiting.
 
