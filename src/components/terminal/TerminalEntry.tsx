@@ -7,6 +7,7 @@ import RichText from './RichText';
 import HoverPreview from '../ui/HoverPreview';
 import type { TerminalEntry as TEntry } from '../../types/terminal';
 import type { AppTheme } from '../../types/theme';
+import { assetUrl } from '../../utils/assetUrl';
 
 const EntryLine = styled.div<{ $color?: string; $faded?: boolean }>`
   margin-bottom: 2px;
@@ -69,7 +70,7 @@ const TerminalEntryComponent: React.FC<TerminalEntryProps> = ({ entry, faded }) 
         <DialogHeader $faded={f}>
           {entry.image && (
             <HoverPreview
-              src={entry.image}
+              src={assetUrl(entry.image!)}
               alt={entry.content}
               size={entry.firstAppearance ? 80 : 36}
             />

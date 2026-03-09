@@ -8,6 +8,7 @@ import { useEditorStore } from '../editor/store/useEditorStore';
 import { parseCommand } from '../engine/CommandParser';
 import { loadGame, listGames } from '../engine/GameLoader';
 import { GameEngine } from '../engine/GameEngine';
+import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
 import { saveGame, loadSave, listSlots } from '../utils/storage';
 import type { SaveData } from '../utils/storage';
@@ -402,7 +403,7 @@ ${lines.join('\n')}
     audio.volume = volume / 100;
     audio.play().catch(() => {});
 
-    setCurrentImage('images/about/about1.png');
+    setCurrentImage(assetUrl('images/about/about1.png'));
     clearHistory();
 
     addEntry({

@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { assetUrl } from '../../utils/assetUrl';
 
 const EXPANDED_SLOTS = 24;
 
@@ -359,7 +360,7 @@ const InventoryExpanded: React.FC = () => {
   const protagonist = engine?.getProtagonist?.();
   const rawImage = protagonist?.image || playerState.stats._protagonist_image;
   const protagonistImage = typeof rawImage === 'string'
-    ? (rawImage.startsWith(gameBasePath) ? rawImage : `${gameBasePath}/${rawImage}`)
+    ? assetUrl(rawImage.startsWith(gameBasePath) ? rawImage : `${gameBasePath}/${rawImage}`)
     : null;
   const playerName = typeof playerState.stats.nombre_jugador === 'string'
     ? playerState.stats.nombre_jugador
@@ -426,7 +427,7 @@ const InventoryExpanded: React.FC = () => {
             )}
             <CoinRow>
               <CoinIcon
-                src={`${gameBasePath}/images/items/bolsa_monedas.png`}
+                src={assetUrl(`${gameBasePath}/images/items/bolsa_monedas.png`)}
                 alt="Monedas"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
@@ -453,7 +454,7 @@ const InventoryExpanded: React.FC = () => {
                   <InBadge>IN{idx + 1}</InBadge>
                   {item.count > 1 && <StackBadge>{item.count}</StackBadge>}
                   <SlotIcon
-                    src={`${gameBasePath}/images/items/${item.id}.png`}
+                    src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
                     alt={getItemData(item.id, items).name}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
@@ -471,7 +472,7 @@ const InventoryExpanded: React.FC = () => {
       {hoveredData && hovered && (
         <Tooltip style={{ left: hovered.x, top: hovered.y, transform: 'translateY(-100%)' }}>
           <TooltipImage
-            src={`${gameBasePath}/images/items/${hovered.id}.png`}
+            src={assetUrl(`${gameBasePath}/images/items/${hovered.id}.png`)}
             alt={hoveredData.name}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />

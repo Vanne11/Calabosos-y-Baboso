@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
 import HoverPreview from '../ui/HoverPreview';
+import { assetUrl } from '../../utils/assetUrl';
 
 const Bar = styled.div`
   display: flex;
@@ -119,7 +120,7 @@ const StatusBar: React.FC = () => {
   const protagonist = engine?.getProtagonist?.();
   const rawImage = protagonist?.image || playerState.stats._protagonist_image;
   const protagonistImage = typeof rawImage === 'string'
-    ? (rawImage.startsWith(gameBasePath) ? rawImage : `${gameBasePath}/${rawImage}`)
+    ? assetUrl(rawImage.startsWith(gameBasePath) ? rawImage : `${gameBasePath}/${rawImage}`)
     : null;
   const playerName = typeof playerState.stats.nombre_jugador === 'string'
     ? playerState.stats.nombre_jugador
@@ -138,7 +139,7 @@ const StatusBar: React.FC = () => {
 
   const resolveImage = (img?: string) => {
     if (!img) return null;
-    return img.startsWith(gameBasePath) ? img : `${gameBasePath}/${img}`;
+    return assetUrl(img.startsWith(gameBasePath) ? img : `${gameBasePath}/${img}`);
   };
 
   return (

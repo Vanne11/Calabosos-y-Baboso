@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { assetUrl } from '../../utils/assetUrl';
 
 type Selection =
   | { mode: 'buy'; index: number }
@@ -90,7 +91,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
             <ItemButton $selected={isSelected} onClick={() => toggleBuy(i)}>
               <ItemNum>[{n}]</ItemNum>
               <ShopItemImage
-                src={`${gameBasePath}/images/items/${item.id}.png`}
+                src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
                 alt={item.name}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
@@ -137,7 +138,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
                 <ItemButton $selected={isSelected} onClick={() => toggleSell(inv.id)}>
                   <ItemNum>[{n}]</ItemNum>
                   <ShopItemImage
-                    src={`${gameBasePath}/images/items/${inv.id}.png`}
+                    src={assetUrl(`${gameBasePath}/images/items/${inv.id}.png`)}
                     alt={inv.name}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />

@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { assetUrl } from '../../utils/assetUrl';
 
 const Container = styled.div`
   display: flex;
@@ -67,7 +68,7 @@ const ImagePanel: React.FC = () => {
   if (currentImage) {
     return (
       <Container>
-        <ScenarioImage key={currentImage} src={currentImage} alt="Escenario actual" />
+        <ScenarioImage key={currentImage} src={assetUrl(currentImage)} alt="Escenario actual" />
       </Container>
     );
   }
@@ -76,7 +77,7 @@ const ImagePanel: React.FC = () => {
     <Container>
       <TitleContainer>
         <Title>
-          <LogoImg src="images/logo.png" alt="Logo" />
+          <LogoImg src={assetUrl("images/logo.png")} alt="Logo" />
           BabosOS
         </Title>
         <Subtitle>Calabosos y Babosos™</Subtitle>

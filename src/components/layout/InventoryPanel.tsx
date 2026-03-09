@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { assetUrl } from '../../utils/assetUrl';
 
 const TOTAL_SLOTS = 12;
 
@@ -239,7 +240,7 @@ const InventoryPanel: React.FC = () => {
       {hovered && hoveredItem && (
         <Tooltip>
           <TooltipImage
-            src={`${gameBasePath}/images/items/${hoveredItem}.png`}
+            src={assetUrl(`${gameBasePath}/images/items/${hoveredItem}.png`)}
             alt={hovered.name}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
@@ -253,7 +254,7 @@ const InventoryPanel: React.FC = () => {
         <Title>[INVENTARIO]</Title>
         <CoinBadge>
           <CoinIcon
-            src={`${gameBasePath}/images/items/bolsa_monedas.png`}
+            src={assetUrl(`${gameBasePath}/images/items/bolsa_monedas.png`)}
             alt="Monedas"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
@@ -270,7 +271,7 @@ const InventoryPanel: React.FC = () => {
             <InBadge>IN{idx + 1}</InBadge>
             {item.count > 1 && <StackBadge>{item.count}</StackBadge>}
             <SlotIcon
-              src={`${gameBasePath}/images/items/${item.id}.png`}
+              src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
               alt={getItemData(item.id, manifestItems).name}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />

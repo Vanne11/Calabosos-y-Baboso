@@ -1,6 +1,8 @@
 // utils/preloadAssets.ts
 // Precarga de imágenes y audio del juego demo durante el boot
 
+import { assetUrl } from './assetUrl';
+
 const DEMO_BASE = 'games/demo';
 
 const IMAGES = [
@@ -68,7 +70,7 @@ export function preloadDemoAssets(
   onProgress?: (loaded: number, total: number) => void
 ): Promise<void> {
   const allAssets = [
-    ...IMAGES.map((p) => () => preloadImage(`${DEMO_BASE}/${p}`)),
+    ...IMAGES.map((p) => () => preloadImage(assetUrl(`${DEMO_BASE}/${p}`))),
     ...AUDIO.map((p) => () => preloadAudio(`${DEMO_BASE}/${p}`)),
   ];
 

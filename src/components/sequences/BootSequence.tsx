@@ -4,6 +4,7 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useBootSequence } from '../../hooks/useBootSequence';
+import { assetUrl } from '../../utils/assetUrl';
 
 const Overlay = styled.div<{ $fading: boolean }>`
   position: fixed;
@@ -67,7 +68,7 @@ const BootSequence: React.FC = () => {
 
   return (
     <Overlay $fading={fading}>
-      <LogoImage src="images/logo.png" alt="Logo" />
+      <LogoImage src={assetUrl("images/logo.png")} alt="Logo" />
       <LogoText>BabosOS</LogoText>
       <MessagesBox>
         {messages.map((msg, i) => (

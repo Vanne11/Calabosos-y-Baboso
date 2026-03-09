@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { assetUrl } from '../../utils/assetUrl';
 
 const Container = styled.div`
   margin: 1rem 0;
@@ -141,7 +142,7 @@ const CraftWidget: React.FC<CraftWidgetProps> = ({
         <ItemButton key={`${item.id}-${i}`} $pickable={!item.isFixed}>
           <ItemNum>[{i + 1}]</ItemNum>
           <ItemImage
-            src={`${gameBasePath}/images/items/${item.id}.png`}
+            src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
             alt={item.name}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
