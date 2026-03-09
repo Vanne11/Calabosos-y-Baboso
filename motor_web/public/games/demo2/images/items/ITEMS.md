@@ -92,7 +92,7 @@ REUTILIZAR DE DEMO1: `../demo/images/items/sal_anti_babosas.png`
 
 16-bit pixel art. Icono de objeto. Antorcha medieval clásica: palo de madera con la punta envuelta en tela empapada en resina. La llama es viva y animada en tonos naranja, amarillo y un toque de azul en la base. Chispas volando. El mango tiene marcas de agarre. Humo gris sube de la llama. La tela de la punta está ennegrecida. El palo es robusto y podría usarse como arma improvisada. Brillo cálido naranja-amarillo emanando. Un clásico de la mazmorrería. Fondo Verde Claro para luego quitar.
 
----
+--- QUERDAMOS ACA SI NO ME EQUIVOCO, QUEDARON MUY BIEN LOS ANTERIORES
 
 ### olla_alquimia.png — Olla de Alquimia
 
