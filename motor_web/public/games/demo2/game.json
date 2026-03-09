@@ -173,6 +173,22 @@
     "hierba_picada": {
       "name": "Hierba Picada",
       "description": "Hierba curativa finamente picada. Se disuelve rápido en líquidos."
+    },
+    "pocion_grasa": {
+      "name": "Poción de Grasa",
+      "description": "Un frasco lleno de grasa destilada. Sirve como lubricante premium o veneno para babosas."
+    },
+    "bomba_mohosa": {
+      "name": "Bomba Mohosa",
+      "description": "Una bola de pan mohoso concentrado. El hedor es un arma en sí misma."
+    },
+    "elixir_rapido": {
+      "name": "Elixir Rápido",
+      "description": "Infusión rápida de hierba picada. Menos potente pero instantánea. +15 vida."
+    },
+    "polvo_corteza": {
+      "name": "Polvo de Corteza",
+      "description": "Corteza triturada. Puede usarse como espesante o como proyectil improvisado."
     }
   },
 

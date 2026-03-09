@@ -3,6 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useAppStore } from '../../store/useAppStore';
 
 type Selection =
   | { mode: 'buy'; index: number }
@@ -56,6 +57,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
   onDeceive,
   onExit,
 }) => {
+  const gameBasePath = useAppStore((s) => s.gameBasePath);
   const sel = externalSelection;
   const hasSellItems = sellable && playerInventory.length > 0;
 
@@ -86,7 +88,13 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
         return (
           <React.Fragment key={item.id}>
             <ItemButton $selected={isSelected} onClick={() => toggleBuy(i)}>
-              <ItemNum>[{n}]</ItemNum> {item.name} — {item.price} {currency}
+              <ItemNum>[{n}]</ItemNum>
+              <ShopItemImage
+                src={`${gameBasePath}/images/items/${item.id}.png`}
+                alt={item.name}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              {item.name} — {item.price} {currency}
               {item.haggled && <HaggleTag> (regateado)</HaggleTag>}
               {item.description && <> <ItemDesc>({item.description})</ItemDesc></>}
               {!item.canAfford && <NoMoney> (sin fondos)</NoMoney>}
@@ -127,7 +135,13 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
             return (
               <React.Fragment key={inv.id}>
                 <ItemButton $selected={isSelected} onClick={() => toggleSell(inv.id)}>
-                  <ItemNum>[{n}]</ItemNum> {inv.name}{inv.count > 1 ? ` (x${inv.count})` : ''}
+                  <ItemNum>[{n}]</ItemNum>
+                  <ShopItemImage
+                    src={`${gameBasePath}/images/items/${inv.id}.png`}
+                    alt={inv.name}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  {inv.name}{inv.count > 1 ? ` (x${inv.count})` : ''}
                 </ItemButton>
                 {isSelected && (
                   <ActionBar>
@@ -200,6 +214,9 @@ const ItemButton = styled.button<{ $selected?: boolean }>`
   text-align: left;
   width: 100%;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 
   &:hover {
     background-color: ${(props) => props.theme.button.hoverBackground};
@@ -210,6 +227,15 @@ const ItemButton = styled.button<{ $selected?: boolean }>`
 const ItemNum = styled.span`
   color: ${(props) => props.theme.terminal.warning};
   font-weight: bold;
+`;
+
+const ShopItemImage = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  margin: 0 2px;
 `;
 
 const ItemDesc = styled.span`

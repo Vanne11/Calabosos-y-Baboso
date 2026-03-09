@@ -151,7 +151,7 @@ const App: React.FC = () => {
       return;
     }
 
-    // Craft: 5 syntaxes — combine (+), use (), apply (>), cut (/), chop (//)
+    // Craft: 5 syntaxes + pickup — mesa dinámica, inventario en panel
     if (phase === 'game' && pendingResult?.type === 'craft_prompt') {
       const cp = pendingResult as CraftPrompt;
       const low = trimmed.toLowerCase();
@@ -162,12 +162,20 @@ const App: React.FC = () => {
         return;
       }
 
-      // Helper: resolve a token (number or INn) to item id
+      // Resolve inventory items from global playerState
+      const invStacked = playerState ? stackInventory(playerState.inventory) : [];
+
+      // Helper: resolve a token (number=table, INn=inventory) to item id
       const resolveToken = (token: string): { id: string; name: string } | null => {
         const invMatch = token.match(/^in(\d+)$/);
         if (invMatch) {
           const idx = parseInt(invMatch[1]) - 1;
-          if (idx >= 0 && idx < cp.playerInventory.length) return cp.playerInventory[idx];
+          if (idx >= 0 && idx < invStacked.length) {
+            const item = invStacked[idx];
+            const engine = useAppStore.getState().engine;
+            const def = engine?.items?.[item.id];
+            return { id: item.id, name: def?.name || item.id };
+          }
           return null;
         }
         const num = parseInt(token);
@@ -241,6 +249,17 @@ const App: React.FC = () => {
       if (combined && combined.length >= 2) {
         addEntry({ type: 'option', content: `> Combinar: ${combined.map((i) => i.name).join(' + ')}` });
         sendAction({ type: 'craft_combine', items: combined.map((i) => i.id) });
+        return;
+      }
+
+      // Solo un número: PICKUP (recoger item de la mesa)
+      const pickNum = parseInt(low);
+      if (!isNaN(pickNum) && pickNum >= 1 && pickNum <= cp.tableItems.length) {
+        const item = cp.tableItems[pickNum - 1];
+        if (!item.isFixed) {
+          addEntry({ type: 'option', content: `> Recoger: ${item.name}` });
+          sendAction({ type: 'craft_pickup', index: pickNum - 1 });
+        }
         return;
       }
 
@@ -668,7 +687,6 @@ const App: React.FC = () => {
           <CraftWidget
             description={crp.description}
             tableItems={crp.tableItems}
-            playerInventory={crp.playerInventory}
             availableActions={crp.availableActions}
             onCombine={handleCraftCombine}
             onExit={handleCraftExit}

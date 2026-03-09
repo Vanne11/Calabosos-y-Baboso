@@ -520,7 +520,7 @@
               "substance": "grasa_babosa",
               "target": "espada_oxidada",
               "result": "espada_engrasada",
-              "text": "Untas la espada con grasa de babosa. El óxido se disuelve y la hoja brilla con un [bold yellow]resplandor viscoso[/bold yellow].",
+              "text": "Untas la espada con grasa de babosa. El óxido se disuelve y [bold yellow]ahora brilla levemente[/bold yellow]. Viscosa pero funcional.",
               "consume": false,
               "effects": {
                 "xp": { "bob": 10 }
@@ -558,6 +558,65 @@
               "consume": true,
               "effects": {
                 "stats": { "alchemy": 5 }
+              }
+            },
+            {
+              "action": "use",
+              "tool": "alambique",
+              "ingredients": ["grasa_babosa"],
+              "result": "pocion_grasa",
+              "text": "Destilas la grasa en el alambique. El resultado es una [bold purple]Poción de Grasa[/bold purple] concentrada. Huele fatal pero funciona.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 12 },
+                "xp": { "bob": 15 }
+              }
+            },
+            {
+              "action": "use",
+              "tool": "olla_alquimia",
+              "ingredients": ["hierba_picada", "frasco_vacio"],
+              "result": "elixir_rapido",
+              "text": "La hierba picada se disuelve al instante en agua caliente. [bold green]Elixir Rápido[/bold green] listo. Menos potente pero eficiente.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 8 },
+                "xp": { "bob": 10 }
+              }
+            },
+            {
+              "action": "combine",
+              "ingredients": ["migajas", "corteza_pan"],
+              "result": "bomba_mohosa",
+              "text": "Comprimes las migajas con la corteza hasta formar una bola densa y hedionda. [bold red]Bomba Mohosa[/bold red] — arma biológica artesanal.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 3 },
+                "xp": { "bob": 5 }
+              }
+            },
+            {
+              "action": "chop",
+              "tool": "cuchillo_alquimia",
+              "target": "corteza_pan",
+              "result": "polvo_corteza",
+              "text": "Picas y mueles la corteza con furia. [bold yellow]Polvo de Corteza[/bold yellow] — duro como roca, ahora fino como arena.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 5 },
+                "xp": { "bob": 8 }
+              }
+            },
+            {
+              "action": "apply",
+              "substance": "grasa_babosa",
+              "target": "escudo_madera",
+              "result": "escudo_madera",
+              "text": "Untas el escudo con grasa. Ahora [bold yellow]resbala[/bold yellow]. Los ataques se desvían mejor pero huele a mazmorra húmeda.",
+              "consume": false,
+              "effects": {
+                "stats": { "defense": 3 },
+                "xp": { "bob": 8 }
               }
             }
           ],

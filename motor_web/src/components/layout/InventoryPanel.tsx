@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
 
-const TOTAL_SLOTS = 8;
+const TOTAL_SLOTS = 12;
 
 interface StackedItem {
   id: string;
@@ -22,7 +22,7 @@ function stackItems(inventory: string[]): StackedItem[] {
 
 const Panel = styled.div`
   flex-shrink: 0;
-  padding: 0.5rem 0.8rem;
+  padding: 0.6rem 0.8rem;
   border: 1px solid ${(props) => props.theme.terminal.border};
   border-top: none;
   background-color: ${(props) => props.theme.terminal.background};
@@ -70,12 +70,12 @@ const CoinPill = styled.span<{ $broke?: boolean }>`
 const SlotsGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
 `;
 
 const Slot = styled.div<{ $empty?: boolean }>`
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
   border: 1px solid ${(props) => props.$empty
     ? props.theme.terminal.border
     : props.theme.accent};
@@ -96,8 +96,8 @@ const Slot = styled.div<{ $empty?: boolean }>`
 `;
 
 const SlotIcon = styled.img`
-  width: 44px;
-  height: 44px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   image-rendering: pixelated;
 `;
@@ -175,8 +175,8 @@ const Tooltip = styled.div`
 `;
 
 const TooltipImage = styled.img`
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
   image-rendering: pixelated;
   flex-shrink: 0;

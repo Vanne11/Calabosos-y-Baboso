@@ -241,10 +241,8 @@ export interface SoundResult {
 export interface CraftPrompt {
   type: 'craft_prompt';
   description?: string;
-  /** Items sobre la mesa con nombre resuelto: { id, name } */
-  tableItems: { id: string; name: string }[];
-  /** Items del inventario del jugador con nombre resuelto */
-  playerInventory: { id: string; name: string }[];
+  /** Items sobre la mesa: herramientas fijas + subproductos recogibles */
+  tableItems: { id: string; name: string; isFixed: boolean }[];
   /** Acciones disponibles en esta estación de crafteo */
   availableActions: import('./game').CraftAction[];
   failText: string;
@@ -394,6 +392,7 @@ export type PlayerAction =
   | { type: 'craft_apply'; substance: string; target: string }
   | { type: 'craft_cut'; tool: string; target: string }
   | { type: 'craft_chop'; tool: string; target: string }
+  | { type: 'craft_pickup'; index: number }
   | { type: 'craft_exit' }
   | { type: 'puzzle_attempt'; answer: string | string[] }
   | { type: 'puzzle_exit' }

@@ -1,5 +1,5 @@
 // components/game/CraftWidget.tsx
-// Interfaz de crafting estilo terminal con 5 acciones
+// Interfaz de crafting: solo muestra la mesa, inventario se ve en el panel
 
 import React from 'react';
 import styled from 'styled-components';
@@ -22,14 +22,16 @@ const SectionLabel = styled.div`
   margin: 0.75rem 0 0.25rem;
 `;
 
-const ItemButton = styled.button`
+const ItemButton = styled.button<{ $pickable?: boolean }>`
   background-color: ${(props) => props.theme.button.background};
   color: ${(props) => props.theme.terminal.accent};
-  border: 1px solid ${(props) => props.theme.terminal.accentDim};
+  border: 1px solid ${(props) => props.$pickable
+    ? (props.theme.terminal.success || '#50fa7b')
+    : props.theme.terminal.accentDim};
   border-radius: 3px;
   padding: 6px 10px;
   margin: 3px 0;
-  cursor: default;
+  cursor: ${(props) => props.$pickable ? 'pointer' : 'default'};
   font-family: inherit;
   font-size: 0.9rem;
   text-align: left;
@@ -37,16 +39,17 @@ const ItemButton = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  ${(props) => props.$pickable && `
+    &:hover {
+      background-color: ${props.theme.button.hoverBackground};
+      border-color: ${props.theme.terminal.success || '#50fa7b'};
+    }
+  `}
 `;
 
 const ItemNum = styled.span`
   color: ${(props) => props.theme.terminal.warning};
-  font-weight: bold;
-  flex-shrink: 0;
-`;
-
-const InvNum = styled.span`
-  color: #6272a4;
   font-weight: bold;
   flex-shrink: 0;
 `;
@@ -61,6 +64,20 @@ const ItemImage = styled.img`
 
 const ItemName = styled.span`
   flex: 1;
+`;
+
+const PickTag = styled.span`
+  color: ${(props) => props.theme.terminal.success || '#50fa7b'};
+  font-size: 0.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
+`;
+
+const ToolTag = styled.span`
+  color: ${(props) => props.theme.terminal.accentDim};
+  font-size: 0.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
 `;
 
 const HelpSection = styled.div`
@@ -99,8 +116,7 @@ const ExitButton = styled(ItemButton)`
 
 interface CraftWidgetProps {
   description?: string;
-  tableItems: { id: string; name: string }[];
-  playerInventory: { id: string; name: string }[];
+  tableItems: { id: string; name: string; isFixed: boolean }[];
   availableActions: import('../../types/game').CraftAction[];
   onCombine: (items: string[]) => void;
   onExit: () => void;
@@ -109,77 +125,54 @@ interface CraftWidgetProps {
 const CraftWidget: React.FC<CraftWidgetProps> = ({
   description,
   tableItems,
-  playerInventory,
   availableActions,
   onExit,
 }) => {
   const gameBasePath = useAppStore((s) => s.gameBasePath);
   const has = (a: string) => availableActions.includes(a as import('../../types/game').CraftAction);
+  const hasPickable = tableItems.some((t) => !t.isFixed);
 
   return (
     <Container>
       <Title>🔧 {description || 'Estación de Crafteo'}</Title>
 
-      {tableItems.length > 0 && (
-        <>
-          <SectionLabel>Sobre la mesa</SectionLabel>
-          {tableItems.map((item, i) => (
-            <ItemButton key={item.id}>
-              <ItemNum>[{i + 1}]</ItemNum>
-              <ItemImage
-                src={`${gameBasePath}/images/items/${item.id}.png`}
-                alt={item.name}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-              <ItemName>{item.name}</ItemName>
-            </ItemButton>
-          ))}
-        </>
-      )}
-
-      {playerInventory.length > 0 && (
-        <>
-          <SectionLabel>Inventario</SectionLabel>
-          {playerInventory.map((item, i) => (
-            <ItemButton key={item.id}>
-              <InvNum>[IN{i + 1}]</InvNum>
-              <ItemImage
-                src={`${gameBasePath}/images/items/${item.id}.png`}
-                alt={item.name}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-              <ItemName>{item.name}</ItemName>
-            </ItemButton>
-          ))}
-        </>
-      )}
+      <SectionLabel>Sobre la mesa</SectionLabel>
+      {tableItems.map((item, i) => (
+        <ItemButton key={`${item.id}-${i}`} $pickable={!item.isFixed}>
+          <ItemNum>[{i + 1}]</ItemNum>
+          <ItemImage
+            src={`${gameBasePath}/images/items/${item.id}.png`}
+            alt={item.name}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          />
+          <ItemName>{item.name}</ItemName>
+          {item.isFixed
+            ? <ToolTag>herramienta</ToolTag>
+            : <PickTag>recoger</PickTag>
+          }
+        </ItemButton>
+      ))}
 
       <HelpSection>
         {has('combine') && (
-          <HelpLine>
-            <HelpLabel>+</HelpLabel> combinar — <HelpExample>1+IN2</HelpExample>
-          </HelpLine>
+          <HelpLine><HelpLabel>+</HelpLabel> combinar — <HelpExample>1+IN2</HelpExample></HelpLine>
         )}
         {has('use') && (
-          <HelpLine>
-            <HelpLabel>()</HelpLabel> meter en — <HelpExample>1(IN2+IN3)</HelpExample>
-          </HelpLine>
+          <HelpLine><HelpLabel>()</HelpLabel> meter en — <HelpExample>1(IN2+IN3)</HelpExample></HelpLine>
         )}
         {has('apply') && (
-          <HelpLine>
-            <HelpLabel>&gt;</HelpLabel> aplicar — <HelpExample>1&gt;IN2</HelpExample>
-          </HelpLine>
+          <HelpLine><HelpLabel>&gt;</HelpLabel> aplicar — <HelpExample>1&gt;IN2</HelpExample></HelpLine>
         )}
         {has('cut') && (
-          <HelpLine>
-            <HelpLabel>/</HelpLabel> cortar — <HelpExample>1/IN2</HelpExample>
-          </HelpLine>
+          <HelpLine><HelpLabel>/</HelpLabel> cortar — <HelpExample>1/IN2</HelpExample></HelpLine>
         )}
         {has('chop') && (
-          <HelpLine>
-            <HelpLabel>//</HelpLabel> picar — <HelpExample>1//IN2</HelpExample>
-          </HelpLine>
+          <HelpLine><HelpLabel>//</HelpLabel> picar — <HelpExample>1//IN2</HelpExample></HelpLine>
         )}
+        {hasPickable && (
+          <HelpLine><HelpLabel>[N]</HelpLabel> recoger item de la mesa</HelpLine>
+        )}
+        <HelpLine>Usa <HelpLabel>IN[N]</HelpLabel> para items del inventario</HelpLine>
       </HelpSection>
 
       <ExitButton onClick={onExit}>

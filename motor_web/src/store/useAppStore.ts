@@ -87,6 +87,10 @@ interface AppStore {
   pendingSlotAction: { type: 'save' | 'load'; slots: number } | null;
   setPendingSlotAction: (action: { type: 'save' | 'load'; slots: number } | null) => void;
 
+  // Expanded inventory overlay
+  inventoryExpanded: boolean;
+  setInventoryExpanded: (val: boolean) => void;
+
   // Reset everything for quit/restart
   resetGame: () => void;
 }
@@ -214,6 +218,10 @@ export const useAppStore = create<AppStore>((set) => ({
   pendingSlotAction: null,
   setPendingSlotAction: (pendingSlotAction) => set({ pendingSlotAction }),
 
+  // Expanded inventory
+  inventoryExpanded: false,
+  setInventoryExpanded: (inventoryExpanded) => set({ inventoryExpanded }),
+
   // Reset
   resetGame: () =>
     set((s) => ({
@@ -224,6 +232,7 @@ export const useAppStore = create<AppStore>((set) => ({
       currentScene: '',
       pendingResult: null,
       pendingSlotAction: null,
+      inventoryExpanded: false,
       currentImage: null,
       fadeBeforeIndex: 0,
       seenCharacters: new Set<string>(),

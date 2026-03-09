@@ -961,12 +961,15 @@ export class GameEngine {
   }
 
   // --- Craft: combinar / usar / aplicar / cortar / picar ---
+  // Mesa dinámica: resultados quedan en la mesa, jugador recoge con número suelto
   private async *processCraft(
     step: CraftStep
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     const itemDefs = this.manifest.items || {};
     const failText = step.failText || 'Eso no tiene ningún sentido...';
-    const tableItemIds = step.tableItems || [];
+    // Mesa mutable: herramientas fijas + subproductos
+    const table: string[] = [...(step.tableItems || [])];
+    const fixedTools = new Set(step.tableItems || []);
 
     // Derive available actions from recipes
     const availableActions = new Set<CraftAction>();
@@ -975,20 +978,16 @@ export class GameEngine {
     }
 
     while (true) {
-      const tableItems = tableItemIds.map((id) => ({
+      const tableItems = table.map((id) => ({
         id,
         name: itemDefs[id]?.name || id,
-      }));
-      const playerInv = [...this._state.inventory].map((id) => ({
-        id,
-        name: itemDefs[id]?.name || id,
+        isFixed: fixedTools.has(id),
       }));
 
       yield {
         type: 'craft_prompt',
         description: step.description,
         tableItems,
-        playerInventory: playerInv,
         availableActions: [...availableActions],
         failText,
       };
@@ -996,6 +995,24 @@ export class GameEngine {
       const action = await this.waitForAction();
 
       if (action.type === 'craft_exit') break;
+
+      // Pickup: recoger item de la mesa al inventario
+      if (action.type === 'craft_pickup') {
+        const idx = action.index;
+        if (idx >= 0 && idx < table.length) {
+          const itemId = table[idx];
+          if (!fixedTools.has(itemId)) {
+            table.splice(idx, 1);
+            this._state = applyEffects(this._state, { inventory: [itemId] });
+            this.syncSpecialStats();
+            const name = itemDefs[itemId]?.name || itemId;
+            yield { type: 'craft_result', success: true, text: `Recoges [bold]${name}[/bold] de la mesa.` };
+            yield { type: 'effects', inventory: [itemId] };
+            continue;
+          }
+        }
+        continue;
+      }
 
       let recipe: CraftStep['recipes'][number] | undefined;
 
@@ -1048,43 +1065,59 @@ export class GameEngine {
         }
 
         const hasAll = involved.every((id) =>
-          this._state.inventory.includes(id) || tableItemIds.includes(id)
+          this._state.inventory.includes(id) || table.includes(id)
         );
 
         if (hasAll) {
-          // Consume target/ingredients from inventory
+          // Consume ingredients/target from inventory
           if (recipe.consume !== false) {
             const consumable = act === 'apply'
-              ? [] // apply no consume el objetivo por defecto
+              ? []
               : act === 'cut' || act === 'chop'
-                ? [recipe.target!] // cortar/picar consume el objetivo
-                : recipe.ingredients; // combine/use consume ingredientes
-            const toRemove = consumable.filter((id) => this._state.inventory.includes(id));
-            if (toRemove.length) {
-              this._state = applyEffects(this._state, { removeInventory: toRemove });
+                ? [recipe.target!]
+                : recipe.ingredients;
+            const toRemoveInv = consumable.filter((id) => this._state.inventory.includes(id));
+            if (toRemoveInv.length) {
+              this._state = applyEffects(this._state, { removeInventory: toRemoveInv });
+            }
+            // Also consume from table (non-fixed items like subproducts used as ingredients)
+            for (const id of consumable) {
+              if (!this._state.inventory.includes(id) && table.includes(id) && !fixedTools.has(id)) {
+                const tIdx = table.indexOf(id);
+                if (tIdx !== -1) table.splice(tIdx, 1);
+              }
             }
           }
           // Consume tool/substance if consumeTool
           if (recipe.consumeTool) {
             const toolId = recipe.tool || recipe.substance;
-            if (toolId && this._state.inventory.includes(toolId)) {
-              this._state = applyEffects(this._state, { removeInventory: [toolId] });
+            if (toolId) {
+              if (this._state.inventory.includes(toolId)) {
+                this._state = applyEffects(this._state, { removeInventory: [toolId] });
+              }
+              // Remove from table too if consumeTool
+              const tIdx = table.indexOf(toolId);
+              if (tIdx !== -1) {
+                table.splice(tIdx, 1);
+                fixedTools.delete(toolId);
+              }
             }
           }
-          // Add results
+          // Results go to the TABLE, not inventory
           const allResults = [recipe.result, ...(recipe.bonusResults || [])];
-          this._state = applyEffects(this._state, { inventory: allResults });
+          for (const r of allResults) {
+            table.push(r);
+          }
           if (recipe.effects) {
             this._state = applyEffects(this._state, recipe.effects);
           }
           this.syncSpecialStats();
           yield { type: 'craft_result', success: true, text: recipe.text };
-          yield { type: 'effects', inventory: allResults };
 
           if (recipe.goto) {
             return { type: 'navigate' as const, scene: recipe.goto };
           }
-          break;
+          continue; // Stay in craft loop, results are on the table
         }
       }
 
