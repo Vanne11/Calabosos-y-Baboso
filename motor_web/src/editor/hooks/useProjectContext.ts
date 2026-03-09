@@ -34,6 +34,7 @@ export function useProjectContext(): ProjectContext {
     // Desde todos los nodos/steps
     for (const node of nodes) {
       sceneIdsSet.add(node.data.sceneId);
+      if (!node.data.scene?.sequence) continue;
 
       for (const step of node.data.scene.sequence) {
         if (step.type === 'dialog') {

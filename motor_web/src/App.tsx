@@ -9,11 +9,23 @@ import Terminal from './components/terminal/Terminal';
 import ChoiceWidget from './components/game/ChoiceWidget';
 import DiceWidget from './components/game/DiceWidget';
 import InputWidget from './components/game/InputWidget';
-import { useLoginFlow } from './hooks/useLoginFlow';
+import ExamineWidget from './components/game/ExamineWidget';
+import ShopWidget from './components/game/ShopWidget';
+import CombatWidget from './components/game/CombatWidget';
+import CraftWidget from './components/game/CraftWidget';
+import PuzzleWidget from './components/game/PuzzleWidget';
+import UseItemWidget from './components/game/UseItemWidget';
+import TimedChoiceWidget from './components/game/TimedChoiceWidget';
+import LevelUpWidget from './components/game/LevelUpWidget';
+import { useLoginFlow, welcomeMessages } from './hooks/useLoginFlow';
 import { useTerminalCommands } from './hooks/useTerminalCommands';
 import { useGameLoop } from './hooks/useGameLoop';
 import { useKeyboardInput } from './hooks/useKeyboardInput';
-import type { ChoicePrompt, DicePrompt, InputPrompt } from './types/engine';
+import type {
+  ChoicePrompt, DicePrompt, InputPrompt, ExaminePrompt,
+  ShopPrompt, CombatPrompt, CraftPrompt, PuzzlePrompt,
+  UseItemPrompt, TimedChoicePrompt, LevelUpPrompt,
+} from './types/engine';
 
 const EditorApp = lazy(() => import('./editor/components/EditorApp'));
 
@@ -31,6 +43,19 @@ const App: React.FC = () => {
   const { processCommand } = useTerminalCommands();
   const { startScene, sendAction } = useGameLoop();
   const { handleKeyDown, resetHistoryIndex } = useKeyboardInput();
+
+  // Show welcome messages when session is restored (skip boot/login)
+  const addEntries = useAppStore((s) => s.addEntries);
+  const sessionRestored = React.useRef(phase === 'shell' && username !== '');
+  useEffect(() => {
+    if (sessionRestored.current) {
+      sessionRestored.current = false;
+      addEntries([
+        { type: 'system', content: '[dim]Sesión restaurada.[/dim]' },
+        ...welcomeMessages,
+      ]);
+    }
+  }, []);
 
   // Initialize login when phase transitions to login
   useEffect(() => {
@@ -78,6 +103,17 @@ const App: React.FC = () => {
       }
     }
 
+    // Timed choice by number
+    if (phase === 'game' && pendingResult?.type === 'timed_choice_prompt' && trimmed) {
+      const num = parseInt(trimmed);
+      const options = (pendingResult as TimedChoicePrompt).options;
+      if (!isNaN(num) && num >= 1 && num <= options.length) {
+        addEntry({ type: 'option', content: `> ${options[num - 1].text}` });
+        sendAction({ type: 'choose', index: num - 1 });
+        return;
+      }
+    }
+
     if (!trimmed) return;
 
     // Normal command
@@ -94,7 +130,8 @@ const App: React.FC = () => {
     [handleKeyDown, inputValue]
   );
 
-  // Handle choice widget click
+  // --- Widget handlers ---
+
   const handleChoiceSelect = (index: number) => {
     if (pendingResult?.type === 'choice_prompt') {
       const options = (pendingResult as ChoicePrompt).options;
@@ -103,9 +140,74 @@ const App: React.FC = () => {
     }
   };
 
-  // Handle dice roll
   const handleDiceRoll = () => {
     sendAction({ type: 'roll_dice' });
+  };
+
+  const handleExamineSelect = (subjectId: string) => {
+    sendAction({ type: 'examine_select', subjectId });
+  };
+  const handleExamineExit = () => {
+    sendAction({ type: 'examine_exit' });
+  };
+
+  const handleShopBuy = (itemIndex: number) => {
+    sendAction({ type: 'shop_buy', itemIndex });
+  };
+  const handleShopSell = (itemId: string) => {
+    sendAction({ type: 'shop_sell', itemId });
+  };
+  const handleShopHaggle = (itemIndex: number) => {
+    sendAction({ type: 'shop_haggle', itemIndex });
+  };
+  const handleShopSteal = (itemIndex: number) => {
+    sendAction({ type: 'shop_steal', itemIndex });
+  };
+  const handleShopDeceive = (itemId: string) => {
+    sendAction({ type: 'shop_deceive', itemId });
+  };
+  const handleShopExit = () => {
+    sendAction({ type: 'shop_exit' });
+  };
+
+  const handleCombatAction = (action: string) => {
+    sendAction({ type: 'combat_action', action });
+  };
+
+  const handleCraftCombine = (items: string[]) => {
+    sendAction({ type: 'craft_combine', items });
+  };
+  const handleCraftExit = () => {
+    sendAction({ type: 'craft_exit' });
+  };
+
+  const handlePuzzleAttempt = (answer: string | string[]) => {
+    sendAction({ type: 'puzzle_attempt', answer });
+  };
+  const handlePuzzleExit = () => {
+    sendAction({ type: 'puzzle_exit' });
+  };
+
+  const handleUseItemOn = (itemId: string, targetId: string) => {
+    sendAction({ type: 'use_item_on', itemId, targetId });
+  };
+  const handleUseItemExit = () => {
+    sendAction({ type: 'use_item_exit' });
+  };
+
+  const handleTimedChoiceSelect = (index: number) => {
+    if (pendingResult?.type === 'timed_choice_prompt') {
+      const options = (pendingResult as TimedChoicePrompt).options;
+      addEntry({ type: 'option', content: `> ${options[index].text}` });
+      sendAction({ type: 'choose', index });
+    }
+  };
+
+  const handleLevelUpSkill = (skillId: string) => {
+    sendAction({ type: 'level_up_skill', skillId });
+  };
+  const handleLevelUpDone = () => {
+    sendAction({ type: 'level_up_done' });
   };
 
   // Determine prompt - in game mode, derive from player state
@@ -132,6 +234,9 @@ const App: React.FC = () => {
   if (pendingResult?.type === 'choice_prompt') {
     const opts = (pendingResult as ChoicePrompt).options;
     placeholder = `Escribe el número de la opción [1-${opts.length}]`;
+  } else if (pendingResult?.type === 'timed_choice_prompt') {
+    const opts = (pendingResult as TimedChoicePrompt).options;
+    placeholder = `Escribe el número de la opción [1-${opts.length}]`;
   } else if (pendingResult?.type === 'input_prompt') {
     placeholder = (pendingResult as InputPrompt).prompt;
   }
@@ -140,33 +245,159 @@ const App: React.FC = () => {
   const renderWidget = () => {
     if (!pendingResult) return null;
 
-    if (pendingResult.type === 'choice_prompt') {
-      return (
-        <ChoiceWidget
-          options={(pendingResult as ChoicePrompt).options}
-          onSelect={handleChoiceSelect}
-        />
-      );
-    }
+    switch (pendingResult.type) {
+      case 'choice_prompt':
+        return (
+          <ChoiceWidget
+            options={(pendingResult as ChoicePrompt).options}
+            onSelect={handleChoiceSelect}
+          />
+        );
 
-    if (pendingResult.type === 'dice_prompt') {
-      const dp = pendingResult as DicePrompt;
-      return (
-        <DiceWidget
-          description={dp.description}
-          stat={dp.stat}
-          difficulty={dp.difficulty}
-          faces={dp.faces}
-          onRoll={handleDiceRoll}
-        />
-      );
-    }
+      case 'dice_prompt': {
+        const dp = pendingResult as DicePrompt;
+        return (
+          <DiceWidget
+            description={dp.description}
+            stat={dp.stat}
+            difficulty={dp.difficulty}
+            faces={dp.faces}
+            onRoll={handleDiceRoll}
+          />
+        );
+      }
 
-    if (pendingResult.type === 'input_prompt') {
-      return <InputWidget prompt={(pendingResult as InputPrompt).prompt} />;
-    }
+      case 'input_prompt':
+        return <InputWidget prompt={(pendingResult as InputPrompt).prompt} />;
 
-    return null;
+      case 'examine_prompt': {
+        const ep = pendingResult as ExaminePrompt;
+        return (
+          <ExamineWidget
+            description={ep.description}
+            subjects={ep.subjects}
+            exitText={ep.exitText}
+            onSelect={handleExamineSelect}
+            onExit={handleExamineExit}
+          />
+        );
+      }
+
+      case 'shop_prompt': {
+        const sp = pendingResult as ShopPrompt;
+        return (
+          <ShopWidget
+            title={sp.title}
+            currency={sp.currency}
+            currentMoney={sp.currentMoney}
+            items={sp.items}
+            sellable={sp.sellable}
+            playerInventory={sp.playerInventory}
+            sellRatio={sp.sellRatio}
+            canHaggle={sp.canHaggle}
+            canSteal={sp.canSteal}
+            canDeceive={sp.canDeceive}
+            onBuy={handleShopBuy}
+            onSell={handleShopSell}
+            onHaggle={handleShopHaggle}
+            onSteal={handleShopSteal}
+            onDeceive={handleShopDeceive}
+            onExit={handleShopExit}
+          />
+        );
+      }
+
+      case 'combat_prompt': {
+        const cp = pendingResult as CombatPrompt;
+        return (
+          <CombatWidget
+            enemyName={cp.enemyName}
+            enemyHp={cp.enemyHp}
+            enemyMaxHp={cp.enemyMaxHp}
+            playerHp={cp.playerHp}
+            actions={cp.actions}
+            round={cp.round}
+            usableItems={cp.usableItems}
+            onAction={handleCombatAction}
+          />
+        );
+      }
+
+      case 'craft_prompt': {
+        const crp = pendingResult as CraftPrompt;
+        return (
+          <CraftWidget
+            description={crp.description}
+            playerInventory={crp.playerInventory}
+            onCombine={handleCraftCombine}
+            onExit={handleCraftExit}
+          />
+        );
+      }
+
+      case 'puzzle_prompt': {
+        const pp = pendingResult as PuzzlePrompt;
+        return (
+          <PuzzleWidget
+            puzzleType={pp.puzzleType}
+            description={pp.description}
+            prompt={pp.prompt}
+            question={pp.question}
+            hint={pp.hint}
+            elements={pp.elements}
+            digits={pp.digits}
+            attemptsLeft={pp.attemptsLeft}
+            onAttempt={handlePuzzleAttempt}
+            onExit={handlePuzzleExit}
+          />
+        );
+      }
+
+      case 'use_item_prompt': {
+        const uip = pendingResult as UseItemPrompt;
+        return (
+          <UseItemWidget
+            description={uip.description}
+            targets={uip.targets}
+            playerInventory={uip.playerInventory}
+            exitText={uip.exitText}
+            onUse={handleUseItemOn}
+            onExit={handleUseItemExit}
+          />
+        );
+      }
+
+      case 'timed_choice_prompt': {
+        const tcp = pendingResult as TimedChoicePrompt;
+        return (
+          <TimedChoiceWidget
+            options={tcp.options}
+            duration={tcp.duration}
+            defaultIndex={tcp.defaultIndex}
+            timeoutText={tcp.timeoutText}
+            onSelect={handleTimedChoiceSelect}
+          />
+        );
+      }
+
+      case 'level_up_prompt': {
+        const lup = pendingResult as LevelUpPrompt;
+        return (
+          <LevelUpWidget
+            characterName={lup.characterName}
+            newLevel={lup.newLevel}
+            skillPoints={lup.skillPoints}
+            availableSkills={lup.availableSkills}
+            description={lup.description}
+            onLearnSkill={handleLevelUpSkill}
+            onDone={handleLevelUpDone}
+          />
+        );
+      }
+
+      default:
+        return null;
+    }
   };
 
   // Editor phase: render the editor

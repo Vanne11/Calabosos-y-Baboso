@@ -48,6 +48,7 @@ export type StepResult =
   | CheckResult
   | RandomResult
   | ShopPrompt
+  | ShopDiceResult
   | CombatPrompt
   | CombatTurnResult
   | CombatEndResult
@@ -152,10 +153,24 @@ export interface ShopPrompt {
   title: string;
   currency: string;
   currentMoney: number;
-  items: { id: string; name: string; price: number; description?: string; canAfford: boolean }[];
+  items: { id: string; name: string; price: number; description?: string; canAfford: boolean; haggled?: boolean }[];
   sellable: boolean;
   playerInventory: string[];
   sellRatio: number;
+  canHaggle: boolean;
+  canSteal: boolean;
+  canDeceive: boolean;
+}
+
+export interface ShopDiceResult {
+  type: 'shop_dice_result';
+  action: 'haggle' | 'steal' | 'deceive';
+  success: boolean;
+  roll: number;
+  modifier: number;
+  total: number;
+  difficulty: number;
+  text: string;
 }
 
 export interface CombatPrompt {
@@ -352,6 +367,9 @@ export type PlayerAction =
   | { type: 'continue' }
   | { type: 'shop_buy'; itemIndex: number }
   | { type: 'shop_sell'; itemId: string }
+  | { type: 'shop_haggle'; itemIndex: number }
+  | { type: 'shop_steal'; itemIndex: number }
+  | { type: 'shop_deceive'; itemId: string }
   | { type: 'shop_exit' }
   | { type: 'combat_action'; action: string }
   | { type: 'craft_combine'; items: string[] }

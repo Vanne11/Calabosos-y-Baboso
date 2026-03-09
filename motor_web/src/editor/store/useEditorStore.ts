@@ -243,11 +243,13 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   setEdges: (edges) => set({ edges }),
 
   onNodesChange: (changes) => {
+    // Solo marcar isDirty cuando termina el drag, no durante
+    const isDragging = changes.some((c) => c.type === 'position' && c.dragging);
     set((s) => {
       const newNodes = applyNodeChanges(changes, s.nodes) as SceneFlowNode[];
-      return { nodes: newNodes, isDirty: true };
+      return { nodes: newNodes, isDirty: isDragging ? s.isDirty : true };
     });
-    // Recalcular handles al mover nodos
+    // Recalcular handles al soltar nodos
     const hasPositionChange = changes.some((c) => c.type === 'position' && !c.dragging);
     if (hasPositionChange) {
       get().recalculateEdges();

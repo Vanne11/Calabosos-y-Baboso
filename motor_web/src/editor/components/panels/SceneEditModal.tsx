@@ -36,6 +36,7 @@ const SceneEditModal: React.FC<SceneEditModalProps> = ({ nodeId, onClose, onNavi
   // Escenas que apuntan a esta
   const incomingScenes = useMemo(() => {
     return nodes.filter((n) => {
+      if (n.type === 'specialNode') return false;
       const dests = getNodeDestinations(n.data.scene.sequence);
       return dests.includes(sceneId);
     });
@@ -50,8 +51,10 @@ const SceneEditModal: React.FC<SceneEditModalProps> = ({ nodeId, onClose, onNavi
   const filteredScenes = useMemo(() => {
     const lf = sidebarFilter.toLowerCase();
     return nodes.filter((n) =>
-      !lf || n.data.sceneId.toLowerCase().includes(lf) ||
-      (n.data.scene.scenario?.name || '').toLowerCase().includes(lf)
+      n.type !== 'specialNode' && (
+        !lf || n.data.sceneId.toLowerCase().includes(lf) ||
+        (n.data.scene.scenario?.name || '').toLowerCase().includes(lf)
+      )
     );
   }, [nodes, sidebarFilter]);
 

@@ -2,12 +2,12 @@
 // Flujo de login interactivo - idéntico al original
 
 import { useState } from 'react';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, saveSession, getStoredCredentials } from '../store/useAppStore';
 import { delay } from '../utils/delay';
 
 type LoginStep = 'username' | 'password' | 'authenticating' | 'done';
 
-const welcomeMessages = [
+export const welcomeMessages = [
   { type: 'system' as const, content: '[cyan]┌──────────────────────────────────────────────────────┐[/cyan]' },
   { type: 'system' as const, content: '[cyan]│[/cyan]                                                      [cyan]│[/cyan]' },
   { type: 'system' as const, content: '[cyan]│[/cyan]                [green][bold]BabosOS v0.1.0[/bold][/green]                        [cyan]│[/cyan]' },
@@ -67,6 +67,35 @@ export function useLoginFlow() {
       ]);
       setLoginStep('authenticating');
 
+      // Verificar contra credenciales guardadas
+      const stored = getStoredCredentials();
+      if (stored) {
+        if (tempUser !== stored.username) {
+          await delay(1000, speed);
+          addEntry({ type: 'system', content: '[yellow]Autenticando...[/yellow]' });
+          await delay(1500, speed);
+          addEntry({ type: 'system', content: '[red]Error: usuario no reconocido. ¿Quién eres tú y qué hiciste con [bold]' + stored.username + '[/bold]?[/red]' });
+          await delay(1000, speed);
+          addEntry({ type: 'system', content: '[dim]Inténtalo de nuevo, impostor.[/dim]' });
+          addEntry({ type: 'system', content: '[green]Login:[/green]' });
+          setLoginStep('username');
+          setTempUser('');
+          return;
+        }
+        if (input !== stored.password) {
+          await delay(1000, speed);
+          addEntry({ type: 'system', content: '[yellow]Autenticando...[/yellow]' });
+          await delay(1500, speed);
+          addEntry({ type: 'system', content: '[red]Error: contraseña incorrecta. ¿Te comió la memoria una babosa?[/red]' });
+          await delay(1000, speed);
+          addEntry({ type: 'system', content: '[dim]Venga, que tú puedes. O no.[/dim]' });
+          addEntry({ type: 'system', content: '[green]Login:[/green]' });
+          setLoginStep('username');
+          setTempUser('');
+          return;
+        }
+      }
+
       const sarcasticComment =
         input.length < 4
           ? '[italic]¿En serio? Bueno creo que no te esforzaste mucho para pensar...[/italic]'
@@ -92,6 +121,7 @@ export function useLoginFlow() {
       }
 
       setUsername(tempUser);
+      saveSession(tempUser, input);
       setLoginStep('done');
       setPhase('shell');
       return;

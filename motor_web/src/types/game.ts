@@ -289,8 +289,19 @@ export interface ShopStep {
   items: ShopItem[];
   sellable?: boolean;
   sellRatio?: number; // 0-1, porcentaje del precio al vender
+  haggle?: ShopDiceAction;    // regatear precios
+  steal?: ShopDiceAction;     // intentar robar
+  deceive?: ShopDiceAction;   // engañar al vender (precio inflado)
   goto?: string;
   condition?: StepCondition;
+}
+
+export interface ShopDiceAction {
+  stat: string;        // stat para modificador del dado
+  difficulty: number;  // dificultad (DC)
+  successText?: string;
+  failText?: string;
+  failEffects?: Effects; // penalización al fallar (ej: te echan de la tienda)
 }
 
 export interface ShopItem {

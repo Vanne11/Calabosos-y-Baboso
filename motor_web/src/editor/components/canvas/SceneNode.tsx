@@ -1,7 +1,7 @@
 // editor/components/canvas/SceneNode.tsx
 // Nodo custom "ventana de terminal" para escenas con info enriquecida
 
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import styled from 'styled-components';
@@ -19,28 +19,25 @@ const STEP_ICONS: Record<string, string> = {
 
 const SceneNode: React.FC<NodeProps<SceneFlowNode>> = ({ data, selected }) => {
   const { sceneId, scene, isStart } = data;
-  const issues = useEditorStore((s) => s.issues);
+  const errorCount = useEditorStore((s) => s.issues.filter((i) => i.sceneId === sceneId && i.severity === 'error').length);
+  const warnCount = useEditorStore((s) => s.issues.filter((i) => i.sceneId === sceneId && i.severity === 'warning').length);
 
-  const destinations = getNodeDestinations(scene.sequence);
+  const destinations = useMemo(() => getNodeDestinations(scene.sequence), [scene.sequence]);
   const scenarioName = scene.scenario?.name || 'Sin escenario';
 
   // Preview de primera línea de diálogo
-  let dialogPreview = '';
-  for (const step of scene.sequence) {
-    if (step.type === 'dialog' && step.lines.length > 0) {
-      dialogPreview = step.lines[0].replace(/\[.*?\]/g, '').slice(0, 40);
-      if (step.lines[0].length > 40) dialogPreview += '...';
-      break;
+  const dialogPreview = useMemo(() => {
+    for (const step of scene.sequence) {
+      if (step.type === 'dialog' && step.lines.length > 0) {
+        const raw = step.lines[0].replace(/\[.*?\]/g, '').slice(0, 40);
+        return step.lines[0].length > 40 ? raw + '...' : raw;
+      }
     }
-  }
+    return '';
+  }, [scene.sequence]);
 
   // Iconos de tipos de steps
-  const stepIcons = scene.sequence.map((s) => STEP_ICONS[s.type] || '?');
-
-  // Issues para esta escena
-  const sceneIssues = issues.filter((i) => i.sceneId === sceneId);
-  const errorCount = sceneIssues.filter((i) => i.severity === 'error').length;
-  const warnCount = sceneIssues.filter((i) => i.severity === 'warning').length;
+  const stepIcons = useMemo(() => scene.sequence.map((s) => STEP_ICONS[s.type] || '?'), [scene.sequence]);
 
   // Badge de imagen
   const hasImage = !!scene.scenario?.image;

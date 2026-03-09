@@ -56,8 +56,8 @@ export class AudioManager {
         next.addEventListener('error', () => reject(new Error(`No se pudo cargar: ${src}`)), { once: true });
         next.load();
       });
-    } catch (e) {
-      console.error('[AudioManager]', e);
+    } catch {
+      console.warn(`[AudioManager] Audio no disponible: ${src}`);
       return;
     }
 
@@ -104,49 +104,61 @@ export class AudioManager {
     }
   }
 
-  private async crossfade(
+  private crossfade(
     old: HTMLAudioElement | null,
     next: HTMLAudioElement
   ): Promise<void> {
-    this.fading = true;
-    const stepTime = FADE_DURATION / FADE_STEPS;
+    return new Promise((resolve) => {
+      this.fading = true;
+      const start = performance.now();
 
-    for (let i = 0; i <= FADE_STEPS; i++) {
-      const progress = i / FADE_STEPS;
-      if (old) {
-        old.volume = Math.max(0, this._volume * (1 - progress));
-      }
-      next.volume = this._volume * progress;
-      await sleep(stepTime);
-    }
+      const tick = () => {
+        const elapsed = performance.now() - start;
+        const progress = Math.min(1, elapsed / FADE_DURATION);
 
-    // Clean up old
-    if (old) {
-      old.pause();
-      old.src = '';
-    }
+        if (old) {
+          old.volume = Math.max(0, this._volume * (1 - progress));
+        }
+        next.volume = this._volume * progress;
 
-    this.fading = false;
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          if (old) {
+            old.pause();
+            old.src = '';
+          }
+          this.fading = false;
+          resolve();
+        }
+      };
+      requestAnimationFrame(tick);
+    });
   }
 
-  private async fadeOut(audio: HTMLAudioElement): Promise<void> {
-    this.fading = true;
-    const stepTime = FADE_DURATION / FADE_STEPS;
+  private fadeOut(audio: HTMLAudioElement): Promise<void> {
+    return new Promise((resolve) => {
+      this.fading = true;
+      const start = performance.now();
 
-    for (let i = 0; i <= FADE_STEPS; i++) {
-      const progress = i / FADE_STEPS;
-      audio.volume = Math.max(0, this._volume * (1 - progress));
-      await sleep(stepTime);
-    }
+      const tick = () => {
+        const elapsed = performance.now() - start;
+        const progress = Math.min(1, elapsed / FADE_DURATION);
 
-    audio.pause();
-    audio.src = '';
-    this.fading = false;
+        audio.volume = Math.max(0, this._volume * (1 - progress));
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          audio.pause();
+          audio.src = '';
+          this.fading = false;
+          resolve();
+        }
+      };
+      requestAnimationFrame(tick);
+    });
   }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Singleton

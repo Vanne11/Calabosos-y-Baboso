@@ -2,7 +2,7 @@
 // Procesa comandos de la terminal (help, run, list, debug, etc.)
 
 import { useCallback } from 'react';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, clearSession } from '../store/useAppStore';
 import { useDebugStore } from '../store/useDebugStore';
 import { useEditorStore } from '../editor/store/useEditorStore';
 import { parseCommand } from '../engine/CommandParser';
@@ -128,6 +128,7 @@ export function useTerminalCommands() {
 
         case 'quit':
         case 'exit':
+          clearSession();
           resetGame();
           setCurrentImage(null);
           addEntry({

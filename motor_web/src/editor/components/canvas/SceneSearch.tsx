@@ -32,6 +32,7 @@ const SceneSearch: React.FC<SceneSearchProps> = ({ visible, onClose }) => {
     ? nodes.filter((n) => {
         const { sceneId, scene } = n.data;
         if (sceneId.toLowerCase().includes(lq)) return true;
+        if (!scene?.sequence) return false;
         if (scene.scenario?.name?.toLowerCase().includes(lq)) return true;
         if (scene.scenario?.description?.toLowerCase().includes(lq)) return true;
         // Buscar en contenido de diálogos

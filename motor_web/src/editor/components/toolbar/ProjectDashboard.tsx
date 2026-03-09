@@ -18,10 +18,13 @@ const ProjectDashboard: React.FC<ProjectDashboardProps> = ({ onClose }) => {
 
   if (!project) return null;
 
+  // Filtrar nodos especiales (_quit, _game_over, etc.) que no tienen scene.sequence
+  const sceneNodes = nodes.filter((n) => n.type !== 'specialNode');
+
   // Estadísticas básicas
-  const totalScenes = nodes.length;
-  const totalSteps = nodes.reduce((sum, n) => sum + n.data.scene.sequence.length, 0);
-  const totalDialogLines = nodes.reduce((sum, n) => {
+  const totalScenes = sceneNodes.length;
+  const totalSteps = sceneNodes.reduce((sum, n) => sum + n.data.scene.sequence.length, 0);
+  const totalDialogLines = sceneNodes.reduce((sum, n) => {
     return sum + n.data.scene.sequence.reduce((s2, step) => {
       return s2 + (step.type === 'dialog' ? step.lines.length : 0);
     }, 0);
@@ -29,17 +32,17 @@ const ProjectDashboard: React.FC<ProjectDashboardProps> = ({ onClose }) => {
 
   // Escenas huérfanas (sin entrada desde otra escena)
   const allDestinations = new Set<string>();
-  for (const node of nodes) {
+  for (const node of sceneNodes) {
     for (const dest of getNodeDestinations(node.data.scene.sequence)) {
       allDestinations.add(dest);
     }
   }
-  const orphanScenes = nodes.filter(
+  const orphanScenes = sceneNodes.filter(
     (n) => !n.data.isStart && !allDestinations.has(n.data.sceneId)
   );
 
   // Escenas sin salida
-  const deadEndScenes = nodes.filter((n) => {
+  const deadEndScenes = sceneNodes.filter((n) => {
     const dests = getNodeDestinations(n.data.scene.sequence);
     return dests.length === 0 && n.data.scene.sequence.length > 0;
   });
@@ -53,9 +56,9 @@ const ProjectDashboard: React.FC<ProjectDashboardProps> = ({ onClose }) => {
   // Profundidad del grafo (BFS)
   const visited = new Set<string>();
   let depth = 0;
-  const startNode = nodes.find((n) => n.data.isStart);
+  const startNode = sceneNodes.find((n) => n.data.isStart);
   if (startNode) {
-    const sceneMap = new Map(nodes.map((n) => [n.data.sceneId, n]));
+    const sceneMap = new Map(sceneNodes.map((n) => [n.data.sceneId, n]));
     let frontier = [startNode.data.sceneId];
     visited.add(startNode.data.sceneId);
     while (frontier.length > 0) {

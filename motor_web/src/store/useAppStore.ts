@@ -87,13 +87,45 @@ interface AppStore {
   resetGame: () => void;
 }
 
+const SESSION_KEY = 'babosos_session';
+const SESSION_TTL = 24 * 60 * 60 * 1000; // 24h
+
+function getStoredSession(): { username: string; password: string } | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (Date.now() - data.timestamp > SESSION_TTL) {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    return { username: data.username, password: data.password };
+  } catch {
+    return null;
+  }
+}
+
+export function getStoredCredentials(): { username: string; password: string } | null {
+  return getStoredSession();
+}
+
+export function saveSession(username: string, password: string) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ username, password, timestamp: Date.now() }));
+}
+
+export function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+const restoredSession = getStoredSession();
+
 export const useAppStore = create<AppStore>((set) => ({
-  // Phase
-  phase: 'boot',
+  // Phase — skip boot/login if session is valid
+  phase: restoredSession ? 'shell' : 'boot',
   setPhase: (phase) => set({ phase }),
 
   // Login
-  username: '',
+  username: restoredSession?.username ?? '',
   setUsername: (username) => set({ username }),
 
   // Terminal

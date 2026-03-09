@@ -469,6 +469,10 @@ export class GameEngine {
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     const currency = step.currency;
     const sellRatio = step.sellRatio ?? 0.5;
+    // Track haggled prices per item index (modified prices from haggling)
+    const hagbledPrices: Record<number, number> = {};
+    // Track which items have already been haggled (only 1 attempt per item)
+    const haggledItems = new Set<number>();
 
     // Shop loop
     while (true) {
@@ -480,35 +484,43 @@ export class GameEngine {
         title: step.title,
         currency,
         currentMoney,
-        items: step.items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          description: item.description,
-          canAfford: currentMoney >= item.price,
-        })),
+        items: step.items.map((item, i) => {
+          const price = hagbledPrices[i] ?? item.price;
+          return {
+            id: item.id,
+            name: item.name,
+            price,
+            description: item.description,
+            canAfford: currentMoney >= price,
+            haggled: haggledItems.has(i),
+          };
+        }),
         sellable: step.sellable ?? false,
         playerInventory: [...this._state.inventory],
         sellRatio,
+        canHaggle: !!step.haggle,
+        canSteal: !!step.steal,
+        canDeceive: !!step.deceive,
       };
 
       const action = await this.waitForAction();
 
       if (action.type === 'shop_buy') {
         const item = step.items[action.itemIndex];
-        if (item && currentMoney >= item.price) {
+        const price = hagbledPrices[action.itemIndex] ?? item?.price ?? 0;
+        if (item && currentMoney >= price) {
           this._state = applyEffects(this._state, {
-            stats: { [currency]: -item.price },
+            stats: { [currency]: -price },
             inventory: [item.id],
           });
           if (item.effects) {
             this._state = applyEffects(this._state, item.effects);
           }
           this.syncSpecialStats();
-          yield { type: 'effects', stats: { [currency]: -item.price }, inventory: [item.id] };
+          yield { type: 'effects', stats: { [currency]: -price }, inventory: [item.id] };
         }
+
       } else if (action.type === 'shop_sell' && step.sellable) {
-        // Find item price from shop items or use a default
         const shopItem = step.items.find((si) => si.id === action.itemId);
         const sellPrice = shopItem ? Math.floor(shopItem.price * sellRatio) : 1;
         if (this._state.inventory.includes(action.itemId)) {
@@ -519,6 +531,140 @@ export class GameEngine {
           this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: sellPrice }, removeInventory: [action.itemId] };
         }
+
+      } else if (action.type === 'shop_haggle' && step.haggle) {
+        const item = step.items[action.itemIndex];
+        if (!item || haggledItems.has(action.itemIndex)) continue;
+        haggledItems.add(action.itemIndex);
+
+        const statVal = typeof this._state.stats[step.haggle.stat] === 'number'
+          ? (this._state.stats[step.haggle.stat] as number) : 0;
+        const result = resolveRoll(20, statVal, step.haggle.difficulty);
+        const success = result.outcome === 'success' || result.outcome === 'critical_success';
+
+        if (success) {
+          // Éxito: descuento 20-50% según lo bien que fue la tirada
+          const discount = result.outcome === 'critical_success' ? 0.5 : 0.2;
+          hagbledPrices[action.itemIndex] = Math.max(1, Math.floor(item.price * (1 - discount)));
+        } else {
+          // Fallo: el tendero sube el precio 20-50%
+          const markup = result.outcome === 'critical_failure' ? 0.5 : 0.2;
+          hagbledPrices[action.itemIndex] = Math.floor(item.price * (1 + markup));
+          if (step.haggle.failEffects) {
+            this._state = applyEffects(this._state, step.haggle.failEffects);
+            this.syncSpecialStats();
+          }
+        }
+
+        const text = success
+          ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
+          : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`);
+
+        yield {
+          type: 'shop_dice_result',
+          action: 'haggle',
+          success,
+          roll: result.roll,
+          modifier: result.modifier,
+          total: result.total,
+          difficulty: step.haggle.difficulty,
+          text,
+        };
+
+      } else if (action.type === 'shop_steal' && step.steal) {
+        const item = step.items[action.itemIndex];
+        if (!item) continue;
+
+        const statVal = typeof this._state.stats[step.steal.stat] === 'number'
+          ? (this._state.stats[step.steal.stat] as number) : 0;
+        const result = resolveRoll(20, statVal, step.steal.difficulty);
+        const success = result.outcome === 'success' || result.outcome === 'critical_success';
+
+        if (success) {
+          // Éxito: consigues el item gratis
+          this._state = applyEffects(this._state, { inventory: [item.id] });
+          if (item.effects) {
+            this._state = applyEffects(this._state, item.effects);
+          }
+          this.syncSpecialStats();
+        } else {
+          // Fallo: penalización
+          if (step.steal.failEffects) {
+            this._state = applyEffects(this._state, step.steal.failEffects);
+            this.syncSpecialStats();
+          }
+        }
+
+        const text = success
+          ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
+          : (step.steal.failText || '¡Te han pillado intentando robar!');
+
+        yield {
+          type: 'shop_dice_result',
+          action: 'steal',
+          success,
+          roll: result.roll,
+          modifier: result.modifier,
+          total: result.total,
+          difficulty: step.steal.difficulty,
+          text,
+        };
+
+        // Si fallo con failEffects que incluya goto, salir de la tienda
+        if (!success && step.steal.failEffects) {
+          // El diseñador puede usar failEffects + goto en el step para expulsar
+        }
+
+      } else if (action.type === 'shop_deceive' && step.deceive && step.sellable) {
+        const itemId = action.itemId;
+        if (!this._state.inventory.includes(itemId)) continue;
+
+        const shopItem = step.items.find((si) => si.id === itemId);
+        const basePrice = shopItem ? shopItem.price : 5;
+
+        const statVal = typeof this._state.stats[step.deceive.stat] === 'number'
+          ? (this._state.stats[step.deceive.stat] as number) : 0;
+        const result = resolveRoll(20, statVal, step.deceive.difficulty);
+        const success = result.outcome === 'success' || result.outcome === 'critical_success';
+
+        if (success) {
+          // Éxito: vendes al precio completo o más
+          const inflated = result.outcome === 'critical_success'
+            ? Math.floor(basePrice * 1.5)
+            : basePrice;
+          this._state = applyEffects(this._state, {
+            stats: { [currency]: inflated },
+            removeInventory: [itemId],
+          });
+          this.syncSpecialStats();
+          yield {
+            type: 'shop_dice_result',
+            action: 'deceive',
+            success: true,
+            roll: result.roll,
+            modifier: result.modifier,
+            total: result.total,
+            difficulty: step.deceive.difficulty,
+            text: step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`,
+          };
+        } else {
+          // Fallo: no vendes nada y posible penalización
+          if (step.deceive.failEffects) {
+            this._state = applyEffects(this._state, step.deceive.failEffects);
+            this.syncSpecialStats();
+          }
+          yield {
+            type: 'shop_dice_result',
+            action: 'deceive',
+            success: false,
+            roll: result.roll,
+            modifier: result.modifier,
+            total: result.total,
+            difficulty: step.deceive.difficulty,
+            text: step.deceive.failText || '¡El tendero ha descubierto tu engaño!',
+          };
+        }
+
       } else if (action.type === 'shop_exit') {
         break;
       }
