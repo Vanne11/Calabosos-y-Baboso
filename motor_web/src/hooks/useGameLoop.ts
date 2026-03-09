@@ -6,6 +6,7 @@ import { useAppStore } from '../store/useAppStore';
 import { useDebugStore } from '../store/useDebugStore';
 import { delay } from '../utils/delay';
 import { audioManager } from '../engine/AudioManager';
+import { saveGame } from '../utils/storage';
 import type { PlayerAction, StepResult } from '../types/engine';
 
 export function useGameLoop() {
@@ -22,6 +23,7 @@ export function useGameLoop() {
   const debugActive = useDebugStore((s) => s.active);
 
   const iteratorRef = useRef<AsyncGenerator<StepResult> | null>(null);
+  const checkpointSlotRef = useRef(0);
 
   const startScene = useCallback(
     async (sceneId: string) => {
@@ -29,6 +31,29 @@ export function useGameLoop() {
 
       setCurrentScene(sceneId);
       if (debugActive) debugLog(`Entrando a escena: ${sceneId}`, 'ROUTE');
+
+      // Checkpoint autosave
+      const state = useAppStore.getState();
+      const manifest = state.gameManifest;
+      const saveConfig = manifest?.saveSystem;
+      if (saveConfig?.mode === 'checkpoint' && saveConfig.checkpointScenes?.includes(sceneId)) {
+        const totalSlots = Math.min(Math.max(saveConfig.slots ?? 3, 1), 10);
+        checkpointSlotRef.current = (checkpointSlotRef.current % totalSlots) + 1;
+        const gameName = state.gameBasePath.split('/').pop() ?? 'unknown';
+        const sceneName = engine.getScenarioName(sceneId) ?? sceneId;
+        await saveGame(gameName, checkpointSlotRef.current, {
+          playerState: { ...engine.state },
+          currentScene: sceneId,
+          gameName,
+          timestamp: Date.now(),
+          sceneName,
+          isCheckpoint: true,
+        });
+        useAppStore.getState().addEntry({
+          type: 'system',
+          content: '[dim]💾 Progreso guardado automáticamente.[/dim]',
+        });
+      }
 
       const iterator = engine.enterScene(sceneId);
       iteratorRef.current = iterator;

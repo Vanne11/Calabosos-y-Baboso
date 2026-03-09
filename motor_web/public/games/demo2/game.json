@@ -217,5 +217,11 @@
       "duration": 2,
       "tags": ["status"]
     }
+  },
+
+  "saveSystem": {
+    "mode": "free",
+    "slots": 3,
+    "allowOverwrite": true
   }
 }

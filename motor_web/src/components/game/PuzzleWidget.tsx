@@ -32,28 +32,6 @@ const Attempts = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const InputRow = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-`;
-
-const TextInput = styled.input`
-  background: ${(props) => props.theme.button.background};
-  color: ${(props) => props.theme.terminal.text};
-  border: 1px solid ${(props) => props.theme.terminal.accentDim};
-  border-radius: 3px;
-  padding: 8px 12px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  flex: 1;
-
-  &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.terminal.accent};
-  }
-`;
-
 const ActionButton = styled.button<{ $disabled?: boolean }>`
   background-color: ${(props) => props.theme.button.background};
   color: ${(props) => props.theme.terminal.accent};
@@ -129,24 +107,14 @@ interface PuzzleWidgetProps {
 const PuzzleWidget: React.FC<PuzzleWidgetProps> = ({
   puzzleType,
   description,
-  prompt: puzzlePrompt,
   question,
   hint,
   elements,
-  digits,
   attemptsLeft,
   onAttempt,
   onExit,
 }) => {
-  const [textAnswer, setTextAnswer] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<string[]>([]);
-
-  const handleTextSubmit = () => {
-    if (textAnswer.trim()) {
-      onAttempt(textAnswer.trim());
-      setTextAnswer('');
-    }
-  };
 
   const handleElementToggle = (id: string) => {
     setSelectedOrder((prev) =>
@@ -195,25 +163,8 @@ const PuzzleWidget: React.FC<PuzzleWidgetProps> = ({
       );
     }
 
-    // code, riddle, lock — text input
-    return (
-      <InputRow>
-        <TextInput
-          value={textAnswer}
-          onChange={(e) => setTextAnswer(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
-          placeholder={puzzlePrompt || (puzzleType === 'lock' ? `Código de ${digits || 4} dígitos` : 'Tu respuesta...')}
-          maxLength={puzzleType === 'lock' ? (digits || 4) : undefined}
-        />
-        <ActionButton
-          $disabled={!textAnswer.trim()}
-          disabled={!textAnswer.trim()}
-          onClick={handleTextSubmit}
-        >
-          Enviar
-        </ActionButton>
-      </InputRow>
-    );
+    // code, riddle, lock — input is handled by the terminal
+    return null;
   };
 
   const typeIcons: Record<string, string> = {

@@ -9,6 +9,8 @@ import { parseCommand } from '../engine/CommandParser';
 import { loadGame, listGames } from '../engine/GameLoader';
 import { GameEngine } from '../engine/GameEngine';
 import { delay } from '../utils/delay';
+import { saveGame, loadSave, listSlots } from '../utils/storage';
+import type { SaveData } from '../utils/storage';
 
 export function useTerminalCommands() {
   const addEntry = useAppStore((s) => s.addEntry);
@@ -39,6 +41,8 @@ export function useTerminalCommands() {
       content: `[green]Comandos disponibles durante la partida:[/green]
 
 [yellow][bold]/help[/bold][/yellow] - Muestra esta ayuda. Sí, la que estás leyendo ahora mismo.
+[yellow][bold]/save[/bold][/yellow] - Guarda tu partida en un slot. Por si la pifias (que lo harás).
+[yellow][bold]/load[/bold][/yellow] - Carga una partida guardada. Para revivir tus fracasos.
 [yellow][bold]/clear[/bold][/yellow] - Limpia la pantalla sin perder tu widget actual. Perfecto para fingir que no viste nada.
 [yellow][bold]/history[/bold][/yellow] - Revive todos los momentos de gloria (y vergüenza) de tu partida.
 [yellow][bold]/about[/bold][/yellow] - Información sobre el juego que estás jugando. Por si ya se te olvidó.
@@ -86,6 +90,89 @@ ${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
     addEntry({ type: 'system', content: '[green][bold]═══ Fin del historial ═══[/bold][/green]' });
   };
 
+  const gameSave = async () => {
+    const state = useAppStore.getState();
+    const manifest = state.gameManifest;
+    if (!manifest) return;
+
+    const saveConfig = manifest.saveSystem;
+    const mode = saveConfig?.mode ?? 'free';
+
+    if (mode === 'checkpoint') {
+      addEntry({
+        type: 'system',
+        content: '[yellow]Este juego usa guardado automático por checkpoints. No puedes guardar manualmente.[/yellow]',
+      });
+      return;
+    }
+
+    const totalSlots = Math.min(Math.max(saveConfig?.slots ?? 3, 1), 10);
+    const gameName = state.gameBasePath.split('/').pop() ?? 'unknown';
+    const slots = await listSlots(gameName, totalSlots);
+
+    const lines = slots.map((slot, i) => {
+      if (slot) {
+        const date = new Date(slot.timestamp);
+        const dateStr = date.toLocaleDateString('es', { day: '2-digit', month: '2-digit' });
+        const timeStr = date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+        const label = slot.sceneName ?? slot.currentScene;
+        return `  [yellow][bold][${i + 1}][/bold][/yellow] ${label} [dim]- ${dateStr} ${timeStr}[/dim]`;
+      }
+      return `  [yellow][bold][${i + 1}][/bold][/yellow] [dim]--- vacío ---[/dim]`;
+    });
+
+    addEntry({
+      type: 'system',
+      content: `[green][bold]═══ GUARDAR PARTIDA ═══[/bold][/green]
+${lines.join('\n')}
+
+[cyan]Selecciona slot [1-${totalSlots}] (0 para cancelar):[/cyan]`,
+    });
+
+    useAppStore.getState().setPendingSlotAction({ type: 'save', slots: totalSlots });
+  };
+
+  const gameLoad = async () => {
+    const state = useAppStore.getState();
+    const manifest = state.gameManifest;
+    if (!manifest) return;
+
+    const totalSlots = Math.min(Math.max(manifest.saveSystem?.slots ?? 3, 1), 10);
+    const gameName = state.gameBasePath.split('/').pop() ?? 'unknown';
+    const slots = await listSlots(gameName, totalSlots);
+
+    const hasAnySave = slots.some((s) => s !== null);
+    if (!hasAnySave) {
+      addEntry({
+        type: 'system',
+        content: '[yellow]No hay partidas guardadas. Primero tienes que guardar algo, genio.[/yellow]',
+      });
+      return;
+    }
+
+    const lines = slots.map((slot, i) => {
+      if (slot) {
+        const date = new Date(slot.timestamp);
+        const dateStr = date.toLocaleDateString('es', { day: '2-digit', month: '2-digit' });
+        const timeStr = date.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+        const label = slot.sceneName ?? slot.currentScene;
+        const cp = slot.isCheckpoint ? ' [dim](checkpoint)[/dim]' : '';
+        return `  [yellow][bold][${i + 1}][/bold][/yellow] ${label}${cp} [dim]- ${dateStr} ${timeStr}[/dim]`;
+      }
+      return `  [dim]  [${i + 1}]  --- vacío ---[/dim]`;
+    });
+
+    addEntry({
+      type: 'system',
+      content: `[green][bold]═══ CARGAR PARTIDA ═══[/bold][/green]
+${lines.join('\n')}
+
+[cyan]Selecciona slot (0 para cancelar):[/cyan]`,
+    });
+
+    useAppStore.getState().setPendingSlotAction({ type: 'load', slots: totalSlots });
+  };
+
   const gameClear = () => {
     if (debugActive) {
       addEntry({
@@ -113,7 +200,7 @@ ${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
     ]);
   };
 
-  const processGameCommand = (name: string, args: string[], input: string): boolean => {
+  const processGameCommand = async (name: string, args: string[], input: string): Promise<boolean> => {
     switch (name) {
       case 'help':
         gameHelp();
@@ -126,6 +213,12 @@ ${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
         return true;
       case 'clear':
         gameClear();
+        return true;
+      case 'save':
+        await gameSave();
+        return true;
+      case 'load':
+        await gameLoad();
         return true;
       case 'version':
         addEntry({
@@ -171,7 +264,7 @@ ${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
 
       // In-game: use game-specific commands
       if (phase === 'game') {
-        if (processGameCommand(name, args, input)) return;
+        if (await processGameCommand(name, args, input)) return;
         addEntry({
           type: 'system',
           content: `[red]"${input}"[/red] no es un comando válido durante la partida.
@@ -527,5 +620,87 @@ ${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
     setPhase('editor');
   };
 
-  return { processCommand };
+  const handleSlotInput = useCallback(
+    async (input: string, startScene: (sceneId: string) => Promise<void>) => {
+      const state = useAppStore.getState();
+      const pending = state.pendingSlotAction;
+      if (!pending) return;
+
+      const num = parseInt(input);
+
+      // Cancel
+      if (num === 0) {
+        state.setPendingSlotAction(null);
+        addEntry({ type: 'system', content: '[dim]Cancelado.[/dim]' });
+        return;
+      }
+
+      if (isNaN(num) || num < 1 || num > pending.slots) {
+        addEntry({ type: 'warning', content: `[yellow]Selecciona un número entre 0 y ${pending.slots}.[/yellow]` });
+        return;
+      }
+
+      const manifest = state.gameManifest;
+      const gameName = state.gameBasePath.split('/').pop() ?? 'unknown';
+
+      if (pending.type === 'save') {
+        const saveConfig = manifest?.saveSystem;
+        const existing = await loadSave(gameName, num);
+
+        if (existing && saveConfig?.allowOverwrite === false) {
+          addEntry({ type: 'warning', content: '[yellow]Este slot ya está ocupado y el juego no permite sobreescribir.[/yellow]' });
+          state.setPendingSlotAction(null);
+          return;
+        }
+
+        // Get current scene name from engine
+        const engine = state.engine;
+        const currentScene = state.currentScene;
+        const sceneName = engine?.getScenarioName?.(currentScene) ?? currentScene;
+
+        const data: SaveData = {
+          playerState: state.playerState!,
+          currentScene,
+          gameName,
+          timestamp: Date.now(),
+          sceneName,
+          isCheckpoint: false,
+        };
+
+        await saveGame(gameName, num, data);
+        state.setPendingSlotAction(null);
+        addEntry({
+          type: 'success',
+          content: `[green]Partida guardada en slot ${num}.[/green] [dim](${sceneName})[/dim]`,
+        });
+      } else {
+        // Load
+        const save = await loadSave(gameName, num);
+        if (!save) {
+          addEntry({ type: 'warning', content: '[yellow]Ese slot está vacío.[/yellow]' });
+          return;
+        }
+
+        state.setPendingSlotAction(null);
+
+        // Restore state
+        const engine = state.engine;
+        if (engine) {
+          engine.restoreState(save.playerState);
+        }
+        state.setPlayerState(save.playerState);
+        clearHistory();
+        addEntry({
+          type: 'success',
+          content: `[green]Partida cargada desde slot ${num}.[/green] Volviendo a [cyan]"${save.sceneName ?? save.currentScene}"[/cyan]...`,
+        });
+
+        // Navigate to saved scene
+        await startScene(save.currentScene);
+      }
+    },
+    []
+  );
+
+  return { processCommand, handleSlotInput };
 }

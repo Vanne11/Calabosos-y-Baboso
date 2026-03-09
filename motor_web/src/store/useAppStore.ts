@@ -83,6 +83,10 @@ interface AppStore {
   returnToEditor: boolean;
   setReturnToEditor: (val: boolean) => void;
 
+  // Pending slot action (for /save and /load menus)
+  pendingSlotAction: { type: 'save' | 'load'; slots: number } | null;
+  setPendingSlotAction: (action: { type: 'save' | 'load'; slots: number } | null) => void;
+
   // Reset everything for quit/restart
   resetGame: () => void;
 }
@@ -206,6 +210,10 @@ export const useAppStore = create<AppStore>((set) => ({
   returnToEditor: false,
   setReturnToEditor: (returnToEditor) => set({ returnToEditor }),
 
+  // Pending slot action
+  pendingSlotAction: null,
+  setPendingSlotAction: (pendingSlotAction) => set({ pendingSlotAction }),
+
   // Reset
   resetGame: () =>
     set((s) => ({
@@ -215,6 +223,7 @@ export const useAppStore = create<AppStore>((set) => ({
       gameBasePath: '',
       currentScene: '',
       pendingResult: null,
+      pendingSlotAction: null,
       currentImage: null,
       fadeBeforeIndex: 0,
       seenCharacters: new Set<string>(),

@@ -1,5 +1,5 @@
 // utils/storage.ts
-// Persistencia con localforage
+// Persistencia con localforage — sistema de guardado por slots
 
 import localforage from 'localforage';
 import type { PlayerState } from '../types/engine';
@@ -14,20 +14,42 @@ export interface SaveData {
   currentScene: string;
   gameName: string;
   timestamp: number;
+  /** Nombre legible de la escena (del scenario.name) */
+  sceneName?: string;
+  /** Si fue guardado automático por checkpoint */
+  isCheckpoint?: boolean;
 }
 
-export async function saveGame(slot: string, data: SaveData): Promise<void> {
-  await store.setItem(slot, data);
+/** Genera la clave de un slot: "{gameName}:slot:{n}" */
+function slotKey(gameName: string, slotIndex: number): string {
+  return `${gameName}:slot:${slotIndex}`;
 }
 
-export async function loadSave(slot: string): Promise<SaveData | null> {
-  return store.getItem<SaveData>(slot);
+/** Guarda partida en un slot específico */
+export async function saveGame(gameName: string, slotIndex: number, data: SaveData): Promise<void> {
+  await store.setItem(slotKey(gameName, slotIndex), data);
 }
 
-export async function deleteSave(slot: string): Promise<void> {
-  await store.removeItem(slot);
+/** Carga partida de un slot específico */
+export async function loadSave(gameName: string, slotIndex: number): Promise<SaveData | null> {
+  return store.getItem<SaveData>(slotKey(gameName, slotIndex));
 }
 
-export async function listSaves(): Promise<string[]> {
+/** Elimina un slot */
+export async function deleteSave(gameName: string, slotIndex: number): Promise<void> {
+  await store.removeItem(slotKey(gameName, slotIndex));
+}
+
+/** Lista todos los slots de un juego (devuelve array de SaveData | null por cada slot) */
+export async function listSlots(gameName: string, totalSlots: number): Promise<(SaveData | null)[]> {
+  const results: (SaveData | null)[] = [];
+  for (let i = 1; i <= totalSlots; i++) {
+    results.push(await store.getItem<SaveData>(slotKey(gameName, i)));
+  }
+  return results;
+}
+
+/** Lista todas las claves guardadas (para migración/debug) */
+export async function listAllKeys(): Promise<string[]> {
   return store.keys();
 }

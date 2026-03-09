@@ -33,6 +33,18 @@
           ]
         },
         {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[dim]Ah, antes de que te lances a morir heroicamente...[/dim]",
+            "Puedes usar [yellow][bold]/help[/bold][/yellow] en cualquier momento para ver los comandos disponibles.",
+            "[yellow][bold]/save[/bold][/yellow] y [yellow][bold]/load[/bold][/yellow] para guardar y cargar tu patético progreso.",
+            "[yellow][bold]/history[/bold][/yellow] por si olvidas lo que ha pasado (cosa probable).",
+            "[yellow][bold]/clear[/bold][/yellow] para limpiar la pantalla y [yellow][bold]/about[/bold][/yellow] para info del juego.",
+            "[dim]De nada. No me lo agradezcas.[/dim]"
+          ]
+        },
+        {
           "type": "notify",
           "style": "achievement",
           "title": "Demo Iniciada",

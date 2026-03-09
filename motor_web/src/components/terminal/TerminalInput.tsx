@@ -70,7 +70,7 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(({
     if (autoFocus) {
       inputRef.current?.focus();
     }
-  }, [autoFocus]);
+  }, [autoFocus, type]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

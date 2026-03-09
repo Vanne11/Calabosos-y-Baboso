@@ -40,8 +40,10 @@ const App: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
 
+  const pendingSlotAction = useAppStore((s) => s.pendingSlotAction);
+
   const { isLogin, loginStep, handleLoginInput, initLogin } = useLoginFlow();
-  const { processCommand } = useTerminalCommands();
+  const { processCommand, handleSlotInput } = useTerminalCommands();
   const { startScene, sendAction } = useGameLoop();
   const { handleKeyDown, resetHistoryIndex } = useKeyboardInput();
 
@@ -84,6 +86,13 @@ const App: React.FC = () => {
       return;
     }
 
+    // In-game slot selection (save/load menu)
+    if (phase === 'game' && pendingSlotAction && trimmed) {
+      addEntry({ type: 'command', content: trimmed });
+      await handleSlotInput(trimmed, startScene);
+      return;
+    }
+
     // In-game slash commands: intercept /commands even when a widget is active
     if (phase === 'game' && trimmed.startsWith('/')) {
       addEntry({ type: 'command', content: trimmed });
@@ -97,6 +106,20 @@ const App: React.FC = () => {
       if (trimmed) {
         addEntry({ type: 'system', content: `[cyan]> ${trimmed}[/cyan]` });
         sendAction({ type: 'submit_input', value: trimmed });
+      }
+      return;
+    }
+
+    // Puzzle text answer (code, riddle, lock)
+    if (phase === 'game' && pendingResult?.type === 'puzzle_prompt') {
+      const pp = pendingResult as PuzzlePrompt;
+      if (pp.puzzleType === 'sequence') {
+        // sequence uses widget buttons, ignore terminal text
+        return;
+      }
+      if (trimmed) {
+        addEntry({ type: 'system', content: `[cyan]> ${trimmed}[/cyan]` });
+        sendAction({ type: 'puzzle_attempt', answer: trimmed });
       }
       return;
     }
@@ -264,7 +287,7 @@ const App: React.FC = () => {
     addEntry({ type: 'command', content: trimmed });
     addCommandToHistory(trimmed);
     await processCommand(trimmed);
-  }, [inputValue, isLogin, phase, pendingResult, handleLoginInput, processCommand, sendAction]);
+  }, [inputValue, isLogin, phase, pendingResult, pendingSlotAction, handleLoginInput, processCommand, handleSlotInput, sendAction, startScene]);
 
   // Key down handler
   const onKeyDown = useCallback(
@@ -381,7 +404,9 @@ const App: React.FC = () => {
 
   // Determine placeholder
   let placeholder = '';
-  if (pendingResult?.type === 'choice_prompt') {
+  if (pendingSlotAction) {
+    placeholder = `Selecciona slot [1-${pendingSlotAction.slots}] o [0] cancelar`;
+  } else if (pendingResult?.type === 'choice_prompt') {
     const opts = (pendingResult as ChoicePrompt).options;
     placeholder = `Escribe el número de la opción [1-${opts.length}]`;
   } else if (pendingResult?.type === 'timed_choice_prompt') {
@@ -400,6 +425,13 @@ const App: React.FC = () => {
       const sp = pendingResult as ShopPrompt;
       const total = sp.items.length + sp.playerInventory.length;
       placeholder = `Selecciona [1-${total}] o [0] salir`;
+    }
+  } else if (pendingResult?.type === 'puzzle_prompt') {
+    const pp = pendingResult as PuzzlePrompt;
+    if (pp.puzzleType === 'lock') {
+      placeholder = `Código de ${pp.digits || 4} dígitos`;
+    } else if (pp.puzzleType !== 'sequence') {
+      placeholder = pp.prompt || 'Tu respuesta...';
     }
   } else if (pendingResult?.type === 'dice_prompt' || pendingResult?.type === 'shop_dice_prompt') {
     placeholder = 'Pulsa [T] para lanzar el dado';

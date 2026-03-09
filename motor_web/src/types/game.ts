@@ -17,6 +17,19 @@ export interface GameManifest {
   skillTrees?: Record<string, SkillTreeDef>;
   /** Rasgos/estados que pueden aplicarse a personajes */
   traits?: Record<string, TraitDef>;
+  /** Configuración del sistema de guardado */
+  saveSystem?: SaveSystemConfig;
+}
+
+export interface SaveSystemConfig {
+  /** Modo de guardado: "free" (manual) o "checkpoint" (automático en escenas clave) */
+  mode?: 'free' | 'checkpoint';
+  /** Número de slots disponibles (1-10, default: 3) */
+  slots?: number;
+  /** Permitir sobreescribir slots ocupados (default: true) */
+  allowOverwrite?: boolean;
+  /** Escenas donde se autoguarda (solo en modo checkpoint) */
+  checkpointScenes?: string[];
 }
 
 export interface ItemDef {

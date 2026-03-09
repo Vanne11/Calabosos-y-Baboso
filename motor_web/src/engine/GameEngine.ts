@@ -85,6 +85,16 @@ export class GameEngine {
     return this.scenes.scenes[this._currentScene]?.scenario?.image;
   }
 
+  /** Get the display name of a scene's scenario */
+  getScenarioName(sceneId: string): string | undefined {
+    return this.scenes.scenes[sceneId]?.scenario?.name;
+  }
+
+  /** Restore player state from a save (for /load) */
+  restoreState(state: PlayerState): void {
+    this._state = { ...state };
+  }
+
   get currentSceneMusic(): string | undefined {
     return this.scenes.scenes[this._currentScene]?.scenario?.music;
   }
