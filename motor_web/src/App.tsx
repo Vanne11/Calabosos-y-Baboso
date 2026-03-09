@@ -1,7 +1,7 @@
 // App.tsx
 // Orquestador de fases: boot → login → shell → game
 
-import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import { useAppStore } from './store/useAppStore';
 import AppShell from './components/layout/AppShell';
 import BootSequence from './components/sequences/BootSequence';
@@ -48,6 +48,8 @@ const App: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
+  const dimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const setWidgetDimmed = useAppStore((s) => s.setWidgetDimmed);
 
   const pendingSlotAction = useAppStore((s) => s.pendingSlotAction);
 
@@ -83,6 +85,15 @@ const App: React.FC = () => {
     }
   }, [phase]);
 
+  // Clear widget dimming when widget changes or disappears
+  useEffect(() => {
+    if (dimTimerRef.current) {
+      clearTimeout(dimTimerRef.current);
+      dimTimerRef.current = null;
+    }
+    setWidgetDimmed(false);
+  }, [pendingResult]);
+
   // Handle submit
   const handleSubmit = useCallback(async () => {
     const trimmed = inputValue.trim();
@@ -106,6 +117,15 @@ const App: React.FC = () => {
     if (phase === 'game' && trimmed.startsWith('/')) {
       addEntry({ type: 'command', content: trimmed });
       addCommandToHistory(trimmed);
+      // Dim the active widget while showing command output
+      if (pendingResult) {
+        if (dimTimerRef.current) clearTimeout(dimTimerRef.current);
+        setWidgetDimmed(true);
+        dimTimerRef.current = setTimeout(() => {
+          setWidgetDimmed(false);
+          dimTimerRef.current = null;
+        }, 3000);
+      }
       await processCommand(trimmed);
       return;
     }

@@ -45,6 +45,7 @@ export function useTerminalCommands() {
 [yellow][bold]/load[/bold][/yellow] - Carga una partida guardada. Para revivir tus fracasos.
 [yellow][bold]/clear[/bold][/yellow] - Limpia la pantalla sin perder tu widget actual. Perfecto para fingir que no viste nada.
 [yellow][bold]/history[/bold][/yellow] - Revive todos los momentos de gloria (y vergüenza) de tu partida.
+[yellow][bold]/inventario[/bold][/yellow] - Abre el inventario completo. Para admirar tu basura con más detalle.
 [yellow][bold]/about[/bold][/yellow] - Información sobre el juego que estás jugando. Por si ya se te olvidó.
 [yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
@@ -229,6 +230,13 @@ ${lines.join('\n')}
       case 'debug':
         handleDebug(args);
         return true;
+      case 'inventario':
+      case 'inv':
+      case 'inventory': {
+        const current = useAppStore.getState().inventoryExpanded;
+        useAppStore.getState().setInventoryExpanded(!current);
+        return true;
+      }
       case 'quit':
       case 'exit':
         resetGame();

@@ -91,6 +91,10 @@ interface AppStore {
   inventoryExpanded: boolean;
   setInventoryExpanded: (val: boolean) => void;
 
+  // Widget dimmed (when a / command is used while widget is active)
+  widgetDimmed: boolean;
+  setWidgetDimmed: (val: boolean) => void;
+
   // Reset everything for quit/restart
   resetGame: () => void;
 }
@@ -222,6 +226,10 @@ export const useAppStore = create<AppStore>((set) => ({
   inventoryExpanded: false,
   setInventoryExpanded: (inventoryExpanded) => set({ inventoryExpanded }),
 
+  // Widget dimmed
+  widgetDimmed: false,
+  setWidgetDimmed: (widgetDimmed) => set({ widgetDimmed }),
+
   // Reset
   resetGame: () =>
     set((s) => ({
@@ -233,6 +241,7 @@ export const useAppStore = create<AppStore>((set) => ({
       pendingResult: null,
       pendingSlotAction: null,
       inventoryExpanded: false,
+      widgetDimmed: false,
       currentImage: null,
       fadeBeforeIndex: 0,
       seenCharacters: new Set<string>(),

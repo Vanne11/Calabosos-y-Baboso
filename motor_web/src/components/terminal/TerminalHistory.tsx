@@ -27,6 +27,12 @@ const OutputWrapper = styled.div`
   }
 `;
 
+const WidgetWrapper = styled.div<{ $dimmed: boolean }>`
+  opacity: ${(p) => (p.$dimmed ? 0.3 : 1)};
+  transition: opacity 0.4s ease;
+  pointer-events: ${(p) => (p.$dimmed ? 'none' : 'auto')};
+`;
+
 interface TerminalHistoryProps {
   children?: React.ReactNode;
 }
@@ -34,6 +40,7 @@ interface TerminalHistoryProps {
 const TerminalHistory: React.FC<TerminalHistoryProps> = ({ children }) => {
   const history = useAppStore((s) => s.history);
   const fadeBeforeIndex = useAppStore((s) => s.fadeBeforeIndex);
+  const widgetDimmed = useAppStore((s) => s.widgetDimmed);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,7 +57,11 @@ const TerminalHistory: React.FC<TerminalHistoryProps> = ({ children }) => {
       {history.map((entry, i) => (
         <TerminalEntryComponent key={i} entry={entry} faded={i < fadeBeforeIndex} />
       ))}
-      {children}
+      {children && (
+        <WidgetWrapper $dimmed={widgetDimmed}>
+          {children}
+        </WidgetWrapper>
+      )}
     </OutputWrapper>
   );
 };

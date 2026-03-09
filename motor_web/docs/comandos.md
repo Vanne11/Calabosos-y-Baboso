@@ -35,6 +35,7 @@ Disponibles durante la partida. **Requieren prefijo `/`** para distinguirlos del
 | `/load` | Carga una partida guardada desde un slot |
 | `/version` | Versión del motor |
 | `/debug` | Sistema de depuración (funciona igual que en shell) |
+| `/inventario` | Abre/cierra el overlay expandido del inventario (aliases: `/inv`, `/inventory`) |
 | `/quit` / `/exit` | Sale de la partida y vuelve a la shell (no cierra sesión) |
 
 **Comandos bloqueados durante la partida:** `run`, `list`, `editor`, `create` — muestran aviso de que hay una partida activa.

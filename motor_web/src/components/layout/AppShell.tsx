@@ -8,6 +8,7 @@ import ImagePanel from './ImagePanel';
 import SpeedControl from './SpeedControl';
 import MobileWarning from './MobileWarning';
 import InventoryPanel from './InventoryPanel';
+import InventoryExpanded from './InventoryExpanded';
 import { useAppStore } from '../../store/useAppStore';
 
 const Container = styled.div`
@@ -82,6 +83,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         </TerminalSide>
       </MainArea>
       <SpeedControl />
+      <InventoryExpanded />
     </Container>
   );
 };
