@@ -1,0 +1,1299 @@
+{
+  "scenes": {
+
+    "start": {
+      "scenario": {
+        "name": "La Entrada",
+        "image": "images/scenarios/entrada.png",
+        "music": "audio/intro.ogg",
+        "description": "Una puerta de piedra con un cartel: 'MAZMORRA DE LAS PRUEBAS - Demo Técnica v2.0'"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold cyan]¡Bienvenido a la Mazmorra de las Pruebas![/bold cyan]",
+            "Esta demo existe para demostrar [bold]TODAS[/bold] las capacidades del motor.",
+            "Vas a ver tiendas, combates, puzzles, crafting, y mucho más.",
+            "Pero primero... lo básico."
+          ]
+        },
+        {
+          "type": "input",
+          "prompt": "¿Cómo te llamas, aventurero involuntario?",
+          "saveAs": "player_name"
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ah, así que eres tú. Esperaba a alguien más... impresionante.",
+            "Bueno, supongo que servirás. Bienvenido a la mazmorra."
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Demo Iniciada",
+          "text": "Has comenzado La Mazmorra de las Pruebas. Buena suerte.",
+          "icon": "🏰"
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": { "intro_done": true }
+          }
+        },
+        {
+          "type": "wait",
+          "text": "Las puertas de la mazmorra se abren lentamente...",
+          "duration": 2000,
+          "style": "dots"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Entrar con valentía",
+              "effects": {
+                "addTraits": ["valiente"],
+                "stats": { "courage": 10 }
+              },
+              "goto": "sala_entrada"
+            },
+            {
+              "text": "Entrar arrastrándose",
+              "effects": {
+                "stats": { "perception": 10 }
+              },
+              "goto": "sala_entrada"
+            }
+          ]
+        }
+      ]
+    },
+
+    "sala_entrada": {
+      "scenario": {
+        "name": "Sala de Entrada",
+        "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/dungeon.ogg",
+        "description": "Una sala amplia con paredes húmedas. Hay objetos esparcidos por el suelo.",
+        "variants": {
+          "morning": "La luz matutina se filtra por las grietas del techo.",
+          "afternoon": "Una luz tenue baña la sala en tonos dorados.",
+          "night": "Solo la bioluminiscencia de las babosas ilumina la estancia."
+        }
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: examine[/bold yellow] — Inspeccionar elementos del entorno.",
+            "Mira a tu alrededor. Hay cosas interesantes aquí."
+          ]
+        },
+        {
+          "type": "examine",
+          "description": "La sala de entrada tiene varios elementos interesantes...",
+          "subjects": [
+            {
+              "id": "cofre",
+              "label": "📦 Cofre viejo",
+              "text": "Un cofre desvencijado. Dentro encuentras una llave oxidada y una nota.",
+              "effects": {
+                "inventory": ["llave_oxidada", "nota_misteriosa"],
+                "flags": { "cofre_abierto": true }
+              },
+              "oneTime": true
+            },
+            {
+              "id": "grietas",
+              "label": "🌿 Grietas en la pared",
+              "text": "Entre las grietas crecen hierbas curativas. Arrancas un manojo.",
+              "effects": {
+                "inventory": ["hierba_curativa"]
+              },
+              "oneTime": true
+            },
+            {
+              "id": "charco",
+              "label": "💧 Charco viscoso",
+              "text": "Un charco de baba de babosa. Encuentras un frasco vacío flotando.",
+              "effects": {
+                "inventory": ["frasco_vacio"]
+              },
+              "oneTime": true
+            },
+            {
+              "id": "inscripcion",
+              "label": "📜 Inscripción en la pared",
+              "text": "Dice: 'Los que buscan todas las salas, todas las pruebas superarán'. Críptico.",
+              "effects": {
+                "flags": { "leyó_inscripcion": true }
+              }
+            }
+          ],
+          "exitText": "Seguir adelante",
+          "goto": "encuentro_griselda"
+        }
+      ]
+    },
+
+    "encuentro_griselda": {
+      "scenario": {
+        "name": "El Rincón Comercial",
+        "image": "images/scenarios/rincon_comercial.png",
+        "music": "audio/shop.ogg",
+        "description": "Una babosa con monóculo ha montado un puesto comercial en medio de la mazmorra."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: shop + affinity + companion[/bold yellow]",
+            "Vas a conocer a Griselda, la babosa comerciante.",
+            "Tus acciones afectarán tu relación con ella."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "¡Oh! ¡Un cliente! Hacía [italic]semanas[/italic] que no venía nadie.",
+            "Soy [bold green]Griselda[/bold green], comerciante oficial de esta mazmorra.",
+            "Y antes de que preguntes, sí, soy una babosa. ¿Algún problema?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "\"Encantado de conocerte, Griselda\"",
+              "effects": {
+                "affinity": { "griselda": 15 }
+              }
+            },
+            {
+              "text": "\"¿Una babosa vendiendo cosas? Esto es raro\"",
+              "effects": {
+                "affinity": { "griselda": -10 }
+              }
+            },
+            {
+              "text": "\"Me da igual, muéstrame la mercancía\"",
+              "effects": {
+                "affinity": { "griselda": -5 }
+              }
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "Bueno, echemos un vistazo a lo que tengo..."
+          ]
+        },
+        {
+          "type": "shop",
+          "title": "Puesto de Griselda",
+          "currency": "gold",
+          "items": [
+            {
+              "id": "espada_oxidada",
+              "name": "Espada Oxidada",
+              "price": 20,
+              "description": "Apenas corta mantequilla, pero es mejor que tus puños.",
+              "effects": { "stats": { "attack": 5 } }
+            },
+            {
+              "id": "escudo_madera",
+              "name": "Escudo de Madera",
+              "price": 15,
+              "description": "Parará al menos un golpe. Quizás.",
+              "effects": { "stats": { "defense": 3 } }
+            },
+            {
+              "id": "pocion_vida",
+              "name": "Poción de Vida",
+              "price": 12,
+              "description": "Restaura 30 puntos de voluntad de vivir."
+            },
+            {
+              "id": "antorcha",
+              "name": "Antorcha",
+              "price": 5,
+              "description": "Útil en salas oscuras. Y para asustar babosas."
+            },
+            {
+              "id": "sal_anti_babosas",
+              "name": "Sal Anti-Babosas",
+              "price": 25,
+              "description": "El arma secreta contra todo ser viscoso. Devastadora.",
+              "effects": { "stats": { "attack": 3 } }
+            },
+            {
+              "id": "ganzua",
+              "name": "Ganzúa",
+              "price": 10,
+              "description": "Para cuando no tienes la llave correcta."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.5
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "Ha sido un placer hacer negocios contigo.",
+            "Oye... esta mazmorra es peligrosa. ¿Quieres que te acompañe?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "\"¡Claro! Toda ayuda es bienvenida\"",
+              "effects": {
+                "flags": { "griselda_joined": true },
+                "affinity": { "griselda": 20 }
+              }
+            },
+            {
+              "text": "\"Prefiero ir solo, gracias\"",
+              "effects": {
+                "affinity": { "griselda": -5 }
+              }
+            }
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "info",
+          "title": "Compañera",
+          "text": "Griselda se ha unido a tu grupo. Aparecerá en la barra de estado.",
+          "condition": { "flags": { "griselda_joined": true } }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Bien. Ahora elige tu camino."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Corredor izquierdo (puzzles y crafteo)",
+              "goto": "sala_puzzle_code"
+            },
+            {
+              "text": "Corredor derecho (trampas y azar)",
+              "goto": "corredor_trampa"
+            }
+          ]
+        }
+      ]
+    },
+
+    "sala_puzzle_code": {
+      "scenario": {
+        "name": "Sala del Código",
+        "image": "images/scenarios/sala_codigo.png",
+        "music": "audio/mystery.ogg",
+        "description": "Una puerta enorme con un panel numérico brilla en la oscuridad."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: puzzle (code)[/bold yellow] — Escribir la respuesta correcta.",
+            "¿Recuerdas la nota que encontraste? Quizás sea útil aquí."
+          ]
+        },
+        {
+          "type": "puzzle",
+          "puzzleType": "code",
+          "description": "La puerta tiene una inscripción: 'Dime el nombre de la criatura más temida de Viscaria'",
+          "config": {
+            "type": "code",
+            "answers": ["babosa", "BABOSA", "la babosa"],
+            "prompt": "Escribe la contraseña:",
+            "hint": "Revisa tu inventario... quizás tengas una nota."
+          },
+          "maxAttempts": 3,
+          "hintText": "Es un ser viscoso y lento...",
+          "success": {
+            "text": "¡La puerta se abre con un chirrido satisfactorio!",
+            "effects": {
+              "flags": { "puzzle_code_resuelto": true },
+              "xp": { "bob": 25 }
+            },
+            "goto": "sala_puzzle_riddle"
+          },
+          "failure": {
+            "text": "La puerta permanece cerrada. Un mecanismo te expulsa de la sala.",
+            "effects": {
+              "stats": { "will_to_live": -10 }
+            },
+            "goto": "sala_puzzle_riddle"
+          }
+        }
+      ]
+    },
+
+    "sala_puzzle_riddle": {
+      "scenario": {
+        "name": "Sala del Acertijo",
+        "image": "images/scenarios/sala_acertijo.png",
+        "music": "audio/mystery.ogg",
+        "description": "Un viejo mago sentado en una silla flotante te mira expectante."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: puzzle (riddle) + traits[/bold yellow] — Resolver un acertijo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "viejo_mago",
+          "lines": [
+            "¡Ah, un visitante! Hace [italic]eones[/italic] que no veo a nadie.",
+            "Te propongo un acertijo. Si lo resuelves, te bendeciré.",
+            "Si fallas... bueno, no quieres saber."
+          ]
+        },
+        {
+          "type": "puzzle",
+          "puzzleType": "riddle",
+          "description": "El mago susurra el acertijo con voz solemne...",
+          "config": {
+            "type": "riddle",
+            "question": "Cuanto más seco, más moja. ¿Qué es?",
+            "answers": ["toalla", "la toalla", "una toalla"],
+            "hint": "Piensa en algo que usas después de bañarte..."
+          },
+          "maxAttempts": 3,
+          "hintText": "Se usa para secarse...",
+          "success": {
+            "text": "¡Correcto! El mago aplaude lentamente.",
+            "effects": {
+              "addTraits": ["bendecido"],
+              "affinity": { "viejo_mago": 30 },
+              "xp": { "bob": 25 }
+            }
+          },
+          "failure": {
+            "text": "El mago niega con la cabeza y chasquea los dedos.",
+            "effects": {
+              "addTraits": ["viscoso"],
+              "stats": { "will_to_live": -10 }
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "viejo_mago",
+          "lines": [
+            "Independientemente del resultado, puedes seguir adelante.",
+            "La siguiente sala tiene una mesa de alquimia. Úsala bien."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Ir a la sala de alquimia", "goto": "sala_craft" }
+          ]
+        }
+      ]
+    },
+
+    "sala_craft": {
+      "scenario": {
+        "name": "Laboratorio de Alquimia",
+        "image": "images/scenarios/laboratorio.png",
+        "music": "audio/craft.ogg",
+        "description": "Una mesa llena de frascos burbujeantes y hierbas secas."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: craft[/bold yellow] — Combinar items del inventario.",
+            "Si encontraste la hierba curativa y el frasco vacío, podrás crear un elixir.",
+            "Si no... bueno, quizás debiste explorar más la sala de entrada."
+          ]
+        },
+        {
+          "type": "craft",
+          "description": "Mesa de Alquimia — Combina ingredientes para crear pociones",
+          "recipes": [
+            {
+              "ingredients": ["hierba_curativa", "frasco_vacio"],
+              "result": "elixir_baboso",
+              "text": "¡Has creado un [bold green]Elixir Baboso[/bold green]! Viscoso pero efectivo.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 10 },
+                "xp": { "bob": 15 }
+              }
+            },
+            {
+              "ingredients": ["pan_mohoso", "frasco_vacio"],
+              "result": "pocion_vida",
+              "text": "Has... ¿metido pan en un frasco? Sorprendentemente, funciona como poción.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 5 }
+              }
+            }
+          ],
+          "failText": "Mezclas cosas al azar. No pasa nada excepto un olor horrible.",
+          "goto": "encrucijada"
+        }
+      ]
+    },
+
+    "corredor_trampa": {
+      "scenario": {
+        "name": "Corredor de las Trampas",
+        "image": "images/scenarios/corredor_trampa.png",
+        "music": "audio/dungeon.ogg",
+        "description": "Un pasillo largo con baldosas sospechosamente brillantes."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: timed_choice + random + sound[/bold yellow]",
+            "Este corredor tiene trampas. Tendrás que decidir rápido."
+          ]
+        },
+        {
+          "type": "wait",
+          "text": "Se oye un clic mecánico bajo tus pies...",
+          "duration": 1500,
+          "style": "typing"
+        },
+        {
+          "type": "sound",
+          "src": "audio/click.mp3",
+          "volume": 0.7
+        },
+        {
+          "type": "timed_choice",
+          "duration": 8000,
+          "defaultIndex": 1,
+          "timeoutText": "¡Tardaste demasiado! La trampa se activa.",
+          "options": [
+            {
+              "text": "¡Saltar a la derecha!",
+              "effects": {
+                "stats": { "courage": 5 }
+              }
+            },
+            {
+              "text": "¡Quedarse quieto!",
+              "effects": {
+                "stats": { "will_to_live": -15 },
+                "addTraits": ["viscoso"]
+              }
+            },
+            {
+              "text": "¡Rodar hacia adelante!",
+              "effects": {
+                "stats": { "courage": 10 },
+                "xp": { "bob": 10 }
+              }
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sobreviviste. Más o menos. Ahora, un encuentro aleatorio..."
+          ]
+        },
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 2,
+              "text": "[green]¡Suerte![/green] Encuentras una moneda antigua en el suelo.",
+              "effects": {
+                "inventory": ["moneda_antigua"],
+                "stats": { "gold": 10 }
+              }
+            },
+            {
+              "weight": 2,
+              "text": "[yellow]Neutral.[/yellow] No pasa nada. El corredor está vacío.",
+              "effects": {
+                "stats": { "perception": 5 }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "[red]¡Mala suerte![/red] Pisas baba de babosa y resbalas.",
+              "effects": {
+                "stats": { "will_to_live": -10 },
+                "addTraits": ["viscoso"]
+              }
+            }
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "discovery",
+          "title": "Corredor Superado",
+          "text": "Has sobrevivido al corredor de las trampas."
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Continuar a la encrucijada", "goto": "encrucijada" }
+          ]
+        }
+      ]
+    },
+
+    "encrucijada": {
+      "scenario": {
+        "name": "La Encrucijada",
+        "image": "images/scenarios/encrucijada.png",
+        "music": "audio/dungeon.ogg",
+        "description": "Tres puertas se alzan ante ti. Cada una con un símbolo diferente."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: check + branch + conditions[/bold yellow]",
+            "Aquí se evalúan tus stats de forma determinista.",
+            "Dependiendo de tu percepción, verás cosas distintas."
+          ]
+        },
+        {
+          "type": "check",
+          "stat": "perception",
+          "threshold": ">=40",
+          "description": "Comprobación de Percepción",
+          "success": {
+            "text": "[green]¡Tu percepción es aguda![/green] Notas marcas en el suelo que indican que la puerta central es una trampa.",
+            "effects": {
+              "flags": { "sabe_trampa": true }
+            }
+          },
+          "failure": {
+            "text": "No notas nada especial. Las tres puertas parecen iguales."
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ahora, el motor evaluará automáticamente tu estado para decidir tu camino."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "Yo iría por la puerta con el candado. Siempre hay tesoros detrás de los candados.",
+            "...O trampas mortales. Una de dos."
+          ],
+          "condition": { "flags": { "griselda_joined": true } }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Puerta con candado (puzzle de cerradura)",
+              "goto": "sala_cerradura"
+            },
+            {
+              "text": "Puerta con símbolos (puzzle de secuencia)",
+              "goto": "sala_secuencia"
+            },
+            {
+              "text": "Puerta con cerradura (usar item)",
+              "goto": "sala_use_item"
+            }
+          ]
+        }
+      ]
+    },
+
+    "sala_cerradura": {
+      "scenario": {
+        "name": "Sala del Candado",
+        "image": "images/scenarios/sala_candado.png",
+        "music": "audio/mystery.ogg",
+        "description": "Una puerta maciza con un candado de 4 dígitos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: puzzle (lock)[/bold yellow] — Combinación numérica.",
+            "La pista está en la pared: 'El año en que las babosas invadieron... al revés'.",
+            "Pista extra: fue en 1397."
+          ]
+        },
+        {
+          "type": "puzzle",
+          "puzzleType": "lock",
+          "description": "Un candado de 4 dígitos protege la puerta.",
+          "config": {
+            "type": "lock",
+            "digits": 4,
+            "combination": "7931",
+            "hint": "1397 al revés..."
+          },
+          "maxAttempts": 5,
+          "hintText": "Invierte los dígitos de 1397",
+          "success": {
+            "text": "¡Click! El candado se abre. Eres más listo de lo que pareces.",
+            "effects": {
+              "flags": { "candado_abierto": true },
+              "xp": { "bob": 20 }
+            },
+            "goto": "pre_boss"
+          },
+          "failure": {
+            "text": "El candado emite un zumbido. Has agotado los intentos.",
+            "effects": {
+              "stats": { "will_to_live": -5 }
+            },
+            "goto": "pre_boss"
+          }
+        }
+      ]
+    },
+
+    "sala_secuencia": {
+      "scenario": {
+        "name": "Sala de los Símbolos",
+        "image": "images/scenarios/sala_simbolos.png",
+        "music": "audio/mystery.ogg",
+        "description": "Tres pedestales con símbolos brillantes esperan ser ordenados."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: puzzle (sequence)[/bold yellow] — Ordenar elementos.",
+            "Los símbolos representan las fases del día. Ordénalos cronológicamente."
+          ]
+        },
+        {
+          "type": "puzzle",
+          "puzzleType": "sequence",
+          "description": "Ordena los símbolos del amanecer al anochecer.",
+          "config": {
+            "type": "sequence",
+            "elements": [
+              { "id": "sun", "label": "☀️ Sol (mediodía)" },
+              { "id": "moon", "label": "🌙 Luna (noche)" },
+              { "id": "dawn", "label": "🌅 Amanecer" }
+            ],
+            "hint": "Del principio del día al final..."
+          },
+          "maxAttempts": 3,
+          "hintText": "Amanecer → Sol → Luna",
+          "success": {
+            "text": "Los pedestales brillan en armonía. ¡La puerta se abre!",
+            "effects": {
+              "flags": { "secuencia_resuelta": true },
+              "xp": { "bob": 20 },
+              "stats": { "perception": 5 }
+            },
+            "goto": "pre_boss"
+          },
+          "failure": {
+            "text": "Los símbolos parpadean y se resetean. Demasiados intentos fallidos.",
+            "goto": "pre_boss"
+          }
+        }
+      ]
+    },
+
+    "sala_use_item": {
+      "scenario": {
+        "name": "Sala de la Cerradura",
+        "image": "images/scenarios/sala_cerradura_item.png",
+        "music": "audio/mystery.ogg",
+        "description": "Una puerta con una cerradura oxidada. Parece que necesitas algo para abrirla."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: use_item[/bold yellow] — Usar un item del inventario en un objetivo.",
+            "Estilo LucasArts: selecciona un item y úsalo en la cerradura.",
+            "La llave oxidada o la ganzúa funcionarán."
+          ]
+        },
+        {
+          "type": "use_item",
+          "description": "Una puerta con cerradura oxidada. Necesitas algo para abrirla.",
+          "targets": [
+            {
+              "id": "cerradura",
+              "label": "🔒 Cerradura oxidada",
+              "accepts": [
+                {
+                  "itemId": "llave_oxidada",
+                  "text": "¡La llave encaja perfectamente! Bueno, 'perfectamente' es mucho decir. Chirría horriblemente, pero la puerta se abre.",
+                  "consume": true,
+                  "effects": {
+                    "flags": { "puerta_abierta": true },
+                    "xp": { "bob": 15 }
+                  },
+                  "goto": "pre_boss"
+                },
+                {
+                  "itemId": "ganzua",
+                  "text": "Fuerzas la cerradura con la ganzúa. Se rompe, pero la puerta se abre primero. Victoria técnica.",
+                  "consume": true,
+                  "effects": {
+                    "flags": { "puerta_abierta": true },
+                    "xp": { "bob": 10 }
+                  },
+                  "goto": "pre_boss"
+                }
+              ],
+              "defaultText": "Intentas meter eso en la cerradura. No funciona y te sientes un poco tonto."
+            },
+            {
+              "id": "bisagras",
+              "label": "🔩 Bisagras de la puerta",
+              "accepts": [
+                {
+                  "itemId": "espada_oxidada",
+                  "text": "Usas la espada como palanca en las bisagras. ¡La puerta cae hacia adentro con estrépito!",
+                  "consume": false,
+                  "effects": {
+                    "flags": { "puerta_abierta": true },
+                    "stats": { "strength": 5 }
+                  },
+                  "goto": "pre_boss"
+                }
+              ],
+              "defaultText": "Las bisagras están demasiado oxidadas para manipularlas con eso."
+            }
+          ],
+          "failText": "No tienes nada útil para usar aquí. Quizás debiste explorar más.",
+          "exitText": "Volver a la encrucijada",
+          "goto": "encrucijada"
+        }
+      ]
+    },
+
+    "pre_boss": {
+      "scenario": {
+        "name": "Antesala del Jefe",
+        "image": "images/scenarios/antesala_jefe.png",
+        "music": "audio/tension.ogg",
+        "description": "Una sala circular con antorchas. Se siente una presencia viscosa al otro lado."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: branch + dice + conditions avanzadas[/bold yellow]",
+            "Antes del combate, el motor evaluará tu preparación automáticamente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "¡Puedo sentir al jefe detrás de esa puerta!",
+            "Si tienes sal anti-babosas, úsala en el combate. Es [bold]devastadora[/bold]."
+          ],
+          "condition": { "flags": { "griselda_joined": true } }
+        },
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "inventory": ["sal_anti_babosas"],
+                "stats": { "attack": ">=15" }
+              },
+              "goto": "pre_boss_preparado"
+            },
+            {
+              "condition": {
+                "hasTraits": ["bendecido"]
+              },
+              "goto": "pre_boss_bendecido"
+            },
+            {
+              "goto": "pre_boss_normal"
+            }
+          ]
+        }
+      ]
+    },
+
+    "pre_boss_preparado": {
+      "scenario": {
+        "name": "Antesala del Jefe",
+        "image": "images/scenarios/antesala_jefe.png",
+        "music": "audio/tension.ogg",
+        "description": "Estás bien preparado para lo que viene."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold green]El branch ha detectado que estás bien equipado.[/bold green]",
+            "Tienes sal anti-babosas Y buen ataque. Estás preparado."
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "info",
+          "title": "Bien Preparado",
+          "text": "Tu equipamiento te da ventaja en el combate que viene."
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": { "attack": 5 },
+            "flags": { "bonus_preparacion": true }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "¡Al combate!", "goto": "combate_boss" }
+          ]
+        }
+      ]
+    },
+
+    "pre_boss_bendecido": {
+      "scenario": {
+        "name": "Antesala del Jefe",
+        "image": "images/scenarios/antesala_jefe.png",
+        "music": "audio/tension.ogg",
+        "description": "La bendición del mago brilla a tu alrededor."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold cyan]El branch ha detectado el trait 'bendecido'.[/bold cyan]",
+            "La bendición del viejo mago te protege."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": { "will_to_live": 20 }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Entrar con confianza", "goto": "combate_boss" }
+          ]
+        }
+      ]
+    },
+
+    "pre_boss_normal": {
+      "scenario": {
+        "name": "Antesala del Jefe",
+        "image": "images/scenarios/antesala_jefe.png",
+        "music": "audio/tension.ogg",
+        "description": "No tienes nada especial. Solo tú y tu valor cuestionable."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold red]El branch no ha encontrado preparación especial.[/bold red]",
+            "No tienes sal, ni bendición, ni gran ataque. Pero bueno, la valentía es gratis."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "courage",
+          "difficulty": 10,
+          "faces": 20,
+          "description": "Tirada de Valor — ¿Puedes reunir fuerzas?",
+          "results": {
+            "critical_success": {
+              "text": "[bold yellow]¡CRÍTICO![/bold yellow] Una oleada de valor te invade. +20 voluntad.",
+              "effects": {
+                "stats": { "will_to_live": 20, "attack": 3 }
+              }
+            },
+            "success": {
+              "text": "Reúnes valor. Te sientes algo más preparado.",
+              "effects": {
+                "stats": { "will_to_live": 10 }
+              }
+            },
+            "failure": {
+              "text": "Tus rodillas tiemblan. Pero no hay marcha atrás.",
+              "effects": {
+                "stats": { "will_to_live": -5 }
+              }
+            },
+            "critical_failure": {
+              "text": "[bold red]¡PIFIA![/bold red] Te tropiezas con tus propios pies. Humillante.",
+              "effects": {
+                "stats": { "will_to_live": -15 }
+              }
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Entrar de todos modos", "goto": "combate_boss" }
+          ]
+        }
+      ]
+    },
+
+    "combate_boss": {
+      "scenario": {
+        "name": "Guarida del Baboso Mayor",
+        "image": "images/scenarios/guarida_boss.png",
+        "music": "audio/battle.ogg",
+        "description": "Una criatura enorme y viscosa te mira con sus ojos de caracol."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold yellow]MECÁNICA: combat[/bold yellow] — Combate por turnos completo.",
+            "Puedes atacar, defenderte, huir, o usar items.",
+            "Si compraste sal anti-babosas, úsala para daño masivo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "babosa_guardian",
+          "lines": [
+            "[bold red]GROOOAAARGH[/bold red]",
+            "(...eso fue un intento de rugido. Es una babosa, no le sale bien.)"
+          ]
+        },
+        {
+          "type": "wait",
+          "text": "¡El combate comienza!",
+          "duration": 1500,
+          "style": "fade"
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Baboso Mayor",
+            "image": "images/dialogs/babosa_guardian.png",
+            "hp": 45,
+            "attack": 7,
+            "defense": 2
+          },
+          "playerStat": "will_to_live",
+          "attackStat": "attack",
+          "defenseStat": "defense",
+          "actions": ["attack", "defend", "flee", "use_item"],
+          "combatItems": [
+            {
+              "itemId": "sal_anti_babosas",
+              "name": "Sal Anti-Babosas",
+              "text": "¡Lanzas sal al Baboso Mayor! Se retuerce y grita (bueno, burbujea) de dolor.",
+              "damage": 25,
+              "consume": true
+            },
+            {
+              "itemId": "pocion_vida",
+              "name": "Poción de Vida",
+              "text": "Bebes la poción. Sabe a barro, pero funciona.",
+              "heal": 30,
+              "consume": true
+            },
+            {
+              "itemId": "elixir_baboso",
+              "name": "Elixir Baboso",
+              "text": "El elixir viscoso te restaura. Irónico, usar baba contra una babosa.",
+              "heal": 30,
+              "consume": true
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Antorcha",
+              "text": "Agitas la antorcha. La babosa retrocede asustada, dejándose golpear.",
+              "damage": 10,
+              "consume": true
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "¡El Baboso Mayor se disuelve en un charco de baba! [bold green]¡VICTORIA![/bold green]",
+              "effects": {
+                "flags": { "boss_derrotado": true },
+                "xp": { "bob": 75 },
+                "stats": { "gold": 30 }
+              },
+              "goto": "victoria"
+            },
+            "defeat": {
+              "text": "La baba te envuelve... todo se vuelve oscuro y viscoso.",
+              "goto": "_game_over"
+            },
+            "flee": {
+              "text": "Huyes del combate. La babosa te deja ir... por ahora.",
+              "effects": {
+                "stats": { "courage": -10, "will_to_live": -5 }
+              },
+              "goto": "huida"
+            }
+          }
+        }
+      ]
+    },
+
+    "huida": {
+      "scenario": {
+        "name": "Corredor de la Vergüenza",
+        "image": "images/scenarios/corredor_verguenza.png",
+        "music": "audio/shame.ogg",
+        "description": "Has huido. El narrador te juzga en silencio."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Huiste. [italic]Del jefe de la demo técnica.[/italic]",
+            "Bueno, al menos estás vivo. Eso cuenta para algo.",
+            "¿Quieres intentarlo de nuevo?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver al combate (con vergüenza)",
+              "goto": "combate_boss"
+            },
+            {
+              "text": "Aceptar mi cobardía y terminar",
+              "effects": {
+                "addTraits": ["viscoso"]
+              },
+              "goto": "final_cobarde"
+            }
+          ]
+        }
+      ]
+    },
+
+    "victoria": {
+      "scenario": {
+        "name": "Sala de la Victoria",
+        "image": "images/scenarios/victoria.png",
+        "music": "audio/victory.ogg",
+        "description": "Los restos del Baboso Mayor brillan con una luz dorada."
+      },
+      "sequence": [
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "¡Jefe Derrotado!",
+          "text": "Has derrotado al Baboso Mayor. ¡La mazmorra es tuya!",
+          "icon": "⚔️"
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold green]¡Felicidades![/bold green] Has derrotado al jefe.",
+            "[bold yellow]MECÁNICA: level_up[/bold yellow] — Ahora verás la pantalla de subir nivel.",
+            "Podrás elegir habilidades del árbol de Aventurero."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": ["amuleto_valor"]
+          }
+        },
+        {
+          "type": "level_up",
+          "characterId": "bob",
+          "description": "¡La experiencia del combate te ha hecho más fuerte!",
+          "force": true,
+          "skillPoints": 3,
+          "goto": "resumen_final"
+        }
+      ]
+    },
+
+    "resumen_final": {
+      "scenario": {
+        "name": "Resumen de la Demo",
+        "image": "images/scenarios/victoria.png",
+        "music": "audio/victory.ogg",
+        "description": "El narrador hace un repaso de todo lo que has visto."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold cyan]═══════════════════════════════════════[/bold cyan]",
+            "[bold cyan]  RESUMEN DE MECÁNICAS DEMOSTRADAS  [/bold cyan]",
+            "[bold cyan]═══════════════════════════════════════[/bold cyan]"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold]1.[/bold] [green]dialog[/green] — Diálogos de personajes :white_check_mark:",
+            "[bold]2.[/bold] [green]choice[/green] — Opciones del jugador :white_check_mark:",
+            "[bold]3.[/bold] [green]dice[/green] — Tiradas de dados D20 :white_check_mark:",
+            "[bold]4.[/bold] [green]input[/green] — Entrada de texto libre :white_check_mark:",
+            "[bold]5.[/bold] [green]effects[/green] — Efectos silenciosos :white_check_mark:",
+            "[bold]6.[/bold] [green]branch[/green] — Bifurcación automática :white_check_mark:",
+            "[bold]7.[/bold] [green]random[/green] — Resultado aleatorio :white_check_mark:",
+            "[bold]8.[/bold] [green]check[/green] — Comprobación de stat :white_check_mark:",
+            "[bold]9.[/bold] [green]shop[/green] — Tienda interactiva :white_check_mark:"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold]10.[/bold] [green]combat[/green] — Combate por turnos :white_check_mark:",
+            "[bold]11.[/bold] [green]notify[/green] — Notificaciones/logros :white_check_mark:",
+            "[bold]12.[/bold] [green]wait[/green] — Pausas dramáticas :white_check_mark:",
+            "[bold]13.[/bold] [green]sound[/green] — Efectos de sonido :white_check_mark:",
+            "[bold]14.[/bold] [green]craft[/green] — Crafting/alquimia :white_check_mark:",
+            "[bold]15.[/bold] [green]puzzle[/green] — code, riddle, lock, sequence :white_check_mark:",
+            "[bold]16.[/bold] [green]examine[/green] — Inspeccionar entorno :white_check_mark:",
+            "[bold]17.[/bold] [green]use_item[/green] — Usar item en objetivo :white_check_mark:",
+            "[bold]18.[/bold] [green]timed_choice[/green] — Decisión con temporizador :white_check_mark:"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[bold cyan]Sistemas RPG demostrados:[/bold cyan]",
+            "• [green]Skill Trees[/green] — Árbol de Aventurero con prerequisitos",
+            "• [green]Traits[/green] — Valiente, Bendecido, Envenenado, Viscoso",
+            "• [green]Affinity[/green] — Relación con Griselda y el Viejo Mago",
+            "• [green]XP / Level Up[/green] — Experiencia y subida de nivel",
+            "• [green]Companions[/green] — Griselda como compañera",
+            "• [green]Conditions[/green] — Stats, flags, inventario, traits, relaciones",
+            "• [green]Time System[/green] — Fases del día con variantes",
+            "• [green]Items[/green] — 14 items con descripciones"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¡Y eso es todo! Has completado la [bold]Mazmorra de las Pruebas[/bold].",
+            "Gracias por jugar. El motor funciona. Probablemente.",
+            ":snail: [italic]Calabosos y Babosos — Motor Web v0.1.0[/italic] :snail:"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "griselda",
+          "lines": [
+            "¡Ha sido divertido! Vuelve cuando quieras.",
+            "Y trae más oro la próxima vez."
+          ],
+          "condition": { "flags": { "griselda_joined": true } }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a jugar",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir de la demo",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+
+    "final_cobarde": {
+      "scenario": {
+        "name": "Final del Cobarde",
+        "image": "images/scenarios/corredor_verguenza.png",
+        "music": "audio/shame.ogg",
+        "description": "Has elegido la retirada estratégica. El narrador no está contento."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Bueno... técnicamente has 'completado' la demo.",
+            "No de la forma más gloriosa, pero sí de la más... [italic]segura[/italic].",
+            "Al menos viste la mayoría de las mecánicas. Eso cuenta."
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "warning",
+          "title": "Final Alternativo",
+          "text": "Has encontrado el final cobarde. Hay mejores endings.",
+          "icon": "🏃"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Reintentar la demo",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir con la cabeza baja",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
