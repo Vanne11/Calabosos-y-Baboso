@@ -13,6 +13,10 @@ export interface GameManifest {
   time: TimeCycle;
   /** Definiciones de items del inventario (nombre, descripción, imagen) */
   items?: Record<string, ItemDef>;
+  /** Árboles de habilidades disponibles en el juego */
+  skillTrees?: Record<string, SkillTreeDef>;
+  /** Rasgos/estados que pueden aplicarse a personajes */
+  traits?: Record<string, TraitDef>;
 }
 
 export interface ItemDef {
@@ -34,7 +38,76 @@ export interface CharacterDef {
   joinFlag?: string;
   /** Alternative images for protagonist selection */
   altImages?: Record<string, string>;
+  /** ID del árbol de habilidades asignado a este personaje */
+  skillTree?: string;
+  /** Stats propias del personaje (HP, ataque, etc.) */
+  baseStats?: Record<string, number>;
+  /** Nivel máximo alcanzable */
+  maxLevel?: number;
+  /** XP necesaria por nivel: array[i] = XP para pasar de nivel i a i+1 */
+  xpCurve?: number[];
+  /** Rasgos iniciales del personaje */
+  initialTraits?: string[];
 }
+
+// --- Skill Trees ---
+
+export interface SkillTreeDef {
+  name: string;
+  description?: string;
+  skills: Record<string, SkillDef>;
+}
+
+export interface SkillDef {
+  name: string;
+  description: string;
+  icon?: string;
+  maxLevel: number;
+  /** IDs de skills que deben tener nivel >= 1 para desbloquear esta */
+  prerequisites?: string[];
+  /** Costo en puntos de habilidad por nivel */
+  cost?: number;
+  /** Bonificadores pasivos por nivel (se aplican como stats) */
+  passiveBonus?: Record<string, number>;
+  /** Tags para condicionales (ej: "magic", "stealth") */
+  tags?: string[];
+}
+
+// --- Traits ---
+
+export interface TraitDef {
+  name: string;
+  description: string;
+  icon?: string;
+  /** Modificadores de stats mientras el trait esté activo */
+  statModifiers?: Record<string, number>;
+  /** Modificador a tiradas de dados */
+  diceModifier?: number;
+  /** ¿Es permanente o temporal? */
+  permanent?: boolean;
+  /** Duración en número de escenas (solo si temporal) */
+  duration?: number;
+  /** Tags para condicionales */
+  tags?: string[];
+}
+
+// --- Relationships ---
+
+export type RelationshipTier = 'hostile' | 'distrustful' | 'neutral' | 'friendly' | 'allied' | 'loyal';
+
+export interface RelationshipThreshold {
+  tier: RelationshipTier;
+  minAffinity: number;
+}
+
+export const DEFAULT_RELATIONSHIP_TIERS: RelationshipThreshold[] = [
+  { tier: 'hostile', minAffinity: -100 },
+  { tier: 'distrustful', minAffinity: -30 },
+  { tier: 'neutral', minAffinity: -10 },
+  { tier: 'friendly', minAffinity: 20 },
+  { tier: 'allied', minAffinity: 50 },
+  { tier: 'loyal', minAffinity: 80 },
+];
 
 export interface TimeCycle {
   duration: number;
@@ -81,7 +154,8 @@ export type SequenceStep =
   | PuzzleStep
   | ExamineStep
   | UseItemStep
-  | TimedChoiceStep;
+  | TimedChoiceStep
+  | LevelUpStep;
 
 export interface StepCondition {
   stats?: Record<string, string>; // e.g. { "perception": ">=50" }
@@ -89,6 +163,18 @@ export interface StepCondition {
   inventory?: string[];
   visitedScenes?: string[];
   unvisitedScenes?: string[];
+  /** Nivel mínimo de skill: { "fireball": ">=2" } */
+  skillLevel?: Record<string, string>;
+  /** Afinidad mínima con NPC: { "nerly": ">=50" } */
+  affinity?: Record<string, string>;
+  /** Rasgos activos requeridos */
+  hasTraits?: string[];
+  /** Rasgos que NO deben estar activos */
+  notTraits?: string[];
+  /** Nivel mínimo del personaje: { "_protagonist": ">=3" } */
+  characterLevel?: Record<string, string>;
+  /** Tier de relación requerido: { "nerly": "friendly" } */
+  relationshipTier?: Record<string, RelationshipTier>;
 }
 
 export interface DialogStep {
@@ -423,6 +509,22 @@ export interface TimedChoiceStep {
   condition?: StepCondition;
 }
 
+// --- LevelUp: pantalla de subir nivel ---
+
+export interface LevelUpStep {
+  type: 'level_up';
+  /** ID del personaje que sube de nivel (vacío = protagonista) */
+  characterId?: string;
+  /** Texto introductorio */
+  description?: string;
+  /** Forzar subida de nivel sin chequear XP */
+  force?: boolean;
+  /** Puntos de habilidad a otorgar (default: 1) */
+  skillPoints?: number;
+  goto?: string;
+  condition?: StepCondition;
+}
+
 // --- Effects ---
 
 export interface Effects {
@@ -432,6 +534,18 @@ export interface Effects {
   inventory?: string[];
   removeInventory?: string[];
   clearInventory?: boolean;
+  /** Dar XP a un personaje: { "protagonist": 50, "nerly": 20 } */
+  xp?: Record<string, number>;
+  /** Modificar afinidad con NPC: { "nerly": 10, "merchant": -5 } */
+  affinity?: Record<string, number>;
+  /** Añadir rasgos al personaje activo */
+  addTraits?: string[];
+  /** Quitar rasgos del personaje activo */
+  removeTraits?: string[];
+  /** Aprender skill directamente: { "fireball": 1 } (skill: niveles a añadir) */
+  learnSkill?: Record<string, number>;
+  /** Dar puntos de habilidad: { "_protagonist": 2 } */
+  giveSkillPoints?: Record<string, number>;
 }
 
 // --- Conditions file ---

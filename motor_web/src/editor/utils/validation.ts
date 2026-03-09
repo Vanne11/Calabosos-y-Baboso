@@ -292,6 +292,12 @@ export function validateProject(
           issues.push({ severity: 'warning', message: `"${sceneId}" timed choice defaultIndex fuera de rango.`, sceneId, stepIndex: i });
         }
       }
+
+      if (step.type === 'level_up') {
+        if (step.goto && !validDestinations.has(step.goto)) {
+          issues.push({ severity: 'error', message: `"${sceneId}" level_up goto "${step.goto}" no existe.`, sceneId, stepIndex: i });
+        }
+      }
     }
 
     // Escenas sin salida (sin goto en ningún step)
@@ -321,6 +327,7 @@ export function validateProject(
         return !!step.goto || step.targets.some((t) => t.accepts.some((a) => !!a.goto));
       }
       if (step.type === 'timed_choice') return step.options.some((o) => !!o.goto);
+      if (step.type === 'level_up') return !!step.goto;
       return false;
     });
 

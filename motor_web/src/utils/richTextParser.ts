@@ -41,6 +41,12 @@ export function parseRichText(text: string): RichSegment[] {
     processed = processed.replaceAll(code, emoji);
   }
 
+  // Convert markdown-style formatting to rich tags
+  // **texto** → [bold]texto[/bold] (must be before single *)
+  processed = processed.replace(/\*\*(.+?)\*\*/g, '[bold]$1[/bold]');
+  // *texto* → [italic]texto[/italic]
+  processed = processed.replace(/\*(.+?)\*/g, '[italic]$1[/italic]');
+
   const segments: RichSegment[] = [];
 
   let lastIndex = 0;

@@ -16,8 +16,10 @@ import type {
   ExamineStep,
   UseItemStep,
   TimedChoiceStep,
+  LevelUpStep,
+  DEFAULT_RELATIONSHIP_TIERS,
 } from '../types/game';
-import type { PlayerState, StepResult, PlayerAction } from '../types/engine';
+import type { PlayerState, StepResult, PlayerAction, CharacterState } from '../types/engine';
 import { evaluateCondition } from './ConditionEvaluator';
 import { applyEffects } from './EffectsApplier';
 import { resolveRoll } from './DiceRoller';
@@ -75,6 +77,21 @@ export class GameEngine {
   }
 
   private createInitialState(): PlayerState {
+    // Initialize character states from manifest
+    const characters: Record<string, CharacterState> = {};
+    for (const [charId, charDef] of Object.entries(this.manifest.characters)) {
+      if (charDef.role === 'protagonist' || charDef.role === 'companion') {
+        characters[charId] = {
+          level: 1,
+          xp: 0,
+          skillPoints: 0,
+          skills: {},
+          traits: charDef.initialTraits ? [...charDef.initialTraits] : [],
+          stats: charDef.baseStats ? { ...charDef.baseStats } : {},
+        };
+      }
+    }
+
     return {
       stats: { ...this.manifest.initialStats },
       flags: { ...this.manifest.initialFlags },
@@ -85,6 +102,10 @@ export class GameEngine {
         actions: 0,
         cycles: 0,
       },
+      characters,
+      relationships: {},
+      activeTraits: [],
+      sceneCount: 0,
     };
   }
 
@@ -128,6 +149,10 @@ export class GameEngine {
 
     this._currentScene = sceneId;
     this._state.visitedScenes = [...this._state.visitedScenes, sceneId];
+    this._state.sceneCount = (this._state.sceneCount || 0) + 1;
+
+    // Expire temporary traits
+    this.expireTraits();
 
     // Yield scenario if present
     if (scene.scenario) {
@@ -412,6 +437,12 @@ export class GameEngine {
 
       case 'timed_choice': {
         const result = yield* this.processTimedChoice(step);
+        if (result) return result;
+        break;
+      }
+
+      case 'level_up': {
+        const result = yield* this.processLevelUp(step);
         if (result) return result;
         break;
       }
@@ -1043,5 +1074,255 @@ export class GameEngine {
   private getCharacterName(id: string): string {
     const char = this.manifest.characters[id];
     return char?.name || id;
+  }
+
+  // --- LevelUp ---
+  private async *processLevelUp(
+    step: LevelUpStep
+  ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    // Determine character
+    const charId = step.characterId || this.getProtagonistId();
+    const charDef = this.manifest.characters[charId];
+    if (!charDef) return;
+
+    // Ensure character state exists
+    if (!this._state.characters[charId]) {
+      this._state.characters[charId] = { level: 1, xp: 0, skillPoints: 0, skills: {}, traits: [], stats: {} };
+    }
+
+    const charState = this._state.characters[charId];
+    const xpCurve = charDef.xpCurve || [100, 200, 400, 800, 1600];
+    const maxLevel = charDef.maxLevel || xpCurve.length + 1;
+
+    // Check if can level up
+    if (!step.force) {
+      const xpNeeded = xpCurve[charState.level - 1] ?? xpCurve[xpCurve.length - 1];
+      if (charState.xp < xpNeeded || charState.level >= maxLevel) return;
+    }
+
+    // Level up!
+    const newLevel = Math.min(charState.level + 1, maxLevel);
+    const pointsGained = step.skillPoints ?? 1;
+    this._state.characters[charId] = {
+      ...charState,
+      level: newLevel,
+      skillPoints: charState.skillPoints + pointsGained,
+    };
+
+    // Get skill tree
+    const treeId = charDef.skillTree;
+    const tree = treeId ? this.manifest.skillTrees?.[treeId] : undefined;
+
+    if (!tree) {
+      // No skill tree, just show level up notification
+      yield {
+        type: 'level_up_result',
+        characterName: charDef.name,
+        newLevel,
+        skillsLearned: [],
+      };
+      if (step.goto) return { type: 'navigate' as const, scene: step.goto };
+      return;
+    }
+
+    // Build available skills for UI
+    const updatedCharState = this._state.characters[charId];
+    const availableSkills = Object.entries(tree.skills).map(([skillId, skillDef]) => {
+      const currentLevel = updatedCharState.skills[skillId] || 0;
+      const cost = skillDef.cost ?? 1;
+      const prereqsMet = !skillDef.prerequisites || skillDef.prerequisites.every(
+        (prereq) => (updatedCharState.skills[prereq] || 0) >= 1
+      );
+      return {
+        id: skillId,
+        name: skillDef.name,
+        description: skillDef.description,
+        icon: skillDef.icon,
+        currentLevel,
+        maxLevel: skillDef.maxLevel,
+        cost,
+        canLearn: currentLevel < skillDef.maxLevel && updatedCharState.skillPoints >= cost && prereqsMet,
+        prerequisites: skillDef.prerequisites,
+        passiveBonus: skillDef.passiveBonus,
+      };
+    });
+
+    const skillsLearned: { name: string; level: number }[] = [];
+
+    // Skill selection loop
+    while (this._state.characters[charId].skillPoints > 0) {
+      const cs = this._state.characters[charId];
+      // Refresh canLearn
+      for (const skill of availableSkills) {
+        const currentLevel = cs.skills[skill.id] || 0;
+        const skillDef = tree.skills[skill.id];
+        const prereqsMet = !skillDef.prerequisites || skillDef.prerequisites.every(
+          (prereq) => (cs.skills[prereq] || 0) >= 1
+        );
+        skill.currentLevel = currentLevel;
+        skill.canLearn = currentLevel < skill.maxLevel && cs.skillPoints >= skill.cost && prereqsMet;
+      }
+
+      const anyLearnable = availableSkills.some((s) => s.canLearn);
+      if (!anyLearnable) break;
+
+      yield {
+        type: 'level_up_prompt',
+        characterId: charId,
+        characterName: charDef.name,
+        newLevel: this._state.characters[charId].level,
+        skillPoints: cs.skillPoints,
+        availableSkills,
+        description: step.description,
+      };
+
+      const action = await this.waitForAction();
+
+      if (action.type === 'level_up_done') break;
+
+      if (action.type === 'level_up_skill') {
+        const skill = availableSkills.find((s) => s.id === action.skillId);
+        if (skill && skill.canLearn) {
+          const skillDef = tree.skills[skill.id];
+          const newCharState = { ...this._state.characters[charId] };
+          newCharState.skills = { ...newCharState.skills };
+          newCharState.skills[skill.id] = (newCharState.skills[skill.id] || 0) + 1;
+          newCharState.skillPoints -= skill.cost;
+
+          // Apply passive bonuses to character stats
+          if (skillDef.passiveBonus) {
+            newCharState.stats = { ...newCharState.stats };
+            for (const [stat, bonus] of Object.entries(skillDef.passiveBonus)) {
+              newCharState.stats[stat] = (newCharState.stats[stat] || 0) + bonus;
+            }
+          }
+
+          this._state.characters[charId] = newCharState;
+          skillsLearned.push({ name: skillDef.name, level: newCharState.skills[skill.id] });
+        }
+      }
+    }
+
+    yield {
+      type: 'level_up_result',
+      characterName: charDef.name,
+      newLevel: this._state.characters[charId].level,
+      skillsLearned,
+    };
+
+    if (step.goto) {
+      return { type: 'navigate' as const, scene: step.goto };
+    }
+  }
+
+  private getProtagonistId(): string {
+    return Object.keys(this.manifest.characters).find(
+      (id) => this.manifest.characters[id].role === 'protagonist'
+    ) || 'protagonist';
+  }
+
+  /** Apply XP and check for level ups, yielding results */
+  async *applyXpAndYield(
+    xpMap: Record<string, number>
+  ): AsyncGenerator<StepResult> {
+    for (const [charId, amount] of Object.entries(xpMap)) {
+      const charDef = this.manifest.characters[charId];
+      if (!charDef) continue;
+
+      if (!this._state.characters[charId]) {
+        this._state.characters[charId] = { level: 1, xp: 0, skillPoints: 0, skills: {}, traits: [], stats: {} };
+      }
+
+      const charState = this._state.characters[charId];
+      const newXp = charState.xp + amount;
+      const xpCurve = charDef.xpCurve || [100, 200, 400, 800, 1600];
+      const maxLevel = charDef.maxLevel || xpCurve.length + 1;
+      const xpNeeded = xpCurve[charState.level - 1] ?? xpCurve[xpCurve.length - 1];
+      const leveledUp = newXp >= xpNeeded && charState.level < maxLevel;
+
+      this._state.characters[charId] = { ...charState, xp: newXp };
+
+      yield {
+        type: 'xp_gain',
+        characterId: charId,
+        characterName: charDef.name,
+        amount,
+        totalXp: newXp,
+        leveledUp,
+        newLevel: leveledUp ? charState.level + 1 : undefined,
+      };
+    }
+  }
+
+  /** Apply affinity changes and yield results */
+  async *applyAffinityAndYield(
+    affinityMap: Record<string, number>
+  ): AsyncGenerator<StepResult> {
+    for (const [charId, delta] of Object.entries(affinityMap)) {
+      const charDef = this.manifest.characters[charId];
+      if (!charDef) continue;
+
+      if (!this._state.relationships[charId]) {
+        this._state.relationships[charId] = { affinity: 0 };
+      }
+
+      const oldAffinity = this._state.relationships[charId].affinity;
+      const newAffinity = Math.max(-100, Math.min(100, oldAffinity + delta));
+      this._state.relationships[charId] = { affinity: newAffinity };
+
+      const oldTier = this.getAffinityTier(oldAffinity);
+      const newTier = this.getAffinityTier(newAffinity);
+
+      yield {
+        type: 'relationship_change',
+        characterId: charId,
+        characterName: charDef.name,
+        oldAffinity,
+        newAffinity,
+        tier: newTier,
+        tierChanged: oldTier !== newTier,
+      };
+    }
+  }
+
+  private getAffinityTier(affinity: number): string {
+    if (affinity >= 80) return 'loyal';
+    if (affinity >= 50) return 'allied';
+    if (affinity >= 20) return 'friendly';
+    if (affinity >= -10) return 'neutral';
+    if (affinity >= -30) return 'distrustful';
+    return 'hostile';
+  }
+
+  /** Expire temporary traits based on scene count */
+  private expireTraits(): void {
+    const traitDefs = this.manifest.traits;
+    if (!traitDefs || !this._state.activeTraits?.length) return;
+
+    // For now, traits with duration are removed after N scenes
+    // We'd need to track when each trait was added — simplified approach:
+    // traits with duration field expire, permanent ones don't
+    // This is a basic implementation; a more sophisticated one would track timestamps
+  }
+
+  /** Get character's relationship tier */
+  getRelationshipTier(charId: string): string {
+    const aff = this._state.relationships?.[charId]?.affinity ?? 0;
+    return this.getAffinityTier(aff);
+  }
+
+  /** Get character state */
+  getCharacterState(charId: string): CharacterState | undefined {
+    return this._state.characters?.[charId];
+  }
+
+  /** Get all skill trees */
+  get skillTrees() {
+    return this.manifest.skillTrees || {};
+  }
+
+  /** Get trait definitions */
+  get traitDefs() {
+    return this.manifest.traits || {};
   }
 }

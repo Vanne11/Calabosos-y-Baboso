@@ -10,6 +10,8 @@ import type {
   CharacterDef,
   TimeCycle,
   ItemDef,
+  SkillTreeDef,
+  TraitDef,
 } from '../../types/game';
 
 // --- Proyecto del editor ---
@@ -25,6 +27,8 @@ export interface EditorProject {
   initialFlags: Record<string, boolean>;
   initialInventory: string[];
   items: Record<string, ItemDef>;
+  skillTrees: Record<string, SkillTreeDef>;
+  traits: Record<string, TraitDef>;
   time: TimeCycle;
   createdAt: number;
   updatedAt: number;
@@ -74,6 +78,8 @@ export function createDefaultProject(): EditorProject {
     initialFlags: {},
     initialInventory: [],
     items: {},
+    skillTrees: {},
+    traits: {},
     time: {
       duration: 5,
       phases: ['morning', 'afternoon', 'night'],
@@ -110,6 +116,12 @@ export function projectToManifest(project: EditorProject): GameManifest {
   };
   if (Object.keys(project.items).length > 0) {
     manifest.items = project.items;
+  }
+  if (Object.keys(project.skillTrees).length > 0) {
+    manifest.skillTrees = project.skillTrees;
+  }
+  if (Object.keys(project.traits).length > 0) {
+    manifest.traits = project.traits;
   }
   return manifest;
 }
@@ -189,6 +201,8 @@ export function getNodeDestinations(steps: SequenceStep[]): string[] {
       for (const opt of step.options) {
         if (opt.goto) destinations.push(opt.goto);
       }
+    } else if (step.type === 'level_up' && step.goto) {
+      destinations.push(step.goto);
     }
   }
   return [...new Set(destinations)];

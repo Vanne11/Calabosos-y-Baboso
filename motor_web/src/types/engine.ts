@@ -1,6 +1,19 @@
 // types/engine.ts
 // Tipos para el motor del juego y comunicación motor↔UI
 
+export interface CharacterState {
+  level: number;
+  xp: number;
+  skillPoints: number;
+  skills: Record<string, number>; // skillId → nivel actual
+  traits: string[]; // IDs de traits activos
+  stats: Record<string, number>; // Stats propias del personaje (HP, ataque, etc.)
+}
+
+export interface RelationshipState {
+  affinity: number; // -100 a 100
+}
+
 export interface PlayerState {
   stats: Record<string, number | string>;
   flags: Record<string, boolean>;
@@ -11,6 +24,14 @@ export interface PlayerState {
     actions: number;
     cycles: number;
   };
+  /** Estado por personaje (protagonista, compañeros, NPCs) */
+  characters: Record<string, CharacterState>;
+  /** Relaciones con NPCs */
+  relationships: Record<string, RelationshipState>;
+  /** Rasgos activos globales (del protagonista) */
+  activeTraits: string[];
+  /** Contador de escenas para expiración de traits temporales */
+  sceneCount: number;
 }
 
 // Lo que el motor produce paso a paso
@@ -41,7 +62,12 @@ export type StepResult =
   | ExamineResult
   | UseItemPrompt
   | UseItemResult
-  | TimedChoicePrompt;
+  | TimedChoicePrompt
+  | LevelUpPrompt
+  | LevelUpResult
+  | RelationshipChangeResult
+  | TraitChangeResult
+  | XpGainResult;
 
 export interface ScenarioResult {
   type: 'scenario';
@@ -262,6 +288,62 @@ export interface TimedChoicePrompt {
   timeoutText?: string;
 }
 
+// --- LevelUp ---
+
+export interface LevelUpPrompt {
+  type: 'level_up_prompt';
+  characterId: string;
+  characterName: string;
+  newLevel: number;
+  skillPoints: number;
+  availableSkills: {
+    id: string;
+    name: string;
+    description: string;
+    icon?: string;
+    currentLevel: number;
+    maxLevel: number;
+    cost: number;
+    canLearn: boolean; // tiene suficientes puntos y prereqs
+    prerequisites?: string[];
+    passiveBonus?: Record<string, number>;
+  }[];
+  description?: string;
+}
+
+export interface LevelUpResult {
+  type: 'level_up_result';
+  characterName: string;
+  newLevel: number;
+  skillsLearned: { name: string; level: number }[];
+}
+
+export interface RelationshipChangeResult {
+  type: 'relationship_change';
+  characterId: string;
+  characterName: string;
+  oldAffinity: number;
+  newAffinity: number;
+  tier: string;
+  tierChanged: boolean;
+}
+
+export interface TraitChangeResult {
+  type: 'trait_change';
+  added: { id: string; name: string; icon?: string }[];
+  removed: { id: string; name: string }[];
+}
+
+export interface XpGainResult {
+  type: 'xp_gain';
+  characterId: string;
+  characterName: string;
+  amount: number;
+  totalXp: number;
+  leveledUp: boolean;
+  newLevel?: number;
+}
+
 // Acciones del jugador enviadas al motor
 export type PlayerAction =
   | { type: 'choose'; index: number }
@@ -279,4 +361,6 @@ export type PlayerAction =
   | { type: 'examine_select'; subjectId: string }
   | { type: 'examine_exit' }
   | { type: 'use_item_on'; itemId: string; targetId: string }
-  | { type: 'use_item_exit' };
+  | { type: 'use_item_exit' }
+  | { type: 'level_up_skill'; skillId: string }
+  | { type: 'level_up_done' };

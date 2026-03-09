@@ -26,6 +26,8 @@ function convertToEditorProject(manifest: GameManifest, scenesFile: ScenesFile):
     initialFlags: manifest.initialFlags || {},
     initialInventory: manifest.initialInventory || [],
     items: manifest.items || {},
+    skillTrees: manifest.skillTrees || {},
+    traits: manifest.traits || {},
     time: manifest.time || { duration: 5, phases: ['morning', 'afternoon', 'night'], initial: 'morning' },
   };
 

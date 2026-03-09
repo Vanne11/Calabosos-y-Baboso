@@ -175,6 +175,14 @@ const EditorPreview: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         }
         result.push({ text: '', type: 'normal' });
       }
+
+      if (step.type === 'level_up') {
+        const charLabel = step.characterId || 'protagonista';
+        result.push({ text: `[⬆️ Subir Nivel] ${charLabel}${step.force ? ' (forzado)' : ''}`, type: 'success' });
+        if (step.description) result.push({ text: `  ${step.description}`, type: 'normal' });
+        if (step.goto) result.push({ text: `  -> ${step.goto}`, type: 'option' });
+        result.push({ text: '', type: 'normal' });
+      }
     }
 
     return result;

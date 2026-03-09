@@ -32,6 +32,30 @@ const CompanionName = styled.span`
   flex-shrink: 0;
 `;
 
+const LevelBadge = styled.span`
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: ${(props) => props.theme.background};
+  background-color: ${(props) => props.theme.accent};
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -4px;
+  flex-shrink: 0;
+`;
+
+const TraitBadge = styled.span`
+  font-size: 0.7rem;
+  padding: 0 0.3rem;
+  border-radius: 3px;
+  background-color: ${(props) => props.theme.widgets.border};
+  color: ${(props) => props.theme.textSecondary};
+  flex-shrink: 0;
+`;
+
 const PlayerName = styled.span`
   font-size: 0.85rem;
   font-weight: bold;
@@ -104,6 +128,14 @@ const StatusBar: React.FC = () => {
   // Active companions (role-based, dynamic)
   const companions = engine?.getActiveCompanions?.() || [];
 
+  // Character states
+  const protagonistId = Object.keys(engine?.characters || {}).find(
+    (id) => engine?.characters[id]?.role === 'protagonist'
+  ) || 'protagonist';
+  const protagonistState = playerState.characters?.[protagonistId];
+  const activeTraits = playerState.activeTraits || [];
+  const traitDefs = engine?.traitDefs || {};
+
   const resolveImage = (img?: string) => {
     if (!img) return null;
     return img.startsWith(gameBasePath) ? img : `${gameBasePath}/${img}`;
@@ -113,13 +145,28 @@ const StatusBar: React.FC = () => {
     <Bar>
       <PartyGroup>
         {protagonistImage && <HoverPreview key={protagonistImage} src={protagonistImage} alt="Protagonista" size={32} />}
+        {protagonistState && protagonistState.level > 1 && (
+          <LevelBadge title={`Nivel ${protagonistState.level}`}>{protagonistState.level}</LevelBadge>
+        )}
         {playerName && <PlayerName>{playerName}</PlayerName>}
+        {activeTraits.slice(0, 3).map((traitId) => {
+          const def = traitDefs[traitId];
+          return def ? (
+            <TraitBadge key={traitId} title={def.description}>
+              {def.icon || '🔮'} {def.name}
+            </TraitBadge>
+          ) : null;
+        })}
         {companions.map((comp) => {
           const compImg = resolveImage(comp.image);
+          const compState = playerState.characters?.[comp.id];
           return (
             <React.Fragment key={comp.id}>
               <Separator />
               {compImg && <HoverPreview src={compImg} alt={comp.name} size={32} />}
+              {compState && compState.level > 1 && (
+                <LevelBadge title={`Nivel ${compState.level}`}>{compState.level}</LevelBadge>
+              )}
               <CompanionName>{comp.name}</CompanionName>
             </React.Fragment>
           );

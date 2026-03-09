@@ -120,6 +120,78 @@ const EffectsEditor: React.FC<EffectsEditorProps> = ({ effects, onChange, label 
         tags={removeInventory}
         onChange={(inv) => onChange({ ...effects, removeInventory: inv.length ? inv : undefined })}
       />
+
+      {/* XP */}
+      <SubSection>
+        <SubLabel>
+          XP (personaje: cantidad)
+          <AddBtn onClick={() => onChange({ ...effects, xp: { ...(effects.xp || {}), protagonista: 10 } })}>+</AddBtn>
+        </SubLabel>
+        {Object.entries(effects.xp || {}).map(([charId, amount]) => (
+          <StatRow key={charId}>
+            <StatInput
+              value={charId}
+              onChange={(e) => {
+                const { [charId]: v, ...rest } = effects.xp || {};
+                onChange({ ...effects, xp: { ...rest, [e.target.value]: v } });
+              }}
+              placeholder="personaje"
+            />
+            <StatInput
+              type="number"
+              value={amount}
+              onChange={(e) => onChange({ ...effects, xp: { ...(effects.xp || {}), [charId]: parseInt(e.target.value) || 0 } })}
+              style={{ width: 60 }}
+            />
+            <RemoveBtn onClick={() => {
+              const { [charId]: _, ...rest } = effects.xp || {};
+              onChange({ ...effects, xp: Object.keys(rest).length ? rest : undefined });
+            }}>x</RemoveBtn>
+          </StatRow>
+        ))}
+      </SubSection>
+
+      {/* Affinity */}
+      <SubSection>
+        <SubLabel>
+          Afinidad (NPC: delta)
+          <AddBtn onClick={() => onChange({ ...effects, affinity: { ...(effects.affinity || {}), npc: 5 } })}>+</AddBtn>
+        </SubLabel>
+        {Object.entries(effects.affinity || {}).map(([charId, delta]) => (
+          <StatRow key={charId}>
+            <StatInput
+              value={charId}
+              onChange={(e) => {
+                const { [charId]: v, ...rest } = effects.affinity || {};
+                onChange({ ...effects, affinity: { ...rest, [e.target.value]: v } });
+              }}
+              placeholder="npc_id"
+            />
+            <StatInput
+              type="number"
+              value={delta}
+              onChange={(e) => onChange({ ...effects, affinity: { ...(effects.affinity || {}), [charId]: parseInt(e.target.value) || 0 } })}
+              style={{ width: 60 }}
+            />
+            <RemoveBtn onClick={() => {
+              const { [charId]: _, ...rest } = effects.affinity || {};
+              onChange({ ...effects, affinity: Object.keys(rest).length ? rest : undefined });
+            }}>x</RemoveBtn>
+          </StatRow>
+        ))}
+      </SubSection>
+
+      {/* Traits */}
+      <TagInput
+        label="Añadir rasgos"
+        tags={effects.addTraits || []}
+        onChange={(tags) => onChange({ ...effects, addTraits: tags.length ? tags : undefined })}
+      />
+      <TagInput
+        label="Quitar rasgos"
+        tags={effects.removeTraits || []}
+        onChange={(tags) => onChange({ ...effects, removeTraits: tags.length ? tags : undefined })}
+      />
     </Wrapper>
   );
 };

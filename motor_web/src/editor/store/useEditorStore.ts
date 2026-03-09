@@ -184,6 +184,13 @@ function createDefaultStep(type: SequenceStep['type']): SequenceStep {
           { text: 'Otra opción', goto: '' },
         ],
       };
+    case 'level_up':
+      return {
+        type: 'level_up',
+        description: '¡Has ganado suficiente experiencia!',
+        skillPoints: 1,
+        goto: '',
+      };
   }
 }
 

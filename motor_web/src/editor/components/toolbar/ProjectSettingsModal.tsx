@@ -8,7 +8,7 @@ import TerminalInput from '../shared/TerminalInput';
 import TerminalButton from '../shared/TerminalButton';
 import TagInput from '../shared/TagInput';
 import AssetPicker from '../shared/AssetPicker';
-import type { CharacterDef, CharacterRole, ItemDef } from '../../../types/game';
+import type { CharacterDef, CharacterRole, ItemDef, SkillTreeDef, SkillDef, TraitDef } from '../../../types/game';
 
 const ROLE_OPTIONS: { value: CharacterRole; label: string; hint: string }[] = [
   { value: 'npc', label: 'NPC', hint: 'Personaje normal del mundo' },
@@ -24,7 +24,7 @@ interface ProjectSettingsModalProps {
 const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) => {
   const project = useEditorStore((s) => s.project);
   const updateProject = useEditorStore((s) => s.updateProject);
-  const [tab, setTab] = useState<'general' | 'characters' | 'items' | 'stats'>('general');
+  const [tab, setTab] = useState<'general' | 'characters' | 'items' | 'stats' | 'skills' | 'traits'>('general');
 
   if (!project) return null;
 
@@ -41,6 +41,8 @@ const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) 
           <Tab $active={tab === 'characters'} onClick={() => setTab('characters')}>Personajes</Tab>
           <Tab $active={tab === 'items'} onClick={() => setTab('items')}>Items</Tab>
           <Tab $active={tab === 'stats'} onClick={() => setTab('stats')}>Stats</Tab>
+          <Tab $active={tab === 'skills'} onClick={() => setTab('skills')}>Skills</Tab>
+          <Tab $active={tab === 'traits'} onClick={() => setTab('traits')}>Rasgos</Tab>
         </TabBar>
 
         <ModalBody>
@@ -136,6 +138,45 @@ const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) 
                         />
                         <RoleHint>Cuando este flag sea true, el compañero aparece en la barra de estado junto al protagonista</RoleHint>
                       </FieldGroup>
+                    )}
+
+                    {/* Skill tree (protagonista/compañero) */}
+                    {(role === 'protagonist' || role === 'companion') && (
+                      <>
+                        <FieldGroup>
+                          <FieldLabel>Árbol de habilidades</FieldLabel>
+                          <RoleSelect
+                            value={char.skillTree || ''}
+                            onChange={(e) => updateChar({ skillTree: e.target.value || undefined })}
+                          >
+                            <option value="">Ninguno</option>
+                            {Object.keys(project.skillTrees || {}).map((treeId) => (
+                              <option key={treeId} value={treeId}>{project.skillTrees[treeId].name}</option>
+                            ))}
+                          </RoleSelect>
+                        </FieldGroup>
+                        <FieldGroup>
+                          <FieldLabel>Nivel máximo</FieldLabel>
+                          <StatInput
+                            type="number"
+                            min={1}
+                            value={char.maxLevel || 10}
+                            onChange={(e) => updateChar({ maxLevel: parseInt(e.target.value) || 10 })}
+                            style={{ width: 60 }}
+                          />
+                        </FieldGroup>
+                        <FieldGroup>
+                          <FieldLabel>Curva XP (separado por comas)</FieldLabel>
+                          <StatInput
+                            value={(char.xpCurve || [100, 200, 400, 800]).join(', ')}
+                            onChange={(e) => {
+                              const nums = e.target.value.split(',').map((s) => parseInt(s.trim())).filter((n) => !isNaN(n));
+                              updateChar({ xpCurve: nums.length ? nums : undefined });
+                            }}
+                            placeholder="100, 200, 400, 800"
+                          />
+                        </FieldGroup>
+                      </>
                     )}
 
                     {/* Protagonista: imágenes alternativas */}
@@ -350,6 +391,253 @@ const ProjectSettingsModal: React.FC<ProjectSettingsModalProps> = ({ onClose }) 
                 tags={project.initialInventory}
                 onChange={(initialInventory) => updateProject({ initialInventory })}
               />
+            </Section>
+          )}
+          {tab === 'skills' && (
+            <Section>
+              <RoleHint>
+                Define árboles de habilidades. Asígnalos a personajes en la pestaña "Personajes".
+              </RoleHint>
+              {Object.entries(project.skillTrees || {}).map(([treeId, tree]) => {
+                const updateTree = (patch: Partial<SkillTreeDef>) => {
+                  updateProject({
+                    skillTrees: { ...project.skillTrees, [treeId]: { ...tree, ...patch } },
+                  });
+                };
+                return (
+                  <CharBlock key={treeId}>
+                    <CharHeader>
+                      <CharId>{treeId}</CharId>
+                      <DelBtn onClick={() => {
+                        const { [treeId]: _, ...rest } = project.skillTrees;
+                        updateProject({ skillTrees: rest });
+                      }}>x</DelBtn>
+                    </CharHeader>
+                    <TerminalInput
+                      label="Nombre"
+                      value={tree.name}
+                      onChange={(name) => updateTree({ name })}
+                    />
+                    <TerminalInput
+                      label="Descripción"
+                      value={tree.description || ''}
+                      onChange={(description) => updateTree({ description })}
+                    />
+                    <SubTitle>Habilidades</SubTitle>
+                    {Object.entries(tree.skills).map(([skillId, skill]) => {
+                      const updateSkill = (patch: Partial<SkillDef>) => {
+                        updateTree({
+                          skills: { ...tree.skills, [skillId]: { ...skill, ...patch } },
+                        });
+                      };
+                      return (
+                        <SkillBlock key={skillId}>
+                          <StatRow>
+                            <CharId>{skillId}</CharId>
+                            <DelBtn onClick={() => {
+                              const { [skillId]: _, ...rest } = tree.skills;
+                              updateTree({ skills: rest });
+                            }}>x</DelBtn>
+                          </StatRow>
+                          <TerminalInput
+                            label="Nombre"
+                            value={skill.name}
+                            onChange={(name) => updateSkill({ name })}
+                          />
+                          <TerminalInput
+                            label="Descripción"
+                            value={skill.description}
+                            onChange={(description) => updateSkill({ description })}
+                          />
+                          <StatRow>
+                            <FieldLabel>Nivel max:</FieldLabel>
+                            <StatInput
+                              type="number"
+                              min={1}
+                              value={skill.maxLevel}
+                              onChange={(e) => updateSkill({ maxLevel: parseInt(e.target.value) || 1 })}
+                              style={{ width: 50 }}
+                            />
+                            <FieldLabel>Costo:</FieldLabel>
+                            <StatInput
+                              type="number"
+                              min={1}
+                              value={skill.cost ?? 1}
+                              onChange={(e) => updateSkill({ cost: parseInt(e.target.value) || 1 })}
+                              style={{ width: 50 }}
+                            />
+                          </StatRow>
+                          <TerminalInput
+                            label="Prerrequisitos (IDs, comas)"
+                            value={(skill.prerequisites || []).join(', ')}
+                            onChange={(val) => {
+                              const prereqs = val.split(',').map((s) => s.trim()).filter(Boolean);
+                              updateSkill({ prerequisites: prereqs.length ? prereqs : undefined });
+                            }}
+                          />
+                          <TerminalInput
+                            label="Icono"
+                            value={skill.icon || ''}
+                            onChange={(icon) => updateSkill({ icon: icon || undefined })}
+                          />
+                        </SkillBlock>
+                      );
+                    })}
+                    <TerminalButton
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const newId = `skill_${Object.keys(tree.skills).length + 1}`;
+                        updateTree({
+                          skills: {
+                            ...tree.skills,
+                            [newId]: { name: 'Nueva Habilidad', description: 'Descripción...', maxLevel: 3, cost: 1 },
+                          },
+                        });
+                      }}
+                    >
+                      + Agregar habilidad
+                    </TerminalButton>
+                  </CharBlock>
+                );
+              })}
+              <TerminalButton
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const newId = `tree_${Object.keys(project.skillTrees || {}).length + 1}`;
+                  updateProject({
+                    skillTrees: {
+                      ...(project.skillTrees || {}),
+                      [newId]: { name: 'Nuevo Árbol', skills: {} },
+                    },
+                  });
+                }}
+              >
+                + Agregar árbol de habilidades
+              </TerminalButton>
+            </Section>
+          )}
+
+          {tab === 'traits' && (
+            <Section>
+              <RoleHint>
+                Define rasgos/estados que pueden aplicarse a personajes. Úsalos en effects con addTraits/removeTraits.
+              </RoleHint>
+              {Object.entries(project.traits || {}).map(([traitId, trait]) => {
+                const updateTrait = (patch: Partial<TraitDef>) => {
+                  updateProject({
+                    traits: { ...project.traits, [traitId]: { ...trait, ...patch } },
+                  });
+                };
+                return (
+                  <CharBlock key={traitId}>
+                    <CharHeader>
+                      <CharId>{traitId}</CharId>
+                      <DelBtn onClick={() => {
+                        const { [traitId]: _, ...rest } = project.traits;
+                        updateProject({ traits: rest });
+                      }}>x</DelBtn>
+                    </CharHeader>
+                    <TerminalInput
+                      label="Nombre"
+                      value={trait.name}
+                      onChange={(name) => updateTrait({ name })}
+                    />
+                    <TerminalInput
+                      label="Descripción"
+                      value={trait.description}
+                      onChange={(description) => updateTrait({ description })}
+                    />
+                    <StatRow>
+                      <TerminalInput
+                        label="Icono"
+                        value={trait.icon || ''}
+                        onChange={(icon) => updateTrait({ icon: icon || undefined })}
+                      />
+                    </StatRow>
+                    <StatRow>
+                      <FieldLabel>Mod. dados:</FieldLabel>
+                      <StatInput
+                        type="number"
+                        value={trait.diceModifier || 0}
+                        onChange={(e) => updateTrait({ diceModifier: parseInt(e.target.value) || undefined })}
+                        style={{ width: 50 }}
+                      />
+                      <FlagToggle
+                        $active={trait.permanent ?? true}
+                        onClick={() => updateTrait({ permanent: !trait.permanent })}
+                      >
+                        {trait.permanent !== false ? 'Permanente' : 'Temporal'}
+                      </FlagToggle>
+                    </StatRow>
+                    {!trait.permanent && (
+                      <StatRow>
+                        <FieldLabel>Duración (escenas):</FieldLabel>
+                        <StatInput
+                          type="number"
+                          min={1}
+                          value={trait.duration || 5}
+                          onChange={(e) => updateTrait({ duration: parseInt(e.target.value) || 5 })}
+                          style={{ width: 50 }}
+                        />
+                      </StatRow>
+                    )}
+                    <SubTitle>Modificadores de stats</SubTitle>
+                    {Object.entries(trait.statModifiers || {}).map(([stat, val]) => (
+                      <StatRow key={stat}>
+                        <StatInput
+                          value={stat}
+                          onChange={(e) => {
+                            const { [stat]: oldVal, ...rest } = trait.statModifiers || {};
+                            updateTrait({ statModifiers: { ...rest, [e.target.value]: oldVal } });
+                          }}
+                        />
+                        <StatInput
+                          type="number"
+                          value={val}
+                          onChange={(e) => {
+                            updateTrait({
+                              statModifiers: { ...(trait.statModifiers || {}), [stat]: parseInt(e.target.value) || 0 },
+                            });
+                          }}
+                          style={{ width: 60 }}
+                        />
+                        <DelBtn onClick={() => {
+                          const { [stat]: _, ...rest } = trait.statModifiers || {};
+                          updateTrait({ statModifiers: Object.keys(rest).length ? rest : undefined });
+                        }}>x</DelBtn>
+                      </StatRow>
+                    ))}
+                    <TerminalButton
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        updateTrait({
+                          statModifiers: { ...(trait.statModifiers || {}), nueva_stat: 0 },
+                        });
+                      }}
+                    >
+                      + Mod. stat
+                    </TerminalButton>
+                  </CharBlock>
+                );
+              })}
+              <TerminalButton
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const newId = `trait_${Object.keys(project.traits || {}).length + 1}`;
+                  updateProject({
+                    traits: {
+                      ...(project.traits || {}),
+                      [newId]: { name: 'Nuevo Rasgo', description: 'Descripción del rasgo...', permanent: true },
+                    },
+                  });
+                }}
+              >
+                + Agregar rasgo
+              </TerminalButton>
             </Section>
           )}
         </ModalBody>
@@ -580,6 +868,16 @@ const RoleHint = styled.span`
   color: ${(p) => p.theme.terminal.accentDim};
   font-style: italic;
   line-height: 1.3;
+`;
+
+const SkillBlock = styled.div`
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed ${(p) => p.theme.terminal.border};
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `;
 
 const AltImageRow = styled.div`

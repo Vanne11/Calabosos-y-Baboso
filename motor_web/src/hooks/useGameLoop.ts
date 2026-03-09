@@ -56,7 +56,8 @@ export function useGameLoop() {
         value.type === 'puzzle_prompt' ||
         value.type === 'examine_prompt' ||
         value.type === 'use_item_prompt' ||
-        value.type === 'timed_choice_prompt'
+        value.type === 'timed_choice_prompt' ||
+        value.type === 'level_up_prompt'
       ) {
         break;
       }
@@ -415,6 +416,85 @@ export function useGameLoop() {
       case 'timed_choice_prompt':
         setPendingResult(result);
         break;
+
+      case 'level_up_prompt':
+        setPendingResult(result);
+        break;
+
+      case 'level_up_result': {
+        const lvlColor = 'green';
+        addEntry({
+          type: 'system',
+          content: `[bold ${lvlColor}]⬆️ ¡${result.characterName} ha subido al nivel ${result.newLevel}![/bold ${lvlColor}]`,
+        });
+        if (result.skillsLearned.length > 0) {
+          for (const skill of result.skillsLearned) {
+            addEntry({
+              type: 'system',
+              content: `[${lvlColor}]  ✦ ${skill.name} (Nivel ${skill.level})[/${lvlColor}]`,
+            });
+          }
+        }
+        addEntry({ type: 'system', content: '' });
+        setShowEnterPrompt(true);
+        await waitForEnterKey();
+        setShowEnterPrompt(false);
+        useAppStore.getState().fadeOldEntries();
+        break;
+      }
+
+      case 'xp_gain': {
+        const xpColor = result.leveledUp ? 'green' : 'cyan';
+        addEntry({
+          type: 'system',
+          content: `[${xpColor}]✨ ${result.characterName} gana ${result.amount} XP (${result.totalXp} total)[/${xpColor}]`,
+        });
+        if (result.leveledUp) {
+          addEntry({
+            type: 'system',
+            content: `[bold green]⬆️ ¡${result.characterName} sube al nivel ${result.newLevel}![/bold green]`,
+          });
+        }
+        break;
+      }
+
+      case 'relationship_change': {
+        const relDelta = result.newAffinity - result.oldAffinity;
+        const relColor = relDelta > 0 ? 'green' : 'red';
+        const relIcon = relDelta > 0 ? '💚' : '💔';
+        const sign = relDelta > 0 ? '+' : '';
+        addEntry({
+          type: 'system',
+          content: `[${relColor}]${relIcon} ${result.characterName}: ${sign}${relDelta} afinidad[/${relColor}]`,
+        });
+        if (result.tierChanged) {
+          const tierNames: Record<string, string> = {
+            hostile: 'Hostil', distrustful: 'Desconfiado', neutral: 'Neutral',
+            friendly: 'Amigable', allied: 'Aliado', loyal: 'Leal',
+          };
+          addEntry({
+            type: 'system',
+            content: `[bold yellow]📊 Relación con ${result.characterName}: ${tierNames[result.tier] || result.tier}[/bold yellow]`,
+          });
+        }
+        break;
+      }
+
+      case 'trait_change': {
+        for (const trait of result.added) {
+          addEntry({
+            type: 'system',
+            content: `[bold purple]${trait.icon || '🔮'} Nuevo rasgo: ${trait.name}[/bold purple]`,
+          });
+        }
+        for (const trait of result.removed) {
+          addEntry({
+            type: 'system',
+            content: `[dim]✕ Rasgo perdido: ${trait.name}[/dim]`,
+          });
+        }
+        break;
+      }
 
       case 'game_end':
         addEntry({
