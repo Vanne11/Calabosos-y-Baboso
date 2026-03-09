@@ -68,6 +68,19 @@ export class GameEngine {
     return this.manifest.items || {};
   }
 
+  private stackInventory(): { id: string; name: string; count: number }[] {
+    const items = this.manifest.items || {};
+    const map = new Map<string, number>();
+    for (const id of this._state.inventory) {
+      map.set(id, (map.get(id) || 0) + 1);
+    }
+    return Array.from(map, ([id, count]) => ({
+      id,
+      name: items[id]?.name || id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+      count,
+    }));
+  }
+
   get currentSceneImage(): string | undefined {
     return this.scenes.scenes[this._currentScene]?.scenario?.image;
   }
@@ -469,15 +482,57 @@ export class GameEngine {
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     const currency = step.currency;
     const sellRatio = step.sellRatio ?? 0.5;
-    // Track haggled prices per item index (modified prices from haggling)
     const hagbledPrices: Record<number, number> = {};
-    // Track which items have already been haggled (only 1 attempt per item)
     const haggledItems = new Set<number>();
+
+    // Contadores de intentos por mecánica
+    const attempts: Record<string, number> = { haggle: 0, steal: 0, deceive: 0 };
+
+    const getAttemptsLeft = (key: 'haggle' | 'steal' | 'deceive'): number | undefined => {
+      const action = step[key];
+      if (!action || !action.maxAttempts) return undefined; // ilimitado
+      return Math.max(0, action.maxAttempts - attempts[key]);
+    };
+
+    const getCurrentDifficulty = (key: 'haggle' | 'steal' | 'deceive'): number => {
+      const action = step[key]!;
+      return action.difficulty + (action.difficultyIncrease ?? 0) * attempts[key];
+    };
+
+    // Helper para bust: aplica efectos, muestra texto, navega a escena
+    const doBust = async function* (
+      self: GameEngine,
+      action: NonNullable<typeof step.haggle>,
+      actionType: 'haggle' | 'steal' | 'deceive'
+    ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | undefined> {
+      if (action.bustEffects) {
+        self._state = applyEffects(self._state, action.bustEffects);
+        self.syncSpecialStats();
+        yield { type: 'effects', ...action.bustEffects };
+      }
+      const bustLabel = actionType === 'haggle' ? '🗣️ Regateo' : actionType === 'steal' ? '🤫 Robo' : '🎭 Engaño';
+      yield {
+        type: 'shop_dice_result',
+        action: actionType,
+        success: false,
+        roll: 0, modifier: 0, total: 0,
+        difficulty: 0,
+        text: action.bustText || '¡Te han expulsado de la tienda!',
+      };
+      if (action.bustGoto) {
+        return { type: 'navigate' as const, scene: action.bustGoto };
+      }
+      return undefined;
+    }.bind(null, this);
 
     // Shop loop
     while (true) {
       const currentMoney = typeof this._state.stats[currency] === 'number'
         ? (this._state.stats[currency] as number) : 0;
+
+      const haggleLeft = getAttemptsLeft('haggle');
+      const stealLeft = getAttemptsLeft('steal');
+      const deceiveLeft = getAttemptsLeft('deceive');
 
       yield {
         type: 'shop_prompt',
@@ -496,11 +551,14 @@ export class GameEngine {
           };
         }),
         sellable: step.sellable ?? false,
-        playerInventory: [...this._state.inventory],
+        playerInventory: this.stackInventory(),
         sellRatio,
-        canHaggle: !!step.haggle,
-        canSteal: !!step.steal,
-        canDeceive: !!step.deceive,
+        canHaggle: !!step.haggle && (haggleLeft === undefined || haggleLeft > 0),
+        canSteal: !!step.steal && (stealLeft === undefined || stealLeft > 0),
+        canDeceive: !!step.deceive && (deceiveLeft === undefined || deceiveLeft > 0),
+        haggleLeft,
+        stealLeft,
+        deceiveLeft,
       };
 
       const action = await this.waitForAction();
@@ -535,19 +593,32 @@ export class GameEngine {
       } else if (action.type === 'shop_haggle' && step.haggle) {
         const item = step.items[action.itemIndex];
         if (!item || haggledItems.has(action.itemIndex)) continue;
+        if (haggleLeft !== undefined && haggleLeft <= 0) continue;
+
+        const dc = getCurrentDifficulty('haggle');
+
+        yield {
+          type: 'shop_dice_prompt',
+          action: 'haggle',
+          description: `Regatear: ${item.name}`,
+          stat: step.haggle.stat,
+          difficulty: dc,
+          faces: 20,
+        };
+        await this.waitForAction();
+
+        attempts.haggle++;
         haggledItems.add(action.itemIndex);
 
         const statVal = typeof this._state.stats[step.haggle.stat] === 'number'
           ? (this._state.stats[step.haggle.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, step.haggle.difficulty);
+        const result = resolveRoll(20, statVal, dc);
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
-          // Éxito: descuento 20-50% según lo bien que fue la tirada
           const discount = result.outcome === 'critical_success' ? 0.5 : 0.2;
           hagbledPrices[action.itemIndex] = Math.max(1, Math.floor(item.price * (1 - discount)));
         } else {
-          // Fallo: el tendero sube el precio 20-50%
           const markup = result.outcome === 'critical_failure' ? 0.5 : 0.2;
           hagbledPrices[action.itemIndex] = Math.floor(item.price * (1 + markup));
           if (step.haggle.failEffects) {
@@ -556,10 +627,6 @@ export class GameEngine {
           }
         }
 
-        const text = success
-          ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
-          : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`);
-
         yield {
           type: 'shop_dice_result',
           action: 'haggle',
@@ -567,37 +634,58 @@ export class GameEngine {
           roll: result.roll,
           modifier: result.modifier,
           total: result.total,
-          difficulty: step.haggle.difficulty,
-          text,
+          difficulty: dc,
+          text: success
+            ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
+            : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`),
         };
+
+        // Bust check: si agotó intentos tras un fallo y tiene bustGoto
+        if (!success && step.haggle.bustGoto) {
+          const newLeft = getAttemptsLeft('haggle');
+          if (newLeft !== undefined && newLeft <= 0) {
+            const bustResult = yield* doBust(step.haggle, 'haggle');
+            if (bustResult) return bustResult;
+            break;
+          }
+        }
 
       } else if (action.type === 'shop_steal' && step.steal) {
         const item = step.items[action.itemIndex];
         if (!item) continue;
+        if (stealLeft !== undefined && stealLeft <= 0) continue;
+
+        const dc = getCurrentDifficulty('steal');
+
+        yield {
+          type: 'shop_dice_prompt',
+          action: 'steal',
+          description: `Robar: ${item.name}`,
+          stat: step.steal.stat,
+          difficulty: dc,
+          faces: 20,
+        };
+        await this.waitForAction();
+
+        attempts.steal++;
 
         const statVal = typeof this._state.stats[step.steal.stat] === 'number'
           ? (this._state.stats[step.steal.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, step.steal.difficulty);
+        const result = resolveRoll(20, statVal, dc);
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
-          // Éxito: consigues el item gratis
           this._state = applyEffects(this._state, { inventory: [item.id] });
           if (item.effects) {
             this._state = applyEffects(this._state, item.effects);
           }
           this.syncSpecialStats();
         } else {
-          // Fallo: penalización
           if (step.steal.failEffects) {
             this._state = applyEffects(this._state, step.steal.failEffects);
             this.syncSpecialStats();
           }
         }
-
-        const text = success
-          ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
-          : (step.steal.failText || '¡Te han pillado intentando robar!');
 
         yield {
           type: 'shop_dice_result',
@@ -606,29 +694,51 @@ export class GameEngine {
           roll: result.roll,
           modifier: result.modifier,
           total: result.total,
-          difficulty: step.steal.difficulty,
-          text,
+          difficulty: dc,
+          text: success
+            ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
+            : (step.steal.failText || '¡Te han pillado intentando robar!'),
         };
 
-        // Si fallo con failEffects que incluya goto, salir de la tienda
-        if (!success && step.steal.failEffects) {
-          // El diseñador puede usar failEffects + goto en el step para expulsar
+        // Bust: fallo crítico = bust inmediato, o agotar intentos tras fallo
+        if (!success) {
+          const immediateBust = result.outcome === 'critical_failure' && step.steal.bustGoto;
+          const newLeft = getAttemptsLeft('steal');
+          const exhaustedBust = step.steal.bustGoto && newLeft !== undefined && newLeft <= 0;
+          if (immediateBust || exhaustedBust) {
+            const bustResult = yield* doBust(step.steal, 'steal');
+            if (bustResult) return bustResult;
+            break;
+          }
         }
 
       } else if (action.type === 'shop_deceive' && step.deceive && step.sellable) {
         const itemId = action.itemId;
         if (!this._state.inventory.includes(itemId)) continue;
+        if (deceiveLeft !== undefined && deceiveLeft <= 0) continue;
 
         const shopItem = step.items.find((si) => si.id === itemId);
         const basePrice = shopItem ? shopItem.price : 5;
+        const dc = getCurrentDifficulty('deceive');
+
+        yield {
+          type: 'shop_dice_prompt',
+          action: 'deceive',
+          description: `Engañar: vender ${shopItem?.name || itemId}`,
+          stat: step.deceive.stat,
+          difficulty: dc,
+          faces: 20,
+        };
+        await this.waitForAction();
+
+        attempts.deceive++;
 
         const statVal = typeof this._state.stats[step.deceive.stat] === 'number'
           ? (this._state.stats[step.deceive.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, step.deceive.difficulty);
+        const result = resolveRoll(20, statVal, dc);
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
-          // Éxito: vendes al precio completo o más
           const inflated = result.outcome === 'critical_success'
             ? Math.floor(basePrice * 1.5)
             : basePrice;
@@ -641,14 +751,11 @@ export class GameEngine {
             type: 'shop_dice_result',
             action: 'deceive',
             success: true,
-            roll: result.roll,
-            modifier: result.modifier,
-            total: result.total,
-            difficulty: step.deceive.difficulty,
+            roll: result.roll, modifier: result.modifier, total: result.total,
+            difficulty: dc,
             text: step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`,
           };
         } else {
-          // Fallo: no vendes nada y posible penalización
           if (step.deceive.failEffects) {
             this._state = applyEffects(this._state, step.deceive.failEffects);
             this.syncSpecialStats();
@@ -657,12 +764,22 @@ export class GameEngine {
             type: 'shop_dice_result',
             action: 'deceive',
             success: false,
-            roll: result.roll,
-            modifier: result.modifier,
-            total: result.total,
-            difficulty: step.deceive.difficulty,
+            roll: result.roll, modifier: result.modifier, total: result.total,
+            difficulty: dc,
             text: step.deceive.failText || '¡El tendero ha descubierto tu engaño!',
           };
+
+          // Bust check
+          if (step.deceive.bustGoto) {
+            const immediateBust = result.outcome === 'critical_failure';
+            const newLeft = getAttemptsLeft('deceive');
+            const exhaustedBust = newLeft !== undefined && newLeft <= 0;
+            if (immediateBust || exhaustedBust) {
+              const bustResult = yield* doBust(step.deceive, 'deceive');
+              if (bustResult) return bustResult;
+              break;
+            }
+          }
         }
 
       } else if (action.type === 'shop_exit') {

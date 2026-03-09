@@ -297,11 +297,16 @@ export interface ShopStep {
 }
 
 export interface ShopDiceAction {
-  stat: string;        // stat para modificador del dado
-  difficulty: number;  // dificultad (DC)
+  stat: string;           // stat para modificador del dado
+  difficulty: number;     // dificultad (DC)
+  maxAttempts?: number;   // máximo de intentos (0 o undefined = ilimitado)
+  difficultyIncrease?: number; // cuánto sube la DC por cada intento
   successText?: string;
   failText?: string;
-  failEffects?: Effects; // penalización al fallar (ej: te echan de la tienda)
+  failEffects?: Effects;  // penalización al fallar cada intento
+  bustGoto?: string;      // escena al agotar intentos o fallo crítico (cárcel, etc.)
+  bustText?: string;      // texto al ser expulsado
+  bustEffects?: Effects;  // efectos al ser expulsado (quitar items, etc.)
 }
 
 export interface ShopItem {

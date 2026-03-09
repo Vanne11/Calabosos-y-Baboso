@@ -132,7 +132,8 @@ Un juego se compone de 2 archivos JSON en `public/games/{nombre}/`:
   "time": { "duration": 5, "phases": ["morning", "afternoon", "night"], "initial": "morning" },
   "items": { "sword": { "name": "Espada", "description": "..." } },
   "skillTrees": { ... },
-  "traits": { ... }
+  "traits": { ... },
+  "saveSystem": { "mode": "free", "slots": 3 }
 }
 ```
 
@@ -261,6 +262,8 @@ boot → login → shell → game
 
 ## Comandos de Terminal
 
+### Shell (sin juego activo)
+
 | Comando | Descripción |
 |---|---|
 | `help` | Lista de comandos |
@@ -272,6 +275,19 @@ boot → login → shell → game
 | `version` | Versión del motor |
 | `about` | Pantalla About con música |
 | `quit` / `exit` | Cierra sesión |
+
+### In-Game (durante partida, requieren prefijo `/`)
+
+| Comando | Descripción |
+|---|---|
+| `/help` | Ayuda de la partida |
+| `/about` | Info del juego actual (manifest) |
+| `/history` | Historial narrativo (últimas 50 entradas) |
+| `/clear` | Limpia terminal conservando último diálogo |
+| `/save` | Guardar partida en slot |
+| `/load` | Cargar partida desde slot |
+| `/debug` | Sistema de depuración |
+| `/quit` / `/exit` | Sale de la partida |
 
 ---
 

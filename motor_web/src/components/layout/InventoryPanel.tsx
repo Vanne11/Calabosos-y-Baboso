@@ -1,11 +1,24 @@
 // components/layout/InventoryPanel.tsx
-// Panel de inventario con grid de slots estilo RPG + tooltip hover
+// Panel de inventario con grid de slots estilo RPG + tooltip hover + stacking
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
 
 const TOTAL_SLOTS = 8;
+
+interface StackedItem {
+  id: string;
+  count: number;
+}
+
+function stackItems(inventory: string[]): StackedItem[] {
+  const map = new Map<string, number>();
+  for (const id of inventory) {
+    map.set(id, (map.get(id) || 0) + 1);
+  }
+  return Array.from(map, ([id, count]) => ({ id, count }));
+}
 
 const Panel = styled.div`
   flex-shrink: 0;
@@ -106,6 +119,24 @@ const SlotLabel = styled.div`
   border-radius: 0 0 3px 3px;
 `;
 
+const StackBadge = styled.div`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: ${(props) => props.theme.terminal.warning || '#f1fa8c'};
+  color: ${(props) => props.theme.terminal.background || '#1a0e29'};
+  font-size: 0.6rem;
+  font-weight: bold;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  z-index: 2;
+`;
+
 const Tooltip = styled.div`
   position: absolute;
   bottom: 100%;
@@ -154,7 +185,6 @@ function getItemData(id: string, manifest: { items?: Record<string, { name: stri
   if (manifest?.items?.[id]) {
     return { name: manifest.items[id].name, desc: manifest.items[id].description };
   }
-  // Fallback: generar nombre desde el ID
   const name = id
     .split('_')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
@@ -171,14 +201,18 @@ const InventoryPanel: React.FC = () => {
 
   if (phase !== 'game' || !playerState) return null;
 
-  const dinero = typeof playerState.stats.dinero === 'number' ? playerState.stats.dinero : 0;
+  // Detectar stat de moneda: busca gold, dinero, money, coins en los stats
+  const currencyStat = ['gold', 'dinero', 'money', 'coins', 'oro'].find(
+    (k) => typeof playerState.stats[k] === 'number'
+  ) || 'gold';
+  const dinero = typeof playerState.stats[currencyStat] === 'number' ? (playerState.stats[currencyStat] as number) : 0;
   const hasItems = playerState.inventory.length > 0;
 
   if (!hasItems && dinero <= 0) return null;
 
   const manifestItems = engine ? { items: engine.items } : null;
-  const items = playerState.inventory;
-  const emptySlots = Math.max(0, TOTAL_SLOTS - items.length);
+  const stacked = stackItems(playerState.inventory);
+  const emptySlots = Math.max(0, TOTAL_SLOTS - stacked.length);
   const hovered = hoveredItem ? getItemData(hoveredItem, manifestItems) : null;
 
   return (
@@ -208,18 +242,19 @@ const InventoryPanel: React.FC = () => {
         </CoinBadge>
       </Header>
       <SlotsGrid>
-        {items.map((item, i) => (
+        {stacked.map((item) => (
           <Slot
-            key={`${item}-${i}`}
-            onMouseEnter={() => setHoveredItem(item)}
+            key={item.id}
+            onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
+            {item.count > 1 && <StackBadge>{item.count}</StackBadge>}
             <SlotIcon
-              src={`${gameBasePath}/images/items/${item}.png`}
-              alt={getItemData(item, manifestItems).name}
+              src={`${gameBasePath}/images/items/${item.id}.png`}
+              alt={getItemData(item.id, manifestItems).name}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
-            <SlotLabel>{getItemData(item, manifestItems).name.split(' ')[0]}</SlotLabel>
+            <SlotLabel>{getItemData(item.id, manifestItems).name.split(' ')[0]}</SlotLabel>
           </Slot>
         ))}
         {Array.from({ length: emptySlots }).map((_, i) => (

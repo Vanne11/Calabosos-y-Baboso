@@ -77,6 +77,28 @@ const ShopStepEditor: React.FC<Props> = ({ step, onChange }) => {
                   onChange={(e) => updateDiceAction(key, { difficulty: parseInt(e.target.value) || 12 })}
                 />
               </Field>
+              <Field>
+                <Label>Max intentos</Label>
+                <NumInput
+                  type="number"
+                  min={0}
+                  value={action.maxAttempts ?? 0}
+                  onChange={(e) => updateDiceAction(key, {
+                    maxAttempts: parseInt(e.target.value) || undefined,
+                  })}
+                />
+              </Field>
+              <Field>
+                <Label>DC +/intento</Label>
+                <NumInput
+                  type="number"
+                  min={0}
+                  value={action.difficultyIncrease ?? 0}
+                  onChange={(e) => updateDiceAction(key, {
+                    difficultyIncrease: parseInt(e.target.value) || undefined,
+                  })}
+                />
+              </Field>
             </Row>
             <Row>
               <TerminalInput
@@ -97,6 +119,28 @@ const ShopStepEditor: React.FC<Props> = ({ step, onChange }) => {
               effects={action.failEffects || {}}
               onChange={(failEffects) => updateDiceAction(key, {
                 failEffects: Object.keys(failEffects).length > 0 ? failEffects : undefined,
+              })}
+            />
+            <SectionDivider />
+            <HintText>Expulsión (al agotar intentos o fallo crítico)</HintText>
+            <Row>
+              <GotoSelect
+                label="Escena expulsión"
+                value={action.bustGoto || ''}
+                onChange={(v) => updateDiceAction(key, { bustGoto: v || undefined })}
+              />
+              <TerminalInput
+                label="Texto expulsión"
+                value={action.bustText || ''}
+                onChange={(v) => updateDiceAction(key, { bustText: v || undefined })}
+                placeholder="(auto)"
+              />
+            </Row>
+            <EffectsEditor
+              label="Efectos al ser expulsado"
+              effects={action.bustEffects || {}}
+              onChange={(bustEffects) => updateDiceAction(key, {
+                bustEffects: Object.keys(bustEffects).length > 0 ? bustEffects : undefined,
               })}
             />
           </DiceActionBody>
@@ -336,4 +380,11 @@ const DiceActionBody = styled.div`
   gap: 6px;
   padding-top: 4px;
   border-top: 1px dotted ${(p) => p.theme.terminal.border};
+`;
+
+const HintText = styled.span`
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: ${(p) => p.theme.terminal.system};
+  text-transform: uppercase;
 `;

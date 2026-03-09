@@ -23,7 +23,7 @@ import { useGameLoop } from './hooks/useGameLoop';
 import { useKeyboardInput } from './hooks/useKeyboardInput';
 import type {
   ChoicePrompt, DicePrompt, InputPrompt, ExaminePrompt,
-  ShopPrompt, CombatPrompt, CraftPrompt, PuzzlePrompt,
+  ShopPrompt, ShopDicePrompt, CombatPrompt, CraftPrompt, PuzzlePrompt,
   UseItemPrompt, TimedChoicePrompt, LevelUpPrompt,
 } from './types/engine';
 
@@ -38,6 +38,7 @@ const App: React.FC = () => {
   const playerState = useAppStore((s) => s.playerState);
 
   const [inputValue, setInputValue] = useState('');
+  const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
 
   const { isLogin, loginStep, handleLoginInput, initLogin } = useLoginFlow();
   const { processCommand } = useTerminalCommands();
@@ -83,6 +84,14 @@ const App: React.FC = () => {
       return;
     }
 
+    // In-game slash commands: intercept /commands even when a widget is active
+    if (phase === 'game' && trimmed.startsWith('/')) {
+      addEntry({ type: 'command', content: trimmed });
+      addCommandToHistory(trimmed);
+      await processCommand(trimmed);
+      return;
+    }
+
     // Game input widget
     if (phase === 'game' && pendingResult?.type === 'input_prompt') {
       if (trimmed) {
@@ -110,6 +119,141 @@ const App: React.FC = () => {
       if (!isNaN(num) && num >= 1 && num <= options.length) {
         addEntry({ type: 'option', content: `> ${options[num - 1].text}` });
         sendAction({ type: 'choose', index: num - 1 });
+        return;
+      }
+    }
+
+    // Examine by number
+    if (phase === 'game' && pendingResult?.type === 'examine_prompt' && trimmed) {
+      const ep = pendingResult as ExaminePrompt;
+      const num = parseInt(trimmed);
+      if (num === 0) {
+        sendAction({ type: 'examine_exit' });
+        return;
+      }
+      if (!isNaN(num) && num >= 1 && num <= ep.subjects.length) {
+        addEntry({ type: 'option', content: `> ${ep.subjects[num - 1].label}` });
+        sendAction({ type: 'examine_select', subjectId: ep.subjects[num - 1].id });
+        return;
+      }
+    }
+
+    // Shop interaction
+    if (phase === 'game' && pendingResult?.type === 'shop_prompt' && trimmed) {
+      const sp = pendingResult as ShopPrompt;
+      const low = trimmed.toLowerCase();
+
+      // [0] salir
+      if (low === '0') {
+        setShopSelection(null);
+        sendAction({ type: 'shop_exit' });
+        return;
+      }
+
+      // Si hay un item seleccionado, procesar letra de acción
+      if (shopSelection) {
+        if (shopSelection.mode === 'buy') {
+          const idx = shopSelection.index;
+          const item = sp.items[idx];
+          if (low === 'c' && item) {
+            setShopSelection(null);
+            addEntry({ type: 'option', content: `> Comprar: ${item.name}` });
+            sendAction({ type: 'shop_buy', itemIndex: idx });
+            return;
+          }
+          if (low === 'r' && item && sp.canHaggle) {
+            setShopSelection(null);
+            addEntry({ type: 'option', content: `> Regatear: ${item.name}` });
+            sendAction({ type: 'shop_haggle', itemIndex: idx });
+            return;
+          }
+          if (low === 's' && item && sp.canSteal) {
+            setShopSelection(null);
+            addEntry({ type: 'option', content: `> Robar: ${item.name}` });
+            sendAction({ type: 'shop_steal', itemIndex: idx });
+            return;
+          }
+        } else if (shopSelection.mode === 'sell') {
+          const inv = sp.playerInventory.find(p => p.id === shopSelection.itemId);
+          if (low === 'v' && inv) {
+            setShopSelection(null);
+            addEntry({ type: 'option', content: `> Vender: ${inv.name}` });
+            sendAction({ type: 'shop_sell', itemId: shopSelection.itemId });
+            return;
+          }
+          if (low === 'e' && inv && sp.canDeceive) {
+            setShopSelection(null);
+            addEntry({ type: 'option', content: `> Engañar: ${inv.name}` });
+            sendAction({ type: 'shop_deceive', itemId: shopSelection.itemId });
+            return;
+          }
+        }
+        // Cancelar selección con 0 o input inválido
+        if (low === '0') {
+          setShopSelection(null);
+          return;
+        }
+      }
+
+      // Atajo directo: c3, r2, s1, v7, e7
+      const shortcutMatch = low.match(/^([crsve])(\d+)$/);
+      if (shortcutMatch) {
+        const [, letter, numStr] = shortcutMatch;
+        const num = parseInt(numStr);
+        if (letter === 'c' && num >= 1 && num <= sp.items.length) {
+          setShopSelection(null);
+          addEntry({ type: 'option', content: `> Comprar: ${sp.items[num - 1].name}` });
+          sendAction({ type: 'shop_buy', itemIndex: num - 1 });
+          return;
+        }
+        if (letter === 'r' && num >= 1 && num <= sp.items.length && sp.canHaggle) {
+          setShopSelection(null);
+          addEntry({ type: 'option', content: `> Regatear: ${sp.items[num - 1].name}` });
+          sendAction({ type: 'shop_haggle', itemIndex: num - 1 });
+          return;
+        }
+        if (letter === 's' && num >= 1 && num <= sp.items.length && sp.canSteal) {
+          setShopSelection(null);
+          addEntry({ type: 'option', content: `> Robar: ${sp.items[num - 1].name}` });
+          sendAction({ type: 'shop_steal', itemIndex: num - 1 });
+          return;
+        }
+        const sellOffset = sp.items.length;
+        if (letter === 'v' && num > sellOffset && num <= sellOffset + sp.playerInventory.length) {
+          const inv = sp.playerInventory[num - sellOffset - 1];
+          setShopSelection(null);
+          addEntry({ type: 'option', content: `> Vender: ${inv.name}` });
+          sendAction({ type: 'shop_sell', itemId: inv.id });
+          return;
+        }
+        if (letter === 'e' && num > sellOffset && num <= sellOffset + sp.playerInventory.length && sp.canDeceive) {
+          const inv = sp.playerInventory[num - sellOffset - 1];
+          setShopSelection(null);
+          addEntry({ type: 'option', content: `> Engañar: ${inv.name}` });
+          sendAction({ type: 'shop_deceive', itemId: inv.id });
+          return;
+        }
+      }
+
+      // Solo número: seleccionar item y abrir submenú
+      const num = parseInt(trimmed);
+      if (!isNaN(num) && num >= 1 && num <= sp.items.length) {
+        setShopSelection({ mode: 'buy', index: num - 1 });
+        return;
+      }
+      const sellOffset = sp.items.length;
+      if (!isNaN(num) && num > sellOffset && num <= sellOffset + sp.playerInventory.length) {
+        const inv = sp.playerInventory[num - sellOffset - 1];
+        setShopSelection({ mode: 'sell', itemId: inv.id });
+        return;
+      }
+    }
+
+    // Dice roll by typing 't'
+    if (phase === 'game' && (pendingResult?.type === 'dice_prompt' || pendingResult?.type === 'shop_dice_prompt')) {
+      if (trimmed.toLowerCase() === 't') {
+        // The DiceWidget handles the T key itself, but this catches typed 't' + Enter
+        sendAction({ type: 'roll_dice' });
         return;
       }
     }
@@ -152,21 +296,27 @@ const App: React.FC = () => {
   };
 
   const handleShopBuy = (itemIndex: number) => {
+    setShopSelection(null);
     sendAction({ type: 'shop_buy', itemIndex });
   };
   const handleShopSell = (itemId: string) => {
+    setShopSelection(null);
     sendAction({ type: 'shop_sell', itemId });
   };
   const handleShopHaggle = (itemIndex: number) => {
+    setShopSelection(null);
     sendAction({ type: 'shop_haggle', itemIndex });
   };
   const handleShopSteal = (itemIndex: number) => {
+    setShopSelection(null);
     sendAction({ type: 'shop_steal', itemIndex });
   };
   const handleShopDeceive = (itemId: string) => {
+    setShopSelection(null);
     sendAction({ type: 'shop_deceive', itemId });
   };
   const handleShopExit = () => {
+    setShopSelection(null);
     sendAction({ type: 'shop_exit' });
   };
 
@@ -239,6 +389,20 @@ const App: React.FC = () => {
     placeholder = `Escribe el número de la opción [1-${opts.length}]`;
   } else if (pendingResult?.type === 'input_prompt') {
     placeholder = (pendingResult as InputPrompt).prompt;
+  } else if (pendingResult?.type === 'examine_prompt') {
+    const subs = (pendingResult as ExaminePrompt).subjects;
+    placeholder = `Selecciona [1-${subs.length}] o [0] salir`;
+  } else if (pendingResult?.type === 'shop_prompt') {
+    if (shopSelection) {
+      const keys = shopSelection.mode === 'buy' ? '[C]omprar [R]egatear [S]isar' : '[V]ender [E]ngañar';
+      placeholder = `${keys} — [0] cancelar`;
+    } else {
+      const sp = pendingResult as ShopPrompt;
+      const total = sp.items.length + sp.playerInventory.length;
+      placeholder = `Selecciona [1-${total}] o [0] salir`;
+    }
+  } else if (pendingResult?.type === 'dice_prompt' || pendingResult?.type === 'shop_dice_prompt') {
+    placeholder = 'Pulsa [T] para lanzar el dado';
   }
 
   // Render widgets inside the terminal
@@ -283,6 +447,19 @@ const App: React.FC = () => {
         );
       }
 
+      case 'shop_dice_prompt': {
+        const sdp = pendingResult as ShopDicePrompt;
+        return (
+          <DiceWidget
+            description={sdp.description}
+            stat={sdp.stat}
+            difficulty={sdp.difficulty}
+            faces={sdp.faces}
+            onRoll={handleDiceRoll}
+          />
+        );
+      }
+
       case 'shop_prompt': {
         const sp = pendingResult as ShopPrompt;
         return (
@@ -297,6 +474,11 @@ const App: React.FC = () => {
             canHaggle={sp.canHaggle}
             canSteal={sp.canSteal}
             canDeceive={sp.canDeceive}
+            haggleLeft={sp.haggleLeft}
+            stealLeft={sp.stealLeft}
+            deceiveLeft={sp.deceiveLeft}
+            externalSelection={shopSelection}
+            onSelectionChange={setShopSelection}
             onBuy={handleShopBuy}
             onSell={handleShopSell}
             onHaggle={handleShopHaggle}

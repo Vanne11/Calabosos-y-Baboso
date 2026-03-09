@@ -244,7 +244,43 @@
             }
           ],
           "sellable": true,
-          "sellRatio": 0.5
+          "sellRatio": 0.5,
+          "haggle": {
+            "stat": "perception",
+            "difficulty": 12,
+            "maxAttempts": 3,
+            "difficultyIncrease": 2,
+            "successText": "Griselda entrecierra su ojo bueno... \"Ugh, está bien, te lo dejo más barato. Pero no se lo digas a nadie.\"",
+            "failText": "Griselda se ofende visiblemente. \"¿Regatear? ¿A MÍ? ¡El precio SUBE, listillo!\"",
+            "failEffects": { "affinity": { "griselda": -5 } },
+            "bustGoto": "expulsado_tienda",
+            "bustText": "Griselda explota: \"¡FUERA DE MI TIENDA! ¡Estoy HARTA de tus regateos!\"",
+            "bustEffects": { "affinity": { "griselda": -30 } }
+          },
+          "steal": {
+            "stat": "strength",
+            "difficulty": 14,
+            "maxAttempts": 2,
+            "difficultyIncrease": 4,
+            "successText": "Mientras Griselda se distrae limpiando su monóculo, deslizas el objeto bajo tu capa. Nadie ha visto nada.",
+            "failText": "¡Griselda te atrapa la mano con un tentáculo viscoso! \"¡LADRÓN! ¡Eso te va a costar!\"",
+            "failEffects": { "stats": { "gold": -5 }, "affinity": { "griselda": -15 } },
+            "bustGoto": "calabozo_griselda",
+            "bustText": "Griselda grita: \"¡GUARDIAS! ¡LLEVADLO AL CALABOZO!\" Dos babosas enormes te arrastran a una celda húmeda.",
+            "bustEffects": { "stats": { "gold": -20 }, "flags": { "arrested": true }, "affinity": { "griselda": -50 } }
+          },
+          "deceive": {
+            "stat": "perception",
+            "difficulty": 13,
+            "maxAttempts": 2,
+            "difficultyIncrease": 3,
+            "successText": "\"Hmm, sí, esta es una pieza rara... Tienes razón, vale más de lo que pensaba.\" Griselda te paga el precio completo.",
+            "failText": "Griselda te mira con su monóculo. \"¿Me estás intentando estafar, criatura? Sé perfectamente lo que vale eso.\"",
+            "failEffects": { "affinity": { "griselda": -10 } },
+            "bustGoto": "expulsado_tienda",
+            "bustText": "\"¡ESTAFADOR!\" grita Griselda. \"¡No vuelvas a poner un pie en mi tienda!\"",
+            "bustEffects": { "affinity": { "griselda": -30 } }
+          }
         },
         {
           "type": "dialog",
@@ -1250,6 +1286,107 @@
             {
               "text": "Salir de la demo",
               "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+
+    "expulsado_tienda": {
+      "scenario": { "name": "Expulsado" },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Te encuentras en el pasillo, con la puerta de la tienda cerrada de un portazo.",
+            "Desde dentro se escucha a Griselda maldiciendo en un idioma que solo las babosas entienden.",
+            "Bueno... al menos no te han metido en el calabozo. Eso cuenta como victoria, ¿no?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mejor seguir adelante. Sin descuentos."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Corredor izquierdo (puzzles y crafteo)",
+              "goto": "sala_puzzle_code"
+            },
+            {
+              "text": "Corredor derecho (trampas y azar)",
+              "goto": "corredor_trampa"
+            }
+          ]
+        }
+      ]
+    },
+
+    "calabozo_griselda": {
+      "scenario": { "name": "Calabozo" },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Te despiertas en una celda húmeda que huele a baba rancia.",
+            "Las paredes son de piedra viscosa. Una antorcha mortecina ilumina las rejas oxidadas.",
+            "Un cartel en la pared dice: [bold]\"Aquí aprenderá el que roba\"[/bold]. Alguien ha tachado [dim]\"aprenderá\"[/dim] y ha escrito [bold red]\"sufrirá\"[/bold red]."
+          ]
+        },
+        {
+          "type": "wait",
+          "duration": 2000,
+          "text": "Pasan las horas..."
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Has pasado la noche en el calabozo. Al amanecer, un guardia baboso abre la puerta.",
+            "\"Largo de aquí. Y agradece que no te hemos quitado [italic]todo[/italic].\"",
+            "Te devuelven algunas de tus posesiones... las que no se han disuelto en baba."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "clearInventory": true,
+            "stats": { "will_to_live": -20, "courage": 5 },
+            "flags": { "arrested": false, "survived_jail": true },
+            "inventory": ["pan_mohoso"]
+          }
+        },
+        {
+          "type": "notify",
+          "style": "warning",
+          "title": "Calabozo",
+          "text": "Has perdido parte de tu equipo, pero has ganado algo de coraje. Al menos tienes un pan mohoso."
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sales del calabozo algo más sabio y bastante más maloliente.",
+            "La tienda de Griselda tiene un cartel nuevo: [bold red]\"PROHIBIDA LA ENTRADA A BOB\"[/bold red].",
+            "Mejor seguir adelante."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Corredor izquierdo (puzzles y crafteo)",
+              "goto": "sala_puzzle_code"
+            },
+            {
+              "text": "Corredor derecho (trampas y azar)",
+              "goto": "corredor_trampa"
             }
           ]
         }

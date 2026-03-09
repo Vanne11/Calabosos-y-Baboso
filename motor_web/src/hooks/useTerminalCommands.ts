@@ -14,12 +14,14 @@ export function useTerminalCommands() {
   const addEntry = useAppStore((s) => s.addEntry);
   const addEntries = useAppStore((s) => s.addEntries);
   const clearHistory = useAppStore((s) => s.clearHistory);
+  const setHistory = useAppStore((s) => s.setHistory);
   const setEngine = useAppStore((s) => s.setEngine);
   const setGameManifest = useAppStore((s) => s.setGameManifest);
   const setGameBasePath = useAppStore((s) => s.setGameBasePath);
   const setPhase = useAppStore((s) => s.setPhase);
   const setCurrentImage = useAppStore((s) => s.setCurrentImage);
   const resetGame = useAppStore((s) => s.resetGame);
+  const phase = useAppStore((s) => s.phase);
   const speed = useAppStore((s) => s.speed);
   const volume = useAppStore((s) => s.volume);
 
@@ -29,6 +31,136 @@ export function useTerminalCommands() {
   const debugReport = useDebugStore((s) => s.getReport);
   const debugClear = useDebugStore((s) => s.clear);
 
+  // --- In-game commands ---
+
+  const gameHelp = () => {
+    addEntry({
+      type: 'system',
+      content: `[green]Comandos disponibles durante la partida:[/green]
+
+[yellow][bold]/help[/bold][/yellow] - Muestra esta ayuda. Sí, la que estás leyendo ahora mismo.
+[yellow][bold]/clear[/bold][/yellow] - Limpia la pantalla sin perder tu widget actual. Perfecto para fingir que no viste nada.
+[yellow][bold]/history[/bold][/yellow] - Revive todos los momentos de gloria (y vergüenza) de tu partida.
+[yellow][bold]/about[/bold][/yellow] - Información sobre el juego que estás jugando. Por si ya se te olvidó.
+[yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
+[yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
+
+[dim]Usa siempre el prefijo "/" para comandos durante la partida.[/dim]`,
+    });
+  };
+
+  const gameAbout = () => {
+    const manifest = useAppStore.getState().gameManifest;
+    if (!manifest) {
+      addEntry({ type: 'system', content: '[dim]No hay juego cargado.[/dim]' });
+      return;
+    }
+    addEntry({
+      type: 'system',
+      content: `[green][bold]${manifest.name}[/bold][/green]
+${manifest.description ? `[cyan]${manifest.description}[/cyan]` : ''}
+[dim]Versión: ${manifest.version ?? '???'} — Autor: ${manifest.author ?? 'Desconocido'}[/dim]`,
+    });
+  };
+
+  const gameHistory = () => {
+    const history = useAppStore.getState().history;
+    // Filter to narrative-relevant entries only
+    const narrativeTypes = new Set(['dialog', 'dialogHeader', 'option', 'system', 'success', 'warning', 'info']);
+    const relevant = history.filter((e) => narrativeTypes.has(e.type) && e.content.trim());
+
+    if (relevant.length === 0) {
+      addEntry({ type: 'system', content: '[dim]No hay historial narrativo todavía. Haz algo interesante primero.[/dim]' });
+      return;
+    }
+
+    addEntry({ type: 'system', content: '[green][bold]═══ Historial de la partida ═══[/bold][/green]' });
+    // Show last 50 entries max to avoid flooding
+    const shown = relevant.slice(-50);
+    if (relevant.length > 50) {
+      addEntry({ type: 'system', content: `[dim]... (mostrando las últimas 50 de ${relevant.length} entradas)[/dim]` });
+    }
+    for (const entry of shown) {
+      addEntry({ type: entry.type, content: entry.content });
+    }
+    addEntry({ type: 'system', content: '[green][bold]═══ Fin del historial ═══[/bold][/green]' });
+  };
+
+  const gameClear = () => {
+    if (debugActive) {
+      addEntry({
+        type: 'system',
+        content: '[yellow]No se puede limpiar la terminal mientras el modo debug está activo.[/yellow]',
+      });
+      return;
+    }
+    // Keep only the last widget-related entries (dialog headers, recent system messages)
+    const history = useAppStore.getState().history;
+    // Find the last significant block: from the last dialogHeader or scenario marker
+    let keepFrom = history.length;
+    for (let i = history.length - 1; i >= 0; i--) {
+      const entry = history[i];
+      if (entry.type === 'dialogHeader') {
+        keepFrom = i;
+        break;
+      }
+    }
+    // Keep from the dialogHeader to the end, plus a separator
+    const kept = keepFrom < history.length ? history.slice(keepFrom) : [];
+    setHistory([
+      { type: 'system', content: '[dim]Terminal limpiada. Lo que pasó, pasó.[/dim]' },
+      ...kept,
+    ]);
+  };
+
+  const processGameCommand = (name: string, args: string[], input: string): boolean => {
+    switch (name) {
+      case 'help':
+        gameHelp();
+        return true;
+      case 'about':
+        gameAbout();
+        return true;
+      case 'history':
+        gameHistory();
+        return true;
+      case 'clear':
+        gameClear();
+        return true;
+      case 'version':
+        addEntry({
+          type: 'system',
+          content: '[bold]Motor Baboso v0.1.0[/bold] - [italic]"Más viscoso que funcional"[/italic]',
+        });
+        return true;
+      case 'debug':
+        handleDebug(args);
+        return true;
+      case 'quit':
+      case 'exit':
+        resetGame();
+        setCurrentImage(null);
+        addEntry({
+          type: 'system',
+          content: '[italic]Abandonando la partida. Otra vez será... o no.[/italic]',
+        });
+        return true;
+      case 'run':
+      case 'list':
+      case 'editor':
+      case 'create':
+        addEntry({
+          type: 'warning',
+          content: '[yellow]Estás en medio de una partida. Usa [bold]/quit[/bold] primero si quieres salir.[/yellow]',
+        });
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  // --- Main command processor ---
+
   const processCommand = useCallback(
     async (input: string) => {
       const { name, args } = parseCommand(input);
@@ -37,6 +169,19 @@ export function useTerminalCommands() {
         debugLog(`Comando: ${input}`, 'COMMAND');
       }
 
+      // In-game: use game-specific commands
+      if (phase === 'game') {
+        if (processGameCommand(name, args, input)) return;
+        addEntry({
+          type: 'system',
+          content: `[red]"${input}"[/red] no es un comando válido durante la partida.
+
+[yellow]Escribe [bold]/help[/bold] para ver los comandos disponibles.[/yellow]`,
+        });
+        return;
+      }
+
+      // Shell commands
       switch (name) {
         case 'help':
           addEntry({
@@ -147,7 +292,7 @@ export function useTerminalCommands() {
           });
       }
     },
-    [debugActive, speed, volume]
+    [debugActive, phase, speed, volume]
   );
 
   const handleAbout = async () => {

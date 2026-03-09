@@ -48,6 +48,7 @@ export type StepResult =
   | CheckResult
   | RandomResult
   | ShopPrompt
+  | ShopDicePrompt
   | ShopDiceResult
   | CombatPrompt
   | CombatTurnResult
@@ -155,11 +156,23 @@ export interface ShopPrompt {
   currentMoney: number;
   items: { id: string; name: string; price: number; description?: string; canAfford: boolean; haggled?: boolean }[];
   sellable: boolean;
-  playerInventory: string[];
+  playerInventory: { id: string; name: string; count: number }[];
   sellRatio: number;
   canHaggle: boolean;
   canSteal: boolean;
   canDeceive: boolean;
+  haggleLeft?: number;  // intentos restantes (undefined = ilimitado)
+  stealLeft?: number;
+  deceiveLeft?: number;
+}
+
+export interface ShopDicePrompt {
+  type: 'shop_dice_prompt';
+  action: 'haggle' | 'steal' | 'deceive';
+  description: string;
+  stat: string;
+  difficulty: number;
+  faces: number;
 }
 
 export interface ShopDiceResult {

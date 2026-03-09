@@ -54,6 +54,7 @@ export function useGameLoop() {
         value.type === 'dice_prompt' ||
         value.type === 'input_prompt' ||
         value.type === 'shop_prompt' ||
+        value.type === 'shop_dice_prompt' ||
         value.type === 'combat_prompt' ||
         value.type === 'craft_prompt' ||
         value.type === 'puzzle_prompt' ||
@@ -239,6 +240,10 @@ export function useGameLoop() {
         break;
 
       case 'shop_prompt':
+        setPendingResult(result);
+        break;
+
+      case 'shop_dice_prompt':
         setPendingResult(result);
         break;
 

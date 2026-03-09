@@ -64,12 +64,12 @@ const ExamineWidget: React.FC<ExamineWidgetProps> = ({
   return (
     <Container>
       {description && <Description>{description}</Description>}
-      {subjects.map((subject) => (
+      {subjects.map((subject, i) => (
         <SubjectButton key={subject.id} onClick={() => onSelect(subject.id)}>
-          {subject.label}
+          [{i + 1}] {subject.label}
         </SubjectButton>
       ))}
-      <ExitButton onClick={onExit}>{exitText}</ExitButton>
+      <ExitButton onClick={onExit}>[0] {exitText}</ExitButton>
     </Container>
   );
 };

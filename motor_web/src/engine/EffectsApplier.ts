@@ -34,10 +34,7 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.flags = { ...newState.flags, ...effects.flags };
   }
 
-  if (effects.inventory) {
-    newState.inventory = [...newState.inventory, ...effects.inventory];
-  }
-
+  // Orden: clear → remove → add (para que clearInventory + inventory funcione bien)
   if (effects.clearInventory) {
     newState.inventory = [];
   }
@@ -46,6 +43,10 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.inventory = newState.inventory.filter(
       item => !effects.removeInventory!.includes(item)
     );
+  }
+
+  if (effects.inventory) {
+    newState.inventory = [...newState.inventory, ...effects.inventory];
   }
 
   // XP: { "protagonist": 50 }

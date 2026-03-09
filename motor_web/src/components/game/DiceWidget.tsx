@@ -1,7 +1,7 @@
 // components/game/DiceWidget.tsx
 // Tirada D20 con animación
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const shake = keyframes`
@@ -69,6 +69,12 @@ const StatInfo = styled.div`
   margin-top: 0.3rem;
 `;
 
+const RollKey = styled.span`
+  color: ${(props) => props.theme.terminal.warning};
+  font-weight: bold;
+  margin-right: 4px;
+`;
+
 interface DiceWidgetProps {
   description: string;
   stat: string;
@@ -86,29 +92,39 @@ const DiceWidget: React.FC<DiceWidgetProps> = ({
 }) => {
   const [rolling, setRolling] = useState(false);
   const [displayNum, setDisplayNum] = useState(faces);
+  const rollingRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
-  const handleRoll = () => {
+  const handleRoll = useCallback(() => {
+    if (rollingRef.current) return;
+    rollingRef.current = true;
     setRolling(true);
 
-    // Animate random numbers
     intervalRef.current = setInterval(() => {
       setDisplayNum(Math.floor(Math.random() * faces) + 1);
     }, 80);
 
-    // Stop after 1.5s and send action
     setTimeout(() => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      rollingRef.current = false;
       setRolling(false);
       onRoll();
     }, 1500);
-  };
+  }, [faces, onRoll]);
 
   useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if ((e.key === 't' || e.key === 'T') && !rollingRef.current) {
+        e.preventDefault();
+        handleRoll();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
     return () => {
+      window.removeEventListener('keydown', handleKey);
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [handleRoll]);
 
   return (
     <DiceContainer>
@@ -119,7 +135,7 @@ const DiceWidget: React.FC<DiceWidgetProps> = ({
       <DiceFace $rolling={rolling}>🎲 {displayNum}</DiceFace>
       <br />
       <RollButton onClick={handleRoll} disabled={rolling}>
-        {rolling ? 'Rodando...' : `Lanzar D${faces}`}
+        {rolling ? 'Rodando...' : <><RollKey>[T]</RollKey> Lanzar D{faces}</>}
       </RollButton>
     </DiceContainer>
   );
