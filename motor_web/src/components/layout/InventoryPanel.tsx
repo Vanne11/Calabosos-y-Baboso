@@ -137,6 +137,25 @@ const StackBadge = styled.div`
   z-index: 2;
 `;
 
+const InBadge = styled.div`
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-color: #6272a4;
+  color: #f8f8f2;
+  font-size: 0.55rem;
+  font-weight: bold;
+  min-width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  z-index: 2;
+  letter-spacing: -0.5px;
+`;
+
 const Tooltip = styled.div`
   position: absolute;
   bottom: 100%;
@@ -242,12 +261,13 @@ const InventoryPanel: React.FC = () => {
         </CoinBadge>
       </Header>
       <SlotsGrid>
-        {stacked.map((item) => (
+        {stacked.map((item, idx) => (
           <Slot
             key={item.id}
             onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
+            <InBadge>IN{idx + 1}</InBadge>
             {item.count > 1 && <StackBadge>{item.count}</StackBadge>}
             <SlotIcon
               src={`${gameBasePath}/images/items/${item.id}.png`}

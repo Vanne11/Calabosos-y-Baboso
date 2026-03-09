@@ -12,6 +12,7 @@ import type {
   CombatStep,
   ShopStep,
   CraftStep,
+  CraftAction,
   PuzzleStep,
   ExamineStep,
   UseItemStep,
@@ -959,22 +960,36 @@ export class GameEngine {
     }
   }
 
-  // --- Craft: combinar items ---
+  // --- Craft: combinar / usar / aplicar / cortar / picar ---
   private async *processCraft(
     step: CraftStep
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
-    const items = this.manifest.items || {};
+    const itemDefs = this.manifest.items || {};
     const failText = step.failText || 'Eso no tiene ningún sentido...';
+    const tableItemIds = step.tableItems || [];
+
+    // Derive available actions from recipes
+    const availableActions = new Set<CraftAction>();
+    for (const r of step.recipes) {
+      availableActions.add(r.action || 'combine');
+    }
 
     while (true) {
+      const tableItems = tableItemIds.map((id) => ({
+        id,
+        name: itemDefs[id]?.name || id,
+      }));
+      const playerInv = [...this._state.inventory].map((id) => ({
+        id,
+        name: itemDefs[id]?.name || id,
+      }));
+
       yield {
         type: 'craft_prompt',
         description: step.description,
-        playerInventory: [...this._state.inventory],
-        recipes: step.recipes.map((r) => ({
-          ingredients: r.ingredients,
-          resultName: items[r.result]?.name || r.result,
-        })),
+        tableItems,
+        playerInventory: playerInv,
+        availableActions: [...availableActions],
         failText,
       };
 
@@ -982,49 +997,99 @@ export class GameEngine {
 
       if (action.type === 'craft_exit') break;
 
+      let recipe: CraftStep['recipes'][number] | undefined;
+
       if (action.type === 'craft_combine') {
-        // Find matching recipe (order-independent)
         const sorted = [...action.items].sort();
-        const recipe = step.recipes.find((r) => {
+        recipe = step.recipes.find((r) => {
+          if ((r.action || 'combine') !== 'combine') return false;
           const rSorted = [...r.ingredients].sort();
           return rSorted.length === sorted.length &&
             rSorted.every((ing, i) => ing === sorted[i]);
         });
+      } else if (action.type === 'craft_use') {
+        const sorted = [...action.ingredients].sort();
+        recipe = step.recipes.find((r) => {
+          if (r.action !== 'use') return false;
+          if (r.tool !== action.tool) return false;
+          const rSorted = [...r.ingredients].sort();
+          return rSorted.length === sorted.length &&
+            rSorted.every((ing, i) => ing === sorted[i]);
+        });
+      } else if (action.type === 'craft_apply') {
+        recipe = step.recipes.find((r) => {
+          if (r.action !== 'apply') return false;
+          return r.substance === action.substance && r.target === action.target;
+        });
+      } else if (action.type === 'craft_cut') {
+        recipe = step.recipes.find((r) => {
+          if (r.action !== 'cut') return false;
+          return r.tool === action.tool && r.target === action.target;
+        });
+      } else if (action.type === 'craft_chop') {
+        recipe = step.recipes.find((r) => {
+          if (r.action !== 'chop') return false;
+          return r.tool === action.tool && r.target === action.target;
+        });
+      }
 
-        if (recipe) {
-          // Check player has all ingredients
-          const hasAll = recipe.ingredients.every((ing) =>
-            this._state.inventory.includes(ing)
-          );
-          if (hasAll) {
-            // Remove ingredients (if consume)
-            if (recipe.consume !== false) {
-              this._state = applyEffects(this._state, {
-                removeInventory: recipe.ingredients,
-              });
-            }
-            // Add result item
-            this._state = applyEffects(this._state, {
-              inventory: [recipe.result],
-            });
-            // Extra effects
-            if (recipe.effects) {
-              this._state = applyEffects(this._state, recipe.effects);
-            }
-            this.syncSpecialStats();
-            yield { type: 'craft_result', success: true, text: recipe.text };
-            yield { type: 'effects', inventory: [recipe.result], removeInventory: recipe.consume !== false ? recipe.ingredients : undefined };
-
-            if (recipe.goto) {
-              return { type: 'navigate' as const, scene: recipe.goto };
-            }
-            break; // Exit craft after success
-          }
+      if (recipe) {
+        // Gather all involved item IDs for availability check
+        const involved: string[] = [];
+        const act = recipe.action || 'combine';
+        if (act === 'combine') {
+          involved.push(...recipe.ingredients);
+        } else if (act === 'use') {
+          involved.push(recipe.tool!, ...recipe.ingredients);
+        } else if (act === 'apply') {
+          involved.push(recipe.substance!, recipe.target!);
+        } else if (act === 'cut' || act === 'chop') {
+          involved.push(recipe.tool!, recipe.target!);
         }
 
-        // No matching recipe
-        yield { type: 'craft_result', success: false, text: failText };
+        const hasAll = involved.every((id) =>
+          this._state.inventory.includes(id) || tableItemIds.includes(id)
+        );
+
+        if (hasAll) {
+          // Consume target/ingredients from inventory
+          if (recipe.consume !== false) {
+            const consumable = act === 'apply'
+              ? [] // apply no consume el objetivo por defecto
+              : act === 'cut' || act === 'chop'
+                ? [recipe.target!] // cortar/picar consume el objetivo
+                : recipe.ingredients; // combine/use consume ingredientes
+            const toRemove = consumable.filter((id) => this._state.inventory.includes(id));
+            if (toRemove.length) {
+              this._state = applyEffects(this._state, { removeInventory: toRemove });
+            }
+          }
+          // Consume tool/substance if consumeTool
+          if (recipe.consumeTool) {
+            const toolId = recipe.tool || recipe.substance;
+            if (toolId && this._state.inventory.includes(toolId)) {
+              this._state = applyEffects(this._state, { removeInventory: [toolId] });
+            }
+          }
+          // Add results
+          const allResults = [recipe.result, ...(recipe.bonusResults || [])];
+          this._state = applyEffects(this._state, { inventory: allResults });
+          if (recipe.effects) {
+            this._state = applyEffects(this._state, recipe.effects);
+          }
+          this.syncSpecialStats();
+          yield { type: 'craft_result', success: true, text: recipe.text };
+          yield { type: 'effects', inventory: allResults };
+
+          if (recipe.goto) {
+            return { type: 'navigate' as const, scene: recipe.goto };
+          }
+          break;
+        }
       }
+
+      // No matching recipe
+      yield { type: 'craft_result', success: false, text: failText };
     }
 
     if (step.goto) {

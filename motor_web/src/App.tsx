@@ -29,6 +29,15 @@ import type {
 
 const EditorApp = lazy(() => import('./editor/components/EditorApp'));
 
+/** Stack inventory items by id, preserving order of first occurrence */
+function stackInventory(inventory: string[]): { id: string; count: number }[] {
+  const map = new Map<string, number>();
+  for (const id of inventory) {
+    map.set(id, (map.get(id) || 0) + 1);
+  }
+  return Array.from(map, ([id, count]) => ({ id, count }));
+}
+
 const App: React.FC = () => {
   const phase = useAppStore((s) => s.phase);
   const username = useAppStore((s) => s.username);
@@ -101,6 +110,24 @@ const App: React.FC = () => {
       return;
     }
 
+    // Global IN[N]: inspect inventory item (when NOT in craft mode)
+    if (phase === 'game' && pendingResult?.type !== 'craft_prompt') {
+      const invMatch = trimmed.toLowerCase().match(/^in(\d+)$/);
+      if (invMatch && playerState) {
+        const stacked = stackInventory(playerState.inventory);
+        const idx = parseInt(invMatch[1]) - 1;
+        if (idx >= 0 && idx < stacked.length) {
+          const item = stacked[idx];
+          const engine = useAppStore.getState().engine;
+          const def = engine?.items?.[item.id];
+          const name = def?.name || item.id;
+          const desc = def?.description || 'Un objeto misterioso.';
+          addEntry({ type: 'system', content: `[bold cyan]═══ ${name}${item.count > 1 ? ` (x${item.count})` : ''} ═══[/bold cyan]\n[dim]${desc}[/dim]` });
+          return;
+        }
+      }
+    }
+
     // Game input widget
     if (phase === 'game' && pendingResult?.type === 'input_prompt') {
       if (trimmed) {
@@ -121,6 +148,102 @@ const App: React.FC = () => {
         addEntry({ type: 'system', content: `[cyan]> ${trimmed}[/cyan]` });
         sendAction({ type: 'puzzle_attempt', answer: trimmed });
       }
+      return;
+    }
+
+    // Craft: 5 syntaxes — combine (+), use (), apply (>), cut (/), chop (//)
+    if (phase === 'game' && pendingResult?.type === 'craft_prompt') {
+      const cp = pendingResult as CraftPrompt;
+      const low = trimmed.toLowerCase();
+
+      // [0] salir
+      if (low === '0') {
+        sendAction({ type: 'craft_exit' });
+        return;
+      }
+
+      // Helper: resolve a token (number or INn) to item id
+      const resolveToken = (token: string): { id: string; name: string } | null => {
+        const invMatch = token.match(/^in(\d+)$/);
+        if (invMatch) {
+          const idx = parseInt(invMatch[1]) - 1;
+          if (idx >= 0 && idx < cp.playerInventory.length) return cp.playerInventory[idx];
+          return null;
+        }
+        const num = parseInt(token);
+        if (!isNaN(num) && num >= 1 && num <= cp.tableItems.length) return cp.tableItems[num - 1];
+        return null;
+      };
+
+      // Parse tokens from a "+" separated string
+      const parseTokens = (str: string): { id: string; name: string }[] | null => {
+        const tokens = str.split('+').map((t) => t.trim()).filter(Boolean);
+        const resolved: { id: string; name: string }[] = [];
+        for (const t of tokens) {
+          const item = resolveToken(t);
+          if (!item) return null;
+          resolved.push(item);
+        }
+        return resolved.length > 0 ? resolved : null;
+      };
+
+      // Try CHOP syntax: A//B (must check BEFORE cut to avoid false match)
+      const chopMatch = low.match(/^(.+?)\/\/(.+)$/);
+      if (chopMatch) {
+        const tool = resolveToken(chopMatch[1].trim());
+        const target = resolveToken(chopMatch[2].trim());
+        if (tool && target) {
+          addEntry({ type: 'option', content: `> Picar ${target.name} con ${tool.name}` });
+          sendAction({ type: 'craft_chop', tool: tool.id, target: target.id });
+          return;
+        }
+      }
+
+      // Try CUT syntax: A/B (single slash)
+      const cutMatch = low.match(/^(.+?)\/(.+)$/);
+      if (cutMatch) {
+        const tool = resolveToken(cutMatch[1].trim());
+        const target = resolveToken(cutMatch[2].trim());
+        if (tool && target) {
+          addEntry({ type: 'option', content: `> Cortar ${target.name} con ${tool.name}` });
+          sendAction({ type: 'craft_cut', tool: tool.id, target: target.id });
+          return;
+        }
+      }
+
+      // Try APPLY syntax: A>B (substance > target)
+      const applyMatch = low.match(/^(.+)>(.+)$/);
+      if (applyMatch) {
+        const substance = resolveToken(applyMatch[1].trim());
+        const target = resolveToken(applyMatch[2].trim());
+        if (substance && target) {
+          addEntry({ type: 'option', content: `> Aplicar ${substance.name} sobre ${target.name}` });
+          sendAction({ type: 'craft_apply', substance: substance.id, target: target.id });
+          return;
+        }
+      }
+
+      // Try USE syntax: A(B+C+...) (tool with ingredients)
+      const useMatch = low.match(/^(.+?)\((.+)\)$/);
+      if (useMatch) {
+        const tool = resolveToken(useMatch[1].trim());
+        const ingredients = parseTokens(useMatch[2]);
+        if (tool && ingredients && ingredients.length > 0) {
+          const ingNames = ingredients.map((i) => i.name).join(' + ');
+          addEntry({ type: 'option', content: `> Meter en ${tool.name}: ${ingNames}` });
+          sendAction({ type: 'craft_use', tool: tool.id, ingredients: ingredients.map((i) => i.id) });
+          return;
+        }
+      }
+
+      // Try COMBINE syntax: A+B+C (simple mix)
+      const combined = parseTokens(low);
+      if (combined && combined.length >= 2) {
+        addEntry({ type: 'option', content: `> Combinar: ${combined.map((i) => i.name).join(' + ')}` });
+        sendAction({ type: 'craft_combine', items: combined.map((i) => i.id) });
+        return;
+      }
+
       return;
     }
 
@@ -426,6 +549,8 @@ const App: React.FC = () => {
       const total = sp.items.length + sp.playerInventory.length;
       placeholder = `Selecciona [1-${total}] o [0] salir`;
     }
+  } else if (pendingResult?.type === 'craft_prompt') {
+    placeholder = 'Combina con + (ej: 1+IN2) — [0] salir';
   } else if (pendingResult?.type === 'puzzle_prompt') {
     const pp = pendingResult as PuzzlePrompt;
     if (pp.puzzleType === 'lock') {
@@ -542,7 +667,9 @@ const App: React.FC = () => {
         return (
           <CraftWidget
             description={crp.description}
+            tableItems={crp.tableItems}
             playerInventory={crp.playerInventory}
+            availableActions={crp.availableActions}
             onCombine={handleCraftCombine}
             onExit={handleCraftExit}
           />

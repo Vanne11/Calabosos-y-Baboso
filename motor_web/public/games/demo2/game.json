@@ -137,6 +137,42 @@
       "name": "Antorcha",
       "description": "Ilumina el camino y espanta babosas.",
       "image": "images/items/antorcha.png"
+    },
+    "olla_alquimia": {
+      "name": "Olla de Alquimia",
+      "description": "Una olla ennegrecida por años de uso. Perfecta para hervir ingredientes."
+    },
+    "alambique": {
+      "name": "Alambique",
+      "description": "Aparato de destilación. Convierte hierbas en esencias concentradas."
+    },
+    "grasa_babosa": {
+      "name": "Grasa de Babosa",
+      "description": "Sustancia viscosa y resbaladiza. Sirve para engrasar, lubricar y otras cosas asquerosas."
+    },
+    "esencia_curativa": {
+      "name": "Esencia Curativa",
+      "description": "Extracto concentrado de hierba curativa. Más potente que la hierba sola."
+    },
+    "espada_engrasada": {
+      "name": "Espada Engrasada",
+      "description": "La espada oxidada ahora brilla con un resplandor viscoso. +5 ataque."
+    },
+    "cuchillo_alquimia": {
+      "name": "Cuchillo de Alquimia",
+      "description": "Afilado y preciso. Para cortar y picar ingredientes."
+    },
+    "migajas": {
+      "name": "Migajas",
+      "description": "Restos de pan mohoso. Sirven como cebo o relleno."
+    },
+    "corteza_pan": {
+      "name": "Corteza de Pan",
+      "description": "La parte más dura del pan. Dura como una roca, literalmente."
+    },
+    "hierba_picada": {
+      "name": "Hierba Picada",
+      "description": "Hierba curativa finamente picada. Se disuelve rápido en líquidos."
     }
   },
 

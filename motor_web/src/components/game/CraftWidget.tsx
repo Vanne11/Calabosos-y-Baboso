@@ -1,124 +1,190 @@
 // components/game/CraftWidget.tsx
-// Interfaz de crafting: combinar items del inventario
+// Interfaz de crafting estilo terminal con 5 acciones
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useAppStore } from '../../store/useAppStore';
 
 const Container = styled.div`
   margin: 1rem 0;
 `;
 
-const Description = styled.div`
-  color: ${(props) => props.theme.terminal.system};
-  font-style: italic;
-  margin-bottom: 0.75rem;
+const Title = styled.div`
+  color: ${(props) => props.theme.terminal.warning};
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const SectionLabel = styled.div`
   color: ${(props) => props.theme.terminal.accent};
   font-weight: bold;
-  margin: 0.5rem 0 0.25rem;
+  margin: 0.75rem 0 0.25rem;
 `;
 
-const ItemToggle = styled.button<{ $selected: boolean }>`
-  background-color: ${(props) => props.$selected ? props.theme.button.hoverBackground : props.theme.button.background};
-  color: ${(props) => props.$selected ? props.theme.terminal.success : props.theme.terminal.accent};
-  border: 1px solid ${(props) => props.$selected ? props.theme.terminal.success : props.theme.terminal.accentDim};
-  border-radius: 3px;
-  padding: 6px 12px;
-  margin: 3px 4px 3px 0;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.85rem;
-  display: inline-block;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${(props) => props.theme.button.hoverBackground};
-  }
-`;
-
-const ActionButton = styled.button<{ $disabled?: boolean }>`
+const ItemButton = styled.button`
   background-color: ${(props) => props.theme.button.background};
   color: ${(props) => props.theme.terminal.accent};
   border: 1px solid ${(props) => props.theme.terminal.accentDim};
   border-radius: 3px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   margin: 3px 0;
-  cursor: ${(props) => props.$disabled ? 'not-allowed' : 'pointer'};
+  cursor: default;
   font-family: inherit;
   font-size: 0.9rem;
   text-align: left;
   width: 100%;
-  opacity: ${(props) => props.$disabled ? 0.5 : 1};
-  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
-  &:hover:not(:disabled) {
+const ItemNum = styled.span`
+  color: ${(props) => props.theme.terminal.warning};
+  font-weight: bold;
+  flex-shrink: 0;
+`;
+
+const InvNum = styled.span`
+  color: #6272a4;
+  font-weight: bold;
+  flex-shrink: 0;
+`;
+
+const ItemImage = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+`;
+
+const ItemName = styled.span`
+  flex: 1;
+`;
+
+const HelpSection = styled.div`
+  color: ${(props) => props.theme.terminal.accentDim};
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  border-top: 1px dashed ${(props) => props.theme.terminal.border};
+  padding-top: 0.5rem;
+  line-height: 1.5;
+`;
+
+const HelpLine = styled.div`
+  margin: 2px 0;
+`;
+
+const HelpLabel = styled.span`
+  color: ${(props) => props.theme.terminal.warning};
+  font-weight: bold;
+`;
+
+const HelpExample = styled.span`
+  color: ${(props) => props.theme.terminal.info};
+`;
+
+const ExitButton = styled(ItemButton)`
+  margin-top: 0.75rem;
+  border-style: dashed;
+  color: ${(props) => props.theme.terminal.accentDim};
+  cursor: pointer;
+
+  &:hover {
     background-color: ${(props) => props.theme.button.hoverBackground};
     border-color: ${(props) => props.theme.terminal.accent};
   }
 `;
 
-const ExitButton = styled(ActionButton)`
-  margin-top: 0.5rem;
-  border-style: dashed;
-  color: ${(props) => props.theme.terminal.accentDim};
-`;
-
-const Selected = styled.div`
-  color: ${(props) => props.theme.terminal.info};
-  font-size: 0.85rem;
-  margin: 0.5rem 0;
-`;
-
 interface CraftWidgetProps {
   description?: string;
-  playerInventory: string[];
+  tableItems: { id: string; name: string }[];
+  playerInventory: { id: string; name: string }[];
+  availableActions: import('../../types/game').CraftAction[];
   onCombine: (items: string[]) => void;
   onExit: () => void;
 }
 
 const CraftWidget: React.FC<CraftWidgetProps> = ({
   description,
+  tableItems,
   playerInventory,
-  onCombine,
+  availableActions,
   onExit,
 }) => {
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const toggleItem = (item: string) => {
-    setSelected((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-    );
-  };
+  const gameBasePath = useAppStore((s) => s.gameBasePath);
+  const has = (a: string) => availableActions.includes(a as import('../../types/game').CraftAction);
 
   return (
     <Container>
-      {description && <Description>{description}</Description>}
+      <Title>🔧 {description || 'Estación de Crafteo'}</Title>
 
-      <SectionLabel>Inventario</SectionLabel>
-      {playerInventory.map((item) => (
-        <ItemToggle
-          key={item}
-          $selected={selected.includes(item)}
-          onClick={() => toggleItem(item)}
-        >
-          {selected.includes(item) ? '✓ ' : ''}{item}
-        </ItemToggle>
-      ))}
-
-      {selected.length > 0 && (
-        <Selected>Seleccionados: {selected.join(' + ')}</Selected>
+      {tableItems.length > 0 && (
+        <>
+          <SectionLabel>Sobre la mesa</SectionLabel>
+          {tableItems.map((item, i) => (
+            <ItemButton key={item.id}>
+              <ItemNum>[{i + 1}]</ItemNum>
+              <ItemImage
+                src={`${gameBasePath}/images/items/${item.id}.png`}
+                alt={item.name}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <ItemName>{item.name}</ItemName>
+            </ItemButton>
+          ))}
+        </>
       )}
 
-      <ActionButton
-        $disabled={selected.length < 2}
-        disabled={selected.length < 2}
-        onClick={() => onCombine(selected)}
-      >
-        🔧 Combinar ({selected.length} items)
-      </ActionButton>
-      <ExitButton onClick={onExit}>Dejar de combinar</ExitButton>
+      {playerInventory.length > 0 && (
+        <>
+          <SectionLabel>Inventario</SectionLabel>
+          {playerInventory.map((item, i) => (
+            <ItemButton key={item.id}>
+              <InvNum>[IN{i + 1}]</InvNum>
+              <ItemImage
+                src={`${gameBasePath}/images/items/${item.id}.png`}
+                alt={item.name}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <ItemName>{item.name}</ItemName>
+            </ItemButton>
+          ))}
+        </>
+      )}
+
+      <HelpSection>
+        {has('combine') && (
+          <HelpLine>
+            <HelpLabel>+</HelpLabel> combinar — <HelpExample>1+IN2</HelpExample>
+          </HelpLine>
+        )}
+        {has('use') && (
+          <HelpLine>
+            <HelpLabel>()</HelpLabel> meter en — <HelpExample>1(IN2+IN3)</HelpExample>
+          </HelpLine>
+        )}
+        {has('apply') && (
+          <HelpLine>
+            <HelpLabel>&gt;</HelpLabel> aplicar — <HelpExample>1&gt;IN2</HelpExample>
+          </HelpLine>
+        )}
+        {has('cut') && (
+          <HelpLine>
+            <HelpLabel>/</HelpLabel> cortar — <HelpExample>1/IN2</HelpExample>
+          </HelpLine>
+        )}
+        {has('chop') && (
+          <HelpLine>
+            <HelpLabel>//</HelpLabel> picar — <HelpExample>1//IN2</HelpExample>
+          </HelpLine>
+        )}
+      </HelpSection>
+
+      <ExitButton onClick={onExit}>
+        <ItemNum>[0]</ItemNum> Dejar la mesa
+      </ExitButton>
     </Container>
   );
 };

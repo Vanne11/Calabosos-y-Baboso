@@ -407,22 +407,47 @@ export interface SoundStep {
   condition?: StepCondition;
 }
 
-// --- Craft: combinar items del inventario ---
+// --- Craft: combinar items del inventario/mesa ---
 
 export interface CraftStep {
   type: 'craft';
   description?: string;
+  /** Items disponibles sobre la mesa de crafting (IDs de item) */
+  tableItems?: string[];
   recipes: CraftRecipe[];
   failText?: string;
   goto?: string;
   condition?: StepCondition;
 }
 
+/** Tipos de acción de crafteo */
+export type CraftAction = 'combine' | 'use' | 'apply' | 'cut' | 'chop';
+
 export interface CraftRecipe {
+  /** Tipo de acción:
+   *  combine (+)  — mezclar items
+   *  use ()       — meter en herramienta (olla, alambique, desatornillador arma)
+   *  apply (>)    — untar/aplicar sustancia sobre objetivo
+   *  cut (/)      — cortar/desarmar con herramienta
+   *  chop (//)    — picar/triturar con herramienta
+   */
+  action?: CraftAction;
+  /** Para 'use'/'cut'/'chop': ID del item-herramienta */
+  tool?: string;
+  /** Para 'combine'/'use': IDs de ingredientes */
   ingredients: string[];
+  /** Para 'apply': ID de la sustancia (grasa, veneno, pintura...) */
+  substance?: string;
+  /** Para 'apply'/'cut'/'chop': ID del item objetivo */
+  target?: string;
   result: string;
+  /** Items adicionales producidos (ej: desarmar un reloj → engranaje + muelle + carcasa) */
+  bonusResults?: string[];
   text: string;
+  /** Consumir ingredientes/objetivo al craftear (default: true) */
   consume?: boolean;
+  /** Consumir la herramienta/sustancia al usarla (default: false) */
+  consumeTool?: boolean;
   effects?: Effects;
   goto?: string;
 }

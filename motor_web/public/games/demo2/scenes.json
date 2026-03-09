@@ -478,19 +478,25 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "[bold yellow]MECÁNICA: craft[/bold yellow] — Combinar items del inventario.",
-            "Si encontraste la hierba curativa y el frasco vacío, podrás crear un elixir.",
-            "Si no... bueno, quizás debiste explorar más la sala de entrada."
+            "[bold yellow]MECÁNICA: craft[/bold yellow] — Estación de alquimia con 5 acciones.",
+            "Sobre la mesa: olla, alambique, grasa de babosa, frasco vacío y un cuchillo.",
+            "[yellow]+[/yellow] combinar — [yellow]()[/yellow] meter en herramienta — [yellow]>[/yellow] aplicar/untar",
+            "[yellow]/[/yellow] cortar/desarmar — [yellow]//[/yellow] picar/triturar",
+            "Prueba a meter hierbas en la olla, untar grasa en la espada, o picar ingredientes con el cuchillo.",
+            "Las instrucciones aparecen en la mesa. Experimenta."
           ]
         },
         {
           "type": "craft",
-          "description": "Mesa de Alquimia — Combina ingredientes para crear pociones",
+          "description": "Mesa de Alquimia — Olla, alambique, cuchillo y sustancias",
+          "tableItems": ["olla_alquimia", "alambique", "grasa_babosa", "frasco_vacio", "cuchillo_alquimia"],
           "recipes": [
             {
+              "action": "use",
+              "tool": "olla_alquimia",
               "ingredients": ["hierba_curativa", "frasco_vacio"],
               "result": "elixir_baboso",
-              "text": "¡Has creado un [bold green]Elixir Baboso[/bold green]! Viscoso pero efectivo.",
+              "text": "Hierves la hierba en la olla y embotellas el resultado. ¡[bold green]Elixir Baboso[/bold green]! Viscoso pero efectivo.",
               "consume": true,
               "effects": {
                 "stats": { "alchemy": 10 },
@@ -498,6 +504,54 @@
               }
             },
             {
+              "action": "use",
+              "tool": "alambique",
+              "ingredients": ["hierba_curativa"],
+              "result": "esencia_curativa",
+              "text": "Destilas la hierba en el alambique. Obtienes una [bold cyan]Esencia Curativa[/bold cyan] concentrada.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 15 },
+                "xp": { "bob": 20 }
+              }
+            },
+            {
+              "action": "apply",
+              "substance": "grasa_babosa",
+              "target": "espada_oxidada",
+              "result": "espada_engrasada",
+              "text": "Untas la espada con grasa de babosa. El óxido se disuelve y la hoja brilla con un [bold yellow]resplandor viscoso[/bold yellow].",
+              "consume": false,
+              "effects": {
+                "xp": { "bob": 10 }
+              }
+            },
+            {
+              "action": "cut",
+              "tool": "cuchillo_alquimia",
+              "target": "pan_mohoso",
+              "result": "migajas",
+              "bonusResults": ["corteza_pan"],
+              "text": "Cortas el pan mohoso. Obtienes [bold yellow]migajas[/bold yellow] y un trozo de [bold yellow]corteza[/bold yellow].",
+              "consume": true,
+              "effects": {
+                "xp": { "bob": 5 }
+              }
+            },
+            {
+              "action": "chop",
+              "tool": "cuchillo_alquimia",
+              "target": "hierba_curativa",
+              "result": "hierba_picada",
+              "text": "Picas la hierba finamente. [bold green]Hierba Picada[/bold green] — perfecta para infusiones rápidas.",
+              "consume": true,
+              "effects": {
+                "stats": { "alchemy": 8 },
+                "xp": { "bob": 10 }
+              }
+            },
+            {
+              "action": "combine",
               "ingredients": ["pan_mohoso", "frasco_vacio"],
               "result": "pocion_vida",
               "text": "Has... ¿metido pan en un frasco? Sorprendentemente, funciona como poción.",
@@ -507,7 +561,7 @@
               }
             }
           ],
-          "failText": "Mezclas cosas al azar. No pasa nada excepto un olor horrible.",
+          "failText": "Mezclas cosas al azar. No pasa nada excepto un olor horrible y un poco de humo.",
           "goto": "encrucijada"
         }
       ]
@@ -1248,7 +1302,7 @@
             "[bold]11.[/bold] [green]notify[/green] — Notificaciones/logros :white_check_mark:",
             "[bold]12.[/bold] [green]wait[/green] — Pausas dramáticas :white_check_mark:",
             "[bold]13.[/bold] [green]sound[/green] — Efectos de sonido :white_check_mark:",
-            "[bold]14.[/bold] [green]craft[/green] — Crafting/alquimia :white_check_mark:",
+            "[bold]14.[/bold] [green]craft[/green] — Crafting 5 acciones: combinar/meter/aplicar/cortar/picar :white_check_mark:",
             "[bold]15.[/bold] [green]puzzle[/green] — code, riddle, lock, sequence :white_check_mark:",
             "[bold]16.[/bold] [green]examine[/green] — Inspeccionar entorno :white_check_mark:",
             "[bold]17.[/bold] [green]use_item[/green] — Usar item en objetivo :white_check_mark:",
