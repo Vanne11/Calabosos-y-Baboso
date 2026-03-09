@@ -1,0 +1,58 @@
+{
+  "characters": [
+    {
+      "id": "narrator",
+      "name": "Narrador",
+      "description": "Una voz omnisciente, sarcástica y condescendiente que rompe la cuarta pared constantemente.",
+      "image": "/images/dialogs/narrator.png"
+    },
+    {
+      "id": "protagonist",
+      "name": "BOB",
+      "description": "El héroe involuntario. Tú.",
+      "image": "/images/dialogs/protagonist.png"
+    },
+    {
+      "id": "tendero",
+      "name": "Tendero",
+      "description": "Un vendedor ebrio que vende equipo para 'aventureros suicidas'.",
+      "image": "/images/dialogs/tendero.png"
+    },
+    {
+      "id": "nerly",
+      "name": "Nerly",
+      "description": "Una babosa azul brillante políticamente correcta que se convierte en tu guía.",
+      "image": "/images/dialogs/nerly.png"
+    },
+    {
+      "id": "noble",
+      "name": "Noble Pomposo",
+      "description": "Un noble gordo y distraído con bolsillos llenos.",
+      "image": "/images/dialogs/noble.png"
+    },
+    {
+      "id": "dueno_establos",
+      "name": "Dueño de Establos",
+      "description": "Un hombre que cuida caballos mutantes peligrosos.",
+      "image": "/images/dialogs/dueno_establos.png"
+    },
+    {
+      "id": "prestamista",
+      "name": "Prestamista",
+      "description": "El dueño de la casa de empeños, siempre buscando estafar.",
+      "image": "/images/dialogs/prestamista.png"
+    },
+    {
+      "id": "anciano",
+      "name": "Anciano",
+      "description": "Un viejo que ha sobrevivido múltiples aventuras y ve patrones dimensionales.",
+      "image": "/images/dialogs/anciano.png"
+    },
+    {
+      "id": "sistema",
+      "name": "SISTEMA",
+      "description": "Notificaciones del sistema de juego.",
+      "image": "/images/dialogs/system.png"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "scenarios": [
+    {
+      "id": "scenario_intro",
+      "name": "Introducción",
+      "image": "/images/scenarios/intro.png",
+      "description": "El comienzo de tu aventura en Viscaria"
+    },
+    {
+      "id": "scenario_plaza",
+      "name": "Plaza Principal",
+      "image": "/images/scenarios/plaza.png",
+      "description": "El corazón de Viscaria, lleno de gente y actividad"
+    },
+    {
+      "id": "scenario_establos",
+      "name": "Establos",
+      "image": "/images/scenarios/establos.png",
+      "description": "Establos malolientes llenos de caballos mutantes"
+    },
+    {
+      "id": "scenario_mercado",
+      "name": "Mercado",
+      "image": "/images/scenarios/mercado.png",
+      "description": "El mercado bullicioso de Viscaria"
+    },
+    {
+      "id": "scenario_casa_empenos",
+      "name": "Casa de Empeños",
+      "image": "/images/scenarios/casa_empenos.png",
+      "description": "Una tienda oscura llena de objetos de dudosa procedencia"
+    },
+    {
+      "id": "scenario_tienda",
+      "name": "Tienda de Aventureros",
+      "image": "/images/scenarios/tienda.png",
+      "description": "Tienda de 'Artículos para Aventureros Suicidas'"
+    },
+    {
+      "id": "scenario_callejon",
+      "name": "Callejón Oscuro",
+      "image": "/images/scenarios/callejon.png",
+      "description": "Un callejón oscuro y húmedo"
+    },
+    {
+      "id": "scenario_entrada_abismo",
+      "name": "Entrada al Abismo",
+      "image": "/images/scenarios/entrada_abismo.png",
+      "description": "La entrada al temido Abismo de las Babosas"
+    },
+    {
+      "id": "scenario_sala_entrada",
+      "name": "Sala de Entrada",
+      "image": "/images/scenarios/sala_entrada.png",
+      "description": "Primera cámara dentro del Abismo"
+    },
+    {
+      "id": "scenario_grutas_cristal",
+      "name": "Grutas de Cristal",
+      "image": "/images/scenarios/grutas_cristal.png",
+      "description": "Cavernas brillantes llenas de cristales"
+    },
+    {
+      "id": "scenario_final",
+      "name": "Desenlace Final",
+      "image": "/images/scenarios/final.png",
+      "description": "El desenlace de tu aventura"
+    }
+  ]
+}

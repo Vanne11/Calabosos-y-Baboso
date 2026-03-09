@@ -1,0 +1,279 @@
+{
+  "name": "La Mazmorra de las Pruebas",
+  "description": "Una demo técnica que explora TODAS las capacidades del motor. El narrador rompe la cuarta pared constantemente.",
+  "author": "El Equipo Baboso",
+  "version": "1.0.0",
+
+  "characters": {
+    "narrator": {
+      "name": "Narrador",
+      "description": "Una voz omnisciente, sarcástica y condescendiente que rompe la cuarta pared constantemente.",
+      "image": "images/dialogs/narrator.png",
+      "role": "narrator"
+    },
+    "bob": {
+      "name": "BOB",
+      "description": "El héroe involuntario. Tú.",
+      "image": "images/dialogs/bob_male.png",
+      "role": "protagonist",
+      "altImages": {
+        "masculino": "images/dialogs/bob_male.png",
+        "femenino": "images/dialogs/bob_female.png",
+        "no_binario": "images/dialogs/bob_nb.png"
+      },
+      "skillTree": "aventurero",
+      "baseStats": { "hp": 100, "atk": 12, "def": 8 },
+      "maxLevel": 5,
+      "xpCurve": [50, 100, 200, 400],
+      "initialTraits": ["curioso"]
+    },
+    "griselda": {
+      "name": "Griselda",
+      "description": "Una babosa comerciante con monóculo que ha montado su negocio en la mazmorra.",
+      "image": "images/dialogs/griselda.png",
+      "role": "companion",
+      "joinFlag": "griselda_joined"
+    },
+    "viejo_mago": {
+      "name": "Viejo Mago",
+      "description": "Un mago que ya no recuerda sus hechizos pero sigue repartiendo bendiciones.",
+      "image": "images/dialogs/viejo_mago.png",
+      "role": "npc"
+    },
+    "babosa_guardian": {
+      "name": "Baboso Mayor",
+      "description": "El jefe de la mazmorra. Enorme, viscoso y ligeramente ridículo.",
+      "image": "images/dialogs/babosa_guardian.png",
+      "role": "npc"
+    }
+  },
+
+  "initialStats": {
+    "will_to_live": 100,
+    "perception": 30,
+    "strength": 40,
+    "gold": 50,
+    "attack": 12,
+    "defense": 8,
+    "alchemy": 0,
+    "courage": 0
+  },
+  "initialFlags": {},
+  "initialInventory": ["pan_mohoso"],
+
+  "time": {
+    "duration": 3,
+    "phases": ["morning", "afternoon", "night"],
+    "initial": "morning"
+  },
+
+  "items": {
+    "pan_mohoso": {
+      "name": "Pan Mohoso",
+      "description": "Un trozo de pan que ha visto días mejores. Y peores.",
+      "image": "images/items/pan_mohoso.png"
+    },
+    "llave_oxidada": {
+      "name": "Llave Oxidada",
+      "description": "Una llave que probablemente abre algo. O no.",
+      "image": "images/items/llave_oxidada.png"
+    },
+    "ganzua": {
+      "name": "Ganzúa",
+      "description": "Para los que prefieren el método sutil.",
+      "image": "images/items/ganzua.png"
+    },
+    "espada_oxidada": {
+      "name": "Espada Oxidada",
+      "description": "Apenas corta mantequilla, pero es algo.",
+      "image": "images/items/espada_oxidada.png"
+    },
+    "pocion_vida": {
+      "name": "Poción de Vida",
+      "description": "Sabe a barro con esperanza.",
+      "image": "images/items/pocion_vida.png"
+    },
+    "escudo_madera": {
+      "name": "Escudo de Madera",
+      "description": "Más decorativo que funcional.",
+      "image": "images/items/escudo_madera.png"
+    },
+    "hierba_curativa": {
+      "name": "Hierba Curativa",
+      "description": "Crece entre las grietas húmedas.",
+      "image": "images/items/hierba_curativa.png"
+    },
+    "frasco_vacio": {
+      "name": "Frasco Vacío",
+      "description": "Un frasco de cristal esperando contenido.",
+      "image": "images/items/frasco_vacio.png"
+    },
+    "elixir_baboso": {
+      "name": "Elixir Baboso",
+      "description": "Una poción viscosa pero efectiva. +30 vida.",
+      "image": "images/items/elixir_baboso.png"
+    },
+    "amuleto_valor": {
+      "name": "Amuleto de Valor",
+      "description": "Brilla con una luz cálida. +3 a tiradas.",
+      "image": "images/items/amuleto_valor.png"
+    },
+    "sal_anti_babosas": {
+      "name": "Sal Anti-Babosas",
+      "description": "El arma definitiva contra seres viscosos.",
+      "image": "images/items/sal_anti_babosas.png"
+    },
+    "nota_misteriosa": {
+      "name": "Nota Misteriosa",
+      "description": "Dice: 'La contraseña es BABOSA'. Qué sutil.",
+      "image": "images/items/nota_misteriosa.png"
+    },
+    "moneda_antigua": {
+      "name": "Moneda Antigua",
+      "description": "Vale más como curiosidad que como divisa.",
+      "image": "images/items/moneda_antigua.png"
+    },
+    "antorcha": {
+      "name": "Antorcha",
+      "description": "Ilumina el camino y espanta babosas.",
+      "image": "images/items/antorcha.png"
+    },
+    "olla_alquimia": {
+      "name": "Olla de Alquimia",
+      "description": "Una olla ennegrecida por años de uso. Perfecta para hervir ingredientes."
+    },
+    "alambique": {
+      "name": "Alambique",
+      "description": "Aparato de destilación. Convierte hierbas en esencias concentradas."
+    },
+    "grasa_babosa": {
+      "name": "Grasa de Babosa",
+      "description": "Sustancia viscosa y resbaladiza. Sirve para engrasar, lubricar y otras cosas asquerosas."
+    },
+    "esencia_curativa": {
+      "name": "Esencia Curativa",
+      "description": "Extracto concentrado de hierba curativa. Más potente que la hierba sola."
+    },
+    "espada_engrasada": {
+      "name": "Espada Engrasada",
+      "description": "La espada oxidada ahora brilla con un resplandor viscoso. +5 ataque."
+    },
+    "cuchillo_alquimia": {
+      "name": "Cuchillo de Alquimia",
+      "description": "Afilado y preciso. Para cortar y picar ingredientes."
+    },
+    "migajas": {
+      "name": "Migajas",
+      "description": "Restos de pan mohoso. Sirven como cebo o relleno."
+    },
+    "corteza_pan": {
+      "name": "Corteza de Pan",
+      "description": "La parte más dura del pan. Dura como una roca, literalmente."
+    },
+    "hierba_picada": {
+      "name": "Hierba Picada",
+      "description": "Hierba curativa finamente picada. Se disuelve rápido en líquidos."
+    },
+    "pocion_grasa": {
+      "name": "Poción de Grasa",
+      "description": "Un frasco lleno de grasa destilada. Sirve como lubricante premium o veneno para babosas."
+    },
+    "bomba_mohosa": {
+      "name": "Bomba Mohosa",
+      "description": "Una bola de pan mohoso concentrado. El hedor es un arma en sí misma."
+    },
+    "elixir_rapido": {
+      "name": "Elixir Rápido",
+      "description": "Infusión rápida de hierba picada. Menos potente pero instantánea. +15 vida."
+    },
+    "polvo_corteza": {
+      "name": "Polvo de Corteza",
+      "description": "Corteza triturada. Puede usarse como espesante o como proyectil improvisado."
+    }
+  },
+
+  "skillTrees": {
+    "aventurero": {
+      "name": "Aventurero",
+      "skills": {
+        "tajo": {
+          "name": "Tajo Heroico",
+          "description": "+5 ataque por nivel. El básico de los básicos.",
+          "maxLevel": 3,
+          "cost": 1,
+          "passiveBonus": { "attack": 5 }
+        },
+        "piel_dura": {
+          "name": "Piel Dura",
+          "description": "+3 defensa por nivel. Para los que prefieren sobrevivir.",
+          "maxLevel": 3,
+          "cost": 1,
+          "passiveBonus": { "defense": 3 }
+        },
+        "ojo_agudo": {
+          "name": "Ojo Agudo",
+          "description": "+10 percepción. Requiere Tajo nivel 1.",
+          "maxLevel": 2,
+          "cost": 1,
+          "prerequisites": ["tajo"],
+          "passiveBonus": { "perception": 10 }
+        },
+        "golpe_sal": {
+          "name": "Golpe de Sal",
+          "description": "Daño x2 vs babosas. Requiere Tajo nivel 2.",
+          "maxLevel": 1,
+          "cost": 2,
+          "prerequisites": ["tajo"],
+          "passiveBonus": { "attack": 10 }
+        }
+      }
+    }
+  },
+
+  "traits": {
+    "curioso": {
+      "name": "Curioso",
+      "description": "+1 a tiradas de percepción. Miras todo dos veces.",
+      "diceModifier": 1,
+      "permanent": true,
+      "tags": ["personality"]
+    },
+    "valiente": {
+      "name": "Valiente",
+      "description": "+2 a todas las tiradas. El miedo no te paraliza.",
+      "diceModifier": 2,
+      "permanent": true,
+      "tags": ["personality"]
+    },
+    "envenenado": {
+      "name": "Envenenado",
+      "description": "-15 voluntad de vivir por escena. Duele.",
+      "statModifiers": { "will_to_live": -15 },
+      "permanent": false,
+      "duration": 3,
+      "tags": ["status"]
+    },
+    "bendecido": {
+      "name": "Bendecido",
+      "description": "+3 a tiradas durante 5 escenas. Gracias, viejo mago.",
+      "diceModifier": 3,
+      "permanent": false,
+      "duration": 5,
+      "tags": ["buff"]
+    },
+    "viscoso": {
+      "name": "Viscoso",
+      "description": "-5 percepción. Cubierto de baba de babosa.",
+      "statModifiers": { "perception": -5 },
+      "permanent": false,
+      "duration": 2,
+      "tags": ["status"]
+    }
+  },
+
+  "saveSystem": {
+    "mode": "free",
+    "slots": 3,
+    "allowOverwrite": true
+  }
+}

@@ -1,0 +1,594 @@
+{
+  "dialogs": [
+    {
+      "id": "dialog_intro_narrador_1",
+      "character": "narrator",
+      "content": [
+        "Desde tiempos inmemoriales, el Reino de Viscaria ha vivido aterrorizado por las criaturas que habitan el Abismo de las Babosas, una mazmorra tan profunda y retorcida como... eh, ¿estás prestando atención?",
+        "¡Por fin! Pensé que tendría que recitar toda la introducción yo solo. Necesitamos a alguien que protagonice esta historia y parece que ese alguien eres tú.",
+        "Primero lo primero: ¿Cuál es tu género? Como si realmente importara..."
+      ]
+    },
+    {
+      "id": "dialog_pedir_nombre",
+      "character": "narrator",
+      "content": [
+        "Bien, bien. Ahora dime... ¿Cómo te llamas?",
+        "Escribe tu nombre y presiona Enter. Y por favor, intenta elegir algo que no sea ridículo. Aunque probablemente lo sea de todos modos."
+      ]
+    },
+    {
+      "id": "dialog_reaccion_nombre",
+      "character": "narrator",
+      "content": [
+        "Mmm... interesante elección. Aunque, déjame decirte algo...",
+        "Tu nombre es demasiado complicado para recordar. Te llamaré BOB. Sí, BOB.",
+        "¿Qué? ¿No te gusta? Pues qué pena. Yo soy tu Narrador y estaré aquí para... 'guiarte'.",
+        "¡Bienvenido a Viscaria, BOB!"
+      ]
+    },
+    {
+      "id": "dialog_plaza_inicial_protagonista",
+      "character": "protagonist",
+      "content": [
+        "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?"
+      ]
+    },
+    {
+      "id": "dialog_plaza_inicial_narrador",
+      "character": "narrator",
+      "content": [
+        "Estás en Viscaria, obviamente. ¿La introducción no fue suficientemente clara? Y soy el Narrador, tu guía en esta aventura y, técnicamente, tu jefe. En cuanto a lo de BOB... me pareció simpático."
+      ]
+    },
+    {
+      "id": "dialog_plaza_confusión",
+      "character": "protagonist",
+      "content": [
+        "No entiendo nada. ¿Qué se supone que debo hacer?"
+      ]
+    },
+    {
+      "id": "dialog_plaza_explicacion",
+      "character": "narrator",
+      "content": [
+        "¿De verdad tengo que explicártelo todo? Bien, versión resumida: eres el héroe elegido para adentrarte en el Abismo de las Babosas y derrotar al Rey Baboso. Ya sabes, la típica aventura de calabozos, monstruos viscosos y muerte probable."
+      ]
+    },
+    {
+      "id": "dialog_plaza_negacion",
+      "character": "protagonist",
+      "content": [
+        "¿Y si me niego?"
+      ]
+    },
+    {
+      "id": "dialog_plaza_amenaza",
+      "character": "narrator",
+      "content": [
+        "¡Qué adorable! Piensas que tienes elección. Mira, tengo un horario que cumplir y seis episodios más que narrar después de ti. Así que, ¿por las buenas o por las malas?"
+      ]
+    },
+    {
+      "id": "dialog_decision_aceptar",
+      "character": "protagonist",
+      "content": [
+        "Está bien, acepto la misión. ¿Cuál es el plan?"
+      ]
+    },
+    {
+      "id": "dialog_decision_plan",
+      "character": "narrator",
+      "content": [
+        "Vaya, eso fue fácil. El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como héroe, bla, bla, bla. ¿Ves esa tienda de allí? La que tiene el letrero que dice 'ARTÍCULOS PARA AVENTUREROS SUICIDAS'. Sí, esa."
+      ]
+    },
+    {
+      "id": "dialog_decision_sin_dinero",
+      "character": "protagonist",
+      "content": [
+        "Espera, ¿con qué se supone que voy a comprar equipo? No tengo dinero."
+      ]
+    },
+    {
+      "id": "dialog_decision_problema",
+      "character": "narrator",
+      "content": [
+        "Siempre hay algo, ¿verdad? Bien, supongo que tendrás que conseguir algo de dinero primero. Qué incómodo. Esto no estaba en el guión."
+      ]
+    },
+    {
+      "id": "dialog_opcion_trabajo",
+      "character": "protagonist",
+      "content": [
+        "Buscaré algún trabajo rápido en la ciudad."
+      ]
+    },
+    {
+      "id": "dialog_trabajo_inicio",
+      "character": "narrator",
+      "content": [
+        "¡Qué iniciativa! Nada dice 'héroe legendario' como un trabajo temporal mal pagado.",
+        "El protagonista ve un tablón de anuncios en la plaza."
+      ]
+    },
+    {
+      "id": "dialog_trabajo_mirar",
+      "character": "protagonist",
+      "content": [
+        "Veamos qué trabajos hay disponibles..."
+      ]
+    },
+    {
+      "id": "dialog_trabajo_opciones",
+      "character": "narrator",
+      "content": [
+        "Oh, las opciones son fascinantes: limpiador de establos, probador de pociones experimentales, o ayudante del verdugo. Elige sabiamente, aunque todas son igual de terribles."
+      ]
+    },
+    {
+      "id": "dialog_elegir_establos",
+      "character": "protagonist",
+      "content": [
+        "Limpiaré establos. Suena lo menos peligroso."
+      ]
+    },
+    {
+      "id": "dialog_establos_llegada",
+      "character": "narrator",
+      "content": [
+        "Llegas a los establos. El olor es... memorable. Los caballos parecen tener tres ojos y escupen fuego ocasionalmente.",
+        "El dueño de los establos te mira con una mezcla de esperanza y lástima."
+      ]
+    },
+    {
+      "id": "dialog_establos_dueno",
+      "character": "dueno_establos",
+      "content": [
+        "¿Vienes por el trabajo? Bien, necesito que limpies todos los establos. Los caballos están un poco... temperamentales hoy. Intenta no hacer movimientos bruscos. O lentos. En realidad, mejor no te muevas mucho.",
+        "Te pagaré según lo bien que lo hagas. Y según cuántas partes de tu cuerpo conserves intactas."
+      ]
+    },
+    {
+      "id": "dialog_establos_tirada",
+      "character": "narrator",
+      "content": [
+        "Es hora de poner a prueba tu valentía. O tu estupidez. A estas alturas es difícil distinguir.",
+        "[TIRADA DE MIEDO - Dificultad 14]"
+      ]
+    },
+    {
+      "id": "dialog_opcion_vender",
+      "character": "protagonist",
+      "content": [
+        "¿Hay algo de valor que pueda vender?"
+      ]
+    },
+    {
+      "id": "dialog_vender_relicario",
+      "character": "narrator",
+      "content": [
+        "Veamos... tienes tu ropa, tu dignidad, y... (revisando) ah, parece que tienes un relicario familiar en tu inventario. Qué conveniente que no lo mencionara antes."
+      ]
+    },
+    {
+      "id": "dialog_vender_pregunta",
+      "character": "protagonist",
+      "content": [
+        "¿Un relicario familiar? ¿De dónde salió?"
+      ]
+    },
+    {
+      "id": "dialog_vender_explicacion",
+      "character": "narrator",
+      "content": [
+        "Detalles, detalles. Es parte de tu trasfondo que acabo de inventar. Perteneció a tu abuela, quien derrotó a un dragón usando solo una cuchara de madera. O podrías vender tus zapatos, supongo."
+      ]
+    },
+    {
+      "id": "dialog_vender_aceptar",
+      "character": "protagonist",
+      "content": [
+        "Venderé el relicario, supongo."
+      ]
+    },
+    {
+      "id": "dialog_empenos_llegada",
+      "character": "narrator",
+      "content": [
+        "Entras en una tienda oscura y polvorienta. Las estanterías están llenas de objetos extraños y de dudosa procedencia.",
+        "Un hombre delgado y de mirada afilada te observa desde detrás del mostrador."
+      ]
+    },
+    {
+      "id": "dialog_empenos_prestamista",
+      "character": "prestamista",
+      "content": [
+        "¿Qué traes para vender? Espero que sea algo que valga la pena mi tiempo.",
+        "[El prestamista examina el relicario con una lupa]",
+        "Hmm... interesante. Parece antiguo. ¿Cuánto pides por él?"
+      ]
+    },
+    {
+      "id": "dialog_empenos_tirada",
+      "character": "narrator",
+      "content": [
+        "Es momento de negociar. Tu reputación determinará si sales de aquí con una fortuna o con calderilla.",
+        "[TIRADA DE REPUTACIÓN - Dificultad 12]"
+      ]
+    },
+    {
+      "id": "dialog_opcion_robar",
+      "character": "protagonist",
+      "content": [
+        "Quizás podría... tomar prestado algo de dinero sin permiso."
+      ]
+    },
+    {
+      "id": "dialog_robar_inicio",
+      "character": "narrator",
+      "content": [
+        "¡Qué escandaloso! El héroe elegido recurriendo al hurto. Me encanta este giro argumental."
+      ]
+    },
+    {
+      "id": "dialog_robar_justificacion",
+      "character": "protagonist",
+      "content": [
+        "Solo lo tomaré prestado. Lo devolveré... algún día."
+      ]
+    },
+    {
+      "id": "dialog_robar_objetivo",
+      "character": "narrator",
+      "content": [
+        "Claro, claro. Hay un noble gordo y pomposo pavoneándose por el mercado. Sus bolsillos parecen llenos y su atención... en otra parte.",
+        "[TIRADA DE REPUTACIÓN - Dificultad 13]"
+      ]
+    },
+    {
+      "id": "dialog_tienda_entrada",
+      "character": "narrator",
+      "content": [
+        "Entras en la tienda 'ARTÍCULOS PARA AVENTUREROS SUICIDAS'. El lugar está lleno de armas oxidadas, armaduras abolladas y pociones de colores sospechosos.",
+        "El tendero, claramente ebrio, te saluda con entusiasmo excesivo."
+      ]
+    },
+    {
+      "id": "dialog_tienda_saludo",
+      "character": "tendero",
+      "content": [
+        "¡Bienvenido a mi humilde es... estab... tienda! ¿Qué puedo ofrecerte para tu in-inevitable... es decir, emocionante aventura? *hic*"
+      ]
+    },
+    {
+      "id": "dialog_tienda_comentario",
+      "character": "narrator",
+      "content": [
+        "Parece que nuestro amigo ha estado probando su propio inventario de pociones. Aprovecha para regatear."
+      ]
+    },
+    {
+      "id": "dialog_tienda_pedido",
+      "character": "protagonist",
+      "content": [
+        "Necesito equipo para adentrarme en el Abismo de las Babosas."
+      ]
+    },
+    {
+      "id": "dialog_tienda_respuesta",
+      "character": "tendero",
+      "content": [
+        "¿El Abismo? *hic* ¡Ja! Nadie vuelve de ahí con... con vida. ¡Excepto yo! Fui tres... no, siete veces. O quizás fue un sueño. *hic* De todas formas, tengo justo lo que necesitas."
+      ]
+    },
+    {
+      "id": "dialog_tienda_equipo",
+      "character": "narrator",
+      "content": [
+        "El Tendero coloca sobre el mostrador una espada oxidada, un zurrón hecho de un material sospechoso, y un pequeño saco de sal."
+      ]
+    },
+    {
+      "id": "dialog_tienda_descripcion",
+      "character": "tendero",
+      "content": [
+        "La mejor espada de todo Viscaria, un zurrón de escr... escro... piel de elefante muy espacioso, y sal. La sal es importante. Muy cara. Mata babosas.",
+        "Mmm... para ti... *hic* Normalmente serían 500 monedas de oro pero... *mira confundido una botella vacía* Acepto lo que tengas."
+      ]
+    },
+    {
+      "id": "dialog_tienda_compra",
+      "character": "narrator",
+      "content": [
+        "El Tendero toma todo tu dinero y te entrega el equipo. Técnicamente fue un intercambio justo. Técnicamente.",
+        "[Has obtenido: Espada Oxidada, Zurrón Espacioso, Sal Anti-Babosas]"
+      ]
+    },
+    {
+      "id": "dialog_callejon_inicio",
+      "character": "narrator",
+      "content": [
+        "No tan rápido, BOB. Según el guión, ahora debes tomar un callejón inquietante y potencialmente peligroso porque... bueno, porque lo digo yo.",
+        "El callejón es oscuro y húmedo."
+      ]
+    },
+    {
+      "id": "dialog_callejon_pregunta",
+      "character": "protagonist",
+      "content": [
+        "¿Por qué tengo que venir por aquí?"
+      ]
+    },
+    {
+      "id": "dialog_callejon_excusa",
+      "character": "narrator",
+      "content": [
+        "Desarrollo de personaje, atmósfera, tensión narrativa... escoge la excusa que más te guste.",
+        "Un sonido viscoso se escucha desde las sombras."
+      ]
+    },
+    {
+      "id": "dialog_callejon_sonido",
+      "character": "protagonist",
+      "content": [
+        "¿Qué fue eso?"
+      ]
+    },
+    {
+      "id": "dialog_callejon_misterio",
+      "character": "narrator",
+      "content": [
+        "Oh, debe ser una rata. O tal vez un asesino. O quizás... bueno, ¿por qué no vas a investigar?"
+      ]
+    },
+    {
+      "id": "dialog_nerly_aparicion",
+      "character": "narrator",
+      "content": [
+        "Al acercarse, el protagonista ve una pequeña babosa de color azul brillante."
+      ]
+    },
+    {
+      "id": "dialog_nerly_saludo",
+      "character": "nerly",
+      "content": [
+        "¡Hola! ¿Eres el nuevo héroe?"
+      ]
+    },
+    {
+      "id": "dialog_nerly_sorpresa",
+      "character": "protagonist",
+      "content": [
+        "¿Una babosa que habla?"
+      ]
+    },
+    {
+      "id": "dialog_nerly_correccion",
+      "character": "nerly",
+      "content": [
+        "Disculpa, pero el término 'babosa' es un poco despectivo. Prefiero 'entidad gastropódica semitranslúcida'. Pero puedes llamarme Nerly."
+      ]
+    },
+    {
+      "id": "dialog_nerly_comentario",
+      "character": "narrator",
+      "content": [
+        "Genial, una babosa políticamente correcta. La historia se pone cada vez mejor."
+      ]
+    },
+    {
+      "id": "dialog_nerly_oferta",
+      "character": "nerly",
+      "content": [
+        "He oído que vas al Abismo. Puedo ayudarte. Conozco todos los caminos y las debilidades de los monstruos de allí. Sería tu guía."
+      ]
+    },
+    {
+      "id": "dialog_nerly_aceptar",
+      "character": "protagonist",
+      "content": [
+        "Gracias, me vendría bien la ayuda."
+      ]
+    },
+    {
+      "id": "dialog_nerly_alianza",
+      "character": "nerly",
+      "content": [
+        "¡Excelente! Sabía que eras diferente. La mayoría solo intenta pisarme o echarme sal. A propósito, ¿no llevas sal contigo, verdad?"
+      ]
+    },
+    {
+      "id": "dialog_nerly_sal",
+      "character": "protagonist",
+      "content": [
+        "Bueno, en realidad..."
+      ]
+    },
+    {
+      "id": "dialog_nerly_advertencia",
+      "character": "nerly",
+      "content": [
+        "¡Mantenla lejos de mí! Es mortal para mi especie. Pero no te preocupes, mientras la mantengas guardada, estaremos bien. Ahora, vamos hacia la puerta de la ciudad."
+      ]
+    },
+    {
+      "id": "dialog_abismo_camino",
+      "character": "narrator",
+      "content": [
+        "El camino hacia el Abismo serpentea a través de un bosque cuyas hojas parecen demasiado húmedas para estar simplemente mojadas por la lluvia. El suelo se vuelve más blando y viscoso a medida que te acercas."
+      ]
+    },
+    {
+      "id": "dialog_abismo_cerca",
+      "character": "nerly",
+      "content": [
+        "No falta mucho. Cuando el suelo comience a brillar ligeramente en la oscuridad, sabrás que estamos cerca."
+      ]
+    },
+    {
+      "id": "dialog_abismo_brillo",
+      "character": "protagonist",
+      "content": [
+        "¿Por qué brilla?"
+      ]
+    },
+    {
+      "id": "dialog_abismo_baba",
+      "character": "nerly",
+      "content": [
+        "Rastros de baba. Algunos de los míos tienen... fugas. Y otros dejan rastros a propósito para marcar territorio."
+      ]
+    },
+    {
+      "id": "dialog_abismo_sarcasmo",
+      "character": "narrator",
+      "content": [
+        "Genial, estás siguiendo un sendero de moco fosforescente. Tu vida ha alcanzado un nuevo punto bajo, BOB."
+      ]
+    },
+    {
+      "id": "dialog_abismo_llegada",
+      "character": "narrator",
+      "content": [
+        "Una enorme caverna se abre en la ladera de una montaña. El suelo alrededor está cubierto de una sustancia brillante y viscosa. El aire huele a humedad y a algo dulce pero pútrido."
+      ]
+    },
+    {
+      "id": "dialog_abismo_entrada_nerly",
+      "character": "nerly",
+      "content": [
+        "Hemos llegado. Esta es la entrada principal al Abismo."
+      ]
+    },
+    {
+      "id": "dialog_abismo_descripcion",
+      "character": "narrator",
+      "content": [
+        "¡Tachán! Contempla la glamorosa entrada al Abismo de las Babosas. Nótese el exquisito olor a descomposición y el encantador brillo de fluidos corporales de babosa."
+      ]
+    },
+    {
+      "id": "dialog_abismo_impresion",
+      "character": "protagonist",
+      "content": [
+        "Es... imponente."
+      ]
+    },
+    {
+      "id": "dialog_abismo_realidad",
+      "character": "narrator",
+      "content": [
+        "Es un agujero en una montaña, BOB. No te emociones demasiado.",
+        "A un lado de la entrada, hay un anciano sentado sobre una roca plana, fumando una pipa."
+      ]
+    },
+    {
+      "id": "dialog_anciano_saludo",
+      "character": "anciano",
+      "content": [
+        "*cof cof* Así que otro aspirante a héroe, ¿eh? Déjame adivinar... ¿El Narrador te trajo?"
+      ]
+    },
+    {
+      "id": "dialog_anciano_pregunta",
+      "character": "protagonist",
+      "content": [
+        "¿Puedes ver al Narrador?"
+      ]
+    },
+    {
+      "id": "dialog_anciano_experiencia",
+      "character": "anciano",
+      "content": [
+        "Después de cinco intentos fallidos de aventura y tres muertes casi seguras, uno comienza a notar patrones. El Narrador es solo uno de los muchos seres que existen entre planos.",
+        "El secreto está en no pisar lo verde... o lo morado... o lo transparente. En realidad, mejor no pises nada."
+      ]
+    },
+    {
+      "id": "dialog_anciano_ignorar",
+      "character": "narrator",
+      "content": [
+        "Ignora al viejo loco. Probablemente haya lamido demasiadas babosas alucinógenas."
+      ]
+    },
+    {
+      "id": "dialog_entrar_abismo",
+      "character": "narrator",
+      "content": [
+        "Entra de una vez. Tengo un horario que cumplir y después de ti tengo que narrar una historia sobre un conejo parlante con problemas existenciales."
+      ]
+    },
+    {
+      "id": "dialog_entrar_pregunta",
+      "character": "protagonist",
+      "content": [
+        "¿Cómo debería entrar?"
+      ]
+    },
+    {
+      "id": "dialog_entrar_opciones",
+      "character": "nerly",
+      "content": [
+        "Hay varias formas. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, podríamos buscar un túnel lateral. Yo conozco varios pasajes secretos."
+      ]
+    },
+    {
+      "id": "dialog_dentro_sala",
+      "character": "narrator",
+      "content": [
+        "Estás dentro del Abismo. La sala es amplia, con paredes cubiertas de una sustancia viscosa que pulsa levemente.",
+        "Hay tres túneles que se ramifican desde aquí. Nerly señala cada uno."
+      ]
+    },
+    {
+      "id": "dialog_dentro_nerly",
+      "character": "nerly",
+      "content": [
+        "Ese túnel de la izquierda lleva a las Cavernas de Cría. El del centro baja al Abismo Profundo. Y el de la derecha conduce a las Grutas de Cristal.",
+        "Las Grutas son hermosas pero peligrosas. Dicen que hay una Lágrima de Cristal que muestra visiones."
+      ]
+    },
+    {
+      "id": "dialog_grutas_llegada",
+      "character": "narrator",
+      "content": [
+        "Las Grutas de Cristal son espectaculares. Cristales de todos los colores crecen de las paredes y el techo, emitiendo una luz suave.",
+        "En el centro de la cámara principal, hay un cristal enorme con forma de lágrima."
+      ]
+    },
+    {
+      "id": "dialog_grutas_nerly",
+      "character": "nerly",
+      "content": [
+        "Esa es la Lágrima de Cristal. Dicen que si la tocas, puedes ver el pasado y el futuro. Pero también puede... afectarte."
+      ]
+    },
+    {
+      "id": "dialog_grutas_decision",
+      "character": "narrator",
+      "content": [
+        "Qué dilema. ¿Tocas el cristal mágico potencialmente mortal o sigues adelante sin conocimiento adicional?",
+        "Decisiones, decisiones..."
+      ]
+    },
+    {
+      "id": "dialog_final_victoria",
+      "character": "narrator",
+      "content": [
+        "Y así termina esta demo. Has explorado Viscaria, conseguido equipo, conocido a Nerly, y llegado al Abismo de las Babosas.",
+        "El resto de la aventura... bueno, eso es para la versión completa.",
+        "¿Derrotarás al Rey Baboso? ¿Sobrevivirás? ¿Aprenderá Nerly a no ser tan políticamente correcta?",
+        "Todas esas preguntas y más quedan sin responder... por ahora."
+      ]
+    },
+    {
+      "id": "dialog_final_narrador",
+      "character": "narrator",
+      "content": [
+        "Gracias por jugar esta demo de 'Calabosos y Babosos'. Ha sido... tolerablemente entretenido narrarte.",
+        "Recuerda: en la vida real, no entres en mazmorras llenas de babosas. No hay narradores sarcásticos para salvarte."
+      ]
+    }
+  ]
+}

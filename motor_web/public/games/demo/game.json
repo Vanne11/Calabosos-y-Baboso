@@ -1,0 +1,79 @@
+{
+  "name": "Calabosos y Babosos - Demo Completa",
+  "description": "Una aventura épica llena de babosas, sarcasmo y decisiones cuestionables. Demuestra todas las mecánicas del juego.",
+  "author": "Nicolás y Vanessa",
+  "version": "2.0.0",
+  "characters": {
+    "narrator": {
+      "name": "Narrador",
+      "description": "Una voz omnisciente, sarcástica y condescendiente que rompe la cuarta pared constantemente.",
+      "image": "images/dialogs/narrator.png",
+      "role": "narrator"
+    },
+    "protagonist": {
+      "name": "BOB",
+      "description": "El héroe involuntario. Tú.",
+      "image": "images/dialogs/protagonist_male.png",
+      "role": "protagonist",
+      "altImages": {
+        "masculino": "images/dialogs/protagonist_male.png",
+        "femenino": "images/dialogs/protagonist_female.png",
+        "no_binario": "images/dialogs/protagonist_nb.png",
+        "misterioso": "images/dialogs/protagonist_mystery.png"
+      }
+    },
+    "tendero": {
+      "name": "Tendero",
+      "description": "Un vendedor ebrio que vende equipo para 'aventureros suicidas'.",
+      "image": "images/dialogs/tendero.png",
+      "role": "npc"
+    },
+    "nerly": {
+      "name": "Nerly",
+      "description": "Una babosa azul brillante políticamente correcta que se convierte en tu guía.",
+      "image": "images/dialogs/nerly.png",
+      "role": "companion",
+      "joinFlag": "nerly_joined"
+    },
+    "noble": {
+      "name": "Noble Pomposo",
+      "description": "Un noble gordo y distraído con bolsillos llenos.",
+      "image": "images/dialogs/noble.png"
+    },
+    "dueno_establos": {
+      "name": "Dueño de Establos",
+      "description": "Un hombre que cuida caballos mutantes peligrosos.",
+      "image": "images/dialogs/dueno_establos.png"
+    },
+    "prestamista": {
+      "name": "Prestamista",
+      "description": "El dueño de la casa de empeños, siempre buscando estafar.",
+      "image": "images/dialogs/prestamista.png"
+    },
+    "anciano": {
+      "name": "Anciano",
+      "description": "Un viejo que ha sobrevivido múltiples aventuras y ve patrones dimensionales.",
+      "image": "images/dialogs/anciano.png"
+    },
+    "sistema": {
+      "name": "SISTEMA",
+      "description": "Notificaciones del sistema de juego.",
+      "image": "images/dialogs/system.png"
+    }
+  },
+  "initialStats": {
+    "will_to_live": 100,
+    "hunger": 0,
+    "pee": 0,
+    "fear": 0,
+    "reputation": 50,
+    "dinero": 0
+  },
+  "initialFlags": {},
+  "initialInventory": [],
+  "time": {
+    "duration": 1,
+    "phases": ["morning", "afternoon", "night"],
+    "initial": "morning"
+  }
+}

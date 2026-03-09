@@ -1,0 +1,240 @@
+{
+  "routes": [
+    {
+      "id": "start",
+      "condition": "default",
+      "actions": ["scenario_intro", "dialog_intro_narrador_1", "widget_elegir_genero"]
+    },
+    {
+      "id": "pedir_nombre",
+      "condition": "default",
+      "actions": ["scenario_intro", "dialog_pedir_nombre", "widget_input_nombre"]
+    },
+    {
+      "id": "reaccion_narrador",
+      "condition": "default",
+      "actions": ["scenario_intro", "dialog_reaccion_nombre", "widget_continuar_plaza"]
+    },
+    {
+      "id": "plaza_principal",
+      "condition": "default",
+      "actions": [
+        "scenario_plaza",
+        "dialog_plaza_inicial_protagonista",
+        "dialog_plaza_inicial_narrador",
+        "dialog_plaza_confusión",
+        "dialog_plaza_explicacion",
+        "dialog_plaza_negacion",
+        "dialog_plaza_amenaza",
+        "widget_plaza_opciones"
+      ]
+    },
+    {
+      "id": "decision_inicial",
+      "condition": "default",
+      "actions": [
+        "scenario_plaza",
+        "dialog_decision_aceptar",
+        "dialog_decision_plan",
+        "dialog_decision_sin_dinero",
+        "dialog_decision_problema",
+        "widget_conseguir_dinero"
+      ]
+    },
+    {
+      "id": "trabajar_establos_inicio",
+      "condition": "default",
+      "actions": [
+        "scenario_plaza",
+        "dialog_opcion_trabajo",
+        "dialog_trabajo_inicio",
+        "dialog_trabajo_mirar",
+        "dialog_trabajo_opciones",
+        "widget_elegir_trabajo"
+      ]
+    },
+    {
+      "id": "trabajar_establos",
+      "condition": "default",
+      "actions": [
+        "scenario_establos",
+        "dialog_elegir_establos",
+        "dialog_establos_llegada",
+        "dialog_establos_dueno",
+        "dialog_establos_tirada",
+        "widget_tirada_establos"
+      ]
+    },
+    {
+      "id": "vender_relicario_inicio",
+      "condition": "default",
+      "actions": [
+        "scenario_plaza",
+        "dialog_opcion_vender",
+        "dialog_vender_relicario",
+        "dialog_vender_pregunta",
+        "dialog_vender_explicacion",
+        "widget_vender_opciones"
+      ]
+    },
+    {
+      "id": "vender_relicario",
+      "condition": "default",
+      "actions": [
+        "scenario_casa_empenos",
+        "dialog_vender_aceptar",
+        "dialog_empenos_llegada",
+        "dialog_empenos_prestamista",
+        "dialog_empenos_tirada",
+        "widget_tirada_empenos"
+      ]
+    },
+    {
+      "id": "robar_noble",
+      "condition": "default",
+      "actions": [
+        "scenario_mercado",
+        "dialog_opcion_robar",
+        "dialog_robar_inicio",
+        "dialog_robar_justificacion",
+        "dialog_robar_objetivo",
+        "widget_tirada_robo"
+      ]
+    },
+    {
+      "id": "tienda_tendero",
+      "condition": "default",
+      "actions": [
+        "scenario_tienda",
+        "dialog_tienda_entrada",
+        "dialog_tienda_saludo",
+        "dialog_tienda_comentario",
+        "dialog_tienda_pedido",
+        "dialog_tienda_respuesta",
+        "dialog_tienda_equipo",
+        "dialog_tienda_descripcion",
+        "dialog_tienda_compra",
+        "widget_despues_tienda"
+      ]
+    },
+    {
+      "id": "callejon_lateral",
+      "condition": "default",
+      "actions": [
+        "scenario_callejon",
+        "dialog_callejon_inicio",
+        "dialog_callejon_pregunta",
+        "dialog_callejon_excusa",
+        "dialog_callejon_sonido",
+        "dialog_callejon_misterio",
+        "widget_callejon_opciones"
+      ]
+    },
+    {
+      "id": "encuentro_nerly",
+      "condition": "default",
+      "actions": [
+        "scenario_callejon",
+        "dialog_nerly_aparicion",
+        "dialog_nerly_saludo",
+        "dialog_nerly_sorpresa",
+        "dialog_nerly_correccion",
+        "dialog_nerly_comentario",
+        "dialog_nerly_oferta",
+        "widget_nerly_opciones"
+      ]
+    },
+    {
+      "id": "nerly_se_une",
+      "condition": "default",
+      "actions": [
+        "scenario_callejon",
+        "dialog_nerly_aceptar",
+        "dialog_nerly_alianza",
+        "dialog_nerly_sal",
+        "dialog_nerly_advertencia",
+        "widget_ir_abismo"
+      ]
+    },
+    {
+      "id": "camino_abismo",
+      "condition": "default",
+      "actions": [
+        "scenario_entrada_abismo",
+        "dialog_abismo_camino",
+        "dialog_abismo_cerca",
+        "dialog_abismo_brillo",
+        "dialog_abismo_baba",
+        "dialog_abismo_sarcasmo",
+        "widget_seguir_abismo"
+      ]
+    },
+    {
+      "id": "llegada_abismo",
+      "condition": "default",
+      "actions": [
+        "scenario_entrada_abismo",
+        "dialog_abismo_llegada",
+        "dialog_abismo_entrada_nerly",
+        "dialog_abismo_descripcion",
+        "dialog_abismo_impresion",
+        "dialog_abismo_realidad",
+        "widget_opciones_abismo"
+      ]
+    },
+    {
+      "id": "hablar_anciano",
+      "condition": "default",
+      "actions": [
+        "scenario_entrada_abismo",
+        "dialog_anciano_saludo",
+        "dialog_anciano_pregunta",
+        "dialog_anciano_experiencia",
+        "dialog_anciano_ignorar",
+        "widget_entrar_abismo"
+      ]
+    },
+    {
+      "id": "entrar_abismo",
+      "condition": "default",
+      "actions": [
+        "scenario_entrada_abismo",
+        "dialog_entrar_abismo",
+        "dialog_entrar_pregunta",
+        "dialog_entrar_opciones",
+        "widget_dentro_abismo"
+      ]
+    },
+    {
+      "id": "sala_entrada",
+      "condition": "default",
+      "actions": [
+        "scenario_sala_entrada",
+        "dialog_dentro_sala",
+        "dialog_dentro_nerly",
+        "widget_explorar_abismo"
+      ]
+    },
+    {
+      "id": "grutas_cristal",
+      "condition": "default",
+      "actions": [
+        "scenario_grutas_cristal",
+        "dialog_grutas_llegada",
+        "dialog_grutas_nerly",
+        "dialog_grutas_decision",
+        "widget_grutas_opciones"
+      ]
+    },
+    {
+      "id": "final",
+      "condition": "default",
+      "actions": [
+        "scenario_final",
+        "dialog_final_victoria",
+        "dialog_final_narrador",
+        "widget_reiniciar"
+      ]
+    }
+  ]
+}
