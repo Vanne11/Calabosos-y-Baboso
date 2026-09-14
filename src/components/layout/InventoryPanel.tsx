@@ -97,8 +97,8 @@ const Slot = styled.div<{ $empty?: boolean }>`
 `;
 
 const SlotIcon = styled.img`
-  width: 68px;
-  height: 68px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
   image-rendering: pixelated;
 `;
@@ -109,7 +109,7 @@ const SlotLabel = styled.div`
   left: 0;
   right: 0;
   text-align: center;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   color: ${(props) => props.theme.textSecondary};
   background: ${(props) => props.theme.terminal.background}cc;
   line-height: 1.3;

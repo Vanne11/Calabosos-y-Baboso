@@ -48,6 +48,7 @@ const App: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
+  const [craftSelection, setCraftSelection] = useState<number | null>(null);
   const dimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const setWidgetDimmed = useAppStore((s) => s.setWidgetDimmed);
 
@@ -176,9 +177,13 @@ const App: React.FC = () => {
       const cp = pendingResult as CraftPrompt;
       const low = trimmed.toLowerCase();
 
-      // [0] salir
+      // [0] salir o cancelar selección
       if (low === '0') {
-        sendAction({ type: 'craft_exit' });
+        if (craftSelection !== null) {
+          setCraftSelection(null);
+        } else {
+          sendAction({ type: 'craft_exit' });
+        }
         return;
       }
 
@@ -215,12 +220,27 @@ const App: React.FC = () => {
         return resolved.length > 0 ? resolved : null;
       };
 
+      // Si hay selección activa, procesar acciones por letra
+      if (craftSelection !== null) {
+        const selItem = cp.tableItems[craftSelection];
+        if (selItem) {
+          // [R] recoger (solo si no es fijo)
+          if (low === 'r' && !selItem.isFixed) {
+            setCraftSelection(null);
+            addEntry({ type: 'option', content: `> Recoger: ${selItem.name}` });
+            sendAction({ type: 'craft_pickup', index: craftSelection });
+            return;
+          }
+        }
+      }
+
       // Try CHOP syntax: A//B (must check BEFORE cut to avoid false match)
       const chopMatch = low.match(/^(.+?)\/\/(.+)$/);
       if (chopMatch) {
         const tool = resolveToken(chopMatch[1].trim());
         const target = resolveToken(chopMatch[2].trim());
         if (tool && target) {
+          setCraftSelection(null);
           addEntry({ type: 'option', content: `> Picar ${target.name} con ${tool.name}` });
           sendAction({ type: 'craft_chop', tool: tool.id, target: target.id });
           return;
@@ -233,6 +253,7 @@ const App: React.FC = () => {
         const tool = resolveToken(cutMatch[1].trim());
         const target = resolveToken(cutMatch[2].trim());
         if (tool && target) {
+          setCraftSelection(null);
           addEntry({ type: 'option', content: `> Cortar ${target.name} con ${tool.name}` });
           sendAction({ type: 'craft_cut', tool: tool.id, target: target.id });
           return;
@@ -245,6 +266,7 @@ const App: React.FC = () => {
         const substance = resolveToken(applyMatch[1].trim());
         const target = resolveToken(applyMatch[2].trim());
         if (substance && target) {
+          setCraftSelection(null);
           addEntry({ type: 'option', content: `> Aplicar ${substance.name} sobre ${target.name}` });
           sendAction({ type: 'craft_apply', substance: substance.id, target: target.id });
           return;
@@ -258,6 +280,7 @@ const App: React.FC = () => {
         const ingredients = parseTokens(useMatch[2]);
         if (tool && ingredients && ingredients.length > 0) {
           const ingNames = ingredients.map((i) => i.name).join(' + ');
+          setCraftSelection(null);
           addEntry({ type: 'option', content: `> Meter en ${tool.name}: ${ingNames}` });
           sendAction({ type: 'craft_use', tool: tool.id, ingredients: ingredients.map((i) => i.id) });
           return;
@@ -267,19 +290,16 @@ const App: React.FC = () => {
       // Try COMBINE syntax: A+B+C (simple mix)
       const combined = parseTokens(low);
       if (combined && combined.length >= 2) {
+        setCraftSelection(null);
         addEntry({ type: 'option', content: `> Combinar: ${combined.map((i) => i.name).join(' + ')}` });
         sendAction({ type: 'craft_combine', items: combined.map((i) => i.id) });
         return;
       }
 
-      // Solo un número: PICKUP (recoger item de la mesa)
+      // Solo un número: seleccionar/deseleccionar item (toggle)
       const pickNum = parseInt(low);
       if (!isNaN(pickNum) && pickNum >= 1 && pickNum <= cp.tableItems.length) {
-        const item = cp.tableItems[pickNum - 1];
-        if (!item.isFixed) {
-          addEntry({ type: 'option', content: `> Recoger: ${item.name}` });
-          sendAction({ type: 'craft_pickup', index: pickNum - 1 });
-        }
+        setCraftSelection(craftSelection === pickNum - 1 ? null : pickNum - 1);
         return;
       }
 
@@ -510,9 +530,11 @@ const App: React.FC = () => {
   };
 
   const handleCraftCombine = (items: string[]) => {
+    setCraftSelection(null);
     sendAction({ type: 'craft_combine', items });
   };
   const handleCraftExit = () => {
+    setCraftSelection(null);
     sendAction({ type: 'craft_exit' });
   };
 
@@ -589,7 +611,17 @@ const App: React.FC = () => {
       placeholder = `Selecciona [1-${total}] o [0] salir`;
     }
   } else if (pendingResult?.type === 'craft_prompt') {
-    placeholder = 'Combina con + (ej: 1+IN2) — [0] salir';
+    const crpPh = pendingResult as CraftPrompt;
+    if (craftSelection !== null) {
+      const selIt = crpPh.tableItems[craftSelection];
+      if (selIt?.isFixed) {
+        placeholder = 'Usa sintaxis (ej: 1(IN2)) — [0] cancelar';
+      } else {
+        placeholder = '[R]ecoger — o usa sintaxis — [0] cancelar';
+      }
+    } else {
+      placeholder = `Selecciona [1-${crpPh.tableItems.length}] o sintaxis — [0] salir`;
+    }
   } else if (pendingResult?.type === 'puzzle_prompt') {
     const pp = pendingResult as PuzzlePrompt;
     if (pp.puzzleType === 'lock') {
@@ -673,6 +705,7 @@ const App: React.FC = () => {
             haggleLeft={sp.haggleLeft}
             stealLeft={sp.stealLeft}
             deceiveLeft={sp.deceiveLeft}
+            lastMessage={sp.lastMessage}
             externalSelection={shopSelection}
             onSelectionChange={setShopSelection}
             onBuy={handleShopBuy}
@@ -708,6 +741,13 @@ const App: React.FC = () => {
             description={crp.description}
             tableItems={crp.tableItems}
             availableActions={crp.availableActions}
+            selectedIndex={craftSelection}
+            onSelectionChange={setCraftSelection}
+            onPickup={(idx) => {
+              setCraftSelection(null);
+              addEntry({ type: 'option', content: `> Recoger: ${crp.tableItems[idx].name}` });
+              sendAction({ type: 'craft_pickup', index: idx });
+            }}
             onCombine={handleCraftCombine}
             onExit={handleCraftExit}
           />

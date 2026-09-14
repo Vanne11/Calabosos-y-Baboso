@@ -164,6 +164,7 @@ export interface ShopPrompt {
   haggleLeft?: number;  // intentos restantes (undefined = ilimitado)
   stealLeft?: number;
   deceiveLeft?: number;
+  lastMessage?: string; // último comentario del vendedor
 }
 
 export interface ShopDicePrompt {
@@ -242,7 +243,7 @@ export interface CraftPrompt {
   type: 'craft_prompt';
   description?: string;
   /** Items sobre la mesa: herramientas fijas + subproductos recogibles */
-  tableItems: { id: string; name: string; isFixed: boolean }[];
+  tableItems: { id: string; name: string; description?: string; isFixed: boolean }[];
   /** Acciones disponibles en esta estación de crafteo */
   availableActions: import('./game').CraftAction[];
   failText: string;

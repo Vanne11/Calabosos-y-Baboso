@@ -498,6 +498,7 @@ export class GameEngine {
 
     // Contadores de intentos por mecánica
     const attempts: Record<string, number> = { haggle: 0, steal: 0, deceive: 0 };
+    let lastMessage: string | undefined;
 
     const getAttemptsLeft = (key: 'haggle' | 'steal' | 'deceive'): number | undefined => {
       const action = step[key];
@@ -570,6 +571,7 @@ export class GameEngine {
         haggleLeft,
         stealLeft,
         deceiveLeft,
+        lastMessage,
       };
 
       const action = await this.waitForAction();
@@ -587,6 +589,9 @@ export class GameEngine {
           }
           this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: -price }, inventory: [item.id] };
+          lastMessage = `Has comprado ${item.name} por ${price} ${currency}.`;
+        } else if (item) {
+          lastMessage = `No tienes suficiente ${currency} para ${item.name}.`;
         }
 
       } else if (action.type === 'shop_sell' && step.sellable) {
@@ -599,6 +604,7 @@ export class GameEngine {
           });
           this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: sellPrice }, removeInventory: [action.itemId] };
+          lastMessage = `Has vendido ${shopItem?.name || action.itemId} por ${sellPrice} ${currency}.`;
         }
 
       } else if (action.type === 'shop_haggle' && step.haggle) {
@@ -638,6 +644,11 @@ export class GameEngine {
           }
         }
 
+        const haggleText = success
+          ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
+          : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`);
+        lastMessage = haggleText;
+
         yield {
           type: 'shop_dice_result',
           action: 'haggle',
@@ -646,9 +657,7 @@ export class GameEngine {
           modifier: result.modifier,
           total: result.total,
           difficulty: dc,
-          text: success
-            ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
-            : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`),
+          text: haggleText,
         };
 
         // Bust check: si agotó intentos tras un fallo y tiene bustGoto
@@ -698,6 +707,11 @@ export class GameEngine {
           }
         }
 
+        const stealText = success
+          ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
+          : (step.steal.failText || '¡Te han pillado intentando robar!');
+        lastMessage = stealText;
+
         yield {
           type: 'shop_dice_result',
           action: 'steal',
@@ -706,9 +720,7 @@ export class GameEngine {
           modifier: result.modifier,
           total: result.total,
           difficulty: dc,
-          text: success
-            ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
-            : (step.steal.failText || '¡Te han pillado intentando robar!'),
+          text: stealText,
         };
 
         // Bust: fallo crítico = bust inmediato, o agotar intentos tras fallo
@@ -758,26 +770,30 @@ export class GameEngine {
             removeInventory: [itemId],
           });
           this.syncSpecialStats();
+          const deceiveSuccessText = step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`;
+          lastMessage = deceiveSuccessText;
           yield {
             type: 'shop_dice_result',
             action: 'deceive',
             success: true,
             roll: result.roll, modifier: result.modifier, total: result.total,
             difficulty: dc,
-            text: step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`,
+            text: deceiveSuccessText,
           };
         } else {
           if (step.deceive.failEffects) {
             this._state = applyEffects(this._state, step.deceive.failEffects);
             this.syncSpecialStats();
           }
+          const deceiveFailText = step.deceive.failText || '¡El tendero ha descubierto tu engaño!';
+          lastMessage = deceiveFailText;
           yield {
             type: 'shop_dice_result',
             action: 'deceive',
             success: false,
             roll: result.roll, modifier: result.modifier, total: result.total,
             difficulty: dc,
-            text: step.deceive.failText || '¡El tendero ha descubierto tu engaño!',
+            text: deceiveFailText,
           };
 
           // Bust check
@@ -981,6 +997,7 @@ export class GameEngine {
       const tableItems = table.map((id) => ({
         id,
         name: itemDefs[id]?.name || id,
+        description: itemDefs[id]?.description,
         isFixed: fixedTools.has(id),
       }));
 

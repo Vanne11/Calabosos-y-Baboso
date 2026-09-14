@@ -1,5 +1,5 @@
 // components/game/ShopWidget.tsx
-// Interfaz de tienda con selección por número y acciones por letra
+// Interfaz de tienda con cuadrícula compacta y detalle expandible
 
 import React from 'react';
 import styled from 'styled-components';
@@ -25,6 +25,7 @@ interface ShopWidgetProps {
   haggleLeft?: number;
   stealLeft?: number;
   deceiveLeft?: number;
+  lastMessage?: string;
   externalSelection: Selection;
   onSelectionChange: (sel: Selection) => void;
   onBuy: (itemIndex: number) => void;
@@ -49,6 +50,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
   haggleLeft,
   stealLeft,
   deceiveLeft,
+  lastMessage,
   externalSelection,
   onSelectionChange,
   onBuy,
@@ -74,100 +76,174 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
     );
   };
 
+  // Encontrar el item seleccionado para el panel de detalle
+  const selectedBuyItem = sel?.mode === 'buy' ? items[sel.index] : null;
+  const selectedBuyIndex = sel?.mode === 'buy' ? sel.index : -1;
+  const selectedSellItem = sel?.mode === 'sell'
+    ? playerInventory.find(inv => inv.id === sel.itemId)
+    : null;
+
   let num = 0;
 
   return (
     <Container>
-      <Title>🏪 {title}</Title>
-      <MoneyInfo>{currency}: {currentMoney}</MoneyInfo>
+      <ShopHeader>
+        <Title>🏪 {title}</Title>
+        <MoneyInfo>{currency}: {currentMoney}</MoneyInfo>
+      </ShopHeader>
 
       <SectionLabel>Comprar</SectionLabel>
-      {items.map((item, i) => {
-        num++;
-        const n = num;
-        const isSelected = sel?.mode === 'buy' && sel.index === i;
-        return (
-          <React.Fragment key={item.id}>
-            <ItemButton $selected={isSelected} onClick={() => toggleBuy(i)}>
-              <ItemNum>[{n}]</ItemNum>
-              <ShopItemImage
+      <SlotsGrid>
+        {items.map((item, i) => {
+          num++;
+          const n = num;
+          const isSelected = sel?.mode === 'buy' && sel.index === i;
+          return (
+            <Slot
+              key={item.id}
+              $selected={isSelected}
+              $cantAfford={!item.canAfford}
+              onClick={() => toggleBuy(i)}
+            >
+              <SlotNum>{n}</SlotNum>
+              {item.haggled && <HaggleBadge>!</HaggleBadge>}
+              <SlotIcon
                 src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
                 alt={item.name}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
-              {item.name} — {item.price} {currency}
-              {item.haggled && <HaggleTag> (regateado)</HaggleTag>}
-              {item.description && <> <ItemDesc>({item.description})</ItemDesc></>}
-              {!item.canAfford && <NoMoney> (sin fondos)</NoMoney>}
-            </ItemButton>
-            {isSelected && (
+              <SlotName>{item.name}</SlotName>
+              <SlotPrice $cantAfford={!item.canAfford}>
+                {item.price}
+              </SlotPrice>
+            </Slot>
+          );
+        })}
+      </SlotsGrid>
+
+      {/* Panel de detalle para item de compra seleccionado */}
+      {selectedBuyItem && (
+        <DetailPanel>
+          <DetailHeader>
+            <DetailImage
+              src={assetUrl(`${gameBasePath}/images/items/${selectedBuyItem.id}.png`)}
+              alt={selectedBuyItem.name}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+            <DetailInfo>
+              <DetailName>{selectedBuyItem.name}</DetailName>
+              <DetailPrice>
+                Precio: {selectedBuyItem.price} {currency}
+                {selectedBuyItem.haggled && <HaggleTag> (regateado)</HaggleTag>}
+              </DetailPrice>
+              {selectedBuyItem.description && (
+                <DetailDesc>{selectedBuyItem.description}</DetailDesc>
+              )}
+            </DetailInfo>
+          </DetailHeader>
+          <ActionBar>
+            <ActionButton disabled={!selectedBuyItem.canAfford} onClick={() => onBuy(selectedBuyIndex)}>
+              <Key>[C]</Key> Comprar
+            </ActionButton>
+            {canHaggle && !selectedBuyItem.haggled && (
+              <ActionButton $color="#f1fa8c" onClick={() => onHaggle(selectedBuyIndex)}>
+                <Key>[R]</Key> 🗣️ Regatear{haggleLeft !== undefined ? ` (${haggleLeft})` : ''}
+              </ActionButton>
+            )}
+            {canSteal && (
+              <ActionButton $color="#ff5555" onClick={() => onSteal(selectedBuyIndex)}>
+                <Key>[S]</Key> 🤫 Robar{stealLeft !== undefined ? ` (${stealLeft})` : ''}
+              </ActionButton>
+            )}
+            <ActionButton $color="#6272a4" onClick={() => onSelectionChange(null)}>
+              <Key>[0]</Key> Cancelar
+            </ActionButton>
+          </ActionBar>
+        </DetailPanel>
+      )}
+
+      {hasSellItems && (
+        <>
+          <SectionLabel>Vender ({Math.round(sellRatio * 100)}%)</SectionLabel>
+          <SlotsGrid>
+            {playerInventory.map((inv) => {
+              num++;
+              const n = num;
+              const isSelected = sel?.mode === 'sell' && sel.itemId === inv.id;
+              const shopItem = items.find(si => si.id === inv.id);
+              return (
+                <Slot
+                  key={inv.id}
+                  $selected={isSelected}
+                  onClick={() => toggleSell(inv.id)}
+                >
+                  <SlotNum>{n}</SlotNum>
+                  {inv.count > 1 && <StackBadge>x{inv.count}</StackBadge>}
+                  <SlotIcon
+                    src={assetUrl(`${gameBasePath}/images/items/${inv.id}.png`)}
+                    alt={inv.name}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  <SlotName>{inv.name}</SlotName>
+                  <SlotPrice>
+                    {shopItem ? Math.floor(shopItem.price * sellRatio) : '?'}
+                  </SlotPrice>
+                </Slot>
+              );
+            })}
+          </SlotsGrid>
+
+          {/* Panel de detalle para item de venta seleccionado */}
+          {selectedSellItem && (
+            <DetailPanel>
+              <DetailHeader>
+                <DetailImage
+                  src={assetUrl(`${gameBasePath}/images/items/${selectedSellItem.id}.png`)}
+                  alt={selectedSellItem.name}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+                <DetailInfo>
+                  <DetailName>
+                    {selectedSellItem.name}
+                    {selectedSellItem.count > 1 ? ` (x${selectedSellItem.count})` : ''}
+                  </DetailName>
+                  <DetailPrice>
+                    Venta: {(() => {
+                      const si = items.find(s => s.id === selectedSellItem.id);
+                      return si ? Math.floor(si.price * sellRatio) : '?';
+                    })()} {currency}
+                  </DetailPrice>
+                </DetailInfo>
+              </DetailHeader>
               <ActionBar>
-                <ActionButton disabled={!item.canAfford} onClick={() => onBuy(i)}>
-                  <Key>[C]</Key> Comprar
+                <ActionButton onClick={() => onSell(selectedSellItem.id)}>
+                  <Key>[V]</Key> Vender
                 </ActionButton>
-                {canHaggle && !item.haggled && (
-                  <ActionButton $color="#f1fa8c" onClick={() => onHaggle(i)}>
-                    <Key>[R]</Key> 🗣️ Regatear{haggleLeft !== undefined ? ` (${haggleLeft})` : ''}
-                  </ActionButton>
-                )}
-                {canSteal && (
-                  <ActionButton $color="#ff5555" onClick={() => onSteal(i)}>
-                    <Key>[S]</Key> 🤫 Robar{stealLeft !== undefined ? ` (${stealLeft})` : ''}
+                {canDeceive && (
+                  <ActionButton $color="#bd93f9" onClick={() => onDeceive(selectedSellItem.id)}>
+                    <Key>[E]</Key> 🎭 Engañar{deceiveLeft !== undefined ? ` (${deceiveLeft})` : ''}
                   </ActionButton>
                 )}
                 <ActionButton $color="#6272a4" onClick={() => onSelectionChange(null)}>
                   <Key>[0]</Key> Cancelar
                 </ActionButton>
               </ActionBar>
-            )}
-          </React.Fragment>
-        );
-      })}
-
-      {hasSellItems && (
-        <>
-          <SectionLabel>Vender ({Math.round(sellRatio * 100)}%)</SectionLabel>
-          {playerInventory.map((inv) => {
-            num++;
-            const n = num;
-            const isSelected = sel?.mode === 'sell' && sel.itemId === inv.id;
-            const shopItem = items.find(si => si.id === inv.id);
-            const sellPrice = shopItem ? Math.floor(shopItem.price * sellRatio) : '?';
-            return (
-              <React.Fragment key={inv.id}>
-                <ItemButton $selected={isSelected} onClick={() => toggleSell(inv.id)}>
-                  <ItemNum>[{n}]</ItemNum>
-                  <ShopItemImage
-                    src={assetUrl(`${gameBasePath}/images/items/${inv.id}.png`)}
-                    alt={inv.name}
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  />
-                  {inv.name}{inv.count > 1 ? ` (x${inv.count})` : ''}
-                </ItemButton>
-                {isSelected && (
-                  <ActionBar>
-                    <ActionButton onClick={() => onSell(inv.id)}>
-                      <Key>[V]</Key> Vender ({sellPrice} {currency})
-                    </ActionButton>
-                    {canDeceive && (
-                      <ActionButton $color="#bd93f9" onClick={() => onDeceive(inv.id)}>
-                        <Key>[E]</Key> 🎭 Engañar{deceiveLeft !== undefined ? ` (${deceiveLeft})` : ''}
-                      </ActionButton>
-                    )}
-                    <ActionButton $color="#6272a4" onClick={() => onSelectionChange(null)}>
-                      <Key>[0]</Key> Cancelar
-                    </ActionButton>
-                  </ActionBar>
-                )}
-              </React.Fragment>
-            );
-          })}
+            </DetailPanel>
+          )}
         </>
       )}
 
       <ExitButton onClick={onExit}>
-        <ItemNum>[0]</ItemNum> Salir de la tienda
+        <Key>[0]</Key> Salir de la tienda
       </ExitButton>
+
+      {/* Comentario del vendedor — siempre visible al fondo */}
+      {lastMessage && (
+        <VendorComment>
+          <VendorIcon>🗨️</VendorIcon>
+          <VendorText>{lastMessage}</VendorText>
+        </VendorComment>
+      )}
     </Container>
   );
 };
@@ -180,79 +256,179 @@ const Container = styled.div`
   margin: 1rem 0;
 `;
 
+const ShopHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+`;
+
 const Title = styled.div`
   color: ${(props) => props.theme.terminal.warning};
   font-weight: bold;
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
 `;
 
 const MoneyInfo = styled.div`
   color: ${(props) => props.theme.terminal.info};
-  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
 `;
 
 const SectionLabel = styled.div`
   color: ${(props) => props.theme.terminal.accent};
   font-weight: bold;
   margin: 0.75rem 0 0.25rem;
+  font-size: 0.85rem;
 `;
 
-const ItemButton = styled.button<{ $selected?: boolean }>`
+const SlotsGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`;
+
+const Slot = styled.button<{ $selected?: boolean; $cantAfford?: boolean }>`
+  width: 90px;
+  height: 90px;
+  border: 1px solid ${(props) => props.$selected
+    ? props.theme.terminal.warning
+    : props.$cantAfford
+      ? (props.theme.terminal.error || '#ff5555')
+      : props.theme.terminal.accentDim};
+  border-radius: 4px;
   background-color: ${(props) => props.$selected
     ? props.theme.button.hoverBackground
-    : props.theme.button.background};
-  color: ${(props) => props.theme.terminal.accent};
-  border: 1px solid ${(props) => props.$selected
-    ? props.theme.terminal.accent
-    : props.theme.terminal.accentDim};
-  border-radius: 3px;
-  padding: 8px 12px;
-  margin: 3px 0;
+    : props.theme.widgets?.background || props.theme.button.background};
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.9rem;
-  text-align: left;
-  width: 100%;
-  transition: all 0.2s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  padding: 4px;
+  transition: all 0.15s ease;
+  opacity: ${(props) => props.$cantAfford ? 0.5 : 1};
 
   &:hover {
-    background-color: ${(props) => props.theme.button.hoverBackground};
-    border-color: ${(props) => props.theme.terminal.accent};
+    border-color: ${(props) => props.theme.terminal.warning};
+    opacity: 1;
   }
 `;
 
-const ItemNum = styled.span`
+const SlotNum = styled.span`
+  position: absolute;
+  top: 2px;
+  left: 4px;
   color: ${(props) => props.theme.terminal.warning};
   font-weight: bold;
+  font-size: 0.65rem;
 `;
 
-const ShopItemImage = styled.img`
-  width: 24px;
-  height: 24px;
+const HaggleBadge = styled.span`
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  color: ${(props) => props.theme.terminal.success};
+  font-weight: bold;
+  font-size: 0.7rem;
+`;
+
+const StackBadge = styled.span`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: ${(props) => props.theme.terminal.warning || '#f1fa8c'};
+  color: ${(props) => props.theme.terminal.background || '#1a0e29'};
+  font-size: 0.6rem;
+  font-weight: bold;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  z-index: 2;
+`;
+
+const SlotIcon = styled.img`
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   image-rendering: pixelated;
   flex-shrink: 0;
-  margin: 0 2px;
 `;
 
-const ItemDesc = styled.span`
+const SlotName = styled.span`
+  color: ${(props) => props.theme.terminal.accent};
+  font-size: 0.65rem;
+  text-align: center;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+`;
+
+const SlotPrice = styled.span<{ $cantAfford?: boolean }>`
+  color: ${(props) => props.$cantAfford
+    ? (props.theme.terminal.error || '#ff5555')
+    : (props.theme.terminal.warning || '#f1fa8c')};
+  font-size: 0.65rem;
+  font-weight: bold;
+`;
+
+const DetailPanel = styled.div`
+  margin: 6px 0 4px;
+  border: 1px solid ${(props) => props.theme.terminal.accent};
+  border-radius: 4px;
+  background: ${(props) => props.theme.terminal.dialogBackground};
+  overflow: hidden;
+`;
+
+const DetailHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+`;
+
+const DetailImage = styled.img`
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+`;
+
+const DetailInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+`;
+
+const DetailName = styled.div`
+  color: ${(props) => props.theme.terminal.accent};
+  font-weight: bold;
+  font-size: 0.95rem;
+`;
+
+const DetailPrice = styled.div`
+  color: ${(props) => props.theme.terminal.warning};
+  font-size: 0.85rem;
+`;
+
+const DetailDesc = styled.div`
   color: ${(props) => props.theme.terminal.system};
   font-size: 0.8rem;
+  line-height: 1.3;
 `;
 
 const HaggleTag = styled.span`
   font-size: 0.8rem;
   color: ${(props) => props.theme.terminal.success};
-`;
-
-const NoMoney = styled.span`
-  font-size: 0.8rem;
-  color: ${(props) => props.theme.terminal.error};
-  opacity: 0.7;
 `;
 
 const ActionBar = styled.div`
@@ -261,11 +437,7 @@ const ActionBar = styled.div`
   gap: 6px;
   align-items: center;
   padding: 8px 12px;
-  margin: -3px 0 4px;
-  background: ${(props) => props.theme.terminal.dialogBackground};
-  border: 1px solid ${(props) => props.theme.terminal.accent};
-  border-top: none;
-  border-radius: 0 0 3px 3px;
+  border-top: 1px solid ${(props) => props.theme.terminal.accentDim};
 `;
 
 const ActionButton = styled.button<{ $color?: string }>`
@@ -296,8 +468,46 @@ const Key = styled.span`
   margin-right: 2px;
 `;
 
-const ExitButton = styled(ItemButton)`
-  margin-top: 0.75rem;
-  border-style: dashed;
+const ExitButton = styled.button`
+  background-color: ${(props) => props.theme.button.background};
   color: ${(props) => props.theme.terminal.accentDim};
+  border: 1px dashed ${(props) => props.theme.terminal.border};
+  border-radius: 3px;
+  padding: 8px 12px;
+  margin-top: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${(props) => props.theme.terminal.accent};
+    color: ${(props) => props.theme.terminal.accent};
+  }
+`;
+
+const VendorComment = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 0.75rem;
+  padding: 8px 12px;
+  background: ${(props) => props.theme.terminal.dialogBackground};
+  border: 1px solid ${(props) => props.theme.terminal.accentDim};
+  border-radius: 4px;
+  border-left: 3px solid ${(props) => props.theme.terminal.warning};
+`;
+
+const VendorIcon = styled.span`
+  font-size: 1rem;
+  flex-shrink: 0;
+`;
+
+const VendorText = styled.span`
+  color: ${(props) => props.theme.terminal.info};
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-style: italic;
 `;
