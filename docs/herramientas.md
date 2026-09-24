@@ -16,9 +16,11 @@ npm run validate -- calabosos --strict    # los avisos también fallan (exit 1)
 
 | Nivel | Qué revisa |
 |---|---|
-| **ERROR** | JSON inválido, archivos de escenas faltantes, IDs duplicados entre archivos, falta `start`, `gateScene` inexistente, `goto` a escena inexistente (en cualquier profundidad del paso), personaje de `dialog` no definido |
-| **aviso** | Escenas vacías, escenas sin salida (ningún `goto`), escenas inalcanzables desde `start`, items no definidos en `items` (si el juego define `items`), assets (imágenes/audio) que no existen |
+| **ERROR** | JSON inválido, archivos de escenas faltantes, IDs duplicados entre archivos, falta `start`, `gateScene` inexistente, `goto` a escena inexistente (en cualquier profundidad del paso), personaje de `dialog` no definido, `dialog` sin `lines` ni `pool`, pool inexistente (en `dialog`, `statRules` o `diceHooks`), `statRules` sin `id`/`condition` o con `id` duplicado |
+| **aviso** | Reglas repetibles sin `effects` ni `goto` (se dispararían en bucle), pools vacíos, escenas vacías, escenas sin salida (ningún `goto`), escenas inalcanzables desde `start`, items no definidos en `items` (si el juego define `items`), assets (imágenes/audio) que no existen |
 | **info** | Cantidad de imágenes provisorias pendientes |
+
+Los destinos de `statRules[].goto` cuentan como alcanzables (una regla puede dispararse en cualquier escena).
 
 Destinos especiales válidos: `_quit`, `_game_over`, `_restart`, `_age_accept` (y `_age_gate` si hay `contentRating` sin `gateScene`).
 

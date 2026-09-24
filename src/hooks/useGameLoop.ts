@@ -7,7 +7,7 @@ import { useDebugStore } from '../store/useDebugStore';
 import { delay } from '../utils/delay';
 import { audioManager } from '../engine/AudioManager';
 import { saveGame } from '../utils/storage';
-import { getMeta, setMeta, ageGateKey } from '../utils/metaStorage';
+import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
 import type { PlayerAction, StepResult } from '../types/engine';
 
@@ -68,9 +68,18 @@ export function useGameLoop() {
   /** Inicia la partida: pasa por el control de edad si el juego lo exige y no fue aceptado */
   const startGame = useCallback(async () => {
     if (!engine) return;
+    const gameName = useAppStore.getState().gameBasePath.split('/').pop() ?? 'unknown';
+
+    // Contadores meta (muertes, partidas...): se cargan y se persisten cuando cambian
+    const meta = await getMeta<Record<string, number>>(gameName, META_COUNTERS_KEY);
+    engine.loadMeta(meta ?? {});
+    engine.setMetaListener((m) => {
+      setMeta(gameName, META_COUNTERS_KEY, m);
+    });
+    setPlayerState({ ...engine.state });
+
     const rating = engine.contentRating;
     if (rating) {
-      const gameName = useAppStore.getState().gameBasePath.split('/').pop() ?? 'unknown';
       const gate = rating.gateScene ?? AGE_GATE_SCENE;
       const accepted = await getMeta<boolean>(gameName, ageGateKey(rating.minAge));
       if (!accepted && engine.hasScene(gate)) {

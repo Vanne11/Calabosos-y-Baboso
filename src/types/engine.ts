@@ -32,6 +32,12 @@ export interface PlayerState {
   activeTraits: string[];
   /** Contador de escenas para expiración de traits temporales */
   sceneCount: number;
+  /** Contadores meta: persisten entre partidas (los carga/guarda el game loop) */
+  meta?: Record<string, number>;
+  /** Índices ya usados por pool (para no repetir frases) */
+  pools?: Record<string, number[]>;
+  /** Reglas "once" ya disparadas en esta partida */
+  rulesFired?: string[];
 }
 
 // Lo que el motor produce paso a paso

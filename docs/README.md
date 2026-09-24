@@ -29,6 +29,7 @@
 - [Estado del Jugador (PlayerState)](player-state.md)
 - [Sistemas RPG Avanzados](rpg.md) — Niveles, XP, Skills, Traits, Relaciones
 - [Navegación Especial](navegacion.md)
+- [Texto Narrativo: variables, pools, reglas y dados](narrativa.md)
 - [Sistema de Guardado](guardado.md)
 
 ## Interfaz y Aplicación

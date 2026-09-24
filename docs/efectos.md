@@ -27,8 +27,13 @@ interface Effects {
   removeTraits?: string[];                      // Quitar rasgos: ["maldito"]
   learnSkill?: Record<string, number>;          // Aprender skill: { "fireball": 1 }
   giveSkillPoints?: Record<string, number>;     // Dar puntos: { "bob": 2 }
+
+  // --- Meta (persisten entre partidas) ---
+  meta?: Record<string, number>;                // Sumar a contadores: { "muertes": 1 }
 }
 ```
+
+Después de aplicar cualquier efecto, el motor recorta las stats a los `min`/`max` de `statDefs` y evalúa las [reglas automáticas](narrativa.md#reglas-automáticas-statrules). Todos los pasos (tienda, combate, crafteo...) aplican efectos por el mismo camino (`GameEngine.applyState`).
 
 ## Comportamiento de stats vs setStats
 

@@ -5,7 +5,12 @@
   "version": "0.1.0",
   "contentRating": {
     "minAge": 18,
-    "warnings": ["groserías", "humor de pis", "babosas con intenciones dudosas", "un narrador sin ningún respeto por ti"],
+    "warnings": [
+      "groserías",
+      "humor de pis",
+      "babosas con intenciones dudosas",
+      "un narrador sin ningún respeto por ti"
+    ],
     "gateScene": "edad"
   },
   "sceneFiles": [
@@ -98,11 +103,35 @@
     }
   },
   "statDefs": {
-    "ganas_de_vivir": { "label": "Ganas de vivir", "icon": "❤️" },
-    "miedo": { "label": "Miedo", "icon": "😱" },
-    "pis": { "label": "Pis", "icon": "💧" },
-    "sexi": { "label": "Qué tan sexi", "icon": "💋" },
-    "dinero": { "label": "Monedas", "icon": "🪙" }
+    "ganas_de_vivir": {
+      "label": "Ganas de vivir",
+      "icon": "❤️",
+      "min": 0,
+      "max": 100
+    },
+    "miedo": {
+      "label": "Miedo",
+      "icon": "😱",
+      "min": 0,
+      "max": 100
+    },
+    "pis": {
+      "label": "Pis",
+      "icon": "💧",
+      "min": 0,
+      "max": 100
+    },
+    "sexi": {
+      "label": "Qué tan sexi",
+      "icon": "💋",
+      "min": 0,
+      "max": 100
+    },
+    "dinero": {
+      "label": "Monedas",
+      "icon": "🪙",
+      "min": 0
+    }
   },
   "initialStats": {
     "ganas_de_vivir": 100,
@@ -115,11 +144,240 @@
   "initialInventory": [],
   "time": {
     "duration": 5,
-    "phases": ["mañana", "tarde", "noche"],
+    "phases": [
+      "mañana",
+      "tarde",
+      "noche"
+    ],
     "initial": "mañana"
   },
   "saveSystem": {
     "mode": "free",
     "slots": 3
+  },
+  "diceModifiers": [
+    {
+      "stat": "miedo",
+      "per": 25,
+      "amount": -1
+    }
+  ],
+  "diceHooks": {
+    "critical_failure": {
+      "pool": "pifia"
+    },
+    "critical_success": {
+      "pool": "critico"
+    },
+    "failure": {
+      "pool": "fracaso",
+      "chance": 0.35
+    }
+  },
+  "statRules": [
+    {
+      "id": "muerte",
+      "condition": {
+        "stats": {
+          "ganas_de_vivir": "<=0"
+        }
+      },
+      "goto": "muerte"
+    },
+    {
+      "id": "accidente_pis",
+      "condition": {
+        "stats": {
+          "pis": ">=100"
+        }
+      },
+      "pool": "accidente_pis",
+      "effects": {
+        "setStats": {
+          "pis": 0
+        },
+        "stats": {
+          "sexi": -15,
+          "miedo": -10
+        },
+        "flags": {
+          "se_meo": true
+        },
+        "meta": {
+          "meadas": 1
+        }
+      }
+    },
+    {
+      "id": "panico",
+      "condition": {
+        "stats": {
+          "miedo": ">=100"
+        }
+      },
+      "pool": "panico",
+      "effects": {
+        "setStats": {
+          "miedo": 60
+        },
+        "stats": {
+          "pis": 30,
+          "ganas_de_vivir": -10
+        }
+      }
+    },
+    {
+      "id": "humedad_sospechosa",
+      "once": true,
+      "condition": {
+        "stats": {
+          "pis": ">=70"
+        }
+      },
+      "lines": [
+        "Noto cierta... humedad en el ambiente. No diré de dónde viene. Todos lo sabemos."
+      ]
+    }
+  ],
+  "linePools": {
+    "pifia": [
+      "Y tú eres nuestro futuro. Estamos jodidos.",
+      "Un uno. UN UNO. El dado te está mirando con lástima.",
+      "Y pensar que el reino entero depende de ti. Voy a ir preparando el testamento.",
+      "Si fallar fuera un arte, ya tendrías un museo.",
+      "Estadísticamente era difícil hacerlo tan mal. Felicidades, supongo.",
+      "Los bardos cantarán sobre esto. En las canciones de humor.",
+      "Y tú eres nuestro futuro... Voy a hablar con el departamento de héroes para pedir un reembolso.",
+      "Ese sonido que oyes es la esperanza del reino saliendo por la ventana."
+    ],
+    "critico": [
+      "¿Un veinte? ¿Tú? Debe haber un error. Voy a revisar el dado.",
+      "Vaya. Por un segundo pareciste un héroe de verdad. No te acostumbres.",
+      "Incluso un reloj roto acierta dos veces al día.",
+      "Anotaré esto. Será lo único en la columna de 'logros'.",
+      "El dado te sonríe. El dado no tiene criterio.",
+      "Impresionante. Ahora arruínalo en el próximo paso, como siempre."
+    ],
+    "fracaso": [
+      "Mmm. No.",
+      "Casi. Bueno, no. Ni casi.",
+      "Lo intentaste. Eso es lo que se dice en los funerales, por cierto.",
+      "Fallaste con una confianza admirable.",
+      "El fracaso te queda. Como un guante. Uno húmedo.",
+      "Nadie vio eso. Excepto yo. Y el jugador. O sea, tú. Todos lo vimos."
+    ],
+    "error": [
+      "Y tú eres nuestro futuro. Estamos jodidos.",
+      "Brillante decisión. Tan brillante como una babosa en una mina de carbón.",
+      "Hay caminos buenos, caminos malos, y el que elegiste tú.",
+      "Tomaré nota para tu epitafio.",
+      "El destino tenía un plan para ti. Acabas de romperlo."
+    ],
+    "accidente_pis": [
+      "Y ahí está. Un calorcito que baja por la pierna. El miedo ganó. Tu dignidad perdió.",
+      "Te measte. No hay forma elegante de decirlo. Lo intenté. No la hay.",
+      "Un charquito a tus pies. Las babosas del lugar te miran con respeto: por fin alguien que entiende la humedad.",
+      "Felicidades: ahora hueles como el Abismo. Camuflaje involuntario.",
+      "Tu vejiga tomó una decisión ejecutiva sin consultarte. Como un buen líder."
+    ],
+    "panico": [
+      "Entras en pánico. Gritas. Corres en círculos. Te caes. Te levantas. Gritas otra vez.",
+      "Tu cerebro se apaga y en su lugar queda un ratón corriendo en una rueda. Un ratón asustado.",
+      "El pánico te abraza como un viejo amigo. Un amigo que te roba ganas de vivir.",
+      "Hiperventilas en una bolsa de papel imaginaria. No funciona. Nunca funciona."
+    ],
+    "muerte": [
+      {
+        "text": "Debimos buscar a alguien más competente.",
+        "condition": {
+          "meta": {
+            "muertes": "<=1"
+          }
+        }
+      },
+      {
+        "text": "Bueno, eso fue rápido. Hasta para mis bajísimas expectativas.",
+        "condition": {
+          "meta": {
+            "muertes": "<=1"
+          }
+        }
+      },
+      {
+        "text": "Tu primera muerte. Qué emoción. Te haría un pastel, pero estás muerto.",
+        "condition": {
+          "meta": {
+            "muertes": "<=1"
+          }
+        }
+      },
+      {
+        "text": "Muerte número {meta.muertes}. Debimos buscar a alguien más competente. Lo dije la vez pasada también.",
+        "condition": {
+          "meta": {
+            "muertes": ">=2"
+          }
+        }
+      },
+      {
+        "text": "Ya van {meta.muertes}. A este ritmo el cementerio del pueblo va a abrir una sección con tu nombre.",
+        "condition": {
+          "meta": {
+            "muertes": ">=2"
+          }
+        }
+      },
+      {
+        "text": "¿Otra vez? El sepulturero ya te saluda por tu nombre. Te tiene cariño. Eres su mejor cliente.",
+        "condition": {
+          "meta": {
+            "muertes": ">=3"
+          }
+        }
+      },
+      {
+        "text": "{meta.muertes} muertes. He visto babosas con mejor instinto de supervivencia. Y las babosas se derriten con sal.",
+        "condition": {
+          "meta": {
+            "muertes": ">=4"
+          }
+        }
+      },
+      {
+        "text": "Estoy empezando a pensar que lo haces a propósito. ¿Te gusta verme suspirar? Porque lo estoy haciendo. Mucho.",
+        "condition": {
+          "meta": {
+            "muertes": ">=6"
+          }
+        }
+      },
+      {
+        "text": "{meta.muertes} muertes. Voy a poner tu retrato en la entrada del reino: 'No sea como esta persona'.",
+        "condition": {
+          "meta": {
+            "muertes": ">=8"
+          }
+        }
+      }
+    ],
+    "regreso": [
+      {
+        "text": "Oh. Volviste. Qué... perseverancia. Contador de muertes: {meta.muertes}. Por si alguien lleva la cuenta. Yo sí.",
+        "condition": {
+          "meta": {
+            "muertes": ">=1"
+          }
+        }
+      },
+      {
+        "text": "Partida número {meta.partidas}. Dicen que la definición de locura es hacer lo mismo esperando resultados distintos. Solo digo."
+      },
+      {
+        "text": "¿Otra vez tú? Pensé que habías conseguido un pasatiempo más sano. Como coleccionar piedras. O morir menos."
+      },
+      {
+        "text": "Bienvenido de nuevo. Te guardé tu lugar. Nadie más quería este trabajo, así que fue fácil."
+      }
+    ]
   }
 }

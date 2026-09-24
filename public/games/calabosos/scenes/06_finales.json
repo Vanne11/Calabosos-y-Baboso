@@ -19,8 +19,59 @@
         {
           "type": "choice",
           "options": [
-            { "text": "Jugar de nuevo", "goto": "_restart" },
-            { "text": "Salir", "goto": "_quit" }
+            {
+              "text": "Jugar de nuevo",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+    "muerte": {
+      "scenario": {
+        "name": "Has muerto",
+        "image": "images/scenarios/muerte.png",
+        "music": "audio/rpgchip15_game_over.ogg"
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "meta": {
+              "muertes": 1
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y así, {nombre_jugador} dejó este mundo. Nadie lloró. Bueno, el perro un poco, de risa."
+          ],
+          "pool": "muerte"
+        },
+        {
+          "type": "notify",
+          "style": "warning",
+          "title": "Has muerto",
+          "text": "Muertes totales: {meta.muertes}. Partidas: {meta.partidas}.",
+          "icon": "💀"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Intentarlo de nuevo (el reino no tiene a nadie más)",
+              "goto": "_restart"
+            },
+            {
+              "text": "Rendirse",
+              "goto": "_quit"
+            }
           ]
         }
       ]

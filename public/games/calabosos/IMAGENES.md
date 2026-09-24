@@ -45,6 +45,13 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 
 ---
 
+### scenarios/muerte.png — Has muerto
+**Escenas:** `muerte` (se llega aquí cuando las ganas de vivir llegan a 0)
+
+16-bit pixel art. Lápida torcida de piedra en un cementerio de pueblo al atardecer, con un epitafio ilegible (garabatos, sin texto real). Sobre la lápida, una babosa pequeña sentada comiéndose una flor del ramo funerario. Al lado, el perro de tres ojos del pueblo mirando la tumba con cara de burla. Pasto seco, cuervos en una rama. Otras tumbas al fondo, muchas, algunas recién cavadas (insinuando muertes anteriores del jugador). Paleta: morados apagados, grises, un rayo de luz dorada ridículamente heroico sobre la lápida.
+
+---
+
 ### dialogs/protagonist_misterioso.png — BOB (Misterioso)
 **Personaje:** `protagonist` (variante "misterioso")
 

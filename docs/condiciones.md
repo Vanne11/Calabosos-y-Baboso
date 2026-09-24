@@ -21,8 +21,13 @@ interface StepCondition {
   notTraits?: string[];                    // ["envenenado"]
   characterLevel?: Record<string, string>; // { "bob": ">=3" }
   relationshipTier?: Record<string, RelationshipTier>; // { "nerly": "friendly" }
+  meta?: Record<string, string>;           // { "muertes": ">=3" } — contadores entre partidas
+  textMatches?: Record<string, string>;    // { "nombre_real": "^bob$" } — regex sin distinguir mayúsculas
 }
 ```
+
+- `meta` compara contadores que persisten entre partidas (ver [Texto Narrativo](narrativa.md#contadores-meta)). Un contador inexistente vale 0.
+- `textMatches` evalúa una stat de texto (ej. lo que escribió el jugador en un `input`) contra una expresión regular. Una stat inexistente se evalúa como texto vacío. Para negar, usar lookahead: `"^(?!\\s*bob\\s*$)"`.
 
 ## Operadores de comparación
 

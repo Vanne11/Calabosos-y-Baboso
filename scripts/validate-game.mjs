@@ -65,6 +65,11 @@ function validateGame(gameName) {
   const validTargets = new Set([...Object.keys(scenes), ...SPECIAL_DESTINATIONS]);
   if (rating && !rating.gateScene) validTargets.add(AGE_GATE_SCENE);
 
+  const pools = manifest.linePools ?? {};
+  const checkPool = (id, context) => {
+    if (typeof id === 'string' && !pools[id]) errors.push(`${context}: pool "${id}" no existe en game.json → linePools`);
+  };
+
   const checkItem = (id, context) => {
     if (items && typeof id === 'string' && !items[id]) {
       warnings.push(`${context}: item "${id}" no está definido en game.json → items`);
@@ -90,7 +95,9 @@ function validateGame(gameName) {
       }
       if (key === 'character' && typeof value === 'string' && parent.type === 'dialog') {
         if (!characters[value]) errors.push(`${where(id)}: personaje "${value}" no definido`);
+        if (!parent.lines?.length && !parent.pool) errors.push(`${where(id)}: dialog sin "lines" ni "pool"`);
       }
+      if (key === 'pool' && parent.type === 'dialog') checkPool(value, where(id));
       if ((key === 'inventory' || key === 'removeInventory') && Array.isArray(value)) {
         for (const item of value) checkItem(item, where(id));
       }
@@ -103,9 +110,36 @@ function validateGame(gameName) {
   }
   for (const item of manifest.initialInventory ?? []) checkItem(item, 'initialInventory');
 
+  // --- Reglas automáticas y hooks de dados ---
+  const ruleTargets = [];
+  const ruleIds = new Set();
+  for (const [i, rule] of (manifest.statRules ?? []).entries()) {
+    const ctx = `statRules[${rule.id ?? i}]`;
+    if (!rule.id) errors.push(`${ctx}: falta "id"`);
+    else if (ruleIds.has(rule.id)) errors.push(`${ctx}: id duplicado`);
+    ruleIds.add(rule.id);
+    if (!rule.condition) errors.push(`${ctx}: falta "condition"`);
+    if (rule.pool) checkPool(rule.pool, ctx);
+    if (rule.character && !characters[rule.character]) errors.push(`${ctx}: personaje "${rule.character}" no definido`);
+    if (rule.goto) {
+      if (!validTargets.has(rule.goto)) errors.push(`${ctx}: goto a escena inexistente "${rule.goto}"`);
+      ruleTargets.push(rule.goto);
+    }
+    if (!rule.once && !rule.goto && !rule.effects) {
+      warnings.push(`${ctx}: sin "once", "goto" ni "effects"; se disparará después de cada paso mientras se cumpla`);
+    }
+  }
+  for (const [outcome, hook] of Object.entries(manifest.diceHooks ?? {})) {
+    checkPool(hook.pool, `diceHooks.${outcome}`);
+  }
+  for (const [pid, lines] of Object.entries(pools)) {
+    if (!Array.isArray(lines) || lines.length === 0) warnings.push(`linePools.${pid}: vacío`);
+  }
+
   // --- Alcanzabilidad desde start (y la escena de edad) ---
   const reached = new Set();
-  const queue = entryScenes.filter((s) => scenes[s]);
+  // Las reglas pueden disparar en cualquier escena: sus destinos son alcanzables
+  const queue = [...entryScenes, ...ruleTargets].filter((s) => scenes[s]);
   while (queue.length) {
     const cur = queue.shift();
     if (reached.has(cur)) continue;

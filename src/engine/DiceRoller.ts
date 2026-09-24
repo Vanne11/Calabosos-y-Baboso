@@ -28,10 +28,12 @@ export function resolveRoll(
   faces: number,
   statValue: number,
   difficulty: number,
-  divider: number = 10
+  divider: number = 10,
+  /** Modificador adicional (ej: penalización global por miedo) */
+  extraModifier: number = 0
 ): RollResult {
   const roll = rollDice(faces);
-  const modifier = calculateModifier(statValue, divider);
+  const modifier = calculateModifier(statValue, divider) + extraModifier;
   const total = roll + modifier;
 
   let outcome: RollResult['outcome'];

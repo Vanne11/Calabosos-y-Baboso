@@ -9,18 +9,381 @@
       },
       "sequence": [
         {
+          "type": "effects",
+          "effects": {
+            "meta": {
+              "partidas": 1
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "regreso",
+          "condition": {
+            "meta": {
+              "partidas": ">=2"
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "Érase una vez, en el reino de Viscaria, un héroe legendario destinado a salvarnos a todos.",
             "Ese no eres tú. Ese se murió ayer atragantado con una aceituna.",
             "Tú eres el [italic]plan B[/italic]. Bueno, el plan F. Nos saltamos varias letras por falta de candidatos.",
-            "[dim](Aquí irá el prólogo completo: la habitación, la mochila, la lámpara y la carta misteriosa. En construcción, como tu autoestima.)[/dim]"
+            "Antes de empezar, necesito saber qué cara vamos a lamentar durante toda la aventura."
           ]
         },
         {
           "type": "choice",
-          "options": [{ "text": "Salir de la habitación", "goto": "acto1_plaza" }]
+          "options": [
+            {
+              "text": "Masculino",
+              "effects": {
+                "stats": {
+                  "genero": "masculino",
+                  "_protagonist_image": "images/dialogs/protagonist_male.png"
+                }
+              },
+              "goto": "prologo_nombre"
+            },
+            {
+              "text": "Femenino",
+              "effects": {
+                "stats": {
+                  "genero": "femenino",
+                  "_protagonist_image": "images/dialogs/protagonist_female.png"
+                }
+              },
+              "goto": "prologo_nombre"
+            },
+            {
+              "text": "Andrógino",
+              "effects": {
+                "stats": {
+                  "genero": "no_binario",
+                  "_protagonist_image": "images/dialogs/protagonist_andro.png"
+                }
+              },
+              "goto": "prologo_nombre"
+            },
+            {
+              "text": "Misterioso (con capucha, para ocultar la vergüenza)",
+              "effects": {
+                "stats": {
+                  "genero": "misterioso",
+                  "_protagonist_image": "images/dialogs/protagonist_misterioso.png"
+                }
+              },
+              "goto": "prologo_nombre"
+            }
+          ]
+        }
+      ]
+    },
+    "prologo_nombre": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mmm. Sí. Esa cara. Podría ser peor. No sé cómo, pero podría.",
+            "Ahora dime tu nombre. Y por favor, que no sea ridículo. Aunque probablemente lo sea."
+          ]
+        },
+        {
+          "type": "input",
+          "prompt": "Escribe tu nombre:",
+          "saveAs": "nombre_real",
+          "goto": "prologo_reaccion_nombre"
+        }
+      ]
+    },
+    "prologo_reaccion_nombre": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "...¿Nada? ¿No escribiste nada?",
+            "Un héroe sin nombre. Muy misterioso. Muy 'western'. Muy flojo."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿BOB? ¿Escribiste BOB?",
+            "Me ahorraste el trámite. Te iba a llamar así de todas formas. Da un poco de miedo que lo supieras."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*bob\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*bob\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ja. Ja. Qué original. Nunca nadie había escrito una grosería en el campo del nombre.",
+            "Tienes la madurez emocional de un pepinillo. Me caes bien. No se lo digas a nadie."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "puta|mierda|pene|pito|culo|verga|we[vb]on|hue[vb]|caca|poto|concha|coño|joder|ctm|chucha"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "puta|mierda|pene|pito|culo|verga|we[vb]on|hue[vb]|caca|poto|concha|coño|joder|ctm|chucha"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿'Narrador'? ¿En serio? Ese es MI trabajo.",
+            "Hay un solo narrador en esta historia, y no eres tú. Tú eres el que se muere."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "narrador"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "narrador"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Takashi Komuro? Ese nombre me suena. Creo que es de otra historia, una con zombis.",
+            "Aquí solo tenemos babosas. Son más lentas, pero más pegajosas."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "takashi|komuro"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "takashi|komuro"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ah, no no no. Ese nombre tiene abogados. Abogados caros. Abogados con dientes."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*(link|zelda|mario|luigi|goku|naruto|geralt|harry|frodo|aragorn|kratos|cloud|sonic)\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*(link|zelda|mario|luigi|goku|naruto|geralt|harry|frodo|aragorn|kratos|cloud|sonic)\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Eso es un nombre o una contraseña? Me cansé a la mitad de leerlo."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": ".{21,}"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nombre_reaccionado": true
+            }
+          },
+          "condition": {
+            "textMatches": {
+              "nombre_real": ".{21,}"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "{nombre_real}. Interesante elección.",
+            "Jamás usaríamos ese nombre. Tiene derechos de autor. Seguro. No lo comprobé, pero seguro."
+          ],
+          "condition": {
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Así que desde ahora te llamarás BOB. Sí, BOB. Es corto, es barato y no tiene dueño.",
+            "¿Qué? ¿No te gusta? Qué pena. Yo soy el narrador y mando yo."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^(?!\\s*bob\\s*$)"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "setStats": {
+              "nombre_jugador": "BOB",
+              "_prompt": "bob"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "[dim](Aquí irá el resto del prólogo: la habitación, la mochila, la lámpara y la carta misteriosa. En construcción, como tu autoestima.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Salir de la habitación",
+              "goto": "acto1_plaza"
+            }
+          ]
         }
       ]
     }

@@ -34,6 +34,15 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.flags = { ...newState.flags, ...effects.flags };
   }
 
+  // Meta: contadores que persisten entre partidas (suma relativa)
+  if (effects.meta) {
+    const newMeta = { ...(newState.meta ?? {}) };
+    for (const [key, amount] of Object.entries(effects.meta)) {
+      newMeta[key] = (newMeta[key] ?? 0) + amount;
+    }
+    newState.meta = newMeta;
+  }
+
   // Orden: clear → remove → add (para que clearInventory + inventory funcione bien)
   if (effects.clearInventory) {
     newState.inventory = [];

@@ -140,13 +140,20 @@ Define metadatos, personajes, configuración inicial y sistemas RPG.
   "statDefs": {
     "ganas_de_vivir": { "label": "Ganas de vivir", "icon": "❤️" },
     "sexi": { "label": "Qué tan sexi", "icon": "💋" },
-    "secreto": { "label": "Secreto", "hidden": true }   // usable en condiciones/dados, no se muestra
+    "secreto": { "label": "Secreto", "hidden": true },  // usable en condiciones/dados, no se muestra
+    "pis": { "label": "Pis", "min": 0, "max": 100 }     // el motor recorta tras cada efecto
   },
 
   // --- Escenas en varios archivos ---
   // Si se define, se cargan en orden y se fusionan; si no, se usa scenes.json.
   // Un ID de escena repetido entre archivos es un error de carga.
   "sceneFiles": ["scenes/00_edad.json", "scenes/01_prologo.json", "scenes/02_acto1.json"],
+
+  // --- Texto narrativo (ver narrativa.md) ---
+  "linePools": { "pifia": ["Estamos jodidos."] },
+  "statRules": [{ "id": "muerte", "condition": { "stats": { "vida": "<=0" } }, "goto": "muerte" }],
+  "diceHooks": { "critical_failure": { "pool": "pifia" } },
+  "diceModifiers": [{ "stat": "miedo", "per": 25, "amount": -1 }],
 
   // --- Control de edad (ver navegacion.md) ---
   "contentRating": {

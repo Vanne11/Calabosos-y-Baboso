@@ -37,6 +37,9 @@ export async function removeMeta(gameName: string, key: string): Promise<void> {
   }
 }
 
+/** Clave de los contadores meta del juego (muertes, partidas...) */
+export const META_COUNTERS_KEY = 'counters';
+
 /** Clave de aceptación del control de edad (incluye la edad para re-preguntar si sube) */
 export function ageGateKey(minAge: number): string {
   return `age_gate:${minAge}`;

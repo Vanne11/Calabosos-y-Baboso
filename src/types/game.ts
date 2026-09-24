@@ -25,6 +25,14 @@ export interface GameManifest {
   sceneFiles?: string[];
   /** Clasificación de contenido: activa el control de edad antes de "start" */
   contentRating?: ContentRating;
+  /** Listas de frases reutilizables (burlas, reacciones) para dialog.pool y hooks */
+  linePools?: Record<string, PoolLine[]>;
+  /** Reglas automáticas por umbral de stats/flags/meta */
+  statRules?: StatRule[];
+  /** Reacciones del narrador a resultados de dados */
+  diceHooks?: Partial<Record<'critical_success' | 'success' | 'failure' | 'critical_failure', DiceHook>>;
+  /** Modificadores globales de tiradas (ej: el miedo resta) */
+  diceModifiers?: DiceModifierDef[];
 }
 
 export interface StatDef {
@@ -34,6 +42,42 @@ export interface StatDef {
   icon?: string;
   /** Ocultar de la barra de estado (sigue usable en condiciones/dados) */
   hidden?: boolean;
+  /** Valor mínimo: el motor recorta la stat tras cada efecto */
+  min?: number;
+  /** Valor máximo: el motor recorta la stat tras cada efecto */
+  max?: number;
+}
+
+/** Línea de un pool: texto simple o texto con condición/peso */
+export type PoolLine = string | { text: string; condition?: StepCondition; weight?: number };
+
+/** Regla automática: se evalúa después de cada paso (ej: pis >= 100 → accidente) */
+export interface StatRule {
+  id: string;
+  condition: StepCondition;
+  /** Solo una vez por partida (default: false; la regla debe desactivarse con sus efectos) */
+  once?: boolean;
+  /** Personaje que habla (default: el narrador) */
+  character?: string;
+  lines?: string[];
+  pool?: string;
+  effects?: Effects;
+  goto?: string;
+}
+
+/** Reacción del narrador a un resultado de dado */
+export interface DiceHook {
+  pool: string;
+  /** Probabilidad de que se dispare (0-1, default: 1) */
+  chance?: number;
+  character?: string;
+}
+
+/** Modificador global de tiradas según una stat: floor(stat / per) * amount */
+export interface DiceModifierDef {
+  stat: string;
+  per: number;
+  amount: number;
 }
 
 export interface ContentRating {
@@ -213,12 +257,22 @@ export interface StepCondition {
   characterLevel?: Record<string, string>;
   /** Tier de relación requerido: { "nerly": "friendly" } */
   relationshipTier?: Record<string, RelationshipTier>;
+  /** Contadores meta (persisten entre partidas): { "muertes": ">=3" } */
+  meta?: Record<string, string>;
+  /** Stats de texto que coinciden con una expresión regular (sin distinguir mayúsculas):
+   *  { "nombre_jugador": "^bob$" } */
+  textMatches?: Record<string, string>;
 }
 
 export interface DialogStep {
   type: 'dialog';
   character: string;
+  /** Líneas fijas. Admiten variables: {nombre_jugador}, {meta.muertes} */
   lines: string[];
+  /** Lista de frases (game.json → linePools) de la que sacar líneas al azar, sin repetir */
+  pool?: string;
+  /** Cuántas líneas sacar del pool (default: 1). Se muestran después de `lines` */
+  count?: number;
   condition?: StepCondition;
 }
 
@@ -625,6 +679,8 @@ export interface Effects {
   learnSkill?: Record<string, number>;
   /** Dar puntos de habilidad: { "_protagonist": 2 } */
   giveSkillPoints?: Record<string, number>;
+  /** Sumar a contadores meta que persisten entre partidas: { "muertes": 1 } */
+  meta?: Record<string, number>;
 }
 
 // --- Conditions file ---

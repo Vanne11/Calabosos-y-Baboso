@@ -12,12 +12,171 @@
           "character": "narrator",
           "lines": [
             "La plaza principal de Viscaria. Huele a pescado, a sudor y a decisiones que vas a lamentar.",
-            "[dim](Acto I en construcción: dinero, tienda, taberna, callejón y Nerly.)[/dim]"
+            "[dim](Acto I en construcción: dinero, tienda, taberna, callejón y Nerly.)[/dim]",
+            "Un perro callejero sale de detrás de un barril. Tiene tres ojos, una oreja y ninguna paciencia. Te gruñe."
           ]
         },
         {
           "type": "choice",
-          "options": [{ "text": "Partir hacia el Abismo", "goto": "acto2_camino" }]
+          "options": [
+            {
+              "text": "Plantarle cara (tirada de qué tan sexi)",
+              "goto": "acto1_perro_valiente"
+            },
+            {
+              "text": "Huir gritando",
+              "effects": {
+                "stats": {
+                  "miedo": 45,
+                  "pis": 55
+                }
+              },
+              "goto": "acto1_perro_huida"
+            },
+            {
+              "text": "Intentar acariciarlo",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -60,
+                  "miedo": 30
+                }
+              },
+              "goto": "acto1_perro_caricia"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_perro_valiente": {
+      "scenario": {
+        "name": "Acto I: El Pueblo",
+        "image": "images/scenarios/plaza.png"
+      },
+      "sequence": [
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 11,
+          "faces": 20,
+          "description": "Mirada intimidante",
+          "results": {
+            "critical_success": {
+              "text": "Lo miras tan intensamente que el perro se sienta, te ofrece la pata y se va a buscar trabajo honrado.",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                }
+              }
+            },
+            "success": {
+              "text": "El perro evalúa la situación y decide que no vales la mordida. Se va. Ganaste, supongo.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              }
+            },
+            "failure": {
+              "text": "El perro no se impresiona. Te muerde el trasero y se va con un trozo de pantalón.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -20,
+                  "miedo": 25,
+                  "pis": 30,
+                  "sexi": -5
+                }
+              }
+            },
+            "critical_failure": {
+              "text": "Tropiezas al intentar verte amenazante. El perro te muerde, se ríe (los perros de Viscaria se ríen) y te orina encima.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -35,
+                  "miedo": 40,
+                  "pis": 40,
+                  "sexi": -15
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir hacia el Abismo",
+              "goto": "acto2_camino"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_perro_huida": {
+      "scenario": {
+        "name": "Acto I: El Pueblo",
+        "image": "images/scenarios/plaza.png"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Corres. Gritas. Corres gritando. Todo el pueblo lo ve. Un niño te señala.",
+            "El perro ni se movió. Solo quería ver hasta dónde llegabas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "error"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la plaza con la dignidad que te queda",
+              "goto": "acto1_plaza"
+            },
+            {
+              "text": "Seguir hacia el Abismo (lejos del perro)",
+              "goto": "acto2_camino"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_perro_caricia": {
+      "scenario": {
+        "name": "Acto I: El Pueblo",
+        "image": "images/scenarios/plaza.png"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Estiras la mano hacia el perro de tres ojos que te está gruñendo.",
+            "El perro no puede creer su suerte. Tú tampoco deberías."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Insistir con la caricia",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -60
+                }
+              },
+              "goto": "acto1_plaza"
+            },
+            {
+              "text": "Retirar la mano (lo que queda de ella)",
+              "goto": "acto2_camino"
+            }
+          ]
         }
       ]
     }

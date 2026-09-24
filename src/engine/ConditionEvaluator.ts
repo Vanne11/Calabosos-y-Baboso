@@ -100,6 +100,29 @@ export function evaluateCondition(
     }
   }
 
+  // Meta counters (persisten entre partidas): { "muertes": ">=3" }
+  if (condition.meta) {
+    for (const [key, expr] of Object.entries(condition.meta)) {
+      const val = state.meta?.[key] ?? 0;
+      if (!evaluateComparison(val, String(expr))) return false;
+    }
+  }
+
+  // Text matches (regex, sin distinguir mayúsculas): { "nombre_jugador": "^bob$" }
+  if (condition.textMatches) {
+    for (const [key, pattern] of Object.entries(condition.textMatches)) {
+      const raw = state.stats[key];
+      const text = raw === undefined ? '' : String(raw);
+      let re: RegExp;
+      try {
+        re = new RegExp(pattern, 'i');
+      } catch {
+        return false;
+      }
+      if (!re.test(text)) return false;
+    }
+  }
+
   return true;
 }
 

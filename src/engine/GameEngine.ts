@@ -19,11 +19,17 @@ import type {
   TimedChoiceStep,
   LevelUpStep,
   DEFAULT_RELATIONSHIP_TIERS,
+  Effects,
+  DialogStep,
 } from '../types/game';
 import type { PlayerState, StepResult, PlayerAction, CharacterState } from '../types/engine';
 import { evaluateCondition } from './ConditionEvaluator';
 import { applyEffects } from './EffectsApplier';
 import { resolveRoll } from './DiceRoller';
+import { interpolate, pickFromPool } from './NarrativeText';
+
+/** Máximo de reglas encadenadas tras un paso (evita bucles entre reglas) */
+const MAX_RULE_CHAIN = 5;
 
 export class GameEngine {
   private manifest: GameManifest;
@@ -33,6 +39,7 @@ export class GameEngine {
   private _currentScene: string = '';
   private _pendingAction: PlayerAction | null = null;
   private _actionResolver: ((action: PlayerAction) => void) | null = null;
+  private _metaListener: ((meta: Record<string, number>) => void) | null = null;
 
   constructor(manifest: GameManifest, scenes: ScenesFile, basePath: string = '') {
     this.manifest = manifest;
@@ -45,9 +52,11 @@ export class GameEngine {
     return this._state;
   }
 
-  /** Reset the engine to initial state (for _restart) */
+  /** Reset the engine to initial state (for _restart). Meta counters survive. */
   reset(): void {
+    const meta = this._state.meta;
     this._state = this.createInitialState();
+    this._state.meta = meta;
     this._currentScene = '';
     this._pendingAction = null;
     this._actionResolver = null;
@@ -104,9 +113,138 @@ export class GameEngine {
     return this.scenes.scenes[sceneId]?.scenario?.name;
   }
 
-  /** Restore player state from a save (for /load) */
+  /** Restore player state from a save (for /load). Meta counters are kept (they're newer). */
   restoreState(state: PlayerState): void {
-    this._state = { ...state };
+    const meta = this._state.meta;
+    this._state = { ...state, meta };
+  }
+
+  /** Carga los contadores meta persistidos (los lee el game loop al iniciar) */
+  loadMeta(meta: Record<string, number>): void {
+    this._state = { ...this._state, meta: { ...meta } };
+  }
+
+  /** El game loop se suscribe para persistir los contadores meta cuando cambian */
+  setMetaListener(listener: ((meta: Record<string, number>) => void) | null): void {
+    this._metaListener = listener;
+  }
+
+  /** Aplica efectos al estado: recorta stats, sincroniza especiales y notifica meta */
+  private applyState(effects: Effects): void {
+    const prevMeta = this._state.meta;
+    this._state = applyEffects(this._state, effects);
+    this.clampStats();
+    this.syncSpecialStats();
+    if (effects.meta && this._state.meta !== prevMeta && this._metaListener) {
+      this._metaListener({ ...(this._state.meta ?? {}) });
+    }
+  }
+
+  /** Recorta las stats numéricas a los min/max de statDefs */
+  private clampStats(): void {
+    const defs = this.manifest.statDefs;
+    if (!defs) return;
+    let changed = false;
+    const stats = { ...this._state.stats };
+    for (const [key, def] of Object.entries(defs)) {
+      const val = stats[key];
+      if (typeof val !== 'number') continue;
+      let clamped = val;
+      if (def.min !== undefined) clamped = Math.max(def.min, clamped);
+      if (def.max !== undefined) clamped = Math.min(def.max, clamped);
+      if (clamped !== val) {
+        stats[key] = clamped;
+        changed = true;
+      }
+    }
+    if (changed) this._state = { ...this._state, stats };
+  }
+
+  /** Texto con variables resueltas ({nombre_jugador}, {meta.muertes}) */
+  private text(value: string): string;
+  private text(value: string | undefined): string | undefined;
+  private text(value: string | undefined): string | undefined {
+    return value === undefined ? undefined : interpolate(value, this._state);
+  }
+
+  /** Saca líneas de un pool (sin repetir) y registra las usadas en el estado */
+  private drawFromPool(poolId: string, count: number = 1): string[] {
+    const pool = this.manifest.linePools?.[poolId];
+    if (!pool || pool.length === 0) return [];
+    const pick = pickFromPool(pool, this._state.pools?.[poolId], this._state, count);
+    this._state = { ...this._state, pools: { ...(this._state.pools ?? {}), [poolId]: pick.used } };
+    return pick.lines;
+  }
+
+  /** Resultado de diálogo con líneas fijas + líneas de pool, variables resueltas */
+  private buildDialog(character: string, lines: string[], poolId?: string, count?: number): StepResult | null {
+    const all = [...lines, ...(poolId ? this.drawFromPool(poolId, count ?? 1) : [])];
+    if (all.length === 0) return null;
+    return {
+      type: 'dialog',
+      character,
+      characterName: this.getCharacterName(character),
+      characterImage: this.manifest.characters[character]?.image,
+      lines: all.map((l) => this.text(l)),
+    };
+  }
+
+  /** ID del narrador del juego (rol narrator, o 'narrator') */
+  private getNarratorId(): string {
+    return (
+      Object.keys(this.manifest.characters).find((id) => this.manifest.characters[id].role === 'narrator') ??
+      'narrator'
+    );
+  }
+
+  /** Modificador global de tiradas (diceModifiers del manifiesto) */
+  private globalDiceModifier(): number {
+    let total = 0;
+    for (const mod of this.manifest.diceModifiers ?? []) {
+      const val = this._state.stats[mod.stat];
+      if (typeof val === 'number' && mod.per > 0) {
+        total += Math.floor(val / mod.per) * mod.amount;
+      }
+    }
+    return total;
+  }
+
+  /** Reacción del narrador a un resultado de dado (diceHooks) */
+  private *diceHook(outcome: string): Generator<StepResult> {
+    const hook = this.manifest.diceHooks?.[outcome as keyof NonNullable<GameManifest['diceHooks']>];
+    if (!hook) return;
+    if (Math.random() >= (hook.chance ?? 1)) return;
+    const dialog = this.buildDialog(hook.character ?? this.getNarratorId(), [], hook.pool);
+    if (dialog) yield dialog;
+  }
+
+  /**
+   * Evalúa las reglas automáticas (statRules). Devuelve la navegación si alguna regla la pide.
+   * Una regla que no es "once" debe desactivarse con sus propios efectos (ej: pis a 0).
+   */
+  private *runStatRules(): Generator<StepResult, { type: 'navigate'; scene: string } | void> {
+    const rules = this.manifest.statRules;
+    if (!rules?.length) return;
+    for (let chain = 0; chain < MAX_RULE_CHAIN; chain++) {
+      const rule = rules.find(
+        (r) =>
+          !(r.once && this._state.rulesFired?.includes(r.id)) &&
+          // Una regla que navega no se dispara dentro de su propia escena destino
+          !(r.goto && r.goto === this._currentScene) &&
+          evaluateCondition(r.condition, this._state)
+      );
+      if (!rule) return;
+      if (rule.once) {
+        this._state = { ...this._state, rulesFired: [...(this._state.rulesFired ?? []), rule.id] };
+      }
+      const dialog = this.buildDialog(rule.character ?? this.getNarratorId(), rule.lines ?? [], rule.pool);
+      if (dialog) yield dialog;
+      if (rule.effects) {
+        this.applyState(rule.effects);
+        yield { type: 'effects', ...rule.effects };
+      }
+      if (rule.goto) return { type: 'navigate', scene: rule.goto };
+    }
   }
 
   get currentSceneMusic(): string | undefined {
@@ -212,6 +350,13 @@ export class GameEngine {
 
       const result = yield* this.processStep(step);
 
+      // Reglas automáticas (umbral de stats, etc.): su navegación tiene prioridad
+      const ruleNav = yield* this.runStatRules();
+      if (ruleNav) {
+        yield ruleNav;
+        return;
+      }
+
       // If processStep signals navigation, handle it
       if (result && result.type === 'navigate') {
         yield result;
@@ -237,15 +382,12 @@ export class GameEngine {
     step: SequenceStep
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     switch (step.type) {
-      case 'dialog':
-        yield {
-          type: 'dialog',
-          character: step.character,
-          characterName: this.getCharacterName(step.character),
-          characterImage: this.manifest.characters[step.character]?.image,
-          lines: step.lines,
-        };
+      case 'dialog': {
+        const dialogStep = step as DialogStep;
+        const dialog = this.buildDialog(dialogStep.character, dialogStep.lines ?? [], dialogStep.pool, dialogStep.count);
+        if (dialog) yield dialog;
         break;
+      }
 
       case 'choice': {
         // Filter visible options
@@ -256,7 +398,7 @@ export class GameEngine {
         yield {
           type: 'choice_prompt',
           options: visibleOptions.map((opt, i) => ({
-            text: opt.text,
+            text: this.text(opt.text),
             index: i,
           })),
         };
@@ -289,15 +431,14 @@ export class GameEngine {
           typeof this._state.stats[step.stat] === 'number'
             ? (this._state.stats[step.stat] as number)
             : 0;
-        const result = resolveRoll(step.faces, statVal, step.difficulty);
+        const result = resolveRoll(step.faces, statVal, step.difficulty, 10, this.globalDiceModifier());
 
         // Get outcome text and effects
         const outcomeData = this.getDiceOutcome(step, result.outcome);
 
         // Apply effects
         if (outcomeData.effects) {
-          this._state = applyEffects(this._state, outcomeData.effects);
-          this.syncSpecialStats();
+          this.applyState(outcomeData.effects);
           yield { type: 'effects', ...outcomeData.effects };
         }
 
@@ -308,8 +449,10 @@ export class GameEngine {
           total: result.total,
           difficulty: step.difficulty,
           outcome: result.outcome,
-          text: outcomeData.text,
+          text: this.text(outcomeData.text),
         };
+
+        yield* this.diceHook(result.outcome);
 
         // Navigate if needed
         if (outcomeData.goto) {
@@ -327,10 +470,9 @@ export class GameEngine {
         const inputAction = await this.waitForAction();
         if (inputAction.type === 'submit_input') {
           // Save the input value
-          this._state = applyEffects(this._state, {
+          this.applyState({
             stats: { [step.saveAs]: inputAction.value },
           });
-          this.syncSpecialStats();
         }
 
         if (step.goto) {
@@ -340,8 +482,7 @@ export class GameEngine {
       }
 
       case 'effects':
-        this._state = applyEffects(this._state, step.effects);
-        this.syncSpecialStats();
+        this.applyState(step.effects);
         yield { type: 'effects', ...step.effects };
         break;
 
@@ -363,11 +504,10 @@ export class GameEngine {
           if (rand <= 0) { chosen = outcome; break; }
         }
 
-        yield { type: 'random_result', text: chosen.text };
+        yield { type: 'random_result', text: this.text(chosen.text) };
 
         if (chosen.effects) {
-          this._state = applyEffects(this._state, chosen.effects);
-          this.syncSpecialStats();
+          this.applyState(chosen.effects);
           yield { type: 'effects', ...chosen.effects };
         }
         if (chosen.goto) {
@@ -389,12 +529,11 @@ export class GameEngine {
           statValue: checkVal,
           threshold: step.threshold,
           passed,
-          text: outcome.text,
+          text: this.text(outcome.text),
         };
 
         if (outcome.effects) {
-          this._state = applyEffects(this._state, outcome.effects);
-          this.syncSpecialStats();
+          this.applyState(outcome.effects);
           yield { type: 'effects', ...outcome.effects };
         }
         if (outcome.goto) {
@@ -417,14 +556,13 @@ export class GameEngine {
 
       case 'notify': {
         if (step.effects) {
-          this._state = applyEffects(this._state, step.effects);
-          this.syncSpecialStats();
+          this.applyState(step.effects);
         }
         yield {
           type: 'notify',
           style: step.style,
-          title: step.title,
-          text: step.text,
+          title: this.text(step.title),
+          text: this.text(step.text),
           icon: step.icon,
         };
         break;
@@ -531,8 +669,7 @@ export class GameEngine {
       actionType: 'haggle' | 'steal' | 'deceive'
     ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | undefined> {
       if (action.bustEffects) {
-        self._state = applyEffects(self._state, action.bustEffects);
-        self.syncSpecialStats();
+        self.applyState(action.bustEffects);
         yield { type: 'effects', ...action.bustEffects };
       }
       const bustLabel = actionType === 'haggle' ? '🗣️ Regateo' : actionType === 'steal' ? '🤫 Robo' : '🎭 Engaño';
@@ -593,12 +730,12 @@ export class GameEngine {
         const item = step.items[action.itemIndex];
         const price = hagbledPrices[action.itemIndex] ?? item?.price ?? 0;
         if (item && currentMoney >= price) {
-          this._state = applyEffects(this._state, {
+          this.applyState({
             stats: { [currency]: -price },
             inventory: [item.id],
           });
           if (item.effects) {
-            this._state = applyEffects(this._state, item.effects);
+            this.applyState(item.effects);
           }
           this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: -price }, inventory: [item.id] };
@@ -611,11 +748,10 @@ export class GameEngine {
         const shopItem = step.items.find((si) => si.id === action.itemId);
         const sellPrice = shopItem ? Math.floor(shopItem.price * sellRatio) : 1;
         if (this._state.inventory.includes(action.itemId)) {
-          this._state = applyEffects(this._state, {
+          this.applyState({
             stats: { [currency]: sellPrice },
             removeInventory: [action.itemId],
           });
-          this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: sellPrice }, removeInventory: [action.itemId] };
           lastMessage = `Has vendido ${shopItem?.name || action.itemId} por ${sellPrice} ${currency}.`;
         }
@@ -642,7 +778,7 @@ export class GameEngine {
 
         const statVal = typeof this._state.stats[step.haggle.stat] === 'number'
           ? (this._state.stats[step.haggle.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, dc);
+        const result = resolveRoll(20, statVal, dc, 10, this.globalDiceModifier());
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
@@ -652,8 +788,7 @@ export class GameEngine {
           const markup = result.outcome === 'critical_failure' ? 0.5 : 0.2;
           hagbledPrices[action.itemIndex] = Math.floor(item.price * (1 + markup));
           if (step.haggle.failEffects) {
-            this._state = applyEffects(this._state, step.haggle.failEffects);
-            this.syncSpecialStats();
+            this.applyState(step.haggle.failEffects);
           }
         }
 
@@ -704,19 +839,18 @@ export class GameEngine {
 
         const statVal = typeof this._state.stats[step.steal.stat] === 'number'
           ? (this._state.stats[step.steal.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, dc);
+        const result = resolveRoll(20, statVal, dc, 10, this.globalDiceModifier());
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
-          this._state = applyEffects(this._state, { inventory: [item.id] });
+          this.applyState({ inventory: [item.id] });
           if (item.effects) {
-            this._state = applyEffects(this._state, item.effects);
+            this.applyState(item.effects);
           }
           this.syncSpecialStats();
         } else {
           if (step.steal.failEffects) {
-            this._state = applyEffects(this._state, step.steal.failEffects);
-            this.syncSpecialStats();
+            this.applyState(step.steal.failEffects);
           }
         }
 
@@ -771,18 +905,17 @@ export class GameEngine {
 
         const statVal = typeof this._state.stats[step.deceive.stat] === 'number'
           ? (this._state.stats[step.deceive.stat] as number) : 0;
-        const result = resolveRoll(20, statVal, dc);
+        const result = resolveRoll(20, statVal, dc, 10, this.globalDiceModifier());
         const success = result.outcome === 'success' || result.outcome === 'critical_success';
 
         if (success) {
           const inflated = result.outcome === 'critical_success'
             ? Math.floor(basePrice * 1.5)
             : basePrice;
-          this._state = applyEffects(this._state, {
+          this.applyState({
             stats: { [currency]: inflated },
             removeInventory: [itemId],
           });
-          this.syncSpecialStats();
           const deceiveSuccessText = step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`;
           lastMessage = deceiveSuccessText;
           yield {
@@ -795,8 +928,7 @@ export class GameEngine {
           };
         } else {
           if (step.deceive.failEffects) {
-            this._state = applyEffects(this._state, step.deceive.failEffects);
-            this.syncSpecialStats();
+            this.applyState(step.deceive.failEffects);
           }
           const deceiveFailText = step.deceive.failText || '¡El tendero ha descubierto tu engaño!';
           lastMessage = deceiveFailText;
@@ -849,8 +981,7 @@ export class GameEngine {
         const outcome = step.results.defeat;
         yield { type: 'combat_end', outcome: 'defeat', text: outcome.text };
         if (outcome.effects) {
-          this._state = applyEffects(this._state, outcome.effects);
-          this.syncSpecialStats();
+          this.applyState(outcome.effects);
           yield { type: 'effects', ...outcome.effects };
         }
         if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -862,8 +993,7 @@ export class GameEngine {
         const outcome = step.results.victory;
         yield { type: 'combat_end', outcome: 'victory', text: outcome.text };
         if (outcome.effects) {
-          this._state = applyEffects(this._state, outcome.effects);
-          this.syncSpecialStats();
+          this.applyState(outcome.effects);
           yield { type: 'effects', ...outcome.effects };
         }
         if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -895,8 +1025,7 @@ export class GameEngine {
         const outcome = step.results.flee;
         yield { type: 'combat_end', outcome: 'flee', text: outcome.text };
         if (outcome.effects) {
-          this._state = applyEffects(this._state, outcome.effects);
-          this.syncSpecialStats();
+          this.applyState(outcome.effects);
           yield { type: 'effects', ...outcome.effects };
         }
         if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -927,19 +1056,17 @@ export class GameEngine {
 
           // Apply item heal to player
           if (combatItem.heal) {
-            this._state = applyEffects(this._state, { stats: { [step.playerStat]: combatItem.heal } });
-            this.syncSpecialStats();
+            this.applyState({ stats: { [step.playerStat]: combatItem.heal } });
           }
 
           // Consume item (default true)
           if (combatItem.consume !== false) {
-            this._state = applyEffects(this._state, { removeInventory: [itemId] });
+            this.applyState({ removeInventory: [itemId] });
           }
 
           // Apply extra effects
           if (combatItem.effects) {
-            this._state = applyEffects(this._state, combatItem.effects);
-            this.syncSpecialStats();
+            this.applyState(combatItem.effects);
           }
 
           turnText = combatItem.text;
@@ -948,8 +1075,7 @@ export class GameEngine {
           if (enemyHp > 0) {
             const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 20));
             enemyDamage = Math.max(1, enemyBaseDmg + Math.floor(Math.random() * 4));
-            this._state = applyEffects(this._state, { stats: { [step.playerStat]: -enemyDamage } });
-            this.syncSpecialStats();
+            this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
             turnText += ` ${step.enemy.name} contraataca por ${enemyDamage}.`;
           }
         }
@@ -962,16 +1088,14 @@ export class GameEngine {
         // Enemy attacks back
         const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 20));
         enemyDamage = Math.max(1, enemyBaseDmg + Math.floor(Math.random() * 4));
-        this._state = applyEffects(this._state, { stats: { [step.playerStat]: -enemyDamage } });
-        this.syncSpecialStats();
+        this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
 
         turnText = `Atacas por ${playerDamage} de daño. ${step.enemy.name} contraataca por ${enemyDamage}.`;
       } else if (action.action === 'defend') {
         // Defend: reduced incoming damage
         const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 10));
         enemyDamage = Math.max(1, Math.floor(enemyBaseDmg * 0.5));
-        this._state = applyEffects(this._state, { stats: { [step.playerStat]: -enemyDamage } });
-        this.syncSpecialStats();
+        this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
 
         turnText = `Te defiendes. ${step.enemy.name} te causa solo ${enemyDamage} de daño.`;
       }
@@ -1033,8 +1157,7 @@ export class GameEngine {
           const itemId = table[idx];
           if (!fixedTools.has(itemId)) {
             table.splice(idx, 1);
-            this._state = applyEffects(this._state, { inventory: [itemId] });
-            this.syncSpecialStats();
+            this.applyState({ inventory: [itemId] });
             const name = itemDefs[itemId]?.name || itemId;
             yield { type: 'craft_result', success: true, text: `Recoges [bold]${name}[/bold] de la mesa.` };
             yield { type: 'effects', inventory: [itemId] };
@@ -1108,7 +1231,7 @@ export class GameEngine {
                 : recipe.ingredients;
             const toRemoveInv = consumable.filter((id) => this._state.inventory.includes(id));
             if (toRemoveInv.length) {
-              this._state = applyEffects(this._state, { removeInventory: toRemoveInv });
+              this.applyState({ removeInventory: toRemoveInv });
             }
             // Also consume from table (non-fixed items like subproducts used as ingredients)
             for (const id of consumable) {
@@ -1123,7 +1246,7 @@ export class GameEngine {
             const toolId = recipe.tool || recipe.substance;
             if (toolId) {
               if (this._state.inventory.includes(toolId)) {
-                this._state = applyEffects(this._state, { removeInventory: [toolId] });
+                this.applyState({ removeInventory: [toolId] });
               }
               // Remove from table too if consumeTool
               const tIdx = table.indexOf(toolId);
@@ -1139,7 +1262,7 @@ export class GameEngine {
             table.push(r);
           }
           if (recipe.effects) {
-            this._state = applyEffects(this._state, recipe.effects);
+            this.applyState(recipe.effects);
           }
           this.syncSpecialStats();
           yield { type: 'craft_result', success: true, text: recipe.text };
@@ -1189,8 +1312,7 @@ export class GameEngine {
         const outcome = step.failure;
         yield { type: 'puzzle_attempt', correct: false, text: outcome.text };
         if (outcome.effects) {
-          this._state = applyEffects(this._state, outcome.effects);
-          this.syncSpecialStats();
+          this.applyState(outcome.effects);
           yield { type: 'effects', ...outcome.effects };
         }
         if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -1205,8 +1327,7 @@ export class GameEngine {
           const outcome = step.success;
           yield { type: 'puzzle_attempt', correct: true, text: outcome.text };
           if (outcome.effects) {
-            this._state = applyEffects(this._state, outcome.effects);
-            this.syncSpecialStats();
+            this.applyState(outcome.effects);
             yield { type: 'effects', ...outcome.effects };
           }
           if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -1221,8 +1342,7 @@ export class GameEngine {
           const outcome = step.failure;
           yield { type: 'puzzle_attempt', correct: false, text: outcome.text, attemptsLeft: 0 };
           if (outcome.effects) {
-            this._state = applyEffects(this._state, outcome.effects);
-            this.syncSpecialStats();
+            this.applyState(outcome.effects);
             yield { type: 'effects', ...outcome.effects };
           }
           if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
@@ -1293,8 +1413,7 @@ export class GameEngine {
           yield { type: 'examine_result', subjectLabel: subject.label, text: subject.text };
 
           if (subject.effects) {
-            this._state = applyEffects(this._state, subject.effects);
-            this.syncSpecialStats();
+            this.applyState(subject.effects);
             yield { type: 'effects', ...subject.effects };
           }
         }
@@ -1336,10 +1455,10 @@ export class GameEngine {
         if (accept && this._state.inventory.includes(action.itemId)) {
           // Success
           if (accept.consume !== false) {
-            this._state = applyEffects(this._state, { removeInventory: [action.itemId] });
+            this.applyState({ removeInventory: [action.itemId] });
           }
           if (accept.effects) {
-            this._state = applyEffects(this._state, accept.effects);
+            this.applyState(accept.effects);
           }
           this.syncSpecialStats();
 
@@ -1409,8 +1528,7 @@ export class GameEngine {
     chosen: ChoiceOption
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     if (chosen.effects) {
-      this._state = applyEffects(this._state, chosen.effects);
-      this.syncSpecialStats();
+      this.applyState(chosen.effects);
       yield { type: 'effects', ...chosen.effects };
     }
     if (chosen.goto) {
