@@ -7,6 +7,8 @@ import { useDebugStore } from '../store/useDebugStore';
 import { delay } from '../utils/delay';
 import { audioManager } from '../engine/AudioManager';
 import { saveGame } from '../utils/storage';
+import { getMeta, setMeta, ageGateKey } from '../utils/metaStorage';
+import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
 import type { PlayerAction, StepResult } from '../types/engine';
 
 export function useGameLoop() {
@@ -63,6 +65,22 @@ export function useGameLoop() {
     [engine, debugActive]
   );
 
+  /** Inicia la partida: pasa por el control de edad si el juego lo exige y no fue aceptado */
+  const startGame = useCallback(async () => {
+    if (!engine) return;
+    const rating = engine.contentRating;
+    if (rating) {
+      const gameName = useAppStore.getState().gameBasePath.split('/').pop() ?? 'unknown';
+      const gate = rating.gateScene ?? AGE_GATE_SCENE;
+      const accepted = await getMeta<boolean>(gameName, ageGateKey(rating.minAge));
+      if (!accepted && engine.hasScene(gate)) {
+        await startScene(gate);
+        return;
+      }
+    }
+    await startScene('start');
+  }, [engine, startScene]);
+
   const consumeResults = async (iterator: AsyncGenerator<StepResult>) => {
     while (true) {
       // Yield al browser entre iteraciones para no bloquear el hilo
@@ -113,6 +131,15 @@ export function useGameLoop() {
             { type: 'system', content: '' },
           ]);
           audioManager.stop();
+          return;
+        }
+        if (value.scene === AGE_ACCEPT) {
+          const rating = engine?.contentRating;
+          if (rating) {
+            const gameName = useAppStore.getState().gameBasePath.split('/').pop() ?? 'unknown';
+            await setMeta(gameName, ageGateKey(rating.minAge), true);
+          }
+          await startScene('start');
           return;
         }
         if (value.scene === '_restart') {
@@ -514,7 +541,7 @@ export function useGameLoop() {
     [engine]
   );
 
-  return { startScene, sendAction };
+  return { startScene, startGame, sendAction };
 }
 
 function waitForEnterKey(): Promise<void> {

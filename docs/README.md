@@ -45,6 +45,7 @@
 - [Estructura de Archivos](estructura-archivos.md)
 - [Stack Tecnológico](stack.md)
 - [Guía para Crear un Juego](guia-crear-juego.md)
+- [Herramientas de Juego (validar / imágenes provisorias)](herramientas.md)
 
 ---
 

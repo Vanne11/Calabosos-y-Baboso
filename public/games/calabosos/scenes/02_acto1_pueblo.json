@@ -1,0 +1,25 @@
+{
+  "scenes": {
+    "acto1_plaza": {
+      "scenario": {
+        "name": "Acto I: El Pueblo",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La plaza principal de Viscaria. Huele a pescado, a sudor y a decisiones que vas a lamentar.",
+            "[dim](Acto I en construcción: dinero, tienda, taberna, callejón y Nerly.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Partir hacia el Abismo", "goto": "acto2_camino" }]
+        }
+      ]
+    }
+  }
+}

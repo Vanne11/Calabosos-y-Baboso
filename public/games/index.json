@@ -1,3 +1,7 @@
 {
-  "games": ["demo", "demo2", "Calabosos y Babosos"]
+  "games": [
+    "calabosos",
+    "demo",
+    "demo2"
+  ]
 }

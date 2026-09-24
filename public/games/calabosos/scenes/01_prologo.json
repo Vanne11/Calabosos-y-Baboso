@@ -1,0 +1,28 @@
+{
+  "scenes": {
+    "start": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "Una habitación desordenada donde nada heroico ha ocurrido jamás."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Érase una vez, en el reino de Viscaria, un héroe legendario destinado a salvarnos a todos.",
+            "Ese no eres tú. Ese se murió ayer atragantado con una aceituna.",
+            "Tú eres el [italic]plan B[/italic]. Bueno, el plan F. Nos saltamos varias letras por falta de candidatos.",
+            "[dim](Aquí irá el prólogo completo: la habitación, la mochila, la lámpara y la carta misteriosa. En construcción, como tu autoestima.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Salir de la habitación", "goto": "acto1_plaza" }]
+        }
+      ]
+    }
+  }
+}

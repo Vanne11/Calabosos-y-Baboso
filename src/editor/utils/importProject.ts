@@ -6,6 +6,7 @@ import type { SceneFlowNode, EditorProject } from '../types/editor';
 import { createDefaultProject } from '../types/editor';
 import type { GameManifest, ScenesFile, Scene } from '../../types/game';
 import { saveAsset } from './assetStorage';
+import { fetchScenes } from '../../engine/GameLoader';
 import { SPECIAL_DESTINATIONS } from '../components/canvas/SpecialNode';
 import type { SpecialFlowNode } from '../components/canvas/SpecialNode';
 
@@ -29,6 +30,8 @@ function convertToEditorProject(manifest: GameManifest, scenesFile: ScenesFile):
     skillTrees: manifest.skillTrees || {},
     traits: manifest.traits || {},
     time: manifest.time || { duration: 5, phases: ['morning', 'afternoon', 'night'], initial: 'morning' },
+    contentRating: manifest.contentRating,
+    statDefs: manifest.statDefs,
   };
 
   const sceneEntries = Object.entries(scenesFile.scenes);
@@ -197,20 +200,12 @@ export async function importProjectFromZip(file: File): Promise<ImportedProject>
 export async function importProjectFromGame(gameName: string): Promise<ImportedProject> {
   const basePath = `games/${gameName}`;
 
-  const [manifestRes, scenesRes] = await Promise.all([
-    fetch(`${basePath}/game.json`),
-    fetch(`${basePath}/scenes.json`),
-  ]);
-
+  const manifestRes = await fetch(`${basePath}/game.json`);
   if (!manifestRes.ok) {
     throw new Error(`No se encontró game.json para "${gameName}"`);
   }
-  if (!scenesRes.ok) {
-    throw new Error(`No se encontró scenes.json para "${gameName}"`);
-  }
-
   const manifest: GameManifest = await manifestRes.json();
-  const scenesFile: ScenesFile = await scenesRes.json();
+  const scenesFile = await fetchScenes(basePath, manifest);
 
   if (!scenesFile.scenes || Object.keys(scenesFile.scenes).length === 0) {
     throw new Error(`El juego "${gameName}" no tiene escenas`);

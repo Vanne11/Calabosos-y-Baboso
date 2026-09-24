@@ -86,6 +86,19 @@ export class GameEngine {
     return this.scenes.scenes[this._currentScene]?.scenario?.image;
   }
 
+  /** Whether a scene exists in the loaded game */
+  hasScene(sceneId: string): boolean {
+    return sceneId in this.scenes.scenes;
+  }
+
+  get statDefs() {
+    return this.manifest.statDefs;
+  }
+
+  get contentRating() {
+    return this.manifest.contentRating;
+  }
+
   /** Get the display name of a scene's scenario */
   getScenarioName(sceneId: string): string | undefined {
     return this.scenes.scenes[sceneId]?.scenario?.name;

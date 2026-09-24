@@ -1,0 +1,29 @@
+{
+  "scenes": {
+    "final_heroico": {
+      "scenario": {
+        "name": "Final: Celebración Heroica",
+        "image": "images/scenarios/final.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y así, contra toda estadística, lógica y buen gusto, ganaste.",
+            "No te acostumbres.",
+            "[dim](Finales en construcción: heroico, nuevas aventuras, retiro pacífico y el secreto.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Jugar de nuevo", "goto": "_restart" },
+            { "text": "Salir", "goto": "_quit" }
+          ]
+        }
+      ]
+    }
+  }
+}

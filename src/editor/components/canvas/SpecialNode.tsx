@@ -38,6 +38,12 @@ export const SPECIAL_DESTINATIONS: Record<string, { label: string; icon: string;
     color: '#f1fa8c',
     description: 'Reinicia el juego desde el inicio',
   },
+  _age_accept: {
+    label: 'EDAD OK',
+    icon: '🔞',
+    color: '#50fa7b',
+    description: 'Acepta el control de edad y empieza en "start"',
+  },
 };
 
 export const SPECIAL_IDS = Object.keys(SPECIAL_DESTINATIONS);

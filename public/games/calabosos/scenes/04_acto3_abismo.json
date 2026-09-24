@@ -1,0 +1,25 @@
+{
+  "scenes": {
+    "acto3_abismo": {
+      "scenario": {
+        "name": "Acto III: El Abismo",
+        "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/rpgchip06_dungeon.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Abismo de las Babosas. Húmedo, oscuro y pegajoso. Como tu historial de navegación.",
+            "[dim](Acto III en construcción: el guardia, las tres zonas y las cinco especies.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Ir hacia el trono", "goto": "acto4_trono" }]
+        }
+      ]
+    }
+  }
+}

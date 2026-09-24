@@ -1,0 +1,30 @@
+{
+  "scenes": {
+    "acto4_trono": {
+      "scenario": {
+        "name": "Acto IV: El Rey",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": ["¿ESTO es lo que mandaron? ¿En serio?"]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Por una vez, el Rey Baboso y yo estamos de acuerdo.",
+            "[dim](Acto IV en construcción: la negociación, la batalla en tres fases y el prestamista.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Ganar mágicamente (modo esqueleto)", "goto": "final_heroico" }]
+        }
+      ]
+    }
+  }
+}

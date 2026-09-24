@@ -9,6 +9,16 @@ Los `goto` pueden apuntar a IDs de escenas normales o a destinos especiales:
 | `_quit` | Cierra el juego, vuelve a la terminal shell |
 | `_game_over` | Muestra pantalla de Game Over con banner |
 | `_restart` | Reinicia completamente el juego (estado inicial, escena `start`) |
+| `_age_accept` | Registra que el jugador aceptó el control de edad y va a `start` |
 | `start` | Escena inicial obligatoria de todo juego |
 
 Estos destinos se manejan en `useGameLoop.consumeResults()`.
+
+## Control de edad (`contentRating`)
+
+Si `game.json` define `contentRating`, `useGameLoop.startGame()` pasa por una escena de control de edad **antes de `start`**, salvo que el jugador ya la haya aceptado (se guarda por juego y por `minAge` en localforage, store `meta`, vía `utils/metaStorage.ts`).
+
+- **Escena propia** (`contentRating.gateScene`): una escena normal del juego, con su narrador y su humor. Aceptar debe hacer `goto: "_age_accept"`; rechazar puede ir a cualquier escena (por ejemplo un final de burla que termine en `_quit`).
+- **Escena genérica** (sin `gateScene`): el `GameLoader` inyecta `_age_gate` con el narrador del juego, las `warnings` y dos opciones (aceptar → `_age_accept`, rechazar → `_quit`).
+- `_restart` y cargar partida no vuelven a preguntar.
+- Para volver a ver el control en desarrollo: borrar la clave `<juego>:age_gate:<edad>` del store `meta` de IndexedDB (`calabosos-y-babosos`).

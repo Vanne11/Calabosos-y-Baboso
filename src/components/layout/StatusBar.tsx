@@ -112,8 +112,18 @@ const StatusBar: React.FC = () => {
 
   if (phase !== 'game' || !playerState) return null;
 
+  // El juego puede definir sus stats visibles; si no, se usan las etiquetas por defecto
+  const statDefs = engine?.statDefs;
+  const labels: Record<string, string> = statDefs
+    ? Object.fromEntries(
+        Object.entries(statDefs)
+          .filter(([, def]) => !def.hidden)
+          .map(([key, def]) => [key, def.icon ? `${def.icon} ${def.label}` : def.label])
+      )
+    : STAT_LABELS;
+
   const numericStats = Object.entries(playerState.stats).filter(
-    ([key, val]) => typeof val === 'number' && key in STAT_LABELS
+    ([key, val]) => typeof val === 'number' && key in labels
   );
 
   // Protagonist from engine (role-based)
@@ -176,7 +186,7 @@ const StatusBar: React.FC = () => {
       <StatsArea>
         {numericStats.map(([key, value]) => (
           <StatItem key={key}>
-            <StatLabel>{STAT_LABELS[key] || key}:</StatLabel>
+            <StatLabel>{labels[key] || key}:</StatLabel>
             <StatValue>{String(value)}</StatValue>
           </StatItem>
         ))}

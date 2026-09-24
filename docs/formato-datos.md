@@ -131,9 +131,37 @@ Define metadatos, personajes, configuración inicial y sistemas RPG.
 }
 ```
 
+### Campos opcionales adicionales
+
+```jsonc
+{
+  // --- Stats visibles en la barra de estado ---
+  // Si no se define, la barra usa etiquetas por defecto (will_to_live, hunger, pee, fear, reputation).
+  "statDefs": {
+    "ganas_de_vivir": { "label": "Ganas de vivir", "icon": "❤️" },
+    "sexi": { "label": "Qué tan sexi", "icon": "💋" },
+    "secreto": { "label": "Secreto", "hidden": true }   // usable en condiciones/dados, no se muestra
+  },
+
+  // --- Escenas en varios archivos ---
+  // Si se define, se cargan en orden y se fusionan; si no, se usa scenes.json.
+  // Un ID de escena repetido entre archivos es un error de carga.
+  "sceneFiles": ["scenes/00_edad.json", "scenes/01_prologo.json", "scenes/02_acto1.json"],
+
+  // --- Control de edad (ver navegacion.md) ---
+  "contentRating": {
+    "minAge": 18,
+    "warnings": ["groserías", "humor de pis"],  // las menciona la escena genérica
+    "gateScene": "edad"                          // opcional: escena propia; debe ir a "_age_accept"
+  }
+}
+```
+
 ## `scenes.json` — Escenas del juego (ScenesFile)
 
 Contiene todas las escenas con sus secuencias de pasos. **Debe existir una escena `start`**.
+
+Con `sceneFiles` en el manifiesto, cada archivo tiene este mismo formato (`{ "scenes": { ... } }`) y el editor los importa fusionados; al exportar desde el editor se genera un único `scenes.json`.
 
 ```jsonc
 {

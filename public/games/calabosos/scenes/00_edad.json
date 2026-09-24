@@ -1,0 +1,52 @@
+{
+  "scenes": {
+    "edad": {
+      "scenario": {
+        "name": "Antes de empezar",
+        "image": "images/scenarios/intro.png",
+        "music": "audio/rpgchip01_title_screen.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ah. Llegaste. Qué entusiasmo tan... presente.",
+            "Antes de que empecemos, un detalle legal que mis abogados babosos me obligan a mencionar.",
+            "En este juego hay [bold]groserías[/bold], [bold]humor de pis[/bold], babosas con intenciones dudosas y un narrador —yo— sin ningún respeto por ti.",
+            "Así que dime, con la mano en el corazón o donde sea que tengas la honestidad:"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            { "text": "Tengo 18 años o más", "goto": "_age_accept" },
+            { "text": "No, soy menor de edad", "goto": "edad_rechazo" }
+          ]
+        }
+      ]
+    },
+    "edad_rechazo": {
+      "scenario": {
+        "name": "Vuelve más tarde",
+        "image": "images/scenarios/intro.png",
+        "music": "audio/rpgchip15_game_over.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Honesto. Qué raro. Casi me conmueves.",
+            "Esta aventura no es para ti todavía. Ve a hacer tus tareas, come verduras y deja que te crezca vello en lugares que ahora no te imaginas.",
+            "Te espero. Las babosas no se van a ningún lado. Son babosas, se mueven a dos centímetros por hora."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Salir (con dignidad)", "goto": "_quit" }]
+        }
+      ]
+    }
+  }
+}

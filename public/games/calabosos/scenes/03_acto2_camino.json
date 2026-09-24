@@ -1,0 +1,25 @@
+{
+  "scenes": {
+    "acto2_camino": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Caminas. Y caminas. Los juegos buenos tienen montajes de viaje. Este tiene un narrador que te describe caminando.",
+            "[dim](Acto II en construcción: encuentros, el anciano, el bestiario y la canción con Nerly.)[/dim]"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [{ "text": "Llegar al Abismo", "goto": "acto3_abismo" }]
+        }
+      ]
+    }
+  }
+}

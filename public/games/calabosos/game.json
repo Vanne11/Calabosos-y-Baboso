@@ -1,0 +1,125 @@
+{
+  "name": "Calabosos y Babosos",
+  "description": "Una aventura grotesca, gloriosa y absolutamente viscosa. El narrador te odia un poquito.",
+  "author": "Nicolás y Vanessa",
+  "version": "0.1.0",
+  "contentRating": {
+    "minAge": 18,
+    "warnings": ["groserías", "humor de pis", "babosas con intenciones dudosas", "un narrador sin ningún respeto por ti"],
+    "gateScene": "edad"
+  },
+  "sceneFiles": [
+    "scenes/00_edad.json",
+    "scenes/01_prologo.json",
+    "scenes/02_acto1_pueblo.json",
+    "scenes/03_acto2_camino.json",
+    "scenes/04_acto3_abismo.json",
+    "scenes/05_acto4_rey.json",
+    "scenes/06_finales.json"
+  ],
+  "characters": {
+    "narrator": {
+      "name": "Narrador",
+      "description": "Una voz omnisciente, sarcástica y condescendiente que rompe la cuarta pared constantemente.",
+      "image": "images/dialogs/narrator.png",
+      "role": "narrator"
+    },
+    "protagonist": {
+      "name": "BOB",
+      "description": "El héroe involuntario. Tú. Lamentablemente.",
+      "image": "images/dialogs/protagonist_male.png",
+      "role": "protagonist",
+      "altImages": {
+        "masculino": "images/dialogs/protagonist_male.png",
+        "femenino": "images/dialogs/protagonist_female.png",
+        "no_binario": "images/dialogs/protagonist_andro.png",
+        "misterioso": "images/dialogs/protagonist_misterioso.png"
+      }
+    },
+    "nerly": {
+      "name": "Nerly",
+      "description": "Una babosa azul brillante, políticamente correcta, que se convierte en tu guía.",
+      "image": "images/dialogs/nerly.png",
+      "role": "companion",
+      "joinFlag": "nerly_joined"
+    },
+    "tendero": {
+      "name": "Tendero",
+      "description": "Un vendedor ebrio que vende equipo para 'aventureros suicidas'.",
+      "image": "images/dialogs/tendero.png",
+      "role": "npc"
+    },
+    "noble": {
+      "name": "Noble Pomposo",
+      "description": "Un noble gordo y distraído con bolsillos llenos.",
+      "image": "images/dialogs/noble.png",
+      "role": "npc"
+    },
+    "dueno_establos": {
+      "name": "Dueño de Establos",
+      "description": "Un hombre que cuida caballos mutantes peligrosos.",
+      "image": "images/dialogs/dueno_establos.png",
+      "role": "npc"
+    },
+    "prestamista": {
+      "name": "Prestamista",
+      "description": "El dueño de la casa de empeños. Nunca olvida una deuda.",
+      "image": "images/dialogs/prestamista.png",
+      "role": "npc"
+    },
+    "anciano": {
+      "name": "Anciano",
+      "description": "Un viejo que ha sobrevivido múltiples aventuras y ve patrones dimensionales.",
+      "image": "images/dialogs/anciano.png",
+      "role": "npc"
+    },
+    "bardo": {
+      "name": "Bardo Babosa",
+      "description": "Una babosa con laúd que se cree la estrella de la taberna. Rapea fatal, pero con confianza.",
+      "image": "images/dialogs/bardo.png",
+      "role": "npc"
+    },
+    "guardia": {
+      "name": "Guardia del Abismo",
+      "description": "Una babosa acorazada que custodia la entrada. Aburrida, sobornable, sensible a los halagos.",
+      "image": "images/dialogs/guardia.png",
+      "role": "npc"
+    },
+    "rey_baboso": {
+      "name": "Rey Baboso",
+      "description": "Monarca supremo de las babosas. Enorme, pegajoso y con un ego del tamaño de su trono.",
+      "image": "images/dialogs/rey_baboso.png",
+      "role": "npc"
+    },
+    "sistema": {
+      "name": "SISTEMA",
+      "description": "Notificaciones del sistema de juego.",
+      "image": "images/dialogs/system.png"
+    }
+  },
+  "statDefs": {
+    "ganas_de_vivir": { "label": "Ganas de vivir", "icon": "❤️" },
+    "miedo": { "label": "Miedo", "icon": "😱" },
+    "pis": { "label": "Pis", "icon": "💧" },
+    "sexi": { "label": "Qué tan sexi", "icon": "💋" },
+    "dinero": { "label": "Monedas", "icon": "🪙" }
+  },
+  "initialStats": {
+    "ganas_de_vivir": 100,
+    "miedo": 0,
+    "pis": 0,
+    "sexi": 50,
+    "dinero": 0
+  },
+  "initialFlags": {},
+  "initialInventory": [],
+  "time": {
+    "duration": 5,
+    "phases": ["mañana", "tarde", "noche"],
+    "initial": "mañana"
+  },
+  "saveSystem": {
+    "mode": "free",
+    "slots": 3
+  }
+}

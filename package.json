@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "vite build && node scripts/optimize-images.mjs dist",
     "lint": "eslint .",
+    "validate": "node scripts/validate-game.mjs",
+    "placeholders": "node scripts/make-placeholders.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

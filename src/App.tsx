@@ -56,7 +56,7 @@ const App: React.FC = () => {
 
   const { isLogin, loginStep, handleLoginInput, initLogin } = useLoginFlow();
   const { processCommand, handleSlotInput } = useTerminalCommands();
-  const { startScene, sendAction } = useGameLoop();
+  const { startScene, startGame, sendAction } = useGameLoop();
   const { handleKeyDown, resetHistoryIndex } = useKeyboardInput();
 
   // Show welcome messages when session is restored (skip boot/login)
@@ -82,7 +82,7 @@ const App: React.FC = () => {
   // Start the game scene when entering game phase
   useEffect(() => {
     if (phase === 'game') {
-      startScene('start');
+      startGame();
     }
   }, [phase]);
 

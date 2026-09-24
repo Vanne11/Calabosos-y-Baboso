@@ -19,6 +19,31 @@ export interface GameManifest {
   traits?: Record<string, TraitDef>;
   /** Configuración del sistema de guardado */
   saveSystem?: SaveSystemConfig;
+  /** Definición de stats visibles en la barra de estado (si no se define, usa etiquetas por defecto) */
+  statDefs?: Record<string, StatDef>;
+  /** Archivos de escenas (relativos al juego). Si no se define, se usa scenes.json */
+  sceneFiles?: string[];
+  /** Clasificación de contenido: activa el control de edad antes de "start" */
+  contentRating?: ContentRating;
+}
+
+export interface StatDef {
+  /** Nombre visible */
+  label: string;
+  /** Emoji opcional antes del nombre */
+  icon?: string;
+  /** Ocultar de la barra de estado (sigue usable en condiciones/dados) */
+  hidden?: boolean;
+}
+
+export interface ContentRating {
+  /** Edad mínima requerida (ej: 18) */
+  minAge: number;
+  /** Advertencias que el narrador menciona en el control de edad */
+  warnings?: string[];
+  /** Escena propia del juego para el control de edad (default: "_age_gate" genérica).
+   *  Debe navegar a "_age_accept" para aceptar. */
+  gateScene?: string;
 }
 
 export interface SaveSystemConfig {

@@ -12,6 +12,8 @@ import type {
   ItemDef,
   SkillTreeDef,
   TraitDef,
+  ContentRating,
+  StatDef,
 } from '../../types/game';
 
 // --- Proyecto del editor ---
@@ -30,6 +32,8 @@ export interface EditorProject {
   skillTrees: Record<string, SkillTreeDef>;
   traits: Record<string, TraitDef>;
   time: TimeCycle;
+  contentRating?: ContentRating;
+  statDefs?: Record<string, StatDef>;
   createdAt: number;
   updatedAt: number;
 }
@@ -122,6 +126,12 @@ export function projectToManifest(project: EditorProject): GameManifest {
   }
   if (Object.keys(project.traits).length > 0) {
     manifest.traits = project.traits;
+  }
+  if (project.contentRating) {
+    manifest.contentRating = project.contentRating;
+  }
+  if (project.statDefs) {
+    manifest.statDefs = project.statDefs;
   }
   return manifest;
 }
