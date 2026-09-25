@@ -3,7 +3,30 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../../src/bootstrap.php';
+/**
+ * Errores de instalación con explicación (en vez de una página 500 en blanco).
+ * No muestra detalles internos: solo qué falta y cómo arreglarlo.
+ */
+function installError(string $title, string $help): void
+{
+    http_response_code(500);
+    header('Content-Type: text/html; charset=utf-8');
+    $t = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+    echo "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        . "<meta name=\"robots\" content=\"noindex\"><title>Instalación · Calabosos</title><link rel=\"stylesheet\" href=\"admin.css\"></head>"
+        . "<body><main><section class=\"login card\"><h1>🐌 Falta un paso</h1><p class=\"error\">$t</p><p>$help</p>"
+        . "<p class=\"muted small\">Guía completa: docs/DEPLOY.md, sección «Subir por FTP».</p></section></main></body></html>";
+    exit;
+}
+
+try {
+    require __DIR__ . '/../../src/bootstrap.php';
+} catch (\Throwable $e) {
+    installError(
+        'No se encontró config.php (o tiene un error).',
+        'Copia <code>config.example.php</code> como <code>config.php</code> en la carpeta <code>cyb-api/</code>, complétalo y vuelve a subirlo.'
+    );
+}
 
 use Cyb\AdminAuth;
 use Cyb\Analytics;
@@ -11,6 +34,7 @@ use Cyb\AiException;
 use Cyb\App;
 use Cyb\ChatService;
 use Cyb\DeepSeekClient;
+use Cyb\Diagnostics;
 use Cyb\Guard;
 use Cyb\NarrateService;
 use Cyb\PromptRenderer;
@@ -23,12 +47,23 @@ header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: same-origin');
 header("Content-Security-Policy: default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'");
 
-$db = App::db();
+if (!in_array('sqlite', \PDO::getAvailableDrivers(), true)) {
+    installError('El hosting no tiene la extensión pdo_sqlite de PHP.', 'Actívala en el panel del hosting (sección de extensiones de PHP) o pídeselo a soporte.');
+}
+try {
+    $db = App::db();
+} catch (\Throwable $e) {
+    installError(
+        'No se pudo crear o abrir la base de datos.',
+        'Dale permisos de escritura a la carpeta <code>cyb-api/data/</code> (775, o 777 si tu hosting lo exige) desde tu cliente FTP.'
+    );
+}
 $auth = new AdminAuth($db);
 $auth->startSession();
 
 $page = (string) ($_GET['p'] ?? 'dashboard');
 $isPost = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+$needsSetup = $auth->adminCount() === 0;
 
 /** Redirigir con un mensaje flash */
 function redirect(string $page, array $query = [], string $flash = ''): void
@@ -47,6 +82,47 @@ function takeFlash(): string
     return $flash;
 }
 
+// --- Primer usuario (instalación por FTP, sin consola) ---
+if ($needsSetup && $page !== 'setup') {
+    redirect('setup');
+}
+if ($page === 'setup') {
+    if (!$needsSetup) {
+        redirect('login');
+    }
+    $token = (string) App::config('admin.setup_token', '');
+    $tokenReady = strlen($token) >= 16;
+    $error = '';
+    if ($isPost && $tokenReady) {
+        $username = trim((string) ($_POST['username'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        if (!$auth->checkCsrf($_POST['csrf'] ?? null)) {
+            $error = 'La sesión expiró. Intenta de nuevo.';
+        } elseif ($auth->isLocked()) {
+            $error = 'Demasiados intentos. Espera 15 minutos.';
+        } elseif (!hash_equals($token, (string) ($_POST['setup_token'] ?? ''))) {
+            $auth->recordFailure();
+            $error = 'El código de instalación no coincide con el de config.php.';
+        } elseif (!preg_match('/^[a-zA-Z0-9_.-]{3,40}$/', $username)) {
+            $error = 'El usuario debe tener entre 3 y 40 caracteres: letras, números, _ . -';
+        } elseif (strlen($password) < 12) {
+            $error = 'La contraseña debe tener al menos 12 caracteres.';
+        } elseif ($password !== (string) ($_POST['password2'] ?? '')) {
+            $error = 'Las contraseñas no coinciden.';
+        } else {
+            AdminAuth::createAdmin($db, $username, $password);
+            $auth->login($username, $password);
+            redirect('diagnostics', [], '¡Listo! Usuario creado. Revisa que todo esté en verde.');
+        }
+    }
+    View::render('setup', [
+        'error' => $error, 'csrf' => $auth->csrfToken(), 'user' => null,
+        'tokenReady' => $tokenReady, 'cookieWillFail' => AdminAuth::cookieWillFail(),
+        'username' => (string) ($_POST['username'] ?? ''),
+    ]);
+    exit;
+}
+
 // --- Login / logout ---
 if ($page === 'login') {
     $error = '';
@@ -61,7 +137,7 @@ if ($page === 'login') {
             $error = 'Usuario o contraseña incorrectos.';
         }
     }
-    View::render('login', ['error' => $error, 'csrf' => $auth->csrfToken(), 'user' => null]);
+    View::render('login', ['error' => $error, 'csrf' => $auth->csrfToken(), 'user' => null, 'cookieWillFail' => AdminAuth::cookieWillFail()]);
     exit;
 }
 
@@ -218,6 +294,24 @@ if ($page === 'chat') {
         redirect('chats', [], 'Conversación no encontrada.');
     }
     View::render('chat', $common + ['chat' => $chat]);
+    exit;
+}
+
+// --- Diagnóstico del servidor ---
+if ($page === 'diagnostics') {
+    $diag = new Diagnostics($db);
+    $aiTest = null;
+    if ($isPost && ($_POST['action'] ?? '') === 'test_ai') {
+        $aiTest = Diagnostics::testDeepSeek($settings);
+    }
+    $apiRoot = Diagnostics::apiRootUrl();
+    View::render('diagnostics', $common + [
+        'environment' => $diag->environment(),
+        'exposure' => $diag->exposure($apiRoot),
+        'apiRoot' => $apiRoot,
+        'aiTest' => $aiTest,
+        'tokenStillSet' => (string) App::config('admin.setup_token', '') !== '',
+    ]);
     exit;
 }
 

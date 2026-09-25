@@ -71,3 +71,5 @@ console.log(`\n✔ release/${name}.tar.gz`);
 console.log(`   cyb/     ${mb(size(join(OUT, 'cyb')))}`);
 console.log(`   cyb-api/ ${mb(size(join(OUT, 'cyb-api')))}`);
 console.log(`   Comprimido: ${mb(statSync(join(ROOT, 'release', `${name}.tar.gz`)).size)}\n`);
+console.log('Siguiente paso: crea cyb-api/config.php (con api_key, ip_salt y setup_token) y sube cyb/ y cyb-api/.');
+console.log('Guía paso a paso: DEPLOY.md, sección «Subir por FTP».\n');

@@ -9,6 +9,36 @@ El paquete trae dos carpetas que van en el mismo dominio:
 
 El juego busca la API en `/cyb-api/` del **mismo dominio**, así que no hace falta configurar CORS. Si usas otra ruta, cambia `ai.endpoint` en `public/games/calabosos/game.json` antes de generar el paquete.
 
+## Subir por FTP (sin consola) — la forma más simple
+
+Si tu hosting solo tiene FTP (lo típico con cPanel), sigue esto. No necesitas SSH.
+
+1. **Genera el paquete** en tu PC: `npm run package -- --sin-demos`. Queda en `release/calabosos-v1.0.0/`.
+2. **Crea `config.php`** en tu PC, dentro de `release/calabosos-v1.0.0/cyb-api/`: copia `config.example.php` como `config.php` y completa:
+   - `deepseek.api_key`: tu key de DeepSeek.
+   - `ip_salt`: un texto largo y aleatorio.
+   - `admin.setup_token`: **otro** texto largo y aleatorio (mínimo 16 caracteres). Lo vas a escribir una sola vez para crear tu usuario.
+   - `admin.secure_cookie`: `true` si tu sitio usa `https://` (recomendado); `false` si usa `http://`, o no podrás entrar al panel.
+   - `db_path` se deja como está.
+3. **Sube por FTP** (modo binario o automático) dentro de la carpeta pública del hosting (`public_html/` o `www/`):
+   - `release/calabosos-v1.0.0/cyb/` → `public_html/cyb/`
+   - `release/calabosos-v1.0.0/cyb-api/` → `public_html/cyb-api/` (**la carpeta entera**, con `config.php`)
+4. **Permisos:** en tu cliente FTP, dale permisos de escritura a `public_html/cyb-api/data/` (775; si el panel da error, 777).
+5. **Crea tu usuario:** abre `https://tudominio/cyb-api/admin/`. Aparece la pantalla de **Instalación**: escribe el `setup_token`, tu usuario y una contraseña de 12 caracteres o más. El formulario desaparece en cuanto existe un admin.
+6. **Revisa el Diagnóstico** (se abre solo después de crear el usuario). Todo debe estar en ✔. Lo más importante:
+   - **«La base de datos NO debe poder descargarse»** tiene que estar en ✔. Si sale ✘, tu hosting no aplica el `.htaccess` (pasa con Nginx): pide a soporte que bloquee `cyb-api/data/`, o mueve `cyb-api` fuera de `public_html` y publica solo `cyb-api/public` (opción A de abajo).
+   - `pdo_sqlite` y `curl` en ✔ (si faltan, se activan en el panel del hosting, sección de extensiones de PHP).
+   - Botón **Probar DeepSeek**: debe responder con una frase sarcástica.
+7. **Juega:** `https://tudominio/cyb/` → `run calabosos` → dentro del juego, `/ia` debe decir «Servidor de IA conectado».
+
+Si algo falta (sin `config.php`, sin `pdo_sqlite` o `data/` sin permisos), el panel muestra qué es y cómo arreglarlo, en lugar de una página en blanco.
+
+**Actualizar por FTP:** sube la carpeta `cyb/` nueva encima de la vieja. Del `cyb-api/` nuevo sube todo **menos** `config.php` y la carpeta `data/`, para no pisar tu configuración ni tu base de datos.
+
+---
+
+## Con acceso por consola (SSH)
+
 ## 1. Generar el paquete
 
 ```bash

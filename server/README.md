@@ -43,7 +43,7 @@ server/
    - Si el juego y la API están en el **mismo dominio**, deja `allowed_origins` vacío.
    - Pon `secure_cookie => true` si el admin va por HTTPS (recomendado).
 3. **Permisos:** el usuario de PHP debe poder escribir en `data/` (`chown www-data data` o similar).
-4. **Crea el usuario admin.** La contraseña se pide sin mostrarla y debe tener al menos 12 caracteres:
+4. **Crea el usuario admin.** Con consola, así (la contraseña se pide sin mostrarla y debe tener al menos 12 caracteres). **Sin consola (solo FTP):** pon un `setup_token` en `config.php` y entra a `/cyb-api/admin/`: aparece un formulario de instalación. Ver `docs/DEPLOY.md`, «Subir por FTP».
    ```bash
    php bin/create-admin.php tu_usuario
    ```
@@ -64,6 +64,7 @@ server/
 | **Conversaciones** | Transcripciones de los modos chat, con puntaje y resultado |
 | **Analítica** | Embudo por actos, dónde mueren y abandonan, finales, duración real, modos chat, dados y decisiones; borrado de eventos viejos |
 | **Registro** | Cada llamada a la IA: tokens, latencia y errores |
+| **Diagnóstico** | Extensiones de PHP, permisos, configuración, **si lo privado se puede descargar desde internet** y botón para probar DeepSeek (el equivalente web de `bin/selftest.php`) |
 
 ### Prompts
 

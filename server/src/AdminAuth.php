@@ -105,6 +105,32 @@ final class AdminAuth
         return is_string($token) && !empty($_SESSION['csrf']) && hash_equals((string) $_SESSION['csrf'], $token);
     }
 
+    public function adminCount(): int
+    {
+        return (int) $this->db->value('SELECT COUNT(*) FROM admins');
+    }
+
+    /** Registra un intento fallido (login o código de instalación) para el límite de intentos */
+    public function recordFailure(): void
+    {
+        $this->db->run('INSERT INTO login_attempts (ip_hash, attempted_at) VALUES (?, ?)', [App::ipHash(), time()]);
+    }
+
+    /** ¿La petición llegó por HTTPS? (incluye proxies que avisan con X-Forwarded-Proto) */
+    public static function isHttps(): bool
+    {
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            return true;
+        }
+        return strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
+    }
+
+    /** La cookie segura no se guarda en http://: el login fallaría en silencio */
+    public static function cookieWillFail(): bool
+    {
+        return (bool) App::config('admin.secure_cookie', true) && !self::isHttps();
+    }
+
     public static function createAdmin(Db $db, string $username, string $password): void
     {
         $db->run(
