@@ -104,3 +104,13 @@ En Calabosos: amuletos y la camiseta del Abismo.
 Un objeto de combate con `"cost": { "dinero": 10 }` no pide tener un objeto: se ofrece si alcanzan las stats y al
 usarlo las cobra. En Calabosos: lanzar monedas (10), barrera de cobre (15, las Gemelas no se dividen) y darle de
 comer monedas al Rey (30).
+
+## Lanzar cualquier objeto
+
+En combate, «🗑️ Lanzar un objeto…» despliega todo lo que llevas y se puede lanzar como arma (gasta una unidad).
+Quedan fuera las armas del combate, los `combatItems` (tienen su propio botón) y los objetos con `"keep": true`.
+Cada objeto puede definir su golpe en `game.json → items`: `"throw": { "damage": 6, "text": "..." }` (por defecto,
+4 de daño y un texto genérico). Fuera de combate, `/tirar IN3` descarta una unidad (tampoco deja tirar lo `keep`).
+
+`keep` es para lo que hace falta para avanzar (la llave y la lámpara del prólogo, la mochila, el bolso de las
+monedas...). El validador avisa si un objeto que pide un paso `use_item` no está marcado como `keep`.

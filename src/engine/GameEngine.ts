@@ -67,6 +67,9 @@ const FREE_TEXT_LABEL = '✍️ Hacer otra cosa…';
 const FREE_TEXT_PROMPT = '¿Qué haces? Escríbelo con tus palabras.';
 const FREE_TEXT_USES = 2;
 
+/** Daño por defecto al lanzar un objeto cualquiera en combate */
+const DEFAULT_THROW_DAMAGE = 4;
+
 /** Charla libre: valores por defecto */
 const TALK_PER_SCENE = 3;
 const TALK_MAX_USES = 40;
@@ -1474,6 +1477,14 @@ export class GameEngine {
       ci.cost
         ? Object.entries(ci.cost).every(([k, v]) => typeof this._state.stats[k] === 'number' && (this._state.stats[k] as number) >= v)
         : this._state.inventory.includes(ci.itemId);
+    /** Cualquier objeto se puede lanzar, salvo los que se guardan (keep), las armas y los que ya son objetos de combate */
+    const special = new Set([...(step.combatItems ?? []).map((ci) => ci.itemId), ...(step.weapons ?? []).map((w) => w.itemId)]);
+    const canThrow = (id: string) => this._state.inventory.includes(id) && !special.has(id) && !this.manifest.items?.[id]?.keep;
+    const throwDef = (id: string): CombatItemDef => {
+      const def = this.manifest.items?.[id];
+      const name = def?.name ?? id;
+      return { itemId: id, name, damage: def?.throw?.damage ?? DEFAULT_THROW_DAMAGE, text: def?.throw?.text ?? `Le lanzas ${name}. Rebota en la baba. Algo es algo.` };
+    };
     /** Protección de los objetos que lleva encima (items[id].armor, cada objeto cuenta una vez) */
     const armor = () =>
       [...new Set(this._state.inventory)].reduce((sum, id) => sum + (this.manifest.items?.[id]?.armor ?? 0), 0);
@@ -1544,6 +1555,9 @@ export class GameEngine {
       const usableItems = (step.combatItems || [])
         .filter((ci) => canUseCombatItem(ci))
         .map((ci) => ({ itemId: ci.itemId, name: ci.name }));
+      const throwables = [...new Set(this._state.inventory)]
+        .filter(canThrow)
+        .map((id) => ({ itemId: `throw:${id}`, name: this.manifest.items?.[id]?.name ?? id }));
 
       // Prompt player action
       yield {
@@ -1557,6 +1571,7 @@ export class GameEngine {
         round,
         music: this.combatMusic(step),
         usableItems: usableItems.length > 0 ? usableItems : undefined,
+        throwables: throwables.length > 0 ? throwables : undefined,
       };
 
       const action = await this.waitForAction();
@@ -1582,9 +1597,13 @@ export class GameEngine {
 
       if (action.action.startsWith('use_item:')) {
         const itemId = action.action.slice(9);
-        const combatItem = (step.combatItems || []).find((ci) => ci.itemId === itemId);
+        // "throw:<id>": lanzar un objeto cualquiera del inventario
+        const thrownId = itemId.startsWith('throw:') ? itemId.slice(6) : null;
+        const combatItem = thrownId
+          ? canThrow(thrownId) ? throwDef(thrownId) : undefined
+          : (step.combatItems || []).find((ci) => ci.itemId === itemId);
 
-        if (combatItem && canUseCombatItem(combatItem)) {
+        if (combatItem && (thrownId || canUseCombatItem(combatItem))) {
           // Acciones que se pagan con stats (monedas): se cobran y no gastan objeto
           if (combatItem.cost) {
             this.applyState({ stats: Object.fromEntries(Object.entries(combatItem.cost).map(([k, v]) => [k, -v])) });
@@ -1595,7 +1614,8 @@ export class GameEngine {
             if (enemyHp <= 0) killedByItem = combatItem;
           }
           if (combatItem.heal) this.applyState({ stats: { [step.playerStat]: combatItem.heal } });
-          if (!combatItem.cost && combatItem.consume !== false) this.applyState({ removeInventory: [itemId] });
+          if (thrownId) this.removeOne(thrownId);
+          else if (!combatItem.cost && combatItem.consume !== false) this.applyState({ removeInventory: [itemId] });
           if (combatItem.effects) this.applyState(combatItem.effects);
           if (combatItem.reveal) revealed = true;
           parts.push(this.text(combatItem.text));
@@ -2157,6 +2177,23 @@ export class GameEngine {
     const items = [...counts].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name)).join(', ') || 'nada';
     const money = ['dinero', 'gold', 'money', 'coins', 'oro'].find((k) => typeof this._state.stats[k] === 'number');
     return money ? `${items}. Monedas: ${this._state.stats[money]}` : items;
+  }
+
+  /** Quita una sola unidad de un objeto (removeInventory quitaría todas las copias) */
+  private removeOne(id: string): void {
+    const inventory = [...this._state.inventory];
+    const i = inventory.indexOf(id);
+    if (i < 0) return;
+    inventory.splice(i, 1);
+    this._state = { ...this._state, inventory };
+  }
+
+  /** /tirar: deshacerse de una unidad de un objeto fuera de combate. No se pueden tirar los que se guardan (keep) */
+  discardItem(id: string): 'ok' | 'keep' | 'missing' {
+    if (!this._state.inventory.includes(id)) return 'missing';
+    if (this.manifest.items?.[id]?.keep) return 'keep';
+    this.removeOne(id);
+    return 'ok';
   }
 
   /** Cómo se llama el protagonista en los textos (stat nombre_jugador; "Alex" si todavía no hay) */

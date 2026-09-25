@@ -3459,11 +3459,14 @@
               }
             },
             "failure": {
-              "text": "Las monedas se doblan como tu dignidad. Pierdes cinco. El cofre sigue cerrado, burlándose en silencio.",
+              "text": "Las monedas se doblan como tu dignidad. El cofre sigue cerrado. Te guardas las cinco monedas dobladas: basura, pero tuya.",
               "effects": {
                 "stats": {
                   "dinero": -5
-                }
+                },
+                "inventory": [
+                  "monedas_dobladas"
+                ]
               }
             }
           }

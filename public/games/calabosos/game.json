@@ -845,27 +845,38 @@
     "mochila": {
       "name": "Mochila raída",
       "description": "Tiene un agujero del tamaño de tus sueños.",
-      "image": "images/items/mochila.png"
+      "image": "images/items/mochila.png",
+      "keep": true
     },
     "lampara": {
       "name": "Lámpara de aceite",
       "description": "Ilumina lo justo para ver lo que preferirías no ver.",
-      "image": "images/items/lampara.png"
+      "image": "images/items/lampara.png",
+      "keep": true
     },
     "llave_oxidada": {
       "name": "Llave oxidada",
       "description": "Estaba debajo de la cama. No preguntes por qué.",
-      "image": "images/items/llave_oxidada.png"
+      "image": "images/items/llave_oxidada.png",
+      "keep": true
     },
     "carta_misteriosa": {
       "name": "Carta misteriosa",
       "description": "Convocatoria para morir en el Abismo. Firmada por el Narrador.",
-      "image": "images/items/carta_misteriosa.png"
+      "image": "images/items/carta_misteriosa.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas la carta. Planea con elegancia y cae al suelo. Burocracia contra babosas: cero a uno."
+      }
     },
     "relicario": {
       "name": "Relicario familiar",
       "description": "De tu abuela, la que venció a un dragón con una cuchara. Trasfondo inventado hace cinco minutos.",
-      "image": "images/items/relicario_familiar.png"
+      "image": "images/items/relicario_familiar.png",
+      "throw": {
+        "damage": 3,
+        "text": "Le lanzas el relicario de tu abuela. Desde el más allá se oye un «¿EN SERIO?»."
+      }
     },
     "baba_caballo": {
       "name": "Baba de caballo",
@@ -875,7 +886,11 @@
     "silbato_caballos": {
       "name": "Silbato para caballos",
       "description": "Los caballos mutantes te obedecen. A veces. Incluso desde muy lejos.",
-      "image": "images/items/silbato_caballos.png"
+      "image": "images/items/silbato_caballos.png",
+      "throw": {
+        "damage": 2,
+        "text": "Le lanzas el silbato. A lo lejos, un caballo mutante se pregunta por qué ya nadie lo llama."
+      }
     },
     "bolsa_misteriosa": {
       "name": "Bolsa misteriosa",
@@ -886,23 +901,39 @@
       "name": "Amuleto equino",
       "description": "Salió del estómago de un caballo. Huele a caballo, y las babosas le pegan más flojo a lo que huele a caballo.",
       "image": "images/items/amuleto_equino.png",
-      "armor": 1
+      "armor": 1,
+      "throw": {
+        "damage": 4,
+        "text": "Le lanzas el amuleto equino. Huele a caballo. La babosa, ofendida, retrocede."
+      }
     },
     "mapa_sospechoso": {
       "name": "Mapa sospechoso del Abismo",
       "description": "Sacado de un cadáver. Todavía está tibio. Seguro lleva a algún lado. El cadáver también lo creía.",
-      "image": "images/items/mapa_sospechoso.png"
+      "image": "images/items/mapa_sospechoso.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas el mapa del cadáver. Por fin lleva a alguien a algún lado."
+      }
     },
     "amuleto_proteccion": {
       "name": "Amuleto de protección menor",
       "description": "Nadie lo quiso comprar, pero en combate amortigua los golpes. Un poco.",
       "image": "images/items/amuleto_proteccion.png",
-      "armor": 2
+      "armor": 2,
+      "throw": {
+        "damage": 4,
+        "text": "Le lanzas el amuleto de protección. Te protegía a ti. Ya no."
+      }
     },
     "mapa_detallado": {
       "name": "Mapa detallado del Abismo",
       "description": "Un mapa de verdad. Marca una grieta sin guardias para entrar al Abismo. Qué raro.",
-      "image": "images/items/mapa_detallado.png"
+      "image": "images/items/mapa_detallado.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas un mapa. Se pierde. Irónico."
+      }
     },
     "daga_ceremonial": {
       "name": "Daga ceremonial",
@@ -913,22 +944,35 @@
       "name": "Amuleto extraño",
       "description": "Útil o basura brillante. En combate, sorprendentemente útil: amortigua un poco los golpes.",
       "image": "images/items/amuleto_extrano.png",
-      "armor": 1
+      "armor": 1,
+      "throw": {
+        "damage": 4,
+        "text": "Le lanzas el amuleto extraño. Brilla, zumba y rebota. Seguimos sin saber qué era."
+      }
     },
     "llave_misteriosa": {
       "name": "Llave misteriosa",
       "description": "Robada a un noble. Abre algo. Algún día.",
-      "image": "images/items/llave_misteriosa.png"
+      "image": "images/items/llave_misteriosa.png",
+      "throw": {
+        "damage": 3,
+        "text": "Le lanzas la llave misteriosa. Abre algo: la herida de la babosa. Poco."
+      }
     },
     "mapa_parcial": {
       "name": "Mapa parcial del Abismo",
       "description": "Le falta la mitad. La que tiene muestra un atajo por unas cavernas del Abismo.",
-      "image": "images/items/mapa_parcial.png"
+      "image": "images/items/mapa_parcial.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas medio mapa. Llega medio golpe."
+      }
     },
     "escroto_elefante": {
       "name": "Bolso de escroto de elefante",
       "description": "Tratado en sal para reducir su tamaño, pero no su capacidad. Guarda todas tus monedas.",
-      "image": "images/items/zurron_espacioso.png"
+      "image": "images/items/zurron_espacioso.png",
+      "keep": true
     },
     "espada_oxidada": {
       "name": "Espada oxidada",
@@ -948,17 +992,29 @@
     "panal": {
       "name": "Pañal de aventurero",
       "description": "Para cuando el miedo gane. Porque va a ganar.",
-      "image": "images/items/panal.png"
+      "image": "images/items/panal.png",
+      "throw": {
+        "damage": 4,
+        "text": "Le lanzas un pañal. Limpio, por suerte. La babosa no lo sabe y retrocede asqueada."
+      }
     },
     "boton_luminiscente": {
       "name": "Botón luminiscente",
       "description": "Brilla en la oscuridad. Casi útil.",
-      "image": "images/items/boton_luminiscente.png"
+      "image": "images/items/boton_luminiscente.png",
+      "throw": {
+        "damage": 2,
+        "text": "Le lanzas el botón luminiscente. Brilla en la oscuridad mientras rebota. Precioso. Inútil."
+      }
     },
     "huevo_runico": {
       "name": "Huevo rúnico",
       "description": "Zumba. Tiene runas. «Aparecerá cuando más lo necesites», dijo el Mago.",
-      "image": "images/items/huevo_runico.png"
+      "image": "images/items/huevo_runico.png",
+      "throw": {
+        "damage": 8,
+        "text": "Le lanzas el huevo rúnico. Estalla en chispas de runas. Nunca sabrás qué había dentro. Ni el Mago."
+      }
     },
     "cristal_vision": {
       "name": "Cristal de visión",
@@ -968,7 +1024,8 @@
     "permiso_salida": {
       "name": "Permiso de Salida Suicida",
       "description": "Legal... más o menos. Firmado con crayón.",
-      "image": "images/items/permiso_salida.png"
+      "image": "images/items/permiso_salida.png",
+      "keep": true
     },
     "bate_beisbol": {
       "name": "Bate de béisbol",
@@ -979,7 +1036,11 @@
       "name": "Camiseta «Sobreviví (casi) al Abismo»",
       "description": "De la tienda de regalos del Abismo. Protege un poco en combate. Casi.",
       "image": "images/items/camiseta_sobrevivi.png",
-      "armor": 1
+      "armor": 1,
+      "throw": {
+        "damage": 1,
+        "text": "Le tiras la camiseta. Queda colgando de una antena: «Sobreviví (casi)». Qué ironía."
+      }
     },
     "corazon_cristalino": {
       "name": "Corazón de Babosa Cristalina",
@@ -999,7 +1060,8 @@
     "huevo_babosa": {
       "name": "Huevo dorado de babosa",
       "description": "Un huevo de la línea real. Late contra tu espalda. Esto no puede salir mal.",
-      "image": "images/items/huevo_babosa.png"
+      "image": "images/items/huevo_babosa.png",
+      "keep": true
     },
     "pocion_ian": {
       "name": "Poción sospechosa de Ian",
@@ -1009,7 +1071,11 @@
     "mapa_dudoso": {
       "name": "Mapa dudoso de Ian",
       "description": "«Dibujado por él.» Seguro lleva a una trampa.",
-      "image": "images/items/mapa_dudoso.png"
+      "image": "images/items/mapa_dudoso.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas el mapa de Ian. Es la primera vez que ese mapa hace algo útil."
+      }
     },
     "antidoto_real": {
       "name": "Antídoto real",
@@ -1054,7 +1120,11 @@
     "cuchara_abuela": {
       "name": "Cuchara de madera de la abuela",
       "description": "Con esta tu abuela mató a un dragón (según ella). Es de madera: el ácido no se la come.",
-      "image": "images/items/cuchara_abuela.png"
+      "image": "images/items/cuchara_abuela.png",
+      "throw": {
+        "damage": 7,
+        "text": "Le lanzas la cuchara de la abuela. Por un segundo ves a un dragón huir con el rabo entre las piernas."
+      }
     },
     "cobre_verde": {
       "name": "Cobre verde",
@@ -1065,7 +1135,11 @@
       "name": "Paraguas anti-baba",
       "description": "De la tienda de regalos del Abismo. Protege de la baba que cae del techo. Y un poco de los golpes.",
       "image": "images/items/paraguas_baba.png",
-      "armor": 2
+      "armor": 2,
+      "throw": {
+        "damage": 5,
+        "text": "Le lanzas el paraguas anti-baba. Se abre en el aire. Es lo más elegante que ha pasado en este combate."
+      }
     },
     "casco_linterna": {
       "name": "Casco con linterna",
@@ -1075,17 +1149,34 @@
     "llavero_babosa": {
       "name": "Llavero de babosa",
       "description": "Una babosa de goma azul. Nerly jura que no se parece a ella. Se parece.",
-      "image": "images/items/llavero_babosa.png"
+      "image": "images/items/llavero_babosa.png",
+      "throw": {
+        "damage": 2,
+        "text": "Le lanzas el llavero de babosa azul. Nerly aplaude en silencio. Muy en silencio."
+      }
     },
     "postal_abismo": {
       "name": "Postal «Te extraño desde el Abismo»",
       "description": "Una postal con una babosa guiñando un ojo. ¿A quién se la vas a mandar?",
-      "image": "images/items/postal_abismo.png"
+      "image": "images/items/postal_abismo.png",
+      "throw": {
+        "damage": 1,
+        "text": "Le lanzas la postal. Llega tarde, como todas las postales."
+      }
     },
     "tonico_plateado": {
       "name": "Tónico de baba plateada",
       "description": "De la tienda de regalos. Sabe a metal y a esperanza. Cura bastante.",
       "image": "images/items/tonico_plateado.png"
+    },
+    "monedas_dobladas": {
+      "name": "Monedas dobladas",
+      "description": "Cinco monedas dobladas haciendo palanca. Basura. Pero es tu basura. Lanzadas, silban como shurikens.",
+      "image": "images/items/monedas_dobladas.png",
+      "throw": {
+        "damage": 6,
+        "text": "Le lanzas las monedas dobladas. Silban en el aire como shurikens de pobre."
+      }
     }
   },
   "traits": {

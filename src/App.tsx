@@ -850,6 +850,7 @@ const App: React.FC = () => {
             actions={cp.actions}
             round={cp.round}
             usableItems={cp.usableItems}
+            throwables={cp.throwables}
             onAction={handleCombatAction}
           />
         );

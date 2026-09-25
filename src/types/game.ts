@@ -261,6 +261,10 @@ export interface ItemDef {
   image?: string;
   /** Protección pasiva en combate por llevarlo encima: resta este daño a cada golpe enemigo (mínimo 1) */
   armor?: number;
+  /** No se puede lanzar ni tirar (hace falta para avanzar: la llave del prólogo, la mochila...) */
+  keep?: boolean;
+  /** Al lanzarlo en combate (cualquier objeto se puede lanzar): daño (default 4) y texto */
+  throw?: { damage?: number; text?: string };
 }
 
 export type CharacterRole = 'narrator' | 'protagonist' | 'companion' | 'npc';

@@ -174,3 +174,47 @@ describe('acciones de combate que cuestan monedas (combatItems.cost)', () => {
     expect(prompts[1].usableItems).toBeUndefined();
   });
 });
+
+describe('lanzar objetos y tirarlos', () => {
+  const m = baseManifest({
+    statDefs: { vida: { label: 'Vida', min: 0, max: 100 } },
+    initialStats: { vida: 100, fuerza: 50 },
+    items: {
+      basura: { name: 'Monedas dobladas', description: '', throw: { damage: 6, text: 'shuriken' } },
+      piedra: { name: 'Piedra', description: '' },
+      llave: { name: 'Llave', description: '', keep: true },
+      sal: { name: 'Sal', description: '' },
+      espada: { name: 'Espada', description: '' },
+    },
+  });
+  const combat = {
+    start: { sequence: [{
+      type: 'combat' as const, enemy: { name: 'X', hp: 100, attack: 1, defense: 0 }, playerStat: 'vida', attackStat: 'fuerza',
+      actions: ['attack', 'defend', 'use_item'],
+      weapons: [{ itemId: 'espada', name: 'la espada', bonus: 4 }],
+      combatItems: [{ itemId: 'sal', name: 'Sal', text: 'sal', damage: 12 }],
+      results: { victory: { text: 'gana' }, defeat: { text: 'pierde' } },
+    }] },
+  };
+
+  it('se puede lanzar cualquier objeto salvo los que se guardan, las armas y los objetos de combate; gasta una unidad', async () => {
+    const engine = makeEngine(m, combat);
+    internals(engine)._state.inventory = ['basura', 'basura', 'piedra', 'llave', 'sal', 'espada'];
+    const out = await drive(engine, 'start', [{ type: 'combat_action', action: 'use_item:throw:basura' }]);
+    const prompt = out.find((r): r is Extract<StepResult, { type: 'combat_prompt' }> => r.type === 'combat_prompt')!;
+    expect(prompt.throwables).toEqual([{ itemId: 'throw:basura', name: 'Monedas dobladas' }, { itemId: 'throw:piedra', name: 'Piedra' }]);
+    const turn = out.find((r): r is Extract<StepResult, { type: 'combat_turn' }> => r.type === 'combat_turn')!;
+    expect(turn.text).toContain('shuriken');
+    expect(turn.playerDamage).toBe(6);
+    expect(engine.state.inventory.filter((i) => i === 'basura')).toHaveLength(1);
+  });
+
+  it('/tirar quita una unidad, pero no lo que se guarda', () => {
+    const engine = makeEngine(m, combat);
+    internals(engine)._state.inventory = ['piedra', 'piedra', 'llave'];
+    expect(engine.discardItem('piedra')).toBe('ok');
+    expect(engine.discardItem('llave')).toBe('keep');
+    expect(engine.discardItem('nada')).toBe('missing');
+    expect(engine.state.inventory).toEqual(['piedra', 'llave']);
+  });
+});

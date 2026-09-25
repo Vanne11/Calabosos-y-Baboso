@@ -1,7 +1,7 @@
 // components/game/CombatWidget.tsx
 // Interfaz de combate por turnos
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -76,6 +76,12 @@ const ItemButton = styled(ActionButton)`
   }
 `;
 
+const ThrowButton = styled(ActionButton)`
+  color: ${(props) => props.theme.terminal.warning};
+  border-color: ${(props) => props.theme.terminal.warning}80;
+  border-style: dashed;
+`;
+
 interface CombatWidgetProps {
   enemyName: string;
   enemyHp: number;
@@ -84,6 +90,8 @@ interface CombatWidgetProps {
   actions: string[];
   round: number;
   usableItems?: { itemId: string; name: string }[];
+  /** Objetos que se pueden lanzar como arma (van en un desplegable para no llenar la pantalla) */
+  throwables?: { itemId: string; name: string }[];
   onAction: (action: string) => void;
 }
 
@@ -102,8 +110,10 @@ const CombatWidget: React.FC<CombatWidgetProps> = ({
   actions,
   round,
   usableItems,
+  throwables,
   onAction,
 }) => {
+  const [showThrow, setShowThrow] = useState(false);
   return (
     <Container>
       <Header>⚔️ {enemyName}</Header>
@@ -129,6 +139,17 @@ const CombatWidget: React.FC<CombatWidgetProps> = ({
         <ItemButton key={item.itemId} onClick={() => onAction(`use_item:${item.itemId}`)}>
           🎒 Usar: {item.name}
         </ItemButton>
+      ))}
+
+      {throwables && throwables.length > 0 && (
+        <ThrowButton onClick={() => setShowThrow(!showThrow)}>
+          🗑️ {showThrow ? 'Ocultar objetos' : 'Lanzar un objeto…'}
+        </ThrowButton>
+      )}
+      {showThrow && throwables?.map((item) => (
+        <ThrowButton key={item.itemId} onClick={() => { setShowThrow(false); onAction(`use_item:${item.itemId}`); }}>
+          🗑️ Lanzar: {item.name}
+        </ThrowButton>
       ))}
     </Container>
   );

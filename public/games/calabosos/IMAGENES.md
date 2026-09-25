@@ -220,6 +220,7 @@ Retratos de babosa, 256×256, pixel art 16 bits, fondo oscuro de caverna. Cada u
 
 | Archivo | Objeto | Descripción para el prompt |
 |---|---|---|
+| `monedas_dobladas.png` | Monedas dobladas | Cinco monedas de cobre dobladas y retorcidas, una encima de otra, con marcas de palanca |
 | `cobre_verde.png` | Cobre verde | Frasco de vidrio con una pasta verde brillante y monedas de cobre medio disueltas flotando; humo verdoso |
 | `paraguas_baba.png` | Paraguas anti-baba | Paraguas cerrado de tela amarilla chillona con gotas de baba resbalando; mango de madera |
 | `casco_linterna.png` | Casco con linterna | Casco de minero abollado con una linterna encendida al frente, rayo de luz amarillo |

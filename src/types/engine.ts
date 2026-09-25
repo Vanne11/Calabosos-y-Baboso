@@ -291,6 +291,8 @@ export interface CombatPrompt {
   music?: string;
   /** Items del inventario que se pueden usar en este combate */
   usableItems?: { itemId: string; name: string }[];
+  /** Objetos del inventario que se pueden lanzar como arma (acción "use_item:throw:<id>") */
+  throwables?: { itemId: string; name: string }[];
 }
 
 export interface CombatTurnResult {

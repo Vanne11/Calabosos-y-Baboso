@@ -60,6 +60,7 @@ export function useTerminalCommands() {
 [yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
 [yellow][bold]/narrador[/bold][/yellow] [dim]<texto>[/dim] - Háblale al narrador cuando quieras (con IA).
 [dim]O escribe sin "/" y te contesta quien esté: el personaje de enfrente, Nerly o el narrador. Empieza con un nombre para elegir ("Nerly, ¿tienes miedo?"). No avanza la historia.[/dim]
+[yellow][bold]/tirar[/bold][/yellow] [dim]IN3[/dim] - Tira un objeto que no quieres (basura, monedas dobladas...). Lo importante no se deja.
 [yellow][bold]/bien[/bold][/yellow] o [yellow][bold]/mal[/bold][/yellow] - Califica la última línea del narrador con IA. Le importa. Mucho. No se lo digas.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
 
@@ -171,6 +172,29 @@ export function useTerminalCommands() {
     ]);
     const tone = toneSfx(res.tone ?? undefined, engine.audioConfig?.toneSfx);
     if (tone) setTimeout(() => sfx.play(tone), 450);
+    state.setPlayerState(engine.state);
+  };
+
+  /** /tirar IN3: tirar una unidad de un objeto (IN[n] como en el panel de inventario) */
+  const discardItem = (arg: string) => {
+    const state = useAppStore.getState();
+    const engine = state.engine;
+    if (!engine) return;
+    const stacked = [...new Set(engine.state.inventory)];
+    const m = arg.toLowerCase().match(/^in(\d+)$/);
+    const id = m ? stacked[parseInt(m[1]) - 1] : undefined;
+    if (!id) {
+      addEntry({ type: 'system', content: '[dim]Uso: /tirar IN3 (el número del objeto en tu inventario).[/dim]' });
+      return;
+    }
+    const name = engine.items?.[id]?.name ?? id;
+    const res = engine.discardItem(id);
+    if (res === 'keep') {
+      addEntry({ type: 'system', content: `[yellow]No vas a tirar ${name}.[/yellow] [dim]Lo necesitas. Confía en mí, soy el narrador.[/dim]` });
+      return;
+    }
+    addEntry({ type: 'system', content: `[dim]Tiras ${name} por ahí. Alguien lo encontrará. Probablemente una babosa.[/dim]` });
+    sfx.play('desinfle');
     state.setPlayerState(engine.state);
   };
 
@@ -382,6 +406,9 @@ ${lines.join('\n')}
       case 'narrador':
       case 'hablar':
         void talk(args.join(' '), { to: 'narrator', echo: true });
+        return true;
+      case 'tirar':
+        discardItem(args[0] ?? '');
         return true;
       case 'bien':
         void rateAiLine(1);

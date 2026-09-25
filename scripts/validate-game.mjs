@@ -237,6 +237,12 @@ function validateGame(gameName) {
 
     // Acción libre y reacciones del narrador
     for (const [i, step] of seq.entries()) {
+      // Lo que se pide para usar en un paso use_item hace falta para avanzar: no se debe poder tirar
+      if (step?.type === 'use_item') {
+        for (const target of step.targets ?? []) for (const acc of target.accepts ?? []) {
+          if (items?.[acc.itemId] && !items[acc.itemId].keep) warnings.push(`${where(id)} paso ${i + 1} (use_item): "${acc.itemId}" hace falta aquí; márcalo con "keep": true para que no se pueda tirar`);
+        }
+      }
       if (step?.type === 'shop' && step.npc && !characters[step.npc]) errors.push(`${where(id)} paso ${i + 1} (shop): npc "${step.npc}" no definido`);
       if (step?.type !== 'choice') continue;
       const ctx = `${where(id)} paso ${i + 1} (choice)`;

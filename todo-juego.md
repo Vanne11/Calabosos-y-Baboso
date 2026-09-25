@@ -51,6 +51,10 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 - [x] **Misión secundaria: tienda de regalos del Abismo** (caja de honestidad, se puede robar): paraguas anti-baba
       (protección), casco con linterna (revela fantasmas), tónico, cobre verde, llavero y postal.
 - [x] **Finales** según el dinero (compras la taberna / no te alcanza ni para una cerveza), la postal y el soborno.
+- [x] **Monedas dobladas**: si la palanca falla, quedan como objeto (basura) que se puede lanzar.
+- [x] **Lanzar cualquier objeto** en combate («🗑️ Lanzar un objeto…», con textos propios) y `/tirar IN3` fuera de
+      combate. No se pueden tirar los que hacen falta (`keep`): llave y lámpara del prólogo, mochila, bolso,
+      permiso de salida, huevo real.
 - [ ] Revisar jugando si ahora falta dinero en algún tramo (el Acto I da mucho; el III y el IV ahora cobran).
 
 ## 4. Probar con DeepSeek real (en el hosting)
