@@ -8,11 +8,11 @@ El juego puede usar un servidor de IA propio ([`server/`](../server/README.md), 
 
 ```jsonc
 // game.json
-"ai": { "endpoint": "/cyb-api/" }   // URL base del servidor (default "/cyb-api/", mismo dominio)
+"ai": {}                            // activa la IA; endpoint opcional (default: la carpeta api/ del juego, "/cyb/api/")
 ```
 
-- En producción el juego vive en `/cyb/` y la API en `/cyb-api/` del mismo dominio.
-- En desarrollo, Vite hace de proxy: `/cyb-api` → `http://127.0.0.1:8099` (cambiable con `CYB_API_TARGET`). Levantar la API con `php -S 127.0.0.1:8099 -t server/public` (con `'mock' => true` en `server/config.php` no gasta tokens).
+- En producción la API vive **dentro** del juego: `/cyb/` es el juego y `/cyb/api/` el servidor PHP (ver [DEPLOY.md](DEPLOY.md)).
+- En desarrollo, Vite hace de proxy: `/cyb/api` → `http://127.0.0.1:8099` (cambiable con `CYB_API_TARGET`). Levantar la API con `php -S 127.0.0.1:8099 -t server/public` (con `'mock' => true` en `server/config.php` no gasta tokens).
 
 ## Arquitectura
 

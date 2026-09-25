@@ -24,7 +24,7 @@ try {
 } catch (\Throwable $e) {
     installError(
         'No se encontró config.php (o tiene un error).',
-        'Copia <code>config.example.php</code> como <code>config.php</code> en la carpeta <code>cyb-api/</code>, complétalo y vuelve a subirlo.'
+        'Copia <code>config.example.php</code> como <code>config.php</code> en la carpeta <code>cyb/api/</code>, complétalo y vuelve a subirlo.'
     );
 }
 
@@ -55,7 +55,7 @@ try {
 } catch (\Throwable $e) {
     installError(
         'No se pudo crear o abrir la base de datos.',
-        'Dale permisos de escritura a la carpeta <code>cyb-api/data/</code> (775, o 777 si tu hosting lo exige) desde tu cliente FTP.'
+        'Dale permisos de escritura a la carpeta <code>cyb/api/data/</code> (775, o 777 si tu hosting lo exige) desde tu cliente FTP.'
     );
 }
 $auth = new AdminAuth($db);

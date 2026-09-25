@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // scripts/package-release.mjs
-// Genera un paquete listo para subir al servidor:
-//   release/calabosos-v<versión>.tar.gz
-//   ├── cyb/        juego compilado (va en https://tudominio/cyb/)
-//   ├── cyb-api/    servidor PHP (va en https://tudominio/cyb-api/), sin config.php ni base de datos
-//   └── DEPLOY.md   guía de instalación
+// Genera un paquete listo para subir al servidor (una sola carpeta):
+//   release/calabosos-v<versión>/
+//   ├── cyb/           el juego compilado → https://tudominio/cyb/
+//   │   └── api/       el servidor de IA en PHP → https://tudominio/cyb/api/ (sin config.php ni base de datos)
+//   └── DEPLOY.md      guía de instalación
+// Actualizar = subir cyb/ ENCIMA de la anterior: nunca trae config.php ni data/, así que no pisa nada.
 //
 // Uso:
 //   npm run package                 → juego completo + demos del motor (demo, demo2)
@@ -42,8 +43,16 @@ if (withoutDemos) {
   console.log('\n(sin demos: solo se publica calabosos)');
 }
 
-// 3. Servidor PHP sin configuración ni datos
-cpSync(join(ROOT, 'server'), join(OUT, 'cyb-api'), {
+// 3. Servidor PHP dentro del juego (cyb/api/), sin configuración ni datos
+const API = join(OUT, 'cyb', 'api');
+if (existsSync(API)) {
+  // public/api/games.php es un listador viejo que el juego ya no usa (lee games/index.json): se descarta
+  const extra = readdirSync(API).filter((f) => f !== 'games.php');
+  if (extra.length) throw new Error(`El build del juego trae public/api/ con ${extra.join(', ')}: chocaría con la carpeta de la IA`);
+  rmSync(API, { recursive: true, force: true });
+  console.log('\n(se descartó public/api/games.php: listador viejo que el juego ya no usa)');
+}
+cpSync(join(ROOT, 'server'), API, {
   recursive: true,
   filter: (src) => {
     const rel = relative(join(ROOT, 'server'), src);
@@ -66,10 +75,9 @@ const size = (p) => {
   return total;
 };
 const mb = (b) => `${(b / 1048576).toFixed(1)} MB`;
-if (existsSync(join(OUT, 'cyb-api', 'config.php'))) throw new Error('config.php no debería estar en el paquete');
+if (existsSync(join(API, 'config.php'))) throw new Error('config.php no debería estar en el paquete');
 console.log(`\n✔ release/${name}.tar.gz`);
-console.log(`   cyb/     ${mb(size(join(OUT, 'cyb')))}`);
-console.log(`   cyb-api/ ${mb(size(join(OUT, 'cyb-api')))}`);
+console.log(`   cyb/     ${mb(size(join(OUT, 'cyb')))} (incluye cyb/api/: ${mb(size(API))})`);
 console.log(`   Comprimido: ${mb(statSync(join(ROOT, 'release', `${name}.tar.gz`)).size)}\n`);
-console.log('Siguiente paso: crea cyb-api/config.php (con api_key, ip_salt y setup_token) y sube cyb/ y cyb-api/.');
+console.log('Siguiente paso: crea cyb/api/config.php (con api_key, ip_salt y setup_token) y sube la carpeta cyb/.');
 console.log('Guía paso a paso: DEPLOY.md, sección «Subir por FTP».\n');

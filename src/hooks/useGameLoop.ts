@@ -12,8 +12,8 @@ import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
 import { AiClient } from '../ai/AiClient';
 import { setAiClient } from '../ai/session';
 
-/** Servidor de IA por defecto: mismo origen que el juego */
-const DEFAULT_AI_ENDPOINT = '/cyb-api/';
+/** Servidor de IA por defecto: la carpeta api/ dentro del juego (/cyb/api/ con base /cyb/) */
+const DEFAULT_AI_ENDPOINT = `${import.meta.env.BASE_URL}api/`;
 import type { PlayerAction, StepResult } from '../types/engine';
 
 export function useGameLoop() {

@@ -9,7 +9,7 @@
     RewriteRule ^(config\.php|config\.example\.php|README\.md|\.gitignore)$ - [F,L]
     RewriteRule ^(src|data|bin)(/.*)?$ - [F,L]
 
-    # /cyb-api/api/... y /cyb-api/admin/... → public/
+    # /cyb/api/api/... y /cyb/api/admin/... → public/
     RewriteRule ^(api|admin)(/.*)?$ public/$1$2 [L]
 </IfModule>
 

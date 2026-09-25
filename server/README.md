@@ -26,33 +26,14 @@ server/
 
 ## Instalación en el servidor
 
-1. **Sube la carpeta `server/`.** Lo ideal es dejarla **fuera del webroot** y publicar solo `server/public/` en una ruta como `https://tudominio/cyb-api/`:
-   - Apache: `Alias /cyb-api /ruta/a/server/public`, o un enlace simbólico `ln -s /ruta/a/server/public /var/www/html/cyb-api`.
-   - Si solo puedes subir dentro del webroot, sube la carpeta completa. Con Apache, los `.htaccess` de la raíz, `src/`, `data/` y `bin/` bloquean lo privado. Con **Nginx**, agrega:
-     ```nginx
-     location ~ ^/cyb-api/(src|data|bin)/ { deny all; }
-     location ~ ^/cyb-api/(config|config\.example)\.php$ { deny all; }
-     location ~ \.sqlite { deny all; }
-     ```
-2. **Configura:**
-   ```bash
-   cd server
-   cp config.example.php config.php
-   nano config.php        # API key de DeepSeek, ip_salt aleatoria, allowed_origins
-   ```
-   - Si el juego y la API están en el **mismo dominio**, deja `allowed_origins` vacío.
-   - Pon `secure_cookie => true` si el admin va por HTTPS (recomendado).
-3. **Permisos:** el usuario de PHP debe poder escribir en `data/` (`chown www-data data` o similar).
-4. **Crea el usuario admin.** Con consola, así (la contraseña se pide sin mostrarla y debe tener al menos 12 caracteres). **Sin consola (solo FTP):** pon un `setup_token` en `config.php` y entra a `/cyb-api/admin/`: aparece un formulario de instalación. Ver `docs/DEPLOY.md`, «Subir por FTP».
-   ```bash
-   php bin/create-admin.php tu_usuario
-   ```
-5. **Corre el diagnóstico:**
-   ```bash
-   php bin/selftest.php          # extensiones, base de datos, prompts, permisos
-   php bin/selftest.php --live   # además hace una llamada real a DeepSeek
-   ```
-6. Entra a `https://tudominio/cyb-api/admin/`.
+En producción este servidor va **dentro del juego**, en `cyb/api/`: `npm run package` lo copia ahí (sin `config.php` ni base de datos) y queda en `https://tudominio/cyb/api/`, con el admin en `https://tudominio/cyb/api/admin/`.
+
+Guía paso a paso, por FTP o por consola: [`docs/DEPLOY.md`](../docs/DEPLOY.md). Resumen:
+
+1. Copia `config.example.php` como `config.php` y completa la API key, `ip_salt` y `setup_token`.
+2. Sube la carpeta `cyb/` y dale permisos de escritura a `cyb/api/data/`.
+3. Abre `/cyb/api/admin/`: la **instalación web** crea tu usuario (o por consola, `php bin/create-admin.php`).
+4. Revisa **Diagnóstico** (o por consola, `php bin/selftest.php --live`).
 
 ## Panel admin
 

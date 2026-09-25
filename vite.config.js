@@ -17,12 +17,12 @@ export default defineConfig({
     environment: 'node',
   },
   server: {
-    // En producción el juego (/cyb/) y la API (/cyb-api/) comparten dominio; en desarrollo lo imita este proxy
+    // En producción la API vive dentro del juego (/cyb/api/); en desarrollo la sirve PHP aparte y este proxy la une
     proxy: {
-      '/cyb-api': {
+      '/cyb/api': {
         target: AI_DEV_TARGET,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/cyb-api/, ''),
+        rewrite: (path) => path.replace(/^\/cyb\/api/, ''),
       },
     },
   },

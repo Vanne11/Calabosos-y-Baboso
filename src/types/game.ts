@@ -133,7 +133,7 @@ export interface AiChatStep {
 
 /** Configuración de IA del juego */
 export interface AiConfig {
-  /** URL base del servidor de IA (default: "/cyb-api/") */
+  /** URL base del servidor de IA (default: la carpeta api/ dentro del juego, ej. "/cyb/api/") */
   endpoint?: string;
 }
 

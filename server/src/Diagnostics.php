@@ -81,7 +81,7 @@ final class Diagnostics
             } elseif ($status === 403 || $status === 404) {
                 self::add($out, $label, 'ok', "$path → $status");
             } elseif ($critical) {
-                self::add($out, $label, 'fail', "¡$path responde $status! Cualquiera podría descargar tus conversaciones y ajustes. Tu hosting no aplica el .htaccess (¿Nginx?): mueve cyb-api fuera de la carpeta pública o bloquea data/ en la configuración del servidor.");
+                self::add($out, $label, 'fail', "¡$path responde $status! Cualquiera podría descargar tus conversaciones y ajustes. Tu hosting no aplica el .htaccess (¿Nginx?): pide a soporte que bloquee la carpeta cyb/api/data/ (o publica solo cyb/api/public con un Alias).");
             } else {
                 self::add($out, $label, 'warn', "$path responde $status. No expone datos (PHP lo ejecuta sin mostrar nada), pero indica que el .htaccess no se está aplicando.");
             }
@@ -118,8 +118,8 @@ final class Diagnostics
     }
 
     /**
-     * URL raíz de la API (…/cyb-api/) a partir de la petición actual al admin.
-     * Sirve tanto con Alias (…/cyb-api/admin/) como con la carpeta entera en el webroot.
+     * URL raíz de la API (…/cyb/api/) a partir de la petición actual al admin.
+     * Sirve tanto con Alias (…/cyb/api/admin/) como con la carpeta entera en el webroot.
      */
     public static function apiRootUrl(): string
     {

@@ -13,9 +13,7 @@
     ],
     "gateScene": "edad"
   },
-  "ai": {
-    "endpoint": "/cyb-api/"
-  },
+  "ai": {},
   "sceneFiles": [
     "scenes/00_edad.json",
     "scenes/01_prologo.json",

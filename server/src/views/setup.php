@@ -8,7 +8,7 @@
 
   <?php if (!$tokenReady): ?>
     <p class="error">Falta el código de instalación.</p>
-    <p class="small">En <code>cyb-api/config.php</code>, dentro de <code>'admin'</code>, pon un texto largo y aleatorio (mínimo 16 caracteres):</p>
+    <p class="small">En <code>cyb/api/config.php</code>, dentro de <code>'admin'</code>, pon un texto largo y aleatorio (mínimo 16 caracteres):</p>
     <pre>'setup_token' => 'algo-largo-y-aleatorio-que-solo-tu-sepas',</pre>
     <p class="small">Sube el archivo de nuevo por FTP y recarga esta página. El código evita que otra persona cree el admin antes que tú.</p>
   <?php else: ?>

@@ -20,7 +20,7 @@ final class Api
         } catch (ApiException $e) {
             Http::error($e->status, $e->errorCode, $e->getMessage());
         } catch (\Throwable $e) {
-            error_log('[cyb-api] ' . get_class($e) . ': ' . $e->getMessage());
+            error_log('[cyb/api] ' . get_class($e) . ': ' . $e->getMessage());
             Http::error(500, 'server_error', 'Error interno');
         }
     }

@@ -26,7 +26,7 @@ return [
         // true si el sitio usa HTTPS (recomendado). Si tu sitio es http://, pon false o no podrás iniciar sesión.
         'secure_cookie' => true,
         // Código para crear el primer usuario desde la web (instalación por FTP).
-        // Pon aquí un texto largo y aleatorio (mínimo 16 caracteres); se pide una sola vez en /cyb-api/admin/.
+        // Pon aquí un texto largo y aleatorio (mínimo 16 caracteres); se pide una sola vez en /cyb/api/admin/.
         // Cuando ya exista un admin, el formulario se desactiva solo (puedes borrar el código).
         'setup_token' => '',
     ],

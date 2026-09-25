@@ -71,7 +71,7 @@ final class Http
         try {
             $handler();
         } catch (\Throwable $e) {
-            error_log('[cyb-api] ' . get_class($e) . ': ' . $e->getMessage());
+            error_log('[cyb/api] ' . get_class($e) . ': ' . $e->getMessage());
             self::error(500, 'server_error', 'Error interno');
         }
     }
