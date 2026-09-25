@@ -47,6 +47,7 @@
 - [Stack Tecnológico](stack.md)
 - [Guía para Crear un Juego](guia-crear-juego.md)
 - [Herramientas de Juego (validar / imágenes provisorias)](herramientas.md)
+- [Servidor de IA (PHP + DeepSeek + admin)](../server/README.md)
 
 ---
 

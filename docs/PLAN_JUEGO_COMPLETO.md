@@ -231,7 +231,7 @@ UI: la terminal ya acepta texto (`CommandParser`). Se agrega un sub-modo "chat" 
 |---|---|---|
 | **F0 · Base** ✅ | Carpeta `calabosos/`, escenas en varios archivos (`scenes/*.json`) en loader y exportador, **validador** (`npm run validate`), `contentRating` + gate +18, `IMAGENES.md` + placeholders | Juego vacío que carga, pasa el gate y valida |
 | **F1 · Sarcasmo** ✅ | Stats, `linesPool`, contador meta, pools de burlas, reacción al nombre | Sistemas listos |
-| **F2 · Servidor PHP** | `server/`: API DeepSeek, DB, admin con login, prompts versionados, límites, kill switch | Admin funcionando en tu servidor |
+| **F2 · Servidor PHP** ✅ | `server/`: API DeepSeek, DB, admin con login, prompts versionados, límites, kill switch | Admin funcionando en tu servidor |
 | **F3 · IA en el motor** | `src/ai/`, `ai_narrate`, `ai_chat` con los 6 modos, `profile.ts`, eventos, fallbacks, editores de los steps nuevos | Modos chat jugables con y sin IA |
 | **F4 · Prólogo + Acto I** | Tutorial, migrar demo, taberna/rap, regateo libre | Jugable hasta que Nerly se une |
 | **F5 · Acto II** | Viaje, insultos, anciano, bestiario, canción | Hasta la entrada del abismo |
@@ -252,4 +252,5 @@ UI: la terminal ya acepta texto (`CommandParser`). Se agrega un sub-modo "chat" 
 - **PHP:** hoy 7.4 en el servidor → el código debe ser compatible con **PHP 7.4 y 8.x** (sin enums, `match`, readonly, named args, union types en firmas, `str_contains`, etc.; o con polyfills).
 - **Hosting:** el juego y la API se publican **en el mismo servidor propio**, así que el CORS puede limitarse al mismo origen.
 - **API key de DeepSeek:** la pone el usuario en un archivo de config fuera del webroot. Nunca en el repo ni en el chat.
-- Pendiente: ¿MySQL o SQLite? (por defecto **SQLite**: cero configuración, un archivo).
+- Base de datos: **SQLite** (decidido).
+- Implementado en `server/` — instalación, API y seguridad en [`server/README.md`](../server/README.md).

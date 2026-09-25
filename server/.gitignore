@@ -1,0 +1,5 @@
+# Configuración real (contiene la API key) y datos
+/config.php
+/data/*
+!/data/.htaccess
+!/data/.gitkeep
