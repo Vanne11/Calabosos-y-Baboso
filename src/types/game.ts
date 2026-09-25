@@ -292,6 +292,8 @@ export interface CharacterDef {
 
 /** Ficha de personaje para la IA. Todo es opcional; los ejemplos son lo que más define la voz */
 export interface CharacterAi {
+  /** Regla obligatoria en TODAS sus intervenciones (ej. "hablas siempre en rima") */
+  regla?: string;
   /** Cómo habla: registro, ritmo, manías */
   voz?: string;
   /** Palabras o frases que repite */

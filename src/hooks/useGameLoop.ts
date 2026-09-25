@@ -137,36 +137,37 @@ export function useGameLoop() {
     // Este ciclo quedó obsoleto si otra escena tomó el control (/debug goto, /load)
     // o si la partida terminó (/quit): no debe seguir imprimiendo ni navegando
     const stale = () => iteratorRef.current !== iterator || useAppStore.getState().engine !== ownerEngine;
+    // Siguiente resultado pedido por adelantado (ver abajo)
+    let prefetched: Promise<IteratorResult<StepResult>> | null = null;
     while (true) {
       // Yield al browser entre iteraciones para no bloquear el hilo
       await yieldToMain();
       if (stale()) break;
 
-      const { value, done } = await iterator.next();
+      const { value, done } = await (prefetched ?? iterator.next());
+      prefetched = null;
       if (done || !value || stale()) break;
 
+      // Mientras se muestra este resultado se pide el siguiente: si es un turno del jugador (decisión, chat,
+      // escribir...), el "Presiona ENTER" de este se salta solo. Nunca se pide por adelantado detrás de un
+      // turno del jugador: el motor está esperando su acción y ese resultado se perdería.
+      if (!PLAYER_TURNS.has(value.type)) {
+        const next = iterator.next();
+        prefetched = next;
+        upcomingTurn = next.then((r) => !r.done && !!r.value && PLAYER_TURNS.has(r.value.type)).catch(() => false);
+      } else {
+        upcomingTurn = null;
+      }
+
       await handleResult(value, stale);
+      upcomingTurn = null;
       if (stale()) break;
       // Respuesta audiovisual a lo que cambió (vida, monedas, objetos...)
       // (y la barra de estado se actualiza en el acto para que la cifra flotante coincida)
       if (engine && observeState(engine.state, engine.audioConfig)) setPlayerState({ ...engine.state });
 
       // If the result requires player input, stop consuming
-      if (
-        value.type === 'choice_prompt' ||
-        value.type === 'dice_prompt' ||
-        value.type === 'input_prompt' ||
-        value.type === 'shop_prompt' ||
-        value.type === 'shop_dice_prompt' ||
-        value.type === 'combat_prompt' ||
-        value.type === 'craft_prompt' ||
-        value.type === 'puzzle_prompt' ||
-        value.type === 'examine_prompt' ||
-        value.type === 'use_item_prompt' ||
-        value.type === 'timed_choice_prompt' ||
-        value.type === 'level_up_prompt' ||
-        value.type === 'chat_prompt'
-      ) {
+      if (PLAYER_TURNS.has(value.type)) {
         break;
       }
 
@@ -829,8 +830,25 @@ function meterLine(label: string, score: number): string {
   return `[${color}]${label} ${'█'.repeat(filled)}${'░'.repeat(10 - filled)} ${score}%[/${color}]`;
 }
 
+/** Resultados que esperan una acción del jugador (su turno): ahí se deja de consumir */
+const PLAYER_TURNS = new Set<StepResult['type']>([
+  'choice_prompt', 'dice_prompt', 'input_prompt', 'shop_prompt', 'shop_dice_prompt', 'combat_prompt', 'craft_prompt',
+  'puzzle_prompt', 'examine_prompt', 'use_item_prompt', 'timed_choice_prompt', 'level_up_prompt', 'chat_prompt',
+]);
+
+/** Si lo que viene después del resultado actual es un turno del jugador (entonces no hace falta Enter) */
+let upcomingTurn: Promise<boolean> | null = null;
+
 function waitForEnterKey(): Promise<void> {
+  const skip = upcomingTurn;
   return new Promise((resolve) => {
+    // Lo siguiente es un turno del jugador: el Enter sobra, se sigue solo
+    skip?.then((isTurn) => {
+      if (isTurn) {
+        cleanup();
+        resolve();
+      }
+    });
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Enter') return;
       // Enter con texto en la entrada es para enviarlo (charla, comando): no avanza la historia

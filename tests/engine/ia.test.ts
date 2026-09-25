@@ -570,3 +570,12 @@ describe('los personajes recuerdan lo que hiciste con ellos (no solo lo que habl
     expect(engine.state.npcMemoria?.tendero).toBeUndefined();
   });
 });
+
+describe('ficha de personaje', () => {
+  it('la regla obligatoria va primero y marcada como obligatoria', async () => {
+    const { characterSheet } = await import('../../src/engine/AiContext');
+    const sheet = characterSheet({ name: 'Bardo', description: '', ai: { regla: 'Hablas siempre en rima.', voz: 'arrogante' } });
+    expect(sheet.split('\n')[0]).toBe('REGLA OBLIGATORIA (en todas tus intervenciones, sin excepción): Hablas siempre en rima.');
+    expect(sheet).toContain('Voz: arrogante');
+  });
+});

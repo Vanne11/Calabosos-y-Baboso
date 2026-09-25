@@ -166,6 +166,8 @@ la línea generada se guarda en la memoria: el narrador puede citarla después.
 
 - En un `ai_chat` viaja la ficha del NPC (`npc_ficha`); en la narración, la del narrador (`ficha_narrador`).
 - Los `ejemplos` son lo que más define la voz: dos o tres frases reales del personaje valen más que la descripción.
+- `regla`: algo que el personaje hace **siempre**, en todas sus intervenciones; la IA lo recibe como regla obligatoria
+  (ej. el Bardo: "Hablas SIEMPRE en rima"). Las líneas escritas a mano de ese personaje deben cumplirla también.
 
 ## Actualizar los prompts de un servidor ya instalado
 

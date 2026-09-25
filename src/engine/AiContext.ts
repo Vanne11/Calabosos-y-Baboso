@@ -59,6 +59,7 @@ export function characterSheet(def: CharacterDef | undefined): string {
   const ai = def?.ai;
   if (!ai) return '';
   const parts: string[] = [];
+  if (ai.regla) parts.push(`REGLA OBLIGATORIA (en todas tus intervenciones, sin excepción): ${ai.regla}`);
   if (ai.voz) parts.push(`Voz: ${ai.voz}`);
   if (ai.muletillas?.length) parts.push(`Muletillas (máximo una por respuesta): ${ai.muletillas.join(', ')}`);
   if (ai.quiere) parts.push(`Quiere: ${ai.quiere}`);
