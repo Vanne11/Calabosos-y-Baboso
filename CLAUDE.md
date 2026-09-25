@@ -13,6 +13,8 @@ src/
   engine/        Motor puro TS (sin React, sin red): GameEngine, GameLoader, ConditionEvaluator,
                  EffectsApplier, DiceRoller, NarrativeText (variables/pools), AiProvider (contrato IA)
   ai/            AiClient (fetch a la API PHP, sesión anónima, eventos) + session.ts
+  audio/         Efectos y ambientes sintetizados (WebAudio): synth, sfxCatalog, ambience, SfxPlayer,
+                 feedback (diff de estado → sonido/pantalla, puro) + gameFeedback
   hooks/         useGameLoop (consume StepResults, UI de chat), useTerminalCommands (/comandos)
   components/    Terminal, widgets (dados, combate, tienda...), layout (barra de estado, inventario)
   editor/        Editor visual (ReactFlow): editores de pasos, import/export, validación
@@ -22,9 +24,10 @@ public/games/
   demo/, demo2/  Demos de capacidades del motor
   Calabosos y Babosos/original_datos/   Guion original en markdown (solo referencia)
 server/          API de IA en PHP 7.4/8.x + SQLite + panel admin (ver server/README.md)
-tests/           Vitest: engine/ (narrativa, ia, combate), game/ (calabosos real), editor/, helpers.ts
+tests/           Vitest: engine/ (narrativa, ia, combate, audio), audio/ (catálogo, feedback), game/ (calabosos real), editor/, helpers.ts
 scripts/         validate-game.mjs, playtest.ts, make-placeholders.mjs, package-release.mjs,
-                 optimize-images.mjs, shared/game-data.mjs
+                 optimize-images.mjs, shared/game-data.mjs, compose-music.mjs + music/ (tracker chiptune),
+                 sfx-names.ts
 docs/            Wiki del motor, plan, DEPLOY.md
 ```
 
@@ -37,18 +40,21 @@ npm run dev                             # http://127.0.0.1:5173/cyb/  → run ca
 npm run validate -- calabosos           # gotos rotos, alcanzabilidad, personajes, items, pools, códice, assets
 npm run playtest -- calabosos 500       # bot: cobertura, atascos, variables {x} sin resolver, muertes por causa
 npm run placeholders -- calabosos       # imágenes provisorias para toda referencia que falte
+npm run music                           # renderiza las pistas compuestas (scripts/music/songs.mjs) a cyb_*.ogg (ffmpeg)
+npm run sfx-names                       # tras agregar un efecto/ambiente al catálogo
 npm test                                # Vitest: motor, IA, combate, datos reales del juego, editor
 npx tsc --noEmit -p .                   # debe quedar sin errores
 ```
 
-- Dentro del juego: `/debug on` y `/debug goto <escena>` para saltar a cualquier escena.
+- Dentro del juego: `/debug on` y `/debug goto <escena>` para saltar a cualquier escena; `/debug sfx [nombre]` y `/debug ambiente [nombre]` para oír el catálogo.
+- Sonido (detalle en `docs/audio.md`): `sfx` en pasos sound, `scenario.sfx/ambience`, opciones, examine, use_item, dados, random, notify y `enemy.sfx`; stats/objetos suenan solos según `game.json → audio`.
 - **Los JSON de `public/games/calabosos/scenes/` son la fuente de verdad** (se editan a mano o con el editor).
 - Condiciones de visita: la escena actual **ya cuenta como visitada al entrar**; para "primera vez" usar un flag (el validador lo avisa).
 - Al agregar imágenes nuevas: referenciarlas en el JSON, `npm run placeholders`, y agregar su ficha en `IMAGENES.md`.
 
 ## Formato del juego (resumen; detalle en docs/)
 
-`game.json`: `characters`, `statDefs` (label/icon/min/max/hidden), `initialStats`, `items`, `traits`, `contentRating` (+18, `gateScene`), `sceneFiles`, `ai.endpoint`, `linePools`, `statRules`, `diceHooks`, `diceModifiers`, `codex` (bestiario), `saveSystem`.
+`game.json`: `characters`, `statDefs` (label/icon/min/max/hidden), `initialStats`, `items`, `traits`, `contentRating` (+18, `gateScene`), `sceneFiles`, `ai.endpoint`, `audio` (combatMusic, gameOverMusic, statSfx, itemSfx), `linePools`, `statRules`, `diceHooks`, `diceModifiers`, `codex` (bestiario), `saveSystem`.
 
 **20 tipos de paso:** dialog (con `pool`, `count`, `ai`), choice (con `tags` de perfil), dice (con `tiers` por tramos), input, effects, branch, random, check, shop (`priceMultipliers`, haggle/steal), combat (`weapons`, rasgos del enemigo: firstStrike, dodgeChance/reveal, damagePerTurn, corrodes, split/preventSplit, deathDamage), notify, wait, sound, craft, puzzle, examine, use_item, timed_choice, level_up, **ai_chat** (persuadir, negociar, cancion, rap, insultos, confesion; con `fallback` de dados).
 

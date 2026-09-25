@@ -4,7 +4,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_camino.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -55,6 +56,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "baba"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -103,7 +108,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -124,6 +130,10 @@
           "lines": [
             "Cuéntame del Rey Baboso. ¿Qué tan peligroso es?"
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "tension"
         },
         {
           "type": "dialog",
@@ -194,7 +204,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -253,7 +264,8 @@
               "goto": "acto2_camino_menu",
               "tags": [
                 "inmaduro"
-              ]
+              ],
+              "sfx": "grillo"
             }
           ]
         }
@@ -263,7 +275,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -312,7 +325,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -358,6 +372,11 @@
           "lines": [
             "Las Fantasma son semitransparentes y atraviesan paredes. Y las Explosivas... bueno, explotan cuando se sienten amenazadas."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "explosion_baba",
+          "volume": 0.5
         },
         {
           "type": "dialog",
@@ -406,7 +425,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -430,6 +450,11 @@
           "lines": [
             "Tu cerebro acaba de recibir más información útil que en toda tu vida. Se está sobrecalentando. Huelo a quemado."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "fuego",
+          "volume": 0.5
         },
         {
           "type": "effects",
@@ -462,7 +487,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -533,7 +559,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_charla.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -578,6 +605,7 @@
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
         "music": "audio/rpgchip11_airship.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -601,12 +629,14 @@
             {
               "weight": 1,
               "text": "Unas voces roncas salen de detrás de unos arbustos. Se oye «emboscada» en un susurro demasiado fuerte.",
-              "goto": "acto2_bandidos"
+              "goto": "acto2_bandidos",
+              "sfx": "pasos"
             },
             {
               "weight": 1,
               "text": "Un chico con uniforme escolar y un bate de béisbol aparece corriendo por el sendero. Mira a todos lados. Jadea.",
-              "goto": "acto2_takashi"
+              "goto": "acto2_takashi",
+              "sfx": "pasos"
             }
           ]
         }
@@ -616,7 +646,9 @@
       "scenario": {
         "name": "Emboscada en el bosque",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip13_battle_1.ogg"
+        "music": "audio/rpgchip13_battle_1.ogg",
+        "ambience": "bosque",
+        "sfx": "combate"
       },
       "sequence": [
         {
@@ -672,7 +704,8 @@
               "goto": "acto2_huida_bandidos",
               "tags": [
                 "cobarde"
-              ]
+              ],
+              "sfx": "grito"
             }
           ]
         }
@@ -682,7 +715,8 @@
       "scenario": {
         "name": "Emboscada en el bosque",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip13_battle_1.ogg"
+        "music": "audio/rpgchip13_battle_1.ogg",
+        "ambience": "bosque"
       },
       "sequence": [
         {
@@ -745,7 +779,9 @@
       "scenario": {
         "name": "Emboscada en el bosque",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip13_battle_1.ogg"
+        "music": "audio/rpgchip13_battle_1.ogg",
+        "ambience": "bosque",
+        "sfx": "huida"
       },
       "sequence": [
         {
@@ -804,7 +840,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_takashi.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -880,7 +917,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_takashi.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -921,7 +959,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_takashi.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -976,7 +1015,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_takashi.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -986,6 +1026,10 @@
           "lines": [
             "¡¿EN SERIO?! ¡POR FIN! ¡Gracias, extraño!"
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "huida"
         },
         {
           "type": "dialog",
@@ -1039,7 +1083,8 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_camino.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -1056,12 +1101,14 @@
             {
               "weight": 1,
               "text": "Un llanto agudo y pegajoso sale de un tronco hueco.",
-              "goto": "acto2_babosita"
+              "goto": "acto2_babosita",
+              "sfx": "llanto"
             },
             {
               "weight": 1,
               "text": "El sendero se cierra. Un árbol enorme, cubierto de musgo que respira, bloquea el camino. Tiene ojos. Te está mirando.",
-              "goto": "acto2_arbol"
+              "goto": "acto2_arbol",
+              "sfx": "misterio"
             }
           ]
         }
@@ -1071,7 +1118,9 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_babosita.ogg",
+        "ambience": "bosque",
+        "sfx": "llanto",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
@@ -1149,10 +1198,15 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg",
+        "music": "audio/cyb_babosita.ogg",
+        "ambience": "bosque",
         "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "acido"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -1160,6 +1214,10 @@
             "...",
             "No. No voy a narrar esto. Me niego. Fundido a negro."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "grillo"
         },
         {
           "type": "dialog",
@@ -1199,6 +1257,8 @@
         "name": "El Árbol Baboso",
         "image": "images/scenarios/arbol_baboso.png",
         "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "ambience": "viento",
+        "sfx": "magia",
         "description": "Un árbol ancestral cubierto de musgo que respira. Sus ramas gotean baba luminosa."
       },
       "sequence": [
@@ -1269,6 +1329,8 @@
         "name": "Fogata en el bosque",
         "image": "images/scenarios/fogata.png",
         "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "ambience": "fogata",
+        "sfx": "fuego",
         "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
       },
       "sequence": [
@@ -1375,6 +1437,7 @@
         "name": "Fogata en el bosque",
         "image": "images/scenarios/fogata.png",
         "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "ambience": "fogata",
         "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
       },
       "sequence": [
@@ -1441,9 +1504,15 @@
         "name": "Fogata en el bosque",
         "image": "images/scenarios/fogata.png",
         "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "ambience": "fogata",
         "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "ronquido",
+          "wait": true
+        },
         {
           "type": "random",
           "outcomes": [
@@ -1454,7 +1523,8 @@
                 "stats": {
                   "miedo": 15
                 }
-              }
+              },
+              "sfx": "grito"
             },
             {
               "weight": 1,
@@ -1475,6 +1545,10 @@
               }
             }
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "gallo"
         },
         {
           "type": "dialog",
@@ -1507,6 +1581,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "ambience": "viento",
         "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
       },
       "sequence": [
@@ -1516,6 +1591,10 @@
           "lines": [
             "Hemos llegado. Esta es la entrada principal al Abismo."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "trompeta"
         },
         {
           "type": "dialog",
@@ -1544,6 +1623,10 @@
           "lines": [
             "A un lado de la entrada, un anciano fuma en pipa sentado sobre una roca. Lleva una camiseta que dice «SOBREVIVÍ AL ABISMO». Alguien tachó «SOBREVIVÍ» y escribió «CASI»."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "tos"
         },
         {
           "type": "dialog",
@@ -1608,6 +1691,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "ambience": "viento",
         "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
       },
       "sequence": [
@@ -1651,6 +1735,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "ambience": "viento",
         "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
       },
       "sequence": [
@@ -1720,6 +1805,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "ambience": "viento",
         "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
       },
       "sequence": [

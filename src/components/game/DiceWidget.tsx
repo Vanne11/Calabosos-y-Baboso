@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import styled, { keyframes } from 'styled-components';
+import { sfx } from '../../audio/SfxPlayer';
 
 const shake = keyframes`
   0% { transform: rotate(0deg); }
@@ -100,6 +101,7 @@ const DiceWidget: React.FC<DiceWidgetProps> = ({
     if (rollingRef.current) return;
     rollingRef.current = true;
     setRolling(true);
+    sfx.play('dados');
 
     intervalRef.current = setInterval(() => {
       setDisplayNum(Math.floor(Math.random() * faces) + 1);

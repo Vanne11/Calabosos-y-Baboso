@@ -131,7 +131,7 @@ const EditorPreview: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }
 
       if (step.type === 'sound') {
-        result.push({ text: `[Sonido] ${step.src || '(sin archivo)'}`, type: 'dim' });
+        result.push({ text: `[Sonido] ${step.sfx ? `♪ ${step.sfx}` : step.src || '(sin archivo)'}`, type: 'dim' });
       }
 
       if (step.type === 'craft') {

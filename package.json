@@ -12,6 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "placeholders": "node scripts/make-placeholders.mjs",
+    "music": "node scripts/compose-music.mjs",
+    "sfx-names": "esbuild scripts/sfx-names.ts --bundle --platform=node --format=esm --log-level=warning --outfile=node_modules/.cache/sfx-names.mjs && node node_modules/.cache/sfx-names.mjs",
     "package": "node scripts/package-release.mjs",
     "playtest": "esbuild scripts/playtest.ts --bundle --platform=node --format=esm --log-level=warning --outfile=node_modules/.cache/playtest.mjs && node node_modules/.cache/playtest.mjs",
     "preview": "vite preview"

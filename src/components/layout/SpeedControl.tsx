@@ -1,10 +1,10 @@
 // components/layout/SpeedControl.tsx
-// Botón de configuración (engranaje) que abre un modal con velocidad y volumen
+// Botón de configuración (engranaje) que abre un modal con velocidad, volúmenes y efectos de pantalla
 
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
-import { audioManager } from '../../engine/AudioManager';
+import { sfx } from '../../audio/SfxPlayer';
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -132,19 +132,50 @@ const Value = styled.span`
   text-align: right;
 `;
 
+const Toggle = styled.input`
+  accent-color: ${(props) => props.theme.accent || '#bd93f9'};
+  cursor: pointer;
+`;
+
+const VolumeRow: React.FC<{ label: string; value: number; onChange: (v: number) => void; onRelease?: () => void }> = ({
+  label, value, onChange, onRelease,
+}) => (
+  <ControlRow>
+    <Label>{label}</Label>
+    <SliderRow>
+      <Slider
+        type="range"
+        min="0"
+        max="100"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        onPointerUp={onRelease}
+        onKeyUp={onRelease}
+      />
+      <Value>{value}%</Value>
+    </SliderRow>
+  </ControlRow>
+);
+
 const SpeedControl: React.FC = () => {
   const [open, setOpen] = useState(false);
   const speed = useAppStore((s) => s.speed);
   const setSpeed = useAppStore((s) => s.setSpeed);
   const volume = useAppStore((s) => s.volume);
   const setVolume = useAppStore((s) => s.setVolume);
+  const sfxVolume = useAppStore((s) => s.sfxVolume);
+  const setSfxVolume = useAppStore((s) => s.setSfxVolume);
+  const voices = useAppStore((s) => s.voices);
+  const setVoices = useAppStore((s) => s.setVoices);
+  const screenFx = useAppStore((s) => s.screenFx);
+  const setScreenFx = useAppStore((s) => s.setScreenFx);
 
   return (
     <>
       {open && <Overlay onClick={() => setOpen(false)} />}
       {open && (
         <Modal>
-          <ModalTitle>Configuracion</ModalTitle>
+          <ModalTitle>Configuración</ModalTitle>
           <ControlRow>
             <Label>Velocidad</Label>
             <Select
@@ -157,22 +188,15 @@ const SpeedControl: React.FC = () => {
               <option value={3}>3x</option>
             </Select>
           </ControlRow>
+          <VolumeRow label="Música" value={volume} onChange={setVolume} />
+          <VolumeRow label="Efectos" value={sfxVolume} onChange={setSfxVolume} onRelease={() => sfx.play('moneda')} />
           <ControlRow>
-            <Label>Volumen</Label>
-            <SliderRow>
-              <Slider
-                type="range"
-                min="0"
-                max="100"
-                value={volume}
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  setVolume(v);
-                  audioManager.volume = v / 100;
-                }}
-              />
-              <Value>{volume}%</Value>
-            </SliderRow>
+            <Label>Voces en diálogos</Label>
+            <Toggle type="checkbox" checked={voices} onChange={(e) => setVoices(e.target.checked)} />
+          </ControlRow>
+          <ControlRow>
+            <Label>Temblor y destellos</Label>
+            <Toggle type="checkbox" checked={screenFx} onChange={(e) => setScreenFx(e.target.checked)} />
           </ControlRow>
         </Modal>
       )}

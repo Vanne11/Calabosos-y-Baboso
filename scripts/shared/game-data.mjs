@@ -84,7 +84,13 @@ export function collectAssetRefs(manifest, scenes) {
   for (const [id, scene] of Object.entries(scenes)) {
     add(scene.scenario?.image, `escena ${id}`);
     add(scene.scenario?.music, `escena ${id}`);
+    for (const step of scene.sequence ?? []) {
+      if (step?.type === 'sound') add(step.src, `escena ${id} (sound)`);
+      if (step?.type === 'combat' && step.music !== 'none') add(step.music, `escena ${id} (combat)`);
+    }
   }
+  add(manifest.audio?.combatMusic, 'audio.combatMusic');
+  add(manifest.audio?.gameOverMusic, 'audio.gameOverMusic');
   for (const [cid, c] of Object.entries(manifest.characters ?? {})) {
     add(c.image, `personaje ${cid}`);
     for (const alt of Object.values(c.altImages ?? {})) add(alt, `personaje ${cid}`);

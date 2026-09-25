@@ -7,6 +7,7 @@ import type { PlayerState, StepResult } from '../types/engine';
 import type { GameEngine } from '../engine/GameEngine';
 import type { GameManifest } from '../types/game';
 import { audioManager } from '../engine/AudioManager';
+import { sfx } from '../audio/SfxPlayer';
 import { setAiClient } from '../ai/session';
 
 export type AppPhase = 'boot' | 'login' | 'shell' | 'game' | 'editor';
@@ -63,8 +64,18 @@ interface AppStore {
   // Speed & volume
   speed: number;
   setSpeed: (speed: number) => void;
+  /** Volumen de la música (0-100) */
   volume: number;
   setVolume: (volume: number) => void;
+  /** Volumen de efectos y ambientes (0-100) */
+  sfxVolume: number;
+  setSfxVolume: (volume: number) => void;
+  /** Blips de voz en los diálogos */
+  voices: boolean;
+  setVoices: (on: boolean) => void;
+  /** Sacudidas y destellos de pantalla */
+  screenFx: boolean;
+  setScreenFx: (on: boolean) => void;
 
   // Fade old entries
   fadeBeforeIndex: number;
@@ -132,6 +143,26 @@ export function clearSession() {
 
 const restoredSession = getStoredSession();
 
+// Ajustes de sonido y pantalla: persisten en el navegador
+const SETTINGS_KEY = 'cyb_audio_settings';
+interface AvSettings { volume: number; sfxVolume: number; voices: boolean; screenFx: boolean }
+
+function loadSettings(): AvSettings {
+  const reducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const defaults: AvSettings = { volume: 50, sfxVolume: 70, voices: true, screenFx: !reducedMotion };
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    return raw ? { ...defaults, ...JSON.parse(raw) } : defaults;
+  } catch {
+    return defaults;
+  }
+}
+
+const initialSettings = loadSettings();
+audioManager.volume = initialSettings.volume / 100;
+sfx.volume = initialSettings.sfxVolume / 100;
+sfx.voices = initialSettings.voices;
+
 export const useAppStore = create<AppStore>((set) => ({
   // Phase — skip boot/login if session is valid
   phase: restoredSession ? 'shell' : 'boot',
@@ -192,8 +223,23 @@ export const useAppStore = create<AppStore>((set) => ({
   // Speed & volume
   speed: 1,
   setSpeed: (speed) => set({ speed }),
-  volume: 50,
-  setVolume: (volume) => set({ volume }),
+  volume: initialSettings.volume,
+  setVolume: (volume) => {
+    audioManager.volume = volume / 100;
+    set({ volume });
+  },
+  sfxVolume: initialSettings.sfxVolume,
+  setSfxVolume: (sfxVolume) => {
+    sfx.volume = sfxVolume / 100;
+    set({ sfxVolume });
+  },
+  voices: initialSettings.voices,
+  setVoices: (voices) => {
+    sfx.voices = voices;
+    set({ voices });
+  },
+  screenFx: initialSettings.screenFx,
+  setScreenFx: (screenFx) => set({ screenFx }),
 
   // Fade old entries
   fadeBeforeIndex: 0,
@@ -256,7 +302,22 @@ let prevPhase: AppPhase = useAppStore.getState().phase;
 useAppStore.subscribe((state) => {
   if (prevPhase === 'game' && state.phase !== 'game') {
     audioManager.stop();
+    sfx.stopAll();
     setAiClient(null);
   }
   prevPhase = state.phase;
+});
+
+// Guardar los ajustes de sonido/pantalla cuando cambian
+useAppStore.subscribe((state, prev) => {
+  if (
+    state.volume === prev.volume && state.sfxVolume === prev.sfxVolume &&
+    state.voices === prev.voices && state.screenFx === prev.screenFx
+  ) return;
+  try {
+    const settings: AvSettings = { volume: state.volume, sfxVolume: state.sfxVolume, voices: state.voices, screenFx: state.screenFx };
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // almacenamiento no disponible: los ajustes duran lo que dure la pestaña
+  }
 });

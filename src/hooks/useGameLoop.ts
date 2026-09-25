@@ -6,6 +6,8 @@ import { useAppStore } from '../store/useAppStore';
 import { useDebugStore } from '../store/useDebugStore';
 import { delay } from '../utils/delay';
 import { audioManager } from '../engine/AudioManager';
+import { sfx } from '../audio/SfxPlayer';
+import { observeState, rebaseFeedback, screenFx, playSfx } from '../audio/gameFeedback';
 import { saveGame } from '../utils/storage';
 import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
@@ -31,6 +33,8 @@ export function useGameLoop() {
 
   const iteratorRef = useRef<AsyncGenerator<StepResult> | null>(null);
   const checkpointSlotRef = useRef(0);
+  /** Combate en curso: pista que sonaba antes, para volver a ella al terminar */
+  const combatRef = useRef<{ prevTrack: string | null } | null>(null);
 
   const startScene = useCallback(
     async (sceneId: string) => {
@@ -60,6 +64,7 @@ export function useGameLoop() {
           type: 'system',
           content: '[dim]💾 Progreso guardado automáticamente.[/dim]',
         });
+        sfx.play('guardar');
       }
 
       const iterator = engine.enterScene(sceneId);
@@ -82,6 +87,8 @@ export function useGameLoop() {
       setMeta(gameName, META_COUNTERS_KEY, m);
     });
     setPlayerState({ ...engine.state });
+    rebaseFeedback(engine.state);
+    combatRef.current = null;
 
     // IA: solo si el juego la declara. Si el servidor no responde, el juego sigue sin IA.
     const aiConfig = useAppStore.getState().gameManifest?.ai;
@@ -125,6 +132,9 @@ export function useGameLoop() {
 
       await handleResult(value, stale);
       if (stale()) break;
+      // Respuesta audiovisual a lo que cambió (vida, monedas, objetos...)
+      // (y la barra de estado se actualiza en el acto para que la cifra flotante coincida)
+      if (engine && observeState(engine.state, engine.audioConfig)) setPlayerState({ ...engine.state });
 
       // If the result requires player input, stop consuming
       if (
@@ -154,6 +164,7 @@ export function useGameLoop() {
             content: '[italic]Cerrando el juego... hasta la próxima, aventurero.[/italic]',
           });
           audioManager.stop();
+          sfx.stopAll();
           resetGame();
           setCurrentImage(null);
           return;
@@ -166,13 +177,16 @@ export function useGameLoop() {
             { type: 'system', content: '[bold red]═══════════════════════════════════════════[/bold red]' },
             { type: 'system', content: '' },
           ]);
-          audioManager.stop();
+          gameOverAudio(engine?.audioConfig?.gameOverMusic ? engine.assetPath(engine.audioConfig.gameOverMusic) : null);
           return;
         }
         if (value.scene === '_checkpoint') {
           const { addEntry: add, setPlayerState: syncState, fadeOldEntries } = useAppStore.getState();
           const cpScene = engine?.restoreCheckpoint() ?? null;
           audioManager.stop();
+          sfx.play('rebobinar');
+          combatRef.current = null;
+          if (engine) rebaseFeedback(engine.state);
           fadeOldEntries();
           if (engine && cpScene) {
             add({ type: 'system', content: '[italic yellow]Volviendo al último punto seguro... (el narrador lo recuerda todo)[/italic yellow]' });
@@ -181,6 +195,7 @@ export function useGameLoop() {
           } else if (engine) {
             add({ type: 'system', content: '[italic yellow]No hay punto seguro. Desde el principio, entonces.[/italic yellow]' });
             engine.reset();
+            rebaseFeedback(engine.state);
             syncState({ ...engine.state });
             await startScene('start');
           }
@@ -199,9 +214,12 @@ export function useGameLoop() {
           const { addEntry: add, setPlayerState: syncState, fadeOldEntries } = useAppStore.getState();
           add({ type: 'system', content: '[italic yellow]Reiniciando el juego...[/italic yellow]' });
           audioManager.stop();
+          sfx.play('rebobinar');
+          combatRef.current = null;
           fadeOldEntries();
           if (engine) {
             engine.reset();
+            rebaseFeedback(engine.state);
             syncState({ ...engine.state });
             await startScene('start');
           }
@@ -225,10 +243,12 @@ export function useGameLoop() {
       case 'scenario': {
         if (result.image) setCurrentImage(result.image);
         if (result.music) {
-          audioManager.volume = useAppStore.getState().volume / 100;
           // Fire-and-forget: no bloquear el gameLoop esperando audio
           audioManager.play(result.music);
+          combatRef.current = null;
         }
+        if (result.ambience !== undefined) sfx.setAmbience(result.ambience);
+        result.sfx?.forEach((name, i) => setTimeout(() => playSfx(name), i * 250));
         const scenarioEntries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: '[bold cyan]═══════════════════════════════════════════[/bold cyan]' },
           { type: 'system', content: `[bold yellow]📍 ${result.name}[/bold yellow]` },
@@ -260,6 +280,7 @@ export function useGameLoop() {
         for (let i = 0; i < result.lines.length; i++) {
           if (isStale()) return; // otra escena tomó el control: no seguir imprimiendo
           addEntry({ type: 'dialog', content: result.lines[i] });
+          sfx.voice(result.character, result.lines[i]);
           if (i < result.lines.length - 1) {
             await delay(300, currentSpeed);
           }
@@ -291,6 +312,11 @@ export function useGameLoop() {
           critical_failure: 'red',
         };
         const color = outcomeColors[result.outcome] || 'white';
+        playDiceOutcome(result.outcome);
+        if (result.sfx) {
+          const extra = result.sfx;
+          setTimeout(() => playSfx(extra), 350);
+        }
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold cyan]🎲 Resultado: ${result.roll} + ${result.modifier} = ${result.total} (Dificultad: ${result.difficulty})[/bold cyan]` },
           { type: 'system', content: `[${color}]${result.text}[/${color}]` },
@@ -317,6 +343,7 @@ export function useGameLoop() {
           const codex = engine.codex;
           const names = result.unlockCodex.map((id) => codex.entries[id]?.title ?? id).join(', ');
           addEntry({ type: 'system', content: `[purple]📖 ${codex.title} actualizado: ${names}[/purple] [dim](/${codex.command})[/dim]` });
+          sfx.play('libro');
         }
         // Sync state
         if (engine) {
@@ -331,6 +358,7 @@ export function useGameLoop() {
       case 'check_result': {
         const checkColor = result.passed ? 'green' : 'red';
         const checkIcon = result.passed ? '✓' : '✗';
+        sfx.play(result.passed ? 'exito' : 'fallo');
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold cyan]🔍 ${result.description}[/bold cyan]` },
           { type: 'system', content: `[${checkColor}]${checkIcon} ${result.text}[/${checkColor}]` },
@@ -345,6 +373,7 @@ export function useGameLoop() {
       }
 
       case 'random_result':
+        if (result.sfx) playSfx(result.sfx);
         useAppStore.getState().addEntries([
           { type: 'system', content: `[yellow]${result.text}[/yellow]` },
           { type: 'system', content: '' },
@@ -361,6 +390,7 @@ export function useGameLoop() {
 
       case 'shop_dice_result': {
         const diceColor = result.success ? 'green' : 'red';
+        sfx.play(result.success ? 'exito' : 'fallo');
         const actionLabel = result.action === 'haggle' ? '🗣️ Regateo' : result.action === 'steal' ? '🤫 Robo' : '🎭 Engaño';
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold]${actionLabel}[/bold] — 🎲 ${result.roll} + ${result.modifier} = ${result.total} vs DC ${result.difficulty}` },
@@ -371,10 +401,13 @@ export function useGameLoop() {
       }
 
       case 'combat_prompt':
+        startCombatAudio(result.music);
         setPendingResult(result);
         break;
 
       case 'combat_turn':
+        if (result.playerAction === 'ambush') startCombatAudio(result.music);
+        playCombatTurn(result);
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold]⚔️ ${result.text}[/bold]` },
           { type: 'system', content: `[dim]Enemigo: ${result.enemyHp} HP | Tú: ${result.playerHp} HP[/dim]` },
@@ -384,6 +417,7 @@ export function useGameLoop() {
 
       case 'combat_end': {
         const combatColor = result.outcome === 'victory' ? 'green' : result.outcome === 'flee' ? 'yellow' : 'red';
+        endCombatAudio(result.outcome, result.sfx);
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold ${combatColor}]${result.text}[/bold ${combatColor}]` },
           { type: 'system', content: '' },
@@ -397,6 +431,7 @@ export function useGameLoop() {
       }
 
       case 'chat_start': {
+        sfx.play('misterio');
         useAppStore.getState().addEntries([
           { type: 'system', content: '[bold purple]╔══════════════════════════════════════════╗[/bold purple]' },
           { type: 'system', content: `[bold purple]  💬 ${CHAT_MODE_TITLES[result.mode] ?? 'Conversación'} con ${result.npcName}[/bold purple]` },
@@ -416,6 +451,7 @@ export function useGameLoop() {
         const { seenCharacters, markCharacterSeen } = useAppStore.getState();
         const isFirstTime = !seenCharacters.has(result.character);
         if (isFirstTime) markCharacterSeen(result.character);
+        if (result.delta !== 0) sfx.play(result.delta > 0 ? 'subir' : 'bajar');
         const deltaText = result.delta === 0 ? '' : result.delta > 0 ? ` [green](+${result.delta})[/green]` : ` [red](${result.delta})[/red]`;
         useAppStore.getState().addEntries([
           { type: 'dialogHeader', content: result.characterName, image: result.characterImage, firstAppearance: isFirstTime && !!result.characterImage },
@@ -432,6 +468,7 @@ export function useGameLoop() {
           partial: '[bold yellow]≈ A medias[/bold yellow]',
           failure: '[bold red]✘ Fracaso[/bold red]',
         };
+        sfx.play(result.gaveUp ? 'desinfle' : result.verdict === 'success' ? 'exito_chat' : result.verdict === 'failure' ? 'pifia' : 'notificacion');
         const entries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: result.gaveUp ? '[bold red]🏳 Te rendiste.[/bold red]' : verdictText[result.verdict ?? ''] ?? '[bold purple]Fin de la conversación[/bold purple]' },
         ];
@@ -454,6 +491,9 @@ export function useGameLoop() {
         };
         const nColor = notifyColors[result.style] || 'white';
         const icon = result.icon || (result.style === 'achievement' ? '🏆' : result.style === 'discovery' ? '🔎' : 'ℹ️');
+        const notifySfx = result.sfx ?? NOTIFY_SFX[result.style];
+        if (notifySfx && notifySfx !== 'none') playSfx(notifySfx);
+        if (result.style === 'achievement') screenFx('gold');
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold ${nColor}]${icon} ${result.title}[/bold ${nColor}]` },
           { type: 'system', content: `[${nColor}]${result.text}[/${nColor}]` },
@@ -473,10 +513,22 @@ export function useGameLoop() {
       }
 
       case 'sound': {
-        // Reproducir efecto de sonido one-shot
-        const sfx = new Audio(result.src);
-        sfx.volume = result.volume * (useAppStore.getState().volume / 100);
-        sfx.play().catch(() => {});
+        // Efecto one-shot: sintetizado del catálogo o archivo del juego
+        let seconds = 0;
+        if (result.sfx) {
+          seconds = playSfx(result.sfx, result.volume);
+        } else if (result.src) {
+          const clip = new Audio(result.src);
+          clip.volume = Math.min(1, result.volume * (useAppStore.getState().sfxVolume / 100));
+          clip.play().catch(() => {});
+          if (result.wait) {
+            seconds = await new Promise<number>((resolve) => {
+              clip.addEventListener('loadedmetadata', () => resolve(clip.duration || 0), { once: true });
+              clip.addEventListener('error', () => resolve(0), { once: true });
+            });
+          }
+        }
+        if (result.wait && seconds > 0) await new Promise((r) => setTimeout(r, seconds * 1000));
         break;
       }
 
@@ -487,6 +539,7 @@ export function useGameLoop() {
       case 'craft_result': {
         const craftColor = result.success ? 'green' : 'yellow';
         const craftIcon = result.success ? '🔧' : '❌';
+        sfx.play(result.success ? 'magia' : 'error');
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold ${craftColor}]${craftIcon} ${result.text}[/bold ${craftColor}]` },
           { type: 'system', content: '' },
@@ -507,6 +560,7 @@ export function useGameLoop() {
       case 'puzzle_attempt': {
         const puzzleColor = result.correct ? 'green' : 'red';
         const puzzleIcon = result.correct ? '✓' : '✗';
+        sfx.play(result.correct ? 'exito' : 'error');
         const puzzleEntries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: `[bold ${puzzleColor}]${puzzleIcon} ${result.text}[/bold ${puzzleColor}]` },
         ];
@@ -529,6 +583,7 @@ export function useGameLoop() {
         break;
 
       case 'examine_result':
+        if (result.sfx) playSfx(result.sfx);
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold cyan]🔍 ${result.subjectLabel}[/bold cyan]` },
           { type: 'system', content: `[white]${result.text}[/white]` },
@@ -546,6 +601,7 @@ export function useGameLoop() {
       case 'use_item_result': {
         const uiColor = result.success ? 'green' : 'yellow';
         const uiIcon = result.success ? '✓' : '✗';
+        playSfx(result.sfx ?? (result.success ? 'exito' : 'error'));
         useAppStore.getState().addEntries([
           { type: 'system', content: `[bold ${uiColor}]${uiIcon} ${result.text}[/bold ${uiColor}]` },
           { type: 'system', content: '' },
@@ -568,6 +624,8 @@ export function useGameLoop() {
         break;
 
       case 'level_up_result': {
+        sfx.play('nivel');
+        screenFx('level');
         const lvlEntries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: `[bold green]⬆️ ¡${result.characterName} ha subido al nivel ${result.newLevel}![/bold green]` },
         ];
@@ -585,6 +643,8 @@ export function useGameLoop() {
 
       case 'xp_gain': {
         const xpColor = result.leveledUp ? 'green' : 'cyan';
+        sfx.play(result.leveledUp ? 'nivel' : 'xp');
+        if (result.leveledUp) screenFx('level');
         const xpEntries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: `[${xpColor}]✨ ${result.characterName} gana ${result.amount} XP (${result.totalXp} total)[/${xpColor}]` },
         ];
@@ -599,6 +659,7 @@ export function useGameLoop() {
         const relDelta = result.newAffinity - result.oldAffinity;
         const relColor = relDelta > 0 ? 'green' : 'red';
         const relIcon = relDelta > 0 ? '💚' : '💔';
+        sfx.play(relDelta > 0 ? 'afinidad_sube' : 'afinidad_baja');
         const sign = relDelta > 0 ? '+' : '';
         const relEntries: import('../types/terminal').TerminalEntry[] = [
           { type: 'system', content: `[${relColor}]${relIcon} ${result.characterName}: ${sign}${relDelta} afinidad[/${relColor}]` },
@@ -616,6 +677,7 @@ export function useGameLoop() {
 
       case 'trait_change': {
         const traitEntries: import('../types/terminal').TerminalEntry[] = [];
+        if (result.added.length) sfx.play('rasgo');
         for (const trait of result.added) {
           traitEntries.push({ type: 'system', content: `[bold purple]${trait.icon || '🔮'} Nuevo rasgo: ${trait.name}[/bold purple]` });
         }
@@ -627,6 +689,7 @@ export function useGameLoop() {
       }
 
       case 'game_end':
+        sfx.play('final');
         addEntry({
           type: 'system',
           content: '[bold green]Fin del juego.[/bold green]',
@@ -635,11 +698,38 @@ export function useGameLoop() {
     }
   };
 
+  /** Primer momento de un combate: su música (si trae) y la alarma */
+  const startCombatAudio = (music: string | undefined) => {
+    if (combatRef.current) return;
+    combatRef.current = { prevTrack: audioManager.track };
+    sfx.play('combate');
+    if (music && audioManager.track !== music) audioManager.play(music);
+  };
+
+  /** Fin del combate: jingle y vuelta a la música que sonaba antes */
+  const endCombatAudio = (outcome: 'victory' | 'defeat' | 'flee', deathSfx?: string) => {
+    const prev = combatRef.current?.prevTrack ?? null;
+    combatRef.current = null;
+    if (outcome === 'victory') {
+      sfx.play(deathSfx ?? 'muere_enemigo');
+      setTimeout(() => sfx.play('victoria'), 450);
+    } else if (outcome === 'flee') {
+      sfx.play('huida');
+    } else {
+      sfx.play('derrota');
+    }
+    if (outcome !== 'defeat' && prev && audioManager.track !== prev) {
+      setTimeout(() => audioManager.play(prev), 1500);
+    }
+  };
+
   const sendAction = useCallback(
     async (action: PlayerAction) => {
       if (!engine) return;
 
       setPendingResult(null);
+      if (action.type === 'choose' || action.type === 'submit_input') sfx.play('seleccion');
+      else if (!SILENT_ACTIONS.has(action.type)) sfx.play('click');
       engine.sendAction(action);
 
       // Continue consuming results
@@ -651,6 +741,45 @@ export function useGameLoop() {
   );
 
   return { startScene, startGame, sendAction };
+}
+
+/** Acciones cuyo sonido lo pone su propio widget (o que no suenan) */
+const SILENT_ACTIONS = new Set<PlayerAction['type']>(['roll_dice', 'continue', 'chat_message']);
+
+const NOTIFY_SFX: Record<string, string> = {
+  achievement: 'logro',
+  warning: 'alerta',
+  info: 'notificacion',
+  discovery: 'descubrimiento',
+};
+
+function playDiceOutcome(outcome: 'critical_success' | 'success' | 'failure' | 'critical_failure') {
+  if (outcome === 'critical_success') {
+    sfx.play('critico');
+    screenFx('gold');
+  } else if (outcome === 'critical_failure') {
+    sfx.play('pifia');
+    screenFx(undefined, 1);
+  } else {
+    sfx.play(outcome === 'success' ? 'exito' : 'fallo');
+  }
+}
+
+/** Golpes del turno: el daño recibido lo pone observeState (vida que baja) */
+function playCombatTurn(turn: { playerAction: string; playerDamage: number; sfx?: string }) {
+  if (turn.sfx) sfx.play(turn.sfx);
+  else if (turn.playerAction === 'attack') sfx.play(turn.playerDamage > 0 ? 'espada' : 'esquiva');
+  else if (turn.playerAction === 'defend') sfx.play('bloqueo');
+  else if (turn.playerDamage > 0) sfx.play('golpe');
+}
+
+/** Muerte: jingle, pantalla roja, y luego la música de game over (o silencio) */
+function gameOverAudio(music: string | null) {
+  sfx.setAmbience(null);
+  audioManager.stop();
+  const seconds = sfx.play('muerte');
+  screenFx('death', 2);
+  if (music) setTimeout(() => audioManager.play(music), Math.max(1, seconds) * 1000);
 }
 
 const CHAT_MODE_TITLES: Record<string, string> = {

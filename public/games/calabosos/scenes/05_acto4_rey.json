@@ -5,6 +5,7 @@
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
@@ -51,6 +52,10 @@
               "vision_mala": true
             }
           }
+        },
+        {
+          "type": "sound",
+          "sfx": "miedo"
         },
         {
           "type": "dialog",
@@ -107,9 +112,14 @@
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "grito"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -135,7 +145,10 @@
             "image": "images/dialogs/babosas_guardianas.png",
             "hp": 26,
             "attack": 6,
-            "defense": 0
+            "defense": 0,
+            "sfx": {
+              "hit": "bloqueo"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -252,6 +265,7 @@
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
@@ -280,11 +294,30 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "canto_horrible",
+          "wait": true,
+          "condition": {
+            "flags": {
+              "pista_musica": true
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "Y cantas. Cantas tan mal que una estalactita se desprende del techo por vergüenza. Las Guardianas se tapan las antenas y se arrastran lejos, sollozando."
           ],
+          "condition": {
+            "flags": {
+              "pista_musica": true
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "caida",
           "condition": {
             "flags": {
               "pista_musica": true
@@ -318,11 +351,13 @@
                   "sexi": 10
                 }
               },
-              "goto": "acto4_sala_trono"
+              "goto": "acto4_sala_trono",
+              "sfx": "risa_malvada"
             },
             "success": {
               "text": "Lanzas una piedra lejos. Las Guardianas van a investigar. Increíble. El truco más viejo del mundo funciona con babosas.",
-              "goto": "acto4_sala_trono"
+              "goto": "acto4_sala_trono",
+              "sfx": "golpe"
             },
             "failure": {
               "text": "Tu distracción consiste en agitar los brazos y gritar «¡miren allá!». No miran allá. Te miran a ti.",
@@ -331,7 +366,8 @@
                   "miedo": 15
                 }
               },
-              "goto": "acto4_guardianas"
+              "goto": "acto4_guardianas",
+              "sfx": "grito"
             },
             "critical_failure": {
               "text": "Te tropiezas en medio de las dos Guardianas. Es la peor distracción de la historia. Y la más corta.",
@@ -341,7 +377,8 @@
                   "pis": 20
                 }
               },
-              "goto": "acto4_guardianas"
+              "goto": "acto4_guardianas",
+              "sfx": "caida"
             }
           }
         }
@@ -351,7 +388,8 @@
       "scenario": {
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "cueva",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
@@ -407,16 +445,25 @@
       "scenario": {
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "cueva",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "miedo"
+        },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "El huevo dorado de tu mochila empieza a latir con fuerza. Una sección de la pared responde con el mismo latido y se abre como una cortina húmeda."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "puerta"
         },
         {
           "type": "dialog",
@@ -460,7 +507,8 @@
       "scenario": {
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "cueva",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
@@ -470,6 +518,10 @@
           "lines": [
             "Sigues el mapa del Mago. El pasaje existe. Está limpio, iluminado... y tiene un felpudo que dice «BIENVENIDO» en babosa."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "campanilla"
         },
         {
           "type": "dialog",
@@ -517,7 +569,8 @@
       "scenario": {
         "name": "Acto IV: El Corazón del Abismo",
         "image": "images/scenarios/corazon_abismo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "cueva",
         "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
@@ -562,7 +615,8 @@
                   "pis": 0
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "pis"
             },
             {
               "text": "Descubres una cámara oculta de otro aventurero. Dejó un paquete: una daga rompe-cristal con runas y un frasco de Esencia de Babosa Plateada, letal para el Rey.",
@@ -599,7 +653,8 @@
                 }
               },
               "min": 6,
-              "max": 10
+              "max": 10,
+              "sfx": "portazo"
             },
             {
               "text": "Te arrastras con determinación. El túnel termina en una abertura oculta tras unos cristales, a un costado del trono.",
@@ -642,7 +697,9 @@
       "scenario": {
         "name": "Sala del Trono",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_trono.ogg",
+        "ambience": "abismo",
+        "sfx": "gong",
         "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
       },
       "sequence": [
@@ -653,6 +710,10 @@
             "La sala del trono. Techo abovedado, pilares de cristal vivo y, en el centro, sobre una plataforma, una masa colosal y pulsante del tamaño de una casa: el Rey Baboso.",
             "Su cuerpo translúcido deja ver objetos a medio digerir: espadas, armaduras y lo que parece un zapato escolar."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "rugido"
         },
         {
           "type": "dialog",
@@ -739,6 +800,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "tension"
+        },
+        {
           "type": "choice",
           "options": [
             {
@@ -770,7 +835,8 @@
       "scenario": {
         "name": "Sala del Trono",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_trono.ogg",
+        "ambience": "abismo",
         "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
       },
       "sequence": [
@@ -801,7 +867,8 @@
             },
             "failure": {
               "text": "«¿Crees que caeré en eso? He absorbido a ilusionistas.» Te ignora y ataca.",
-              "goto": "acto4_fase1"
+              "goto": "acto4_fase1",
+              "sfx": "rugido"
             },
             "critical_failure": {
               "text": "Intentas hacer una voltereta distractora. Aterrizas en un charco de baba real. El Rey se ríe tanto que tiembla la sala. Luego te ataca, de buen humor.",
@@ -811,7 +878,8 @@
                   "miedo": 10
                 }
               },
-              "goto": "acto4_fase1"
+              "goto": "acto4_fase1",
+              "sfx": "risa_malvada"
             }
           }
         }
@@ -821,7 +889,8 @@
       "scenario": {
         "name": "Sala del Trono",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_trono.ogg",
+        "ambience": "abismo",
         "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
       },
       "sequence": [
@@ -903,6 +972,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "baba"
+        },
+        {
           "type": "dialog",
           "character": "nerly",
           "lines": [
@@ -918,7 +991,10 @@
             "attack": 6,
             "defense": 0,
             "firstStrike": true,
-            "firstStrikeText": "¡Un tentáculo te azota antes de que puedas moverte!"
+            "firstStrikeText": "¡Un tentáculo te azota antes de que puedas moverte!",
+            "sfx": {
+              "hit": "baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1003,6 +1079,7 @@
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
             }
           ],
+          "music": "audio/rpgchip14_battle_2.ogg",
           "results": {
             "victory": {
               "text": "Cortas, esquivas y quemas hasta que los tentáculos se retiran chillando hacia el cuerpo del Rey. Primera fase superada. Faltan dos. Respira.",
@@ -1053,6 +1130,10 @@
         "music": "audio/rpgchip14_battle_2.ogg"
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "pasos"
+        },
         {
           "type": "dialog",
           "character": "prestamista",
@@ -1133,6 +1214,15 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "baba",
+          "wait": true
+        },
+        {
+          "type": "sound",
+          "sfx": "grillo"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -1146,6 +1236,10 @@
             "Puaj. Sabía a intereses compuestos.",
             "(El Rey tose. Algo le cayó mal. Su masa se sacude, indigesta.)"
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "eructo"
         },
         {
           "type": "effects",
@@ -1210,7 +1304,8 @@
                   "nerly": 5
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "baba"
             },
             {
               "text": "El tiempo se ralentiza. Rebotas de tentáculo en tentáculo y en pleno vuelo golpeas el centro del cristal, que se agrieta con una luz cegadora. «¡IMPOSIBLE!»",
@@ -1226,7 +1321,8 @@
                   "golpe_critico_rey": true
                 }
               },
-              "natural": 20
+              "natural": 20,
+              "sfx": "cristal"
             },
             {
               "text": "Un tentáculo te golpea en el pecho y te lanza contra un pilar de cristal. «¿Este es el gran héroe? Patético.»",
@@ -1236,7 +1332,8 @@
                   "miedo": 15
                 }
               },
-              "max": 5
+              "max": 5,
+              "sfx": "golpe"
             },
             {
               "text": "Esquivas varios tentáculos, pero el Rey anticipa tu estrategia y un chorro de baba ácida te obliga a retroceder. «Predecible.»",
@@ -1246,7 +1343,8 @@
                 }
               },
               "min": 6,
-              "max": 10
+              "max": 10,
+              "sfx": "acido"
             },
             {
               "text": "Esquivas casi todo. Un tentáculo te roza el hombro, pero llegas lo bastante cerca para ver el cristal con claridad. «Persistente», gruñe el Rey.",
@@ -1276,7 +1374,8 @@
                   "cristal_expuesto": true
                 }
               },
-              "min": 16
+              "min": 16,
+              "sfx": "esquiva"
             }
           ]
         },
@@ -1286,6 +1385,15 @@
           "lines": [
             "¡BOB! ¡Voy a sujetarle los tentáculos! ¡No te detengas!"
           ],
+          "condition": {
+            "relationshipTier": {
+              "nerly": "allied"
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "baba",
           "condition": {
             "relationshipTier": {
               "nerly": "allied"
@@ -1400,7 +1508,7 @@
       "scenario": {
         "name": "Batalla Final",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip14_battle_2.ogg"
+        "music": "audio/cyb_jefe.ogg"
       },
       "sequence": [
         {
@@ -1417,7 +1525,11 @@
             "image": "images/dialogs/rey_baboso.png",
             "hp": 22,
             "attack": 6,
-            "defense": 0
+            "defense": 0,
+            "sfx": {
+              "hit": "baba",
+              "death": "explosion_baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1502,6 +1614,7 @@
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
             }
           ],
+          "music": "audio/cyb_jefe.ogg",
           "results": {
             "victory": {
               "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
@@ -1532,9 +1645,13 @@
       "scenario": {
         "name": "Batalla Final",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip14_battle_2.ogg"
+        "music": "audio/cyb_jefe.ogg"
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "rugido"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -1549,7 +1666,11 @@
             "image": "images/dialogs/rey_baboso.png",
             "hp": 30,
             "attack": 7,
-            "defense": 0
+            "defense": 0,
+            "sfx": {
+              "hit": "baba",
+              "death": "explosion_baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1634,6 +1755,7 @@
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
             }
           ],
+          "music": "audio/cyb_jefe.ogg",
           "results": {
             "victory": {
               "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
@@ -1664,9 +1786,13 @@
       "scenario": {
         "name": "Batalla Final",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip14_battle_2.ogg"
+        "music": "audio/cyb_jefe.ogg"
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "rugido"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -1690,7 +1816,11 @@
             "attack": 7,
             "defense": 0,
             "damagePerTurn": 1,
-            "damagePerTurnText": "La baba real hierve a tu alrededor"
+            "damagePerTurnText": "La baba real hierve a tu alrededor",
+            "sfx": {
+              "hit": "baba",
+              "death": "explosion_baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1775,6 +1905,7 @@
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
             }
           ],
+          "music": "audio/cyb_jefe.ogg",
           "results": {
             "victory": {
               "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
@@ -1805,7 +1936,9 @@
       "scenario": {
         "name": "Desenlace",
         "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip08_castle_on_the_mountain.ogg"
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "ambience": "bosque",
+        "sfx": "burbujas"
       },
       "sequence": [
         {
@@ -1814,6 +1947,10 @@
           "lines": [
             "El cuerpo del Rey pierde cohesión. Se derrama, se deshace, se evapora en burbujas que explotan con pequeños gritos. El techo empieza a caer."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "temblor"
         },
         {
           "type": "dialog",
@@ -1835,6 +1972,10 @@
           "lines": [
             "Las que no estaban bajo su control sobrevivirán. El Abismo existía antes que él. Solo que ahora, sin su tiranía."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "derrumbe"
         },
         {
           "type": "dialog",
@@ -1886,7 +2027,8 @@
           "style": "achievement",
           "title": "¡El Rey Baboso ha caído!",
           "text": "Viscaria está a salvo. Por ahora. Elige cómo termina tu historia.",
-          "icon": "👑"
+          "icon": "👑",
+          "sfx": "final"
         },
         {
           "type": "choice",

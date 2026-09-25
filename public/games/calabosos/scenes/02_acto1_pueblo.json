@@ -5,6 +5,8 @@
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
         "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo",
+        "sfx": "campana",
         "description": "La plaza de Viscaria: huele a pescado, a sudor y a decisiones que vas a lamentar."
       },
       "sequence": [
@@ -82,7 +84,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -142,7 +145,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -187,6 +191,15 @@
           "condition": {
             "stats": {
               "dinero": "<10"
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "grillo",
+          "condition": {
+            "stats": {
+              "dinero": ">=10"
             }
           }
         },
@@ -279,7 +292,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -334,7 +348,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -369,6 +384,7 @@
         "name": "Establos",
         "image": "images/scenarios/establos.png",
         "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo",
         "description": "Caballos de guerra mutantes. Echan fuego por un extremo. Adivina cuál."
       },
       "sequence": [
@@ -378,6 +394,11 @@
           "lines": [
             "¿Vienes por el trabajo? Perfecto. Los caballos están de buen humor hoy. Solo quemaron a dos."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "rugido",
+          "volume": 0.7
         },
         {
           "type": "dialog",
@@ -413,7 +434,8 @@
                   "quemado"
                 ]
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "pedo"
             },
             {
               "text": "Los caballos no solo te dejan limpiar: te ADORAN. Uno te regala una bolsita que tenía escondida en el pesebre. «¿Eres un encantador de caballos?», balbucea el dueño. 100 monedas y un amuleto que encontró en el estómago de un caballo.",
@@ -442,7 +464,8 @@
                   "baba_caballo"
                 ]
               },
-              "max": 5
+              "max": 5,
+              "sfx": "golpe"
             },
             {
               "text": "Limpias la mitad antes de que un caballo decida que tu pelo es comestible. Trabajo a medias, corte de pelo nuevo. 40 monedas.",
@@ -454,7 +477,8 @@
                 }
               },
               "min": 6,
-              "max": 10
+              "max": 10,
+              "sfx": "comer"
             },
             {
               "text": "Sorprendentemente limpias el establo sin incidentes mayores. Solo un chamuscado en la capa y un mordisco superficial. ¡Casi un éxito! 70 monedas.",
@@ -498,15 +522,24 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "burbujas"
+        },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "El alquimista del pueblo te pasa un frasco burbujeante de color «no». Te paga por adelantado, lo que ya es mala señal."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "beber"
         },
         {
           "type": "random",
@@ -519,7 +552,8 @@
                   "dinero": 35,
                   "sexi": -5
                 }
-              }
+              },
+              "sfx": "magia"
             },
             {
               "weight": 1,
@@ -539,7 +573,8 @@
                   "dinero": 30,
                   "miedo": 25
                 }
-              }
+              },
+              "sfx": "misterio"
             }
           ]
         },
@@ -558,7 +593,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -609,7 +645,8 @@
       "scenario": {
         "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
-        "music": "audio/rpgchip03_town.ogg"
+        "music": "audio/rpgchip03_town.ogg",
+        "ambience": "pueblo"
       },
       "sequence": [
         {
@@ -705,7 +742,8 @@
                   "sexi": -10
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "risa"
             },
             {
               "text": "«Nunca pensé que diría esto, pero me impresionaste. 100 monedas, un mapa del Abismo y una daga ceremonial.» Tu abuela sonríe desde las cenizas.",
@@ -802,6 +840,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "tension"
+        },
+        {
           "type": "choice",
           "options": [
             {
@@ -839,7 +881,8 @@
       "scenario": {
         "name": "Mercado",
         "image": "images/scenarios/mercado.png",
-        "music": "audio/rpgchip03_town.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "pueblo",
         "description": "El mercado: vendedores gritones, carteristas profesionales y un noble muy distraído."
       },
       "sequence": [
@@ -898,7 +941,8 @@
                   "reclutado_por_guardia": true
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "alerta"
             },
             {
               "text": "¡Por todas las babosas! 100 monedas, una llave misteriosa y un mapa parcial del Abismo. El noble ni se entera. Deberías cambiar de profesión.",
@@ -923,7 +967,8 @@
                   "pis": 20
                 }
               },
-              "max": 5
+              "max": 5,
+              "sfx": "huida"
             },
             {
               "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de ladrón.",
@@ -991,6 +1036,7 @@
         "name": "Tienda del Tendero",
         "image": "images/scenarios/tienda.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "sfx": "campanilla",
         "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
       },
       "sequence": [
@@ -1014,6 +1060,10 @@
           "lines": [
             "Necesito equipo para entrar al Abismo de las Babosas."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "hipo"
         },
         {
           "type": "dialog",
@@ -1228,7 +1278,9 @@
       "scenario": {
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
-        "music": "audio/rpgchip09_rainy_streets.ogg"
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "ambience": "lluvia",
+        "sfx": "caida"
       },
       "sequence": [
         {
@@ -1260,6 +1312,10 @@
         "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "hipo"
+        },
         {
           "type": "dialog",
           "character": "tendero",
@@ -1321,7 +1377,9 @@
       "scenario": {
         "name": "Taberna «La Babosa Ebria»",
         "image": "images/scenarios/taberna.png",
-        "music": "audio/rpgchip05_pavane.ogg",
+        "music": "audio/cyb_taberna.ogg",
+        "ambience": "taberna",
+        "sfx": "puerta",
         "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
       },
       "sequence": [
@@ -1387,7 +1445,8 @@
       "scenario": {
         "name": "Taberna «La Babosa Ebria»",
         "image": "images/scenarios/taberna.png",
-        "music": "audio/rpgchip05_pavane.ogg",
+        "music": "audio/cyb_rap.ogg",
+        "ambience": "taberna",
         "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
       },
       "sequence": [
@@ -1453,10 +1512,16 @@
       "scenario": {
         "name": "Taberna «La Babosa Ebria»",
         "image": "images/scenarios/taberna.png",
-        "music": "audio/rpgchip05_pavane.ogg",
+        "music": "audio/cyb_taberna.ogg",
+        "ambience": "taberna",
         "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "beber",
+          "wait": true
+        },
         {
           "type": "random",
           "outcomes": [
@@ -1469,7 +1534,8 @@
                   "pis": 35,
                   "dinero": -3
                 }
-              }
+              },
+              "sfx": "eructo"
             },
             {
               "weight": 1,
@@ -1479,7 +1545,8 @@
                   "dinero": -5,
                   "sexi": -5
                 }
-              }
+              },
+              "sfx": "ronquido"
             },
             {
               "weight": 1,
@@ -1489,7 +1556,8 @@
                   "dinero": 8,
                   "sexi": 5
                 }
-              }
+              },
+              "sfx": "aplauso"
             }
           ]
         },
@@ -1508,7 +1576,8 @@
       "scenario": {
         "name": "Taberna «La Babosa Ebria»",
         "image": "images/scenarios/taberna.png",
-        "music": "audio/rpgchip05_pavane.ogg",
+        "music": "audio/cyb_taberna.ogg",
+        "ambience": "taberna",
         "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
       },
       "sequence": [
@@ -1559,6 +1628,7 @@
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
         "music": "audio/rpgchip09_rainy_streets.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
@@ -1582,6 +1652,10 @@
           "lines": [
             "Desarrollo de personaje, atmósfera, tensión narrativa. Elige la excusa que más te guste."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "baba"
         },
         {
           "type": "dialog",
@@ -1621,15 +1695,24 @@
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
         "music": "audio/rpgchip09_rainy_streets.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "pasos"
+        },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "Qué bonito intento. Das tres pasos y el sonido viscoso te sigue. Das tres más: te sigue. Te das vuelta."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "baba"
         },
         {
           "type": "dialog",
@@ -1653,7 +1736,8 @@
       "scenario": {
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
-        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "music": "audio/cyb_nerly.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
@@ -1736,7 +1820,8 @@
       "scenario": {
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
-        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "music": "audio/cyb_nerly.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
@@ -1769,7 +1854,8 @@
       "scenario": {
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
-        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "music": "audio/cyb_nerly.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
@@ -1820,7 +1906,8 @@
       "scenario": {
         "name": "Callejón Lateral",
         "image": "images/scenarios/callejon.png",
-        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "music": "audio/cyb_nerly.ogg",
+        "ambience": "lluvia",
         "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
       },
       "sequence": [
@@ -1893,7 +1980,8 @@
                   "nerly_derretida": true
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "acido"
             },
             {
               "text": "Divides la sal en bolsitas etiquetadas con un cuidado casi ceremonial. Nerly te mira emocionada: «Nunca un humano fue tan considerado. Te enseñaré a hacer un ungüento anti-sal para que luchemos juntos.»",
@@ -1921,7 +2009,8 @@
                   "nerly": -15
                 }
               },
-              "max": 5
+              "max": 5,
+              "sfx": "acido"
             },
             {
               "text": "Guardas la sal, pero Nerly mantiene una distancia prudente. «Avísame antes de usarla, ¿sí? Para ponerme a cubierto.»",
@@ -1991,6 +2080,7 @@
         "name": "Puerta de la Ciudad",
         "image": "images/scenarios/puerta_ciudad.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "pueblo",
         "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
       },
       "sequence": [
@@ -2087,6 +2177,7 @@
         "name": "Puerta de la Ciudad",
         "image": "images/scenarios/puerta_ciudad.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "pueblo",
         "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
       },
       "sequence": [
@@ -2111,7 +2202,8 @@
                   "sexi": 10
                 }
               },
-              "goto": "acto1_salida"
+              "goto": "acto1_salida",
+              "sfx": "aplauso"
             },
             "success": {
               "text": "Subes, resbalas, subes otra vez y caes del lado correcto. Casi con estilo.",
@@ -2125,7 +2217,8 @@
                   "sexi": -5
                 }
               },
-              "goto": "acto1_mago"
+              "goto": "acto1_mago",
+              "sfx": "caida"
             },
             "critical_failure": {
               "text": "Caes de cabeza sobre un carro de coles. El dueño del carro te cobra las coles. Y la dignidad.",
@@ -2136,7 +2229,8 @@
                   "sexi": -10
                 }
               },
-              "goto": "acto1_mago"
+              "goto": "acto1_mago",
+              "sfx": "caida"
             }
           }
         }
@@ -2147,6 +2241,7 @@
         "name": "Puerta de la Ciudad",
         "image": "images/scenarios/puerta_ciudad.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "pueblo",
         "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
       },
       "sequence": [
@@ -2164,7 +2259,8 @@
                   "sexi": 15
                 }
               },
-              "goto": "acto1_salida"
+              "goto": "acto1_salida",
+              "sfx": "llanto"
             },
             "success": {
               "text": "Los guardias se miran, se encogen de hombros y te dejan pasar. No les pagan lo suficiente para esto.",
@@ -2192,7 +2288,8 @@
                   "pis": 15
                 }
               },
-              "goto": "acto1_mago"
+              "goto": "acto1_mago",
+              "sfx": "gallo"
             }
           }
         }
@@ -2203,6 +2300,7 @@
         "name": "Callejón del Mago",
         "image": "images/scenarios/callejon.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "viento",
         "description": "Humo morado y olor a queso rancio. Nunca buena señal."
       },
       "sequence": [
@@ -2212,6 +2310,10 @@
           "lines": [
             "No necesitamos al administrador. Conozco a alguien que puede ayudarnos."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "magia"
         },
         {
           "type": "dialog",
@@ -2286,6 +2388,7 @@
         "name": "Callejón del Mago",
         "image": "images/scenarios/callejon.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "viento",
         "description": "Humo morado y olor a queso rancio. Nunca buena señal."
       },
       "sequence": [
@@ -2295,6 +2398,11 @@
           "lines": [
             "¿Para qué? ¡Para la MAGIA, claro! Pero ya que preguntas... hagamos esto a mi manera. ¡Necesito un voluntario para mi siguiente truco!"
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "tambor",
+          "wait": true
         },
         {
           "type": "dice",
@@ -2322,7 +2430,8 @@
                   "pelo_rosa"
                 ]
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "teletransporte"
             },
             {
               "text": "Pone un cristal en tu mano. Piensas en un lugar y el cristal lo proyecta en el aire. El Mago palidece: «No esperaba que funcionara de verdad. Quédatelo. Y si sobrevives, búscame.»",
@@ -2338,7 +2447,8 @@
                   "afinidad_magica": true
                 }
               },
-              "natural": 20
+              "natural": 20,
+              "sfx": "magia"
             },
             {
               "text": "Le muestras tu bolsa para «comparar después». Unos pases mágicos y «¡ahora tienes una moneda extra!». Cuentas: tienes 20 menos. El Mago ya no está. Vuelve. Te da el permiso igual. Es un profesional.",
@@ -2348,7 +2458,8 @@
                   "dinero": -20
                 }
               },
-              "max": 5
+              "max": 5,
+              "sfx": "risa"
             },
             {
               "text": "Convierte agua en «vino» (jugo de uva con colorante) con tu «financiación mágica». Te devuelve 5 monedas por ser buen deportista.",
@@ -2358,7 +2469,8 @@
                 }
               },
               "min": 6,
-              "max": 10
+              "max": 10,
+              "sfx": "magia"
             },
             {
               "text": "Le das un botón. Lo transforma en... un botón ligeramente más brillante. «Brilla en la oscuridad. Útil para no tropezar.» Casi útil.",
@@ -2368,7 +2480,8 @@
                 ]
               },
               "min": 11,
-              "max": 15
+              "max": 15,
+              "sfx": "magia"
             },
             {
               "text": "Hace desaparecer un huevo de tu mano. «Aparecerá cuando más lo necesites.» Más tarde lo encuentras en tu mochila, cubierto de runas que zumban.",
@@ -2381,7 +2494,8 @@
                   "huevo_runico"
                 ]
               },
-              "min": 16
+              "min": 16,
+              "sfx": "teletransporte"
             }
           ]
         },
@@ -2401,9 +2515,14 @@
         "name": "Callejón del Mago",
         "image": "images/scenarios/callejon.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "viento",
         "description": "Humo morado y olor a queso rancio. Nunca buena señal."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "magia"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -2434,6 +2553,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "teletransporte"
+        },
+        {
           "type": "effects",
           "effects": {
             "inventory": [
@@ -2460,6 +2583,7 @@
         "name": "Puerta de la Ciudad",
         "image": "images/scenarios/puerta_ciudad.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "pueblo",
         "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
       },
       "sequence": [
@@ -2558,7 +2682,8 @@
               "goto": "acto2_camino",
               "tags": [
                 "prudente"
-              ]
+              ],
+              "sfx": "pis"
             },
             {
               "text": "«¿Seguro que quiero hacer esto?»",
@@ -2576,6 +2701,8 @@
         "name": "Puerta de la Ciudad",
         "image": "images/scenarios/puerta_ciudad.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "pueblo",
+        "sfx": "portazo",
         "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
       },
       "sequence": [

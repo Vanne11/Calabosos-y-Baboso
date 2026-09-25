@@ -37,6 +37,34 @@ export interface GameManifest {
   ai?: AiConfig;
   /** Códice (bestiario, diario...): entradas que se desbloquean con effects.unlockCodex */
   codex?: CodexConfig;
+  /** Música de situaciones y efectos automáticos (ver docs/audio.md) */
+  audio?: AudioConfig;
+}
+
+export interface AudioConfig {
+  /** Música por defecto de los combates (un paso combat puede traer la suya en `music`) */
+  combatMusic?: string;
+  /** Música al llegar a _game_over */
+  gameOverMusic?: string;
+  /** Efecto al cambiar cada stat: { "ganas_de_vivir": { "down": "dano", "up": "curar", "shake": true } } */
+  statSfx?: Record<string, StatSfxRule>;
+  /** Efecto al conseguir un objeto (por defecto "objeto") */
+  itemSfx?: string;
+  /** Efecto al perder un objeto (por defecto ninguno) */
+  removeItemSfx?: string;
+}
+
+export interface StatSfxRule {
+  up?: string;
+  down?: string;
+  /** Una bajada de al menos `amount` usa este efecto en vez de `down` */
+  bigDown?: { amount: number; sfx: string };
+  /** Una subida de al menos `amount` usa este efecto en vez de `up` */
+  bigUp?: { amount: number; sfx: string };
+  /** Bajar sacude la pantalla y la tiñe de rojo (la vida) */
+  shake?: boolean;
+  /** Destello al subir */
+  flashUp?: 'heal' | 'gold';
 }
 
 export interface CodexConfig {
@@ -269,6 +297,13 @@ export interface ScenarioDef {
   name: string;
   image?: string;
   music?: string;
+  /**
+   * Ambiente en bucle bajo la música (lluvia, cueva...). "none" lo apaga.
+   * Si no se indica: una escena con `music` propia lo apaga; una sin `music` mantiene el anterior.
+   */
+  ambience?: string;
+  /** Efecto(s) al entrar en la escena (del catálogo: "puerta", "explosion"...) */
+  sfx?: string | string[];
   description?: string;
   variants?: Record<string, string>;
 }
@@ -356,6 +391,8 @@ export interface ChoiceOption {
   condition?: StepCondition;
   /** Etiquetas de perfil que suma esta decisión (ej: ["cobarde"]) */
   tags?: string[];
+  /** Efecto que suena al elegirla ("puerta", "pedo"...) */
+  sfx?: string;
 }
 
 export interface ChoiceStep {
@@ -375,6 +412,8 @@ export interface DiceOutcome {
   text: string;
   effects?: Effects;
   goto?: string;
+  /** Efecto que suena con este resultado (además del de éxito/fallo) */
+  sfx?: string;
 }
 
 export interface DiceStep {
@@ -397,6 +436,7 @@ export interface DiceTier {
   text: string;
   effects?: Effects;
   goto?: string;
+  sfx?: string;
 }
 
 export interface InputStep {
@@ -439,6 +479,8 @@ export interface RandomOutcome {
   text: string;
   effects?: Effects;
   goto?: string;
+  /** Efecto que suena con este resultado */
+  sfx?: string;
 }
 
 // --- Check: comprobación determinista de stat ---
@@ -512,6 +554,8 @@ export interface CombatStep {
   /** Armas: se usa la de mayor bonus que tenga el jugador (suma daño al atacar) */
   weapons?: CombatWeapon[];
   results: CombatResults;
+  /** Música de este combate (si no, audio.combatMusic del juego). "none" = no cambiarla */
+  music?: string;
   condition?: StepCondition;
 }
 
@@ -538,6 +582,8 @@ export interface CombatEnemy {
   /** Daño al jugador si muere por un ataque cuerpo a cuerpo (los items la matan sin riesgo) */
   deathDamage?: number;
   deathText?: string;
+  /** Sonidos propios: al golpearlo (si no, espada) y al morir (si no, muere_enemigo) */
+  sfx?: { hit?: string; death?: string };
 }
 
 export interface CombatWeapon {
@@ -582,6 +628,8 @@ export interface NotifyStep {
   title: string;
   text: string;
   icon?: string;
+  /** Efecto que suena (por defecto uno según el estilo; "none" = silencio) */
+  sfx?: string;
   effects?: Effects;
   condition?: StepCondition;
 }
@@ -600,8 +648,13 @@ export interface WaitStep {
 
 export interface SoundStep {
   type: 'sound';
-  src: string;
+  /** Archivo de audio del juego (one-shot) */
+  src?: string;
+  /** Efecto sintetizado del catálogo (alternativa a src): "puerta", "explosion", "pifia"... */
+  sfx?: string;
   volume?: number; // 0-1
+  /** Esperar a que termine antes de seguir (por defecto no espera) */
+  wait?: boolean;
   condition?: StepCondition;
 }
 
@@ -721,6 +774,8 @@ export interface ExamineSubject {
   effects?: Effects;
   condition?: StepCondition;
   oneTime?: boolean;
+  /** Efecto que suena al examinarlo */
+  sfx?: string;
 }
 
 // --- UseItem: usar item en objetivo del entorno ---
@@ -748,6 +803,8 @@ export interface UseItemAccept {
   consume?: boolean;
   effects?: Effects;
   goto?: string;
+  /** Efecto que suena al usarlo con éxito (si no, el de éxito genérico) */
+  sfx?: string;
 }
 
 // --- TimedChoice: decisión con temporizador ---

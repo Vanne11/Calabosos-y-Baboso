@@ -1,5 +1,6 @@
 // engine/AudioManager.ts
-// Gestor de audio del juego: música de fondo con crossfade entre pistas
+// Gestor de audio del juego: música de fondo con crossfade entre pistas.
+// Los efectos sintetizados y ambientes están en src/audio/ (SfxPlayer).
 
 const FADE_DURATION = 1500; // ms
 const FADE_STEPS = 30;
@@ -11,6 +12,10 @@ export class AudioManager {
   private fading: boolean = false;
   private pendingTrack: string | null = null;
   private unlocked: boolean = false;
+  /** Factor temporal (0-1) para bajar la música mientras suena un jingle */
+  private duckFactor: number = 1;
+  private duckTimer: ReturnType<typeof setTimeout> | null = null;
+  private duckFrame: number | null = null;
 
   constructor() {
     // Unlock audio on first user interaction
@@ -37,8 +42,41 @@ export class AudioManager {
   set volume(v: number) {
     this._volume = Math.max(0, Math.min(1, v));
     if (this.current && !this.fading) {
-      this.current.volume = this._volume;
+      this.current.volume = this.target;
     }
+  }
+
+  /** Volumen efectivo: el configurado por el jugador, atenuado si hay un jingle sonando */
+  private get target(): number {
+    return this._volume * this.duckFactor;
+  }
+
+  /** Pista que está sonando (ruta) */
+  get track(): string | null {
+    return this.currentTrack;
+  }
+
+  /** Baja la música durante `seconds` (jingles) y la recupera suavemente */
+  duck(seconds: number, factor = 0.25): void {
+    if (this.duckTimer) clearTimeout(this.duckTimer);
+    this.rampDuck(factor, 120);
+    this.duckTimer = setTimeout(() => {
+      this.duckTimer = null;
+      this.rampDuck(1, 800);
+    }, seconds * 1000);
+  }
+
+  private rampDuck(to: number, ms: number): void {
+    if (this.duckFrame !== null) cancelAnimationFrame(this.duckFrame);
+    const from = this.duckFactor;
+    const start = performance.now();
+    const tick = () => {
+      const p = Math.min(1, (performance.now() - start) / ms);
+      this.duckFactor = from + (to - from) * p;
+      if (this.current && !this.fading) this.current.volume = this.target;
+      this.duckFrame = p < 1 ? requestAnimationFrame(tick) : null;
+    };
+    this.duckFrame = requestAnimationFrame(tick);
   }
 
   /** Play a track with crossfade. If same track, do nothing. */
@@ -117,9 +155,9 @@ export class AudioManager {
         const progress = Math.min(1, elapsed / FADE_DURATION);
 
         if (old) {
-          old.volume = Math.max(0, this._volume * (1 - progress));
+          old.volume = Math.max(0, this.target * (1 - progress));
         }
-        next.volume = this._volume * progress;
+        next.volume = this.target * progress;
 
         if (progress < 1) {
           requestAnimationFrame(tick);
@@ -145,7 +183,7 @@ export class AudioManager {
         const elapsed = performance.now() - start;
         const progress = Math.min(1, elapsed / FADE_DURATION);
 
-        audio.volume = Math.max(0, this._volume * (1 - progress));
+        audio.volume = Math.max(0, this.target * (1 - progress));
 
         if (progress < 1) {
           requestAnimationFrame(tick);

@@ -4,7 +4,8 @@
       "scenario": {
         "name": "Has muerto",
         "image": "images/scenarios/muerte.png",
-        "music": "audio/rpgchip15_game_over.ogg"
+        "music": "audio/rpgchip15_game_over.ogg",
+        "sfx": "muerte"
       },
       "sequence": [
         {
@@ -39,7 +40,8 @@
           "style": "warning",
           "title": "Has muerto",
           "text": "Muertes totales: {meta.muertes}. Partidas: {meta.partidas}.",
-          "icon": "💀"
+          "icon": "💀",
+          "sfx": "none"
         },
         {
           "type": "choice",
@@ -65,6 +67,8 @@
         "name": "Final: Celebración Heroica",
         "image": "images/scenarios/final.png",
         "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "ambience": "pueblo",
+        "sfx": "campana",
         "description": "La plaza de Viscaria, decorada con guirnaldas y babosas de papel."
       },
       "sequence": [
@@ -95,6 +99,10 @@
           "lines": [
             "Te nombramos Protector Oficial de Viscaria, con todos los privilegios y responsabilidades."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "aplauso"
         },
         {
           "type": "dialog",
@@ -166,6 +174,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "aplauso"
+        },
+        {
           "type": "dialog",
           "character": "protagonist",
           "lines": [
@@ -205,7 +217,8 @@
           "style": "achievement",
           "title": "Final: Celebración Heroica",
           "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
-          "icon": "🏁"
+          "icon": "🏁",
+          "sfx": "final"
         },
         {
           "type": "choice",
@@ -240,6 +253,7 @@
         "name": "Final: Nuevas Aventuras",
         "image": "images/scenarios/camino.png",
         "music": "audio/rpgchip11_airship.ogg",
+        "ambience": "viento",
         "description": "Una colina sobre Viscaria. El horizonte del norte está brumoso."
       },
       "sequence": [
@@ -335,7 +349,8 @@
           "style": "achievement",
           "title": "Final: Nuevas Aventuras (Continuará...)",
           "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
-          "icon": "🏁"
+          "icon": "🏁",
+          "sfx": "final"
         },
         {
           "type": "choice",
@@ -370,6 +385,7 @@
         "name": "Final: Retiro Pacífico",
         "image": "images/scenarios/cabana.png",
         "music": "audio/rpgchip05_pavane.ogg",
+        "ambience": "bosque",
         "description": "Una cabaña a las afueras de Viscaria, con un huerto y una babosa feliz entre las zanahorias."
       },
       "sequence": [
@@ -407,6 +423,10 @@
           "lines": [
             "Ah, y la ciudad te hizo una estatua en la plaza. Creo que exageraron un poco tus... proporciones heroicas."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "badum_tss"
         },
         {
           "type": "dialog",
@@ -455,7 +475,8 @@
           "style": "achievement",
           "title": "Final: Retiro Pacífico",
           "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
-          "icon": "🏁"
+          "icon": "🏁",
+          "sfx": "final"
         },
         {
           "type": "choice",
@@ -508,11 +529,19 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "magia_oscura"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "El aire frente a ti se distorsiona. Una figura se materializa: no es humana. Es una babosa enorme, antigua y majestuosa, con patrones iridiscentes que cambian sin parar."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "gong"
         },
         {
           "type": "dialog",
@@ -581,7 +610,8 @@
           "style": "achievement",
           "title": "Final Secreto: El Verdadero Narrador",
           "text": "Encontraste la verdad detrás de la historia. Y detrás del narrador.",
-          "icon": "🌀"
+          "icon": "🌀",
+          "sfx": "final"
         },
         {
           "type": "choice",

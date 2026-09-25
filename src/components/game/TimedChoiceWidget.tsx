@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { sfx } from '../../audio/SfxPlayer';
 
 const Container = styled.div`
   margin: 1rem 0;
@@ -77,6 +78,8 @@ const TimedChoiceWidget: React.FC<TimedChoiceWidgetProps> = ({
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         const next = prev - 1;
+        // Reloj: tic-tac, y alarma en los últimos segundos
+        if (!resolved.current && next > 0) sfx.play(next <= 3 ? 'alerta' : next % 2 ? 'tic' : 'tac');
         if (next <= 0) {
           clearInterval(interval);
           if (!resolved.current) {

@@ -5,6 +5,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "La boca del Abismo exhala un aliento dulce y podrido."
       },
       "sequence": [
@@ -85,6 +86,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "La boca del Abismo exhala un aliento dulce y podrido."
       },
       "sequence": [
@@ -97,11 +99,19 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "chapoteo"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "Tomas una piedra y la lanzas hacia la entrada. Cae en un charco de baba. Burbujea. Un tentáculo sale, la agarra y se la lleva al fondo."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "baba"
         },
         {
           "type": "dialog",
@@ -144,6 +154,7 @@
         "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "La boca del Abismo exhala un aliento dulce y podrido."
       },
       "sequence": [
@@ -225,7 +236,8 @@
       "scenario": {
         "name": "Túnel de las Babosas Mineras",
         "image": "images/scenarios/tunel_sigiloso.png",
-        "music": "audio/rpgchip06_dungeon.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "cueva",
         "description": "Estrecho, húmedo y apestoso. Como las fosas nasales de un gigante con sinusitis."
       },
       "sequence": [
@@ -269,7 +281,8 @@
                   "alucinaciones"
                 ]
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "tos"
             },
             {
               "text": "Avanzas con gracia sobrenatural y ves un brillo en una grieta: un cristal que contiene luz líquida. «¡Un Corazón de Babosa Cristalina!», exclama Nerly. «Cura heridas.»",
@@ -283,7 +296,8 @@
                   "corazon_cristalino"
                 ]
               },
-              "natural": 20
+              "natural": 20,
+              "sfx": "magia"
             },
             {
               "text": "Te quedas atascado. Pánico. Nerly vuelve con unas Babosas Lubricantes que... mejor no preguntes qué hacen, pero te liberan. Una hora humillante.",
@@ -294,7 +308,8 @@
                   "pis": 15
                 }
               },
-              "max": 5
+              "max": 5,
+              "sfx": "baba"
             },
             {
               "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final sudado y con rasguños.",
@@ -348,6 +363,7 @@
         "name": "Sala de Entrada",
         "image": "images/scenarios/sala_entrada.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
       },
       "sequence": [
@@ -417,6 +433,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "baba"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -455,7 +475,10 @@
               "espada_oxidada",
               "daga_ceremonial"
             ],
-            "corrodeChance": 0.5
+            "corrodeChance": 0.5,
+            "sfx": {
+              "hit": "acido"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -572,6 +595,7 @@
         "name": "Sala de Entrada",
         "image": "images/scenarios/sala_entrada.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
       },
       "sequence": [
@@ -602,6 +626,15 @@
           "condition": {
             "stats": {
               "zonas_completadas": "==1"
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "temblor",
+          "condition": {
+            "stats": {
+              "zonas_completadas": ">=2"
             }
           }
         },
@@ -689,6 +722,7 @@
         "name": "Sala de Entrada",
         "image": "images/scenarios/sala_entrada.png",
         "music": "audio/rpgchip06_dungeon.ogg",
+        "ambience": "cueva",
         "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
       },
       "sequence": [
@@ -724,6 +758,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "comer"
+        },
+        {
           "type": "choice",
           "options": [
             {
@@ -739,6 +777,8 @@
         "name": "Sucursal Subterránea",
         "image": "images/scenarios/tienda_abismo.png",
         "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "ambience": "cueva",
+        "sfx": "campanilla",
         "description": "Un nicho en la roca, un mostrador improvisado y un Tendero imposible."
       },
       "sequence": [
@@ -748,6 +788,15 @@
           "lines": [
             "¿Tú? ¿Cómo es posible?"
           ],
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": false
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "hipo",
           "condition": {
             "flags": {
               "tienda_abismo_vista": false
@@ -776,6 +825,15 @@
           "condition": {
             "flags": {
               "tienda_abismo_vista": false
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "hipo",
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": true
             }
           }
         },
@@ -874,6 +932,7 @@
         "name": "Cavernas de Cría",
         "image": "images/scenarios/cavernas_cria.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "abismo",
         "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
       },
       "sequence": [
@@ -890,6 +949,10 @@
           "lines": [
             "(susurrando) Aquí nacen las babosas. Las madres protegen los nidos. Si nos ven, estamos fritos. Bueno, disueltos."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "rugido"
         },
         {
           "type": "dialog",
@@ -947,6 +1010,7 @@
         "name": "Cavernas de Cría",
         "image": "images/scenarios/cavernas_cria.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "abismo",
         "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
       },
       "sequence": [
@@ -980,6 +1044,15 @@
           "lines": [
             "De detrás de la madre sale la babosita perdida del bosque. La madre te mira... y te lame la cara. Es su forma de dar las gracias. Es asqueroso. Es precioso."
           ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "sound",
+          "sfx": "baba",
           "condition": {
             "flags": {
               "babosita_salvada": true
@@ -1023,11 +1096,19 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "grito"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
             "La madre suelta un chillido. Del techo cae una Babosa Saltarina guardiana, directo hacia tu cabeza."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "caida"
         },
         {
           "type": "dialog",
@@ -1053,7 +1134,10 @@
             "attack": 5,
             "defense": 0,
             "firstStrike": true,
-            "firstStrikeText": "¡La Babosa Saltarina cae del techo sobre tu cara!"
+            "firstStrikeText": "¡La Babosa Saltarina cae del techo sobre tu cara!",
+            "sfx": {
+              "hit": "baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1166,6 +1250,7 @@
         "name": "Cavernas de Cría",
         "image": "images/scenarios/cavernas_cria.png",
         "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "ambience": "abismo",
         "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
       },
       "sequence": [
@@ -1215,7 +1300,8 @@
               },
               "tags": [
                 "ladron"
-              ]
+              ],
+              "sfx": "tension"
             },
             {
               "text": "Dejar los huevos en paz",
@@ -1277,6 +1363,7 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
@@ -1300,6 +1387,10 @@
           "lines": [
             "Una figura sale de detrás de una roca, sonriendo como si pasear por un abismo mortal fuera lo más normal del mundo."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "pasos"
         },
         {
           "type": "dialog",
@@ -1372,7 +1463,8 @@
                   "ganas_de_vivir": -25
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "tension"
             },
             {
               "text": "«Sé para quién trabajas», mientes con aplomo. Ian palidece: «¡Para el Mago de las Calles! Él y el Rey tienen un acuerdo. Yo espío aventureros.» Te da repelente de verdad y un mapa de un pasaje secreto al trono.",
@@ -1392,7 +1484,8 @@
                   "pacto_mago_rey"
                 ]
               },
-              "natural": 20
+              "natural": 20,
+              "sfx": "misterio"
             },
             {
               "text": "Con dudas, le compras el frasco por 30 monedas. «No lo uses hasta que yo lo huela», susurra Nerly.",
@@ -1451,6 +1544,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "teletransporte"
+        },
+        {
           "type": "choice",
           "options": [
             {
@@ -1466,9 +1563,14 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "baba"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -1530,9 +1632,14 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "ronquido"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -1580,7 +1687,8 @@
       "scenario": {
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "music": "audio/cyb_sigilo.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
@@ -1611,7 +1719,8 @@
                   "miedo": 15
                 }
               },
-              "goto": "acto3_explosiva_pelea"
+              "goto": "acto3_explosiva_pelea",
+              "sfx": "chapoteo"
             },
             "critical_failure": {
               "text": "Estornudas. En su cara. La babosa se despierta furiosa e hinchada como nunca.",
@@ -1621,7 +1730,8 @@
                   "pis": 20
                 }
               },
-              "goto": "acto3_explosiva_pelea"
+              "goto": "acto3_explosiva_pelea",
+              "sfx": "tos"
             }
           }
         }
@@ -1632,6 +1742,7 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
@@ -1644,7 +1755,10 @@
             "attack": 5,
             "defense": 0,
             "deathDamage": 18,
-            "deathText": "¡La Babosa Explosiva REVIENTA en tu cara! Llueve baba naranja."
+            "deathText": "¡La Babosa Explosiva REVIENTA en tu cara! Llueve baba naranja.",
+            "sfx": {
+              "hit": "baba"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -1758,6 +1872,7 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
@@ -1794,6 +1909,9 @@
             "split": {
               "hp": 10,
               "text": "¡La babosa se parte en dos y las mitades se vuelven a levantar! Te lo advirtieron."
+            },
+            "sfx": {
+              "hit": "baba"
             }
           },
           "playerStat": "ganas_de_vivir",
@@ -1907,9 +2025,14 @@
         "name": "Abismo Profundo",
         "image": "images/scenarios/abismo_profundo.png",
         "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo",
         "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "miedo"
+        },
         {
           "type": "dialog",
           "character": "nerly",
@@ -1952,6 +2075,7 @@
         "name": "Grutas de Cristal",
         "image": "images/scenarios/grutas_cristal.png",
         "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "ambience": "cueva",
         "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
       },
       "sequence": [
@@ -1992,6 +2116,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "magia_oscura"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -2021,7 +2149,10 @@
             "hp": 20,
             "attack": 5,
             "defense": 0,
-            "dodgeChance": 0.5
+            "dodgeChance": 0.5,
+            "sfx": {
+              "hit": "magia_oscura"
+            }
           },
           "playerStat": "ganas_de_vivir",
           "attackStat": "sexi",
@@ -2135,6 +2266,8 @@
         "name": "Grutas de Cristal",
         "image": "images/scenarios/grutas_cristal.png",
         "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "ambience": "cueva",
+        "sfx": "magia",
         "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
       },
       "sequence": [
@@ -2199,6 +2332,7 @@
         "name": "Grutas de Cristal",
         "image": "images/scenarios/grutas_cristal.png",
         "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "ambience": "cueva",
         "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
       },
       "sequence": [
@@ -2208,6 +2342,10 @@
           "lines": [
             "¿Últimas palabras antes de explotar en mil pedazos viscosos? ¿No? Bueno. Tocas la Lágrima. Una luz blanca lo inunda todo."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "magia"
         },
         {
           "type": "effects",
@@ -2246,7 +2384,8 @@
                   "vision_mala": true
                 }
               },
-              "natural": 1
+              "natural": 1,
+              "sfx": "magia_oscura"
             },
             {
               "text": "La Lágrima se eleva y te lo muestra todo: el cristal en la frente del Rey, el camino más seguro hasta él, y que sal mezclada con residuo cristalino atraviesa sus defensas. Luego se parte en fragmentos que caen en tu mano.",
@@ -2268,7 +2407,8 @@
                   "punto_debil_rey"
                 ]
               },
-              "natural": 20
+              "natural": 20,
+              "sfx": "magia"
             },
             {
               "text": "Imágenes confusas: el Abismo devorando ciudades... ¿Nerly traicionándote? ¿O salvándote? No lo sabes. «¿Qué viste?», pregunta ella. No le contestas.",
@@ -2333,7 +2473,8 @@
                   "punto_debil_rey"
                 ]
               },
-              "min": 16
+              "min": 16,
+              "sfx": "descubrimiento"
             }
           ]
         },
@@ -2353,6 +2494,7 @@
         "name": "Grutas de Cristal",
         "image": "images/scenarios/grutas_cristal.png",
         "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "ambience": "cueva",
         "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
       },
       "sequence": [
@@ -2397,9 +2539,15 @@
       "scenario": {
         "name": "Hacia el trono",
         "image": "images/scenarios/abismo_profundo.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg"
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "ambience": "abismo"
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "rugido",
+          "volume": 0.6
+        },
         {
           "type": "dialog",
           "character": "narrator",

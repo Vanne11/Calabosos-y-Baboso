@@ -14,6 +14,43 @@
     "gateScene": "edad"
   },
   "ai": {},
+  "audio": {
+    "combatMusic": "audio/rpgchip13_battle_1.ogg",
+    "gameOverMusic": "audio/rpgchip15_game_over.ogg",
+    "statSfx": {
+      "ganas_de_vivir": {
+        "down": "dano",
+        "bigDown": {
+          "amount": 20,
+          "sfx": "dano_fuerte"
+        },
+        "up": "curar",
+        "shake": true,
+        "flashUp": "heal"
+      },
+      "dinero": {
+        "up": "moneda",
+        "bigUp": {
+          "amount": 15,
+          "sfx": "monedas"
+        },
+        "down": "pagar",
+        "flashUp": "gold"
+      },
+      "miedo": {
+        "up": "miedo"
+      },
+      "pis": {
+        "up": "pis"
+      },
+      "sexi": {
+        "up": "sexi",
+        "down": "desinfle"
+      }
+    },
+    "itemSfx": "objeto",
+    "removeItemSfx": "soltar"
+  },
   "sceneFiles": [
     "scenes/00_edad.json",
     "scenes/01_prologo.json",

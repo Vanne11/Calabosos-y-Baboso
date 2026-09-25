@@ -5,6 +5,7 @@
         "name": "Prólogo: El Despertar",
         "image": "images/scenarios/habitacion_bob.png",
         "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "sfx": "gallo",
         "description": "Una habitación desordenada donde nada heroico ha ocurrido jamás."
       },
       "sequence": [
@@ -177,6 +178,18 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "grillo",
+          "condition": {
+            "textMatches": {
+              "nombre_real": "puta|mierda|pene|pito|culo|verga|we[vb]on|hue[vb]|caca|poto|concha|coño|joder|ctm|chucha"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -273,6 +286,18 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "tension",
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^\\s*(link|zelda|mario|luigi|goku|naruto|geralt|harry|frodo|aragorn|kratos|cloud|sonic)\\s*$"
+            },
+            "flags": {
+              "nombre_reaccionado": false
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -348,6 +373,15 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "trompeta",
+          "condition": {
+            "textMatches": {
+              "nombre_real": "^(?!\\s*bob\\s*$)"
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -404,7 +438,8 @@
             {
               "id": "cama",
               "label": "La cama",
-              "text": "Una cama de paja con una sábana que ha visto cosas. Cosas que ni yo, el narrador omnisciente, quiero saber."
+              "text": "Una cama de paja con una sábana que ha visto cosas. Cosas que ni yo, el narrador omnisciente, quiero saber.",
+              "sfx": "ronquido"
             },
             {
               "id": "mochila",
@@ -429,7 +464,8 @@
                 "inventory": [
                   "lampara"
                 ]
-              }
+              },
+              "sfx": "fuego"
             },
             {
               "id": "bajo_cama_oscuro",
@@ -510,6 +546,10 @@
       },
       "sequence": [
         {
+          "type": "sound",
+          "sfx": "puerta_cerrada"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -552,7 +592,8 @@
                   "itemId": "llave_oxidada",
                   "consume": true,
                   "text": "La llave gira con un chirrido de ultratumba. La puerta se abre. Felicidades: hiciste algo que un niño de cuatro años hace sin ayuda.",
-                  "goto": "prologo_salida"
+                  "goto": "prologo_salida",
+                  "sfx": "cerradura"
                 }
               ]
             }
@@ -567,7 +608,8 @@
       "scenario": {
         "name": "Prólogo: El Despertar",
         "image": "images/scenarios/habitacion_bob.png",
-        "music": "audio/rpgchip02_bittersweet_story.ogg"
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "sfx": "puerta"
       },
       "sequence": [
         {

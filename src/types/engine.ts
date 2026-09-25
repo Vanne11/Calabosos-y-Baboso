@@ -134,6 +134,9 @@ export interface ScenarioResult {
   description: string;
   image?: string;
   music?: string;
+  /** Ambiente a poner: nombre, null = apagar, undefined = mantener el actual */
+  ambience?: string | null;
+  sfx?: string[];
 }
 
 export interface DialogResult {
@@ -165,6 +168,7 @@ export interface DiceResult {
   difficulty: number;
   outcome: 'critical_success' | 'success' | 'failure' | 'critical_failure';
   text: string;
+  sfx?: string;
 }
 
 export interface InputPrompt {
@@ -205,6 +209,7 @@ export interface CheckResult {
 export interface RandomResult {
   type: 'random_result';
   text: string;
+  sfx?: string;
 }
 
 export interface ShopPrompt {
@@ -254,6 +259,8 @@ export interface CombatPrompt {
   playerHp: number;
   actions: string[];
   round: number;
+  /** Música del combate (ruta resuelta); undefined = no cambiar la música */
+  music?: string;
   /** Items del inventario que se pueden usar en este combate */
   usableItems?: { itemId: string; name: string }[];
 }
@@ -261,17 +268,23 @@ export interface CombatPrompt {
 export interface CombatTurnResult {
   type: 'combat_turn';
   playerAction: string;
+  /** Solo en el ataque sorpresa (llega antes del primer combat_prompt): música del combate */
+  music?: string;
   playerDamage: number;
   enemyDamage: number;
   enemyHp: number;
   playerHp: number;
   text: string;
+  /** Sonido del golpe del jugador (propio del enemigo, o explosión al morir) */
+  sfx?: string;
 }
 
 export interface CombatEndResult {
   type: 'combat_end';
   outcome: 'victory' | 'defeat' | 'flee';
   text: string;
+  /** Sonido de muerte del enemigo (victoria) */
+  sfx?: string;
 }
 
 export interface NotifyResult {
@@ -280,6 +293,7 @@ export interface NotifyResult {
   title: string;
   text: string;
   icon?: string;
+  sfx?: string;
 }
 
 export interface WaitResult {
@@ -291,8 +305,10 @@ export interface WaitResult {
 
 export interface SoundResult {
   type: 'sound';
-  src: string;
+  src?: string;
+  sfx?: string;
   volume: number;
+  wait: boolean;
 }
 
 // --- Craft ---
@@ -347,6 +363,7 @@ export interface ExamineResult {
   type: 'examine_result';
   subjectLabel: string;
   text: string;
+  sfx?: string;
 }
 
 // --- UseItem ---
@@ -365,6 +382,7 @@ export interface UseItemResult {
   itemId: string;
   text: string;
   success: boolean;
+  sfx?: string;
 }
 
 // --- TimedChoice ---

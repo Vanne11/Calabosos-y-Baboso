@@ -1,7 +1,7 @@
 // components/layout/AppShell.tsx
 // Layout principal: desktop side-by-side, mobile stacked
 
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import StatusBar from './StatusBar';
 import ImagePanel from './ImagePanel';
@@ -9,6 +9,7 @@ import SpeedControl from './SpeedControl';
 import MobileWarning from './MobileWarning';
 import InventoryPanel from './InventoryPanel';
 import InventoryExpanded from './InventoryExpanded';
+import ScreenFx from './ScreenFx';
 import { useAppStore } from '../../store/useAppStore';
 
 const Container = styled.div`
@@ -66,9 +67,11 @@ interface AppShellProps {
 const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const phase = useAppStore((s) => s.phase);
   const showImage = phase === 'game';
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Container>
+    <Container ref={containerRef}>
+      <ScreenFx shakeTarget={containerRef} />
       <MobileWarning />
       <StatusBar />
       <MainArea>

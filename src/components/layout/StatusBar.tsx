@@ -2,8 +2,9 @@
 // Barra de estado con stats del jugador, avatar del protagonista y compañeros
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
+import { useFxStore } from '../../store/useFxStore';
 import HoverPreview from '../ui/HoverPreview';
 import { assetUrl } from '../../utils/assetUrl';
 
@@ -82,6 +83,34 @@ const StatsArea = styled.div`
 const StatItem = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
+`;
+
+const floatUp = keyframes`
+  0% { opacity: 0; transform: translate(-50%, 4px) scale(0.8); }
+  15% { opacity: 1; transform: translate(-50%, -4px) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -26px) scale(1); }
+`;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+`;
+
+/** Cifra flotante "+10" / "-5" sobre un stat que cambió */
+const Pop = styled.span<{ $up: boolean }>`
+  position: absolute;
+  left: 70%;
+  top: -2px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  pointer-events: none;
+  white-space: nowrap;
+  color: ${(props) => (props.$up ? props.theme.terminal.success : props.theme.terminal.error)};
+  text-shadow: 0 0 6px ${(props) => (props.$up ? props.theme.terminal.success : props.theme.terminal.error)};
+  animation: ${floatUp} 1.5s ease-out forwards;
+  z-index: 5;
 `;
 
 const StatLabel = styled.span`
@@ -90,10 +119,16 @@ const StatLabel = styled.span`
   color: ${(props) => props.theme.textSecondary};
 `;
 
-const StatValue = styled.span`
+const StatValue = styled.span<{ $change?: 'up' | 'down' }>`
+  display: inline-block;
   font-size: 0.8rem;
   font-weight: bold;
-  color: ${(props) => props.theme.accent};
+  color: ${(props) =>
+    props.$change === 'up' ? props.theme.terminal.success :
+    props.$change === 'down' ? props.theme.terminal.error :
+    props.theme.accent};
+  transition: color 0.6s ease;
+  ${(props) => props.$change && css`animation: ${pulse} 0.4s ease-out;`}
 `;
 
 const STAT_LABELS: Record<string, string> = {
@@ -109,6 +144,7 @@ const StatusBar: React.FC = () => {
   const engine = useAppStore((s) => s.engine);
   const gameBasePath = useAppStore((s) => s.gameBasePath);
   const phase = useAppStore((s) => s.phase);
+  const pops = useFxStore((s) => s.pops);
 
   if (phase !== 'game' || !playerState) return null;
 
@@ -184,12 +220,23 @@ const StatusBar: React.FC = () => {
         })}
       </PartyGroup>
       <StatsArea>
-        {numericStats.map(([key, value]) => (
-          <StatItem key={key}>
-            <StatLabel>{labels[key] || key}:</StatLabel>
-            <StatValue>{String(value)}</StatValue>
-          </StatItem>
-        ))}
+        {numericStats.map(([key, value]) => {
+          const statPops = pops.filter((p) => p.stat === key);
+          const last = statPops[statPops.length - 1];
+          return (
+            <StatItem key={key}>
+              <StatLabel>{labels[key] || key}:</StatLabel>
+              <StatValue key={last?.id} $change={last ? (last.delta > 0 ? 'up' : 'down') : undefined}>
+                {String(value)}
+              </StatValue>
+              {statPops.map((p) => (
+                <Pop key={p.id} $up={p.delta > 0}>
+                  {p.delta > 0 ? `+${p.delta}` : p.delta}
+                </Pop>
+              ))}
+            </StatItem>
+          );
+        })}
       </StatsArea>
     </Bar>
   );

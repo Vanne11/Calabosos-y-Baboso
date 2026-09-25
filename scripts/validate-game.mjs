@@ -7,14 +7,19 @@
 //   npm run validate -- calabosos           → valida uno
 //   npm run validate -- calabosos --strict  → los avisos también fallan
 
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import {
   loadGameFromDisk,
   listGameNames,
   collectAssetRefs,
   readPlaceholders,
 } from './shared/game-data.mjs';
+
+// Catálogo de efectos sintetizados y ambientes del motor (src/audio)
+const AUDIO_NAMES = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'src', 'audio', 'sfx-names.json'), 'utf8'));
+const SFX_NAMES = new Set(AUDIO_NAMES.sfx);
+const AMBIENCE_NAMES = new Set(AUDIO_NAMES.ambience);
 
 const SPECIAL_DESTINATIONS = new Set(['_quit', '_game_over', '_restart', '_age_accept', '_checkpoint']);
 const CHAT_MODES = new Set(['persuadir', 'negociar', 'cancion', 'rap', 'insultos', 'confesion']);
@@ -77,9 +82,33 @@ function validateGame(gameName) {
     }
   };
 
+  const checkSfx = (name, context) => {
+    if (typeof name === 'string' && name !== 'none' && !SFX_NAMES.has(name)) {
+      errors.push(`${context}: efecto "${name}" no existe (lista: /debug sfx o src/audio/sfx-names.json)`);
+    }
+  };
+
+  // --- Audio del juego ---
+  const audio = manifest.audio ?? {};
+  for (const [stat, rule] of Object.entries(audio.statSfx ?? {})) {
+    const ctx = `audio.statSfx.${stat}`;
+    if (!(stat in (manifest.initialStats ?? {}))) warnings.push(`${ctx}: el stat no está en initialStats`);
+    checkSfx(rule.up, ctx);
+    checkSfx(rule.down, ctx);
+    checkSfx(rule.bigUp?.sfx, ctx);
+    checkSfx(rule.bigDown?.sfx, ctx);
+  }
+  checkSfx(audio.itemSfx, 'audio.itemSfx');
+  checkSfx(audio.removeItemSfx, 'audio.removeItemSfx');
+
   // --- Por escena ---
   const edges = {};
   for (const id of Object.keys(scenes)) {
+    const scenario = scenes[id].scenario;
+    for (const name of [scenario?.sfx ?? []].flat()) checkSfx(name, `${where(id)} scenario.sfx`);
+    if (scenario?.ambience && scenario.ambience !== 'none' && !AMBIENCE_NAMES.has(scenario.ambience)) {
+      errors.push(`${where(id)}: ambiente "${scenario.ambience}" no existe (${[...AMBIENCE_NAMES].join(', ')})`);
+    }
     const seq = scenes[id].sequence;
     if (!Array.isArray(seq)) {
       errors.push(`${where(id)}: "sequence" no es una lista`);
@@ -104,6 +133,12 @@ function validateGame(gameName) {
         if (parent.ai && !parent.ai.prompt) errors.push(`${where(id)}: dialog.ai sin "prompt"`);
       }
       if (key === 'pool' && parent.type === 'dialog') checkPool(value, where(id));
+      // sfx en pasos sound/notify, opciones, cosas examinables, usos de objeto y enemigos ({ hit, death })
+      if (key === 'sfx') {
+        if (typeof value === 'string') checkSfx(value, where(id));
+        else if (value && typeof value === 'object') for (const v of Object.values(value)) checkSfx(v, where(id));
+      }
+      if (key === 'type' && value === 'sound' && !parent.sfx && !parent.src) errors.push(`${where(id)}: paso sound sin "sfx" ni "src"`);
       if ((key === 'inventory' || key === 'removeInventory') && Array.isArray(value)) {
         for (const item of value) checkItem(item, where(id));
       }

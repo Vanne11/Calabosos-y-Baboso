@@ -7,6 +7,10 @@ import { useDebugStore } from '../store/useDebugStore';
 import { useEditorStore } from '../editor/store/useEditorStore';
 import { parseCommand } from '../engine/CommandParser';
 import { loadGame, listGames } from '../engine/GameLoader';
+import { rebaseFeedback } from '../audio/gameFeedback';
+import { sfx } from '../audio/SfxPlayer';
+import { SFX } from '../audio/sfxCatalog';
+import { AMBIENCES } from '../audio/ambience';
 import { GameEngine } from '../engine/GameEngine';
 import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
@@ -632,7 +636,9 @@ ${lines.join('\n')}
 [green]debug history[/green] - Historial de eventos
 [green]debug clear[/green] - Limpia historial de debug
 [green]debug report[/green] - Informe completo
-[green]debug goto <escena>[/green] - Salta a una escena (solo en partida, con debug activo)`,
+[green]debug goto <escena>[/green] - Salta a una escena (solo en partida, con debug activo)
+[green]debug sfx [nombre][/green] - Lista los efectos de sonido o toca uno
+[green]debug ambiente [nombre|none][/green] - Lista los ambientes o pone uno`,
       });
       return;
     }
@@ -676,6 +682,32 @@ ${lines.join('\n')}
           type: 'system',
           content: debugReport(),
         });
+        break;
+      case 'sfx':
+        if (!args[1]) {
+          addEntry({
+            type: 'system',
+            content: `[yellow]Efectos (${Object.keys(SFX).length}):[/yellow]\n` +
+              Object.entries(SFX).map(([name, def]) => `[green]${name}[/green]${def.jingle ? ' [purple]♪[/purple]' : ''} [dim]${def.desc}[/dim]`).join('\n'),
+          });
+        } else if (sfx.has(args[1])) {
+          sfx.play(args[1]);
+        } else {
+          addEntry({ type: 'warning', content: `[yellow]No existe el efecto "${args[1]}". Usa [bold]debug sfx[/bold] para ver la lista.[/yellow]` });
+        }
+        break;
+      case 'ambiente':
+        if (!args[1]) {
+          addEntry({
+            type: 'system',
+            content: `[yellow]Ambientes:[/yellow] [dim](sonando: ${sfx.currentAmbience ?? 'ninguno'})[/dim]\n` +
+              Object.entries(AMBIENCES).map(([name, def]) => `[green]${name}[/green] [dim]${def.desc}[/dim]`).join('\n'),
+          });
+        } else if (args[1] === 'none' || args[1] in AMBIENCES) {
+          sfx.setAmbience(args[1] === 'none' ? null : args[1]);
+        } else {
+          addEntry({ type: 'warning', content: `[yellow]No existe el ambiente "${args[1]}".[/yellow]` });
+        }
         break;
       default:
         addEntry({
@@ -769,6 +801,7 @@ ${lines.join('\n')}
           engine.restoreState(save.playerState);
         }
         state.setPlayerState(save.playerState);
+        rebaseFeedback(engine?.state ?? null);
         clearHistory();
         addEntry({
           type: 'success',

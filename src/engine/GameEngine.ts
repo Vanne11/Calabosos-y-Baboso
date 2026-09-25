@@ -10,6 +10,7 @@ import type {
   ChoiceOption,
   DiceStep,
   CombatStep,
+  ScenarioDef,
   ShopStep,
   CraftStep,
   CraftAction,
@@ -48,6 +49,13 @@ const PROFILE_SUMMARY_SIZE = 6;
 
 /** Máximo de reglas encadenadas tras un paso (evita bucles entre reglas) */
 const MAX_RULE_CHAIN = 5;
+
+/** Ambiente de una escena: nombre, null = apagar, undefined = mantener el que suena */
+function scenarioAmbience(scenario: ScenarioDef): string | null | undefined {
+  if (scenario.ambience === 'none') return null;
+  if (scenario.ambience) return scenario.ambience;
+  return scenario.music ? null : undefined;
+}
 
 export class GameEngine {
   private manifest: GameManifest;
@@ -131,6 +139,23 @@ export class GameEngine {
 
   get contentRating() {
     return this.manifest.contentRating;
+  }
+
+  /** Configuración de audio del juego (música de situaciones, efectos automáticos) */
+  get audioConfig() {
+    return this.manifest.audio;
+  }
+
+  /** Ruta de un asset del juego relativa a la raíz del sitio */
+  assetPath(path: string): string {
+    return this._basePath && !path.startsWith(this._basePath) && !/^(https?:|asset:|data:)/.test(path)
+      ? `${this._basePath}/${path}`
+      : path;
+  }
+
+  private combatMusic(step: CombatStep): string | undefined {
+    const music = step.music ?? this.manifest.audio?.combatMusic;
+    return music && music !== 'none' ? this.assetPath(music) : undefined;
   }
 
   /** Get the display name of a scene's scenario */
@@ -443,6 +468,8 @@ export class GameEngine {
         description,
         image: scene.scenario.image,
         music: scene.scenario.music,
+        ambience: scenarioAmbience(scene.scenario),
+        sfx: scene.scenario.sfx === undefined ? undefined : [scene.scenario.sfx].flat(),
       };
     }
 
@@ -568,6 +595,7 @@ export class GameEngine {
           difficulty: step.difficulty,
           outcome: result.outcome,
           text: this.text(outcomeData.text),
+          sfx: outcomeData.sfx,
         };
 
         yield* this.diceHook(result.outcome);
@@ -623,7 +651,7 @@ export class GameEngine {
           if (rand <= 0) { chosen = outcome; break; }
         }
 
-        yield { type: 'random_result', text: this.text(chosen.text) };
+        yield { type: 'random_result', text: this.text(chosen.text), sfx: chosen.sfx };
 
         if (chosen.effects) {
           this.applyState(chosen.effects);
@@ -683,6 +711,7 @@ export class GameEngine {
           title: this.text(step.title),
           text: this.text(step.text),
           icon: step.icon,
+          sfx: step.sfx,
         };
         break;
       }
@@ -699,9 +728,10 @@ export class GameEngine {
       case 'sound':
         yield {
           type: 'sound',
-          src: this._basePath && step.src && !step.src.startsWith(this._basePath)
-            ? `${this._basePath}/${step.src}` : step.src,
+          src: step.src ? this.assetPath(step.src) : undefined,
+          sfx: step.sfx,
           volume: step.volume ?? 1,
+          wait: step.wait ?? false,
         };
         break;
 
@@ -1274,7 +1304,12 @@ export class GameEngine {
         .sort((a, b) => b.bonus - a.bonus)[0];
     const outcomeEnd = function* (this: GameEngine, kind: 'victory' | 'defeat' | 'flee') {
       const outcome = step.results[kind]!;
-      yield { type: 'combat_end' as const, outcome: kind, text: this.text(outcome.text) };
+      yield {
+        type: 'combat_end' as const,
+        outcome: kind,
+        text: this.text(outcome.text),
+        sfx: kind === 'victory' ? enemy.sfx?.death : undefined,
+      };
       if (outcome.effects) {
         this.applyState(outcome.effects);
         yield { type: 'effects' as const, ...outcome.effects };
@@ -1288,6 +1323,7 @@ export class GameEngine {
       yield {
         type: 'combat_turn',
         playerAction: 'ambush',
+        music: this.combatMusic(step),
         playerDamage: 0,
         enemyDamage: dmg,
         enemyHp,
@@ -1327,6 +1363,7 @@ export class GameEngine {
         playerHp,
         actions: step.actions,
         round,
+        music: this.combatMusic(step),
         usableItems: usableItems.length > 0 ? usableItems : undefined,
       };
 
@@ -1426,6 +1463,9 @@ export class GameEngine {
         enemyHp,
         playerHp: playerHpNow(),
         text: parts.join(' '),
+        sfx: enemyHp <= 0 && killedByMelee && enemy.deathDamage
+          ? 'explosion_baba'
+          : playerDamage > 0 ? enemy.sfx?.hit : undefined,
       };
     }
   }
@@ -1727,7 +1767,7 @@ export class GameEngine {
         const subject = step.subjects.find((s) => s.id === action.subjectId);
         if (subject) {
           examined.add(subject.id);
-          yield { type: 'examine_result', subjectLabel: subject.label, text: subject.text };
+          yield { type: 'examine_result', subjectLabel: subject.label, text: subject.text, sfx: subject.sfx };
 
           if (subject.effects) {
             this.applyState(subject.effects);
@@ -1785,6 +1825,7 @@ export class GameEngine {
             itemId: action.itemId,
             text: accept.text,
             success: true,
+            sfx: accept.sfx,
           };
           if (accept.effects) {
             yield { type: 'effects', ...accept.effects };
@@ -1846,6 +1887,7 @@ export class GameEngine {
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     this.addProfileTags(chosen.tags);
     this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags });
+    if (chosen.sfx) yield { type: 'sound', sfx: chosen.sfx, volume: 1, wait: false };
     if (chosen.effects) {
       this.applyState(chosen.effects);
       yield { type: 'effects', ...chosen.effects };

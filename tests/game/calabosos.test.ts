@@ -2,6 +2,7 @@
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { execFileSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { StepResult } from '../../src/types/engine';
 import { makeEngine, internals, loadGameFromDisk, dialogLines } from '../helpers';
@@ -14,6 +15,18 @@ describe('validación', () => {
   it('npm run validate pasa sin errores', () => {
     const root = join(__dirname, '..', '..');
     expect(() => execFileSync('node', ['scripts/validate-game.mjs', 'calabosos'], { cwd: root, stdio: 'pipe' })).not.toThrow();
+  });
+
+  it('toda la música referenciada existe (escenas, combates, game.json → audio)', () => {
+    const base = join(__dirname, '..', '..', 'public', 'games', 'calabosos');
+    const refs = new Set<string>([manifest.audio?.combatMusic, manifest.audio?.gameOverMusic].filter((m): m is string => !!m));
+    for (const scene of Object.values(scenes)) {
+      if (scene.scenario?.music) refs.add(scene.scenario.music);
+      for (const step of scene.sequence) if (step.type === 'combat' && step.music && step.music !== 'none') refs.add(step.music);
+    }
+    const missing = [...refs].filter((m) => !existsSync(join(base, m)));
+    expect(missing).toEqual([]);
+    expect(refs.size).toBeGreaterThan(20);
   });
 });
 
