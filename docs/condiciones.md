@@ -25,6 +25,7 @@ interface StepCondition {
   meta?: Record<string, string>;           // { "muertes": ">=3" } — contadores entre partidas
   textMatches?: Record<string, string>;    // { "nombre_real": "^bob$" } — regex sin distinguir mayúsculas
   profile?: Record<string, string>;        // { "cobarde": ">=3" } — perfil del jugador (ver ia.md)
+  codex?: string[];                        // ["babosa_acida"] — entradas del códice desbloqueadas
 }
 ```
 

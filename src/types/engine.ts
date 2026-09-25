@@ -40,6 +40,8 @@ export interface PlayerState {
   rulesFired?: string[];
   /** Perfil del jugador: etiquetas acumuladas por sus decisiones */
   profile?: Record<string, number>;
+  /** Entradas del códice desbloqueadas (en orden) */
+  codex?: string[];
 }
 
 // Lo que el motor produce paso a paso
@@ -176,6 +178,7 @@ export interface EffectsResult {
   inventory?: string[];
   removeInventory?: string[];
   clearInventory?: boolean;
+  unlockCodex?: string[];
 }
 
 export interface NavigateResult {

@@ -120,6 +120,10 @@ export class GameEngine {
     return sceneId in this.scenes.scenes;
   }
 
+  get codex() {
+    return this.manifest.codex;
+  }
+
   get statDefs() {
     return this.manifest.statDefs;
   }

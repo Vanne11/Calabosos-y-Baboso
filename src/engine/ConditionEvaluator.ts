@@ -123,6 +123,13 @@ export function evaluateCondition(
     }
   }
 
+  // Códice: entradas desbloqueadas
+  if (condition.codex) {
+    for (const id of condition.codex) {
+      if (!state.codex?.includes(id)) return false;
+    }
+  }
+
   // Text matches (regex, sin distinguir mayúsculas): { "nombre_jugador": "^bob$" }
   if (condition.textMatches) {
     for (const [key, pattern] of Object.entries(condition.textMatches)) {

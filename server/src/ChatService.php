@@ -151,8 +151,11 @@ final class ChatService
         $successAt = (int) ($params['success_at'] ?? 70);
         $partialAt = (int) ($params['partial_at'] ?? 40);
         $done = $turn >= $maxTurns || ($parsed['done'] && $turn >= 1);
-        if ($hasVerdict && $score >= $successAt) {
-            $done = true; // ya lo logró: no hace falta seguir
+        // Por defecto, alcanzar el umbral de éxito termina la conversación.
+        // Modos que deben jugarse completos (canción, rap) usan early_success: false.
+        $earlySuccess = !array_key_exists('early_success', $params) || $params['early_success'] !== false;
+        if ($hasVerdict && $earlySuccess && $score >= $successAt) {
+            $done = true;
         }
         $verdict = null;
         if ($done && $hasVerdict) {

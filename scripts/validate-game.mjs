@@ -107,6 +107,11 @@ function validateGame(gameName) {
       if ((key === 'inventory' || key === 'removeInventory') && Array.isArray(value)) {
         for (const item of value) checkItem(item, where(id));
       }
+      if ((key === 'unlockCodex' || (key === 'codex' && !parent.command)) && Array.isArray(value)) {
+        for (const entry of value) {
+          if (!manifest.codex?.entries?.[entry]) errors.push(`${where(id)}: entrada de códice "${entry}" no existe en game.json → codex.entries`);
+        }
+      }
     });
     edges[id] = [...targets];
 

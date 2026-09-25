@@ -45,7 +45,7 @@ Siempre se agregan: `npc_nombre`, `npc_descripcion`, `perfil`, `nombre_jugador`,
 
 1. Si la IA está disponible (servidor + modo activo + preferencia del jugador), empieza la conversación: encabezado del modo, medidor y la `intro`.
 2. Por turno: el jugador escribe → el NPC responde → el medidor muestra el puntaje y el cambio (+/-). `/rendirse` abandona (→ `failure`).
-3. Termina cuando se alcanza el umbral de éxito, el NPC da la conversación por terminada o se acaban los turnos. Se muestra el resultado y el `text` del outcome.
+3. Termina cuando se alcanza el umbral de éxito (salvo que el prompt tenga `early_success: false`, como la canción y el rap, que se juegan completos), el NPC da la conversación por terminada o se acaban los turnos. Se muestra el resultado y el `text` del outcome.
 4. Se aplica el outcome: `partial` usa `failure` si no está definido; sin veredicto usa `done` (o `success`).
 
 **Respaldo:** si no hay IA (o falla a mitad), se muestra la `intro` y se tira `fallback` (éxito o crítico → `success`, fallo → `failure`).

@@ -34,6 +34,13 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.flags = { ...newState.flags, ...effects.flags };
   }
 
+  // Códice: entradas desbloqueadas (sin duplicados, en orden de descubrimiento)
+  if (effects.unlockCodex?.length) {
+    const codex = [...(newState.codex ?? [])];
+    for (const id of effects.unlockCodex) if (!codex.includes(id)) codex.push(id);
+    newState.codex = codex;
+  }
+
   // Meta: contadores que persisten entre partidas (suma relativa)
   if (effects.meta) {
     const newMeta = { ...(newState.meta ?? {}) };

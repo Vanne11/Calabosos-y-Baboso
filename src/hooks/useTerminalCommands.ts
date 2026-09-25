@@ -59,6 +59,36 @@ export function useTerminalCommands() {
     });
   };
 
+  /** Muestra el códice del juego (bestiario): lista por categoría o una entrada */
+  const gameCodex = (args: string[]) => {
+    const engine = useAppStore.getState().engine;
+    const codex = engine?.codex;
+    if (!engine || !codex) return;
+    const unlocked = (engine.state.codex ?? []).filter((id) => codex.entries[id]);
+    const total = Object.keys(codex.entries).length;
+    if (!unlocked.length) {
+      addEntry({ type: 'system', content: `[purple][bold]📖 ${codex.title}[/bold][/purple]\n[dim]Vacío. Todavía no sabes nada de nada. Como siempre.[/dim]` });
+      return;
+    }
+    const n = parseInt(args[0] ?? '', 10);
+    if (n >= 1 && n <= unlocked.length) {
+      const e = codex.entries[unlocked[n - 1]];
+      addEntry({ type: 'system', content: `[purple][bold]${e.icon ?? '📖'} ${e.title}[/bold][/purple]\n${e.text}` });
+      return;
+    }
+    const byCat = new Map<string, string[]>();
+    unlocked.forEach((id, i) => {
+      const e = codex.entries[id];
+      const cat = e.category ?? 'Varios';
+      byCat.set(cat, [...(byCat.get(cat) ?? []), `  [yellow][${i + 1}][/yellow] ${e.icon ?? '•'} ${e.title}`]);
+    });
+    const body = [...byCat].map(([cat, lines]) => `[cyan]${cat}[/cyan]\n${lines.join('\n')}`).join('\n');
+    addEntry({
+      type: 'system',
+      content: `[purple][bold]📖 ${codex.title}[/bold][/purple] [dim](${unlocked.length}/${total})[/dim]\n${body}\n[dim]/${codex.command} <número> para leer una entrada.[/dim]`,
+    });
+  };
+
   const gameAi = (args: string[]) => {
     const arg = (args[0] ?? '').toLowerCase();
     if (arg === 'on' || arg === 'off') {
@@ -292,6 +322,11 @@ ${lines.join('\n')}
         });
         return true;
       default:
+        // Comando del códice definido por el juego (ej: /bestiario)
+        if (useAppStore.getState().engine?.codex?.command === name) {
+          gameCodex(args);
+          return true;
+        }
         return false;
     }
   };
@@ -596,7 +631,8 @@ ${lines.join('\n')}
 [green]debug status[/green] - Estado actual
 [green]debug history[/green] - Historial de eventos
 [green]debug clear[/green] - Limpia historial de debug
-[green]debug report[/green] - Informe completo`,
+[green]debug report[/green] - Informe completo
+[green]debug goto <escena>[/green] - Salta a una escena (solo en partida, con debug activo)`,
       });
       return;
     }

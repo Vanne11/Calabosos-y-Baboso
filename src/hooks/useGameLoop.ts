@@ -111,14 +111,20 @@ export function useGameLoop() {
   }, [engine, startScene, debugActive]);
 
   const consumeResults = async (iterator: AsyncGenerator<StepResult>) => {
+    const ownerEngine = useAppStore.getState().engine;
+    // Este ciclo quedó obsoleto si otra escena tomó el control (/debug goto, /load)
+    // o si la partida terminó (/quit): no debe seguir imprimiendo ni navegando
+    const stale = () => iteratorRef.current !== iterator || useAppStore.getState().engine !== ownerEngine;
     while (true) {
       // Yield al browser entre iteraciones para no bloquear el hilo
       await yieldToMain();
+      if (stale()) break;
 
       const { value, done } = await iterator.next();
-      if (done || !value) break;
+      if (done || !value || stale()) break;
 
       await handleResult(value);
+      if (stale()) break;
 
       // If the result requires player input, stop consuming
       if (
@@ -287,6 +293,12 @@ export function useGameLoop() {
       case 'effects':
         if (debugActive) {
           debugLog(`Efectos aplicados: ${JSON.stringify(result)}`, 'STATE');
+        }
+        // Aviso de entradas nuevas del códice (bestiario)
+        if (result.unlockCodex?.length && engine?.codex) {
+          const codex = engine.codex;
+          const names = result.unlockCodex.map((id) => codex.entries[id]?.title ?? id).join(', ');
+          addEntry({ type: 'system', content: `[purple]📖 ${codex.title} actualizado: ${names}[/purple] [dim](/${codex.command})[/dim]` });
         }
         // Sync state
         if (engine) {

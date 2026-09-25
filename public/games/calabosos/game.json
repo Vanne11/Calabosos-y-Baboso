@@ -117,6 +117,30 @@
       "image": "images/dialogs/jefe_guardia.png",
       "role": "npc"
     },
+    "bandido": {
+      "name": "Bandido Tuerto",
+      "description": "Jefe de una banda de bandidos incompetentes. Tuerto, desdentado y convencido de su propio ingenio.",
+      "image": "images/dialogs/bandido.png",
+      "role": "npc"
+    },
+    "takashi": {
+      "name": "Takashi",
+      "description": "Un chico con uniforme escolar y bate de béisbol que busca un apocalipsis zombi. Se equivocó de historia.",
+      "image": "images/dialogs/takashi.png",
+      "role": "npc"
+    },
+    "arbol_baboso": {
+      "name": "Baboba Guardiana",
+      "description": "Árbol ancestral mitad planta, mitad espíritu. Solo deja pasar a los sinceros.",
+      "image": "images/dialogs/arbol_baboso.png",
+      "role": "npc"
+    },
+    "babosita": {
+      "name": "Babosita Perdida",
+      "description": "Una cría de babosa del bosque que perdió a su mamá.",
+      "image": "images/dialogs/babosita.png",
+      "role": "npc"
+    },
     "sistema": {
       "name": "SISTEMA",
       "description": "Notificaciones del sistema de juego.",
@@ -446,6 +470,11 @@
       "Tus bolsillos tienen más agujeros que tu plan. Solo te caben 60 monedas; el resto rueda por la calle y un niño lo recoge feliz.",
       "Tintín, tintín: monedas cayendo. Sin un bolso decente no cargas más de 60. El Tendero vende uno. De escroto de elefante. No preguntes.",
       "Otra vez se te caen las monedas. 60 es tu límite hasta que tengas dónde guardarlas. Tu pobreza tiene un tope. Qué ironía."
+    ],
+    "camino_montaje": [
+      "Pasan las horas. Te duelen los pies. Nerly se desliza a tu lado sin esfuerzo, como burlándose de tus piernas.",
+      "Un pájaro te caga en el hombro. En Viscaria eso trae buena suerte. Bueno, no. Pero es gracioso.",
+      "Caminas tanto que empiezas a hablar solo. Nerly finge no escucharte. Yo sí te escucho. Siempre."
     ]
   },
   "items": {
@@ -573,6 +602,16 @@
       "name": "Permiso de Salida Suicida",
       "description": "Legal... más o menos. Firmado con crayón.",
       "image": "images/items/permiso_salida.png"
+    },
+    "bate_beisbol": {
+      "name": "Bate de béisbol",
+      "description": "Regalo de Takashi. Contra babosas no sirve de mucho, pero da seguridad.",
+      "image": "images/items/bate_beisbol.png"
+    },
+    "camiseta_sobrevivi": {
+      "name": "Camiseta «Sobreviví (casi) al Abismo»",
+      "description": "De la tienda de regalos del Abismo. Nadie sabe quién la atiende.",
+      "image": "images/items/camiseta_sobrevivi.png"
     }
   },
   "traits": {
@@ -591,6 +630,85 @@
         "sexi": -5
       },
       "duration": 8
+    },
+    "sabe_de_babosas": {
+      "name": "Sabe de babosas",
+      "description": "Nerly te explicó cómo pelear con cada especie. Tu cerebro sigue caliente.",
+      "icon": "🧠",
+      "diceModifier": 1,
+      "duration": 12
+    }
+  },
+  "codex": {
+    "command": "bestiario",
+    "title": "Bestiario Baboso",
+    "entries": {
+      "babosa_acida": {
+        "title": "Babosa Ácida",
+        "icon": "🟢",
+        "category": "Especies",
+        "text": "Segrega un líquido corrosivo que derrite metal, cuero y autoestima. [dim]Consejo de Nerly: nunca la toques con armas de metal; se las come.[/dim]"
+      },
+      "babosa_saltarina": {
+        "title": "Babosa Saltarina",
+        "icon": "🦘",
+        "category": "Especies",
+        "text": "Se lanza desde el techo sobre víctimas distraídas. O sea, sobre ti. [dim]Consejo: mira siempre hacia arriba. Sí, siempre.[/dim]"
+      },
+      "babosas_gemelas": {
+        "title": "Babosas Gemelas",
+        "icon": "👯",
+        "category": "Especies",
+        "text": "Si cortas una por la mitad, se convierten en dos. Porque por supuesto que sí. [dim]Consejo: no las cortes. Aplástalas. O sal.[/dim]"
+      },
+      "babosa_fantasma": {
+        "title": "Babosa Fantasma",
+        "icon": "👻",
+        "category": "Especies",
+        "text": "Semitransparente, atraviesa paredes y aparece donde menos la quieres. [dim]Consejo: odia la luz fuerte.[/dim]"
+      },
+      "babosa_explosiva": {
+        "title": "Babosa Explosiva",
+        "icon": "💥",
+        "category": "Especies",
+        "text": "Explota cuando se siente amenazada. Se siente amenazada muy fácilmente. [dim]Consejo: no la mires. Ni feo ni bonito. No la mires.[/dim]"
+      },
+      "rey_baboso": {
+        "title": "El Rey Baboso",
+        "icon": "👑",
+        "category": "Personajes",
+        "text": "Diez veces más grande que cualquier babosa. Encontró una sustancia extraña en lo más profundo del Abismo que le dio inteligencia y un hambre insaciable. Absorbe a otras babosas para crecer. Su baba disuelve metal. Ningún héroe volvió. [dim]Dicen que odia la mala música.[/dim]"
+      },
+      "nerly": {
+        "title": "Nerly",
+        "icon": "🔵",
+        "category": "Personajes",
+        "text": "Entidad gastropódica semitranslúcida. Mutación rara: habla y es azul. Fue sirvienta en la corte del Rey Baboso (limpiaba el trono, no preguntes) y escapó. El Rey se comió a su familia."
+      },
+      "babosita": {
+        "title": "Babosita del bosque",
+        "icon": "🐌",
+        "category": "Personajes",
+        "text": "Una cría que perdió a su mamá, que se fue al Abismo y no volvió. La ayudaste. Tal vez el universo lo recuerde."
+      },
+      "arbol_baboso": {
+        "title": "Baboba Guardiana",
+        "icon": "🌳",
+        "category": "Personajes",
+        "text": "Árbol ancestral mitad planta, mitad espíritu. Solo deja pasar a los sinceros. Te dejó pasar. Nadie entiende por qué."
+      },
+      "anciano": {
+        "title": "El Anciano de la entrada",
+        "icon": "🧓",
+        "category": "Personajes",
+        "text": "Entró cinco veces al Abismo y salió cuatro y media. Ve al Narrador. Lamió demasiadas babosas alucinógenas, según el Narrador."
+      },
+      "consejos_combate": {
+        "title": "Consejos de combate de Nerly",
+        "icon": "📜",
+        "category": "Notas",
+        "text": "Ácidas: nada de metal. Saltarinas: mirar arriba. Gemelas: aplastar, no cortar. Fantasma: luz fuerte. Explosivas: no mirar. Tú: no morir."
+      }
     }
   }
 }

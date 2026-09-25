@@ -35,6 +35,24 @@ export interface GameManifest {
   diceModifiers?: DiceModifierDef[];
   /** Servidor de IA (narración y modos chat). Sin esto el juego no usa IA */
   ai?: AiConfig;
+  /** Códice (bestiario, diario...): entradas que se desbloquean con effects.unlockCodex */
+  codex?: CodexConfig;
+}
+
+export interface CodexConfig {
+  /** Comando in-game para abrirlo, sin "/" (ej: "bestiario") */
+  command: string;
+  /** Título que se muestra (ej: "Bestiario Baboso") */
+  title: string;
+  entries: Record<string, CodexEntry>;
+}
+
+export interface CodexEntry {
+  title: string;
+  text: string;
+  icon?: string;
+  /** Agrupa entradas en la vista (ej: "Especies", "Personajes") */
+  category?: string;
 }
 
 export interface StatDef {
@@ -306,6 +324,8 @@ export interface StepCondition {
   textMatches?: Record<string, string>;
   /** Perfil del jugador (etiquetas acumuladas por decisiones): { "cobarde": ">=3" } */
   profile?: Record<string, string>;
+  /** Entradas del códice desbloqueadas */
+  codex?: string[];
 }
 
 export interface DialogStep {
@@ -750,6 +770,8 @@ export interface Effects {
   giveSkillPoints?: Record<string, number>;
   /** Sumar a contadores meta que persisten entre partidas: { "muertes": 1 } */
   meta?: Record<string, number>;
+  /** Desbloquear entradas del códice (bestiario): ["babosa_acida"] */
+  unlockCodex?: string[];
 }
 
 // --- Conditions file ---

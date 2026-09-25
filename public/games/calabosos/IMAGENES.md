@@ -115,6 +115,57 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 
 ---
 
+### scenarios/fogata.png — Fogata en el bosque
+**Escenas:** `acto2_fogata`, `acto2_cancion`, `acto2_dormir`
+
+16-bit pixel art. Claro de bosque de noche con una fogata pequeña en el centro. A un lado, BOB sentado en un tronco con cara de cansancio; al otro, Nerly (babosa azul brillante) iluminando su alrededor más que el fuego. Árboles húmedos y retorcidos alrededor, ojos brillantes entre las sombras, luciérnagas. El suelo con rastros de baba fosforescente. Cielo estrellado morado. Ambiente cálido y un poco inquietante.
+
+---
+
+### scenarios/arbol_baboso.png — El Árbol Baboso
+**Escenas:** `acto2_arbol`
+
+16-bit pixel art. Árbol ancestral enorme que bloquea un sendero del bosque. El tronco tiene una cara serena tallada por el tiempo, con ojos que brillan en verde suave. Cubierto de musgo que parece respirar y ramas que gotean baba luminosa. Raíces que forman un arco sobre el camino. Luz de atardecer filtrándose entre las hojas. Solemne, mágico y un poco pegajoso.
+
+---
+
+### dialogs/bandido.png — Bandido Tuerto
+**Personaje:** `bandido`
+
+16-bit pixel art. Retrato de busto. Bandido flaco con parche en un ojo (torcido), sonrisa con dos dientes menos, pañuelo rojo en la cabeza y barba de tres días. Sostiene un cuchillo pequeño y oxidado con orgullo excesivo. Expresión de creerse muy ingenioso. Fondo de bosque oscuro.
+
+---
+
+### dialogs/takashi.png — Takashi
+**Personaje:** `takashi`
+
+16-bit pixel art. Retrato de busto. Chico adolescente de pelo negro despeinado con uniforme escolar genérico (chaqueta azul oscuro, camisa blanca), sudado y jadeando, con un bate de béisbol de madera apoyado en el hombro. Mira a todos lados con expresión de alerta exagerada, buscando zombis que no existen. Diseño original, sin parecido a ningún personaje existente. Fondo de sendero del bosque.
+
+---
+
+### dialogs/arbol_baboso.png — Baboba Guardiana
+**Personaje:** `arbol_baboso`
+
+16-bit pixel art. Retrato del rostro del árbol ancestral: corteza con arrugas profundas formando una cara sabia, ojos verdes brillantes, barba de musgo y gotas de baba luminosa cayendo de las ramas como lágrimas. Hojas en el borde del retrato. Fondo verde oscuro con destellos.
+
+---
+
+### dialogs/babosita.png — Babosita Perdida
+**Personaje:** `babosita`
+
+16-bit pixel art. Retrato de una cría de babosa pequeñita de color verde claro, con ojos enormes llenos de lágrimas, antenas caídas y un moquito colgando. Adorable y triste. Fondo del hueco de un tronco.
+
+---
+
+### items/ — Objetos del Acto II (256×256, fondo transparente)
+
+| Archivo | Objeto | Descripción para el prompt |
+|---|---|---|
+| `bate_beisbol.png` | Bate de béisbol | Bate de madera clara con cinta gris en el mango y algunas abolladuras |
+| `camiseta_sobrevivi.png` | Camiseta «Sobreviví (casi) al Abismo» | Camiseta gris doblada con una babosa estampada; la palabra de arriba tachada a mano (sin texto legible) |
+
+---
+
 ### items/ — Objetos del Prólogo y el Acto I (256×256, fondo transparente)
 
 Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para que se lea sobre fondos morados.
@@ -157,6 +208,6 @@ Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para qu
 ## PRÓXIMAS (se agregan a medida que se escriben los actos)
 
 Se sumarán fichas a este documento en cada fase. Ya están previstas:
-- **Escenarios:** fogata del camino, Cavernas de Cría, Abismo Profundo, túnel sigiloso, Corazón del Abismo, pasaje secreto, finales (retiro pacífico, nuevas aventuras, el verdadero narrador).
-- **Retratos:** las 5 especies de babosa (ácida, saltarina, gemelas, fantasma, explosiva), bandidos, Takashi Komuro.
+- **Escenarios:** Cavernas de Cría, Abismo Profundo, túnel sigiloso, Corazón del Abismo, pasaje secreto, finales (retiro pacífico, nuevas aventuras, el verdadero narrador).
+- **Retratos:** las 5 especies de babosa (ácida, saltarina, gemelas, fantasma, explosiva).
 - **Items:** huevo de babosa, Lágrima de Cristal.

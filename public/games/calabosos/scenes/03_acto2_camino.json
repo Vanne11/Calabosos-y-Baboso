@@ -4,20 +4,1778 @@
       "scenario": {
         "name": "Acto II: El Camino",
         "image": "images/scenarios/camino.png",
-        "music": "audio/rpgchip11_airship.ogg"
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
       },
       "sequence": [
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Caminas. Y caminas. Los juegos buenos tienen montajes de viaje. Este tiene un narrador que te describe caminando.",
-            "[dim](Acto II en construcción: encuentros, el anciano, el bestiario y la canción con Nerly.)[/dim]"
+            "El camino al Abismo serpentea por un bosque cuyas hojas están demasiado húmedas para ser solo lluvia. El suelo se vuelve blando y viscoso a medida que avanzas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "No falta mucho. Cuando el suelo empiece a brillar en la oscuridad, sabrás que estamos cerca."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Todavía me arde un poco la sal, por cierto. Solo digo.)"
+          ],
+          "condition": {
+            "flags": {
+              "nerly_derretida": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Por qué brilla?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Rastros de baba. Algunos de los míos tienen... fugas. Otros marcan territorio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Genial: sigues un sendero de moco fosforescente. Tu vida alcanzó un nuevo punto bajo, BOB. Y eso que venimos del establo."
           ]
         },
         {
           "type": "choice",
-          "options": [{ "text": "Llegar al Abismo", "goto": "acto3_abismo" }]
+          "options": [
+            {
+              "text": "Preguntarle a Nerly por el Rey Baboso",
+              "goto": "acto2_rey",
+              "condition": {
+                "flags": {
+                  "rey_visto": false
+                }
+              },
+              "tags": [
+                "curioso"
+              ]
+            },
+            {
+              "text": "Preguntar por los tipos de babosas",
+              "goto": "acto2_taxonomia",
+              "condition": {
+                "flags": {
+                  "taxonomia_vista": false
+                }
+              },
+              "tags": [
+                "curioso"
+              ]
+            },
+            {
+              "text": "Seguir avanzando en silencio",
+              "goto": "acto2_viaje",
+              "tags": [
+                "callado"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_rey": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "rey_visto": true
+            },
+            "unlockCodex": [
+              "rey_baboso"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Cuéntame del Rey Baboso. ¿Qué tan peligroso es?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "El Rey... (baja la voz) Es enorme. Diez veces más grande que cualquier babosa que hayas visto.",
+            "No siempre fue así. Según nuestras leyendas era una babosa normal que encontró una sustancia extraña en lo más profundo del Abismo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La excusa típica. «No es mi culpa ser un villano, encontré una sustancia extraña.»"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "La sustancia le dio inteligencia y un hambre insaciable. Empezó a absorber a otras babosas y a crecer con cada una. Las que no absorbía se volvieron sus sirvientes. Su baba disuelve metal en segundos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Encantador. Justo el tipo de criatura con la que te tomarías un café."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Muchos héroes lo intentaron. Ninguno volvió."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Excepto tú, aparentemente. Qué coincidencia. Qué conveniente. Qué mentira."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«¿Cómo conoces el Abismo tan bien?»",
+              "goto": "acto2_nerly_historia"
+            },
+            {
+              "text": "«¿Tiene alguna debilidad?»",
+              "goto": "acto2_rey_debilidad",
+              "tags": [
+                "estratega"
+              ]
+            },
+            {
+              "text": "«Sigamos.»",
+              "goto": "acto2_camino_menu"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_nerly_historia": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Porque... viví ahí. Yo era parte de su corte. Una sirvienta más. Limpiaba el trono. Con la lengua. No preguntes."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Un día vi lo que les hace a las babosas que absorbe. Y escapé."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ah, un pasado trágico. Nerly acaba de subir tres puntos en la escala de «personaje con profundidad». Tú sigues en cero."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nerly_historia": true
+            },
+            "affinity": {
+              "nerly": 10
+            },
+            "unlockCodex": [
+              "nerly"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Lo siento, Nerly.»",
+              "effects": {
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "goto": "acto2_camino_menu",
+              "tags": [
+                "amable"
+              ]
+            },
+            {
+              "text": "«¿Con la lengua?»",
+              "goto": "acto2_camino_menu",
+              "tags": [
+                "inmaduro"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_rey_debilidad": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Nadie lo sabe con seguridad. Pero en las Grutas de Cristal hay una piedra enorme, la Lágrima de Cristal. Dicen que muestra los secretos de quien la toca."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Y una vez vi al Rey retorcerse de asco cuando un bardo desafinó. Odia la mala música. Muchísimo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Anotado: el arma definitiva contra el mal supremo es cantar mal. Por fin algo en lo que eres experto."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "pista_lagrima": true,
+              "pista_musica": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Sigamos.»",
+              "goto": "acto2_camino_menu"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_taxonomia": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "taxonomia_vista": true
+            },
+            "unlockCodex": [
+              "babosa_acida",
+              "babosa_saltarina",
+              "babosas_gemelas",
+              "babosa_fantasma",
+              "babosa_explosiva"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Qué tipos de babosas vamos a encontrar ahí dentro?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Oh, muchas especies. Las Ácidas segregan un líquido corrosivo. Las Saltarinas se lanzan sobre ti desde el techo. Las Gemelas... si cortas una por la mitad, se convierten en dos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Porque por supuesto que lo hacen."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Las Fantasma son semitransparentes y atraviesan paredes. Y las Explosivas... bueno, explotan cuando se sienten amenazadas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Y tú qué tipo eres?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Yo soy... especial. Una mutación rara. Por eso hablo y tengo este hermoso tono azulado. Somos muy pocos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Obviamente. No hay muchas babosas que pasen el casting para roles protagónicos."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«¿Algún consejo para enfrentarlas?»",
+              "goto": "acto2_consejos",
+              "tags": [
+                "estratega"
+              ]
+            },
+            {
+              "text": "«¿Por qué me ayudas contra tu propia especie?»",
+              "goto": "acto2_nerly_motivo"
+            },
+            {
+              "text": "«Continuemos, ya casi llegamos.»",
+              "goto": "acto2_camino_menu"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_consejos": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "A las Ácidas, nunca las toques con metal: se lo comen. A las Saltarinas, mira siempre hacia arriba. A las Gemelas, no las cortes: aplástalas, o sal."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Las Fantasma odian la luz fuerte. Y a las Explosivas... no las hagas enojar. Ni las mires feo. Ni las mires."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tu cerebro acaba de recibir más información útil que en toda tu vida. Se está sobrecalentando. Huelo a quemado."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "addTraits": [
+              "sabe_de_babosas"
+            ],
+            "unlockCodex": [
+              "consejos_combate"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Gracias, Nerly.»",
+              "effects": {
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "goto": "acto2_camino_menu"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_nerly_motivo": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Ya te dije que el Rey y yo tenemos historia."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_misterio": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "No todas las babosas quieren ser absorbidas por un monarca gigante. El Rey se comió a mi familia. A toda. Hasta a mi tía Gertrudis, que era muy desabrida."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Oh. Eso fue... sorprendentemente oscuro. Lo tomo como una señal para no hacer chistes por un rato. Uno. Ya pasó."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nerly_confianza": true
+            },
+            "affinity": {
+              "nerly": 15
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Lo derrotaremos juntos.»",
+              "effects": {
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "goto": "acto2_camino_menu",
+              "tags": [
+                "valiente"
+              ]
+            },
+            {
+              "text": "«Vaya. Bueno. ¿Seguimos?»",
+              "goto": "acto2_camino_menu",
+              "tags": [
+                "frio"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_camino_menu": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El sendero de moco sigue brillando. ¿Más preguntas, o piensas caminar alguna vez?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Preguntar por el Rey Baboso",
+              "goto": "acto2_rey",
+              "condition": {
+                "flags": {
+                  "rey_visto": false
+                }
+              }
+            },
+            {
+              "text": "Preguntar por los tipos de babosas",
+              "goto": "acto2_taxonomia",
+              "condition": {
+                "flags": {
+                  "taxonomia_vista": false
+                }
+              }
+            },
+            {
+              "text": "Ponerse en marcha",
+              "goto": "acto2_viaje"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_viaje": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y caminas. Y caminas. Los juegos buenos tienen montajes de viaje con música épica. Este tiene un narrador describiéndote caminar."
+          ],
+          "pool": "camino_montaje",
+          "ai": {
+            "prompt": "reaccion",
+            "vars": {
+              "decision": "salir de la ciudad rumbo al Abismo con una babosa parlante como única compañía"
+            }
+          }
+        },
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 1,
+              "text": "Unas voces roncas salen de detrás de unos arbustos. Se oye «emboscada» en un susurro demasiado fuerte.",
+              "goto": "acto2_bandidos"
+            },
+            {
+              "weight": 1,
+              "text": "Un chico con uniforme escolar y un bate de béisbol aparece corriendo por el sendero. Mira a todos lados. Jadea.",
+              "goto": "acto2_takashi"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_bandidos": {
+      "scenario": {
+        "name": "Emboscada en el bosque",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip13_battle_1.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "bandido",
+          "lines": [
+            "¡Alto ahí, viajeros! ¡Esto es un asalto! La bolsa o la vida. O la bolsa. Preferimos la bolsa, la vida da mucho papeleo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tres bandidos con un solo cuchillo entre los tres. El más alto es el jefe: le falta un ojo, dos dientes y cualquier rastro de inteligencia."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Pst. Estos bandidos respetan el ingenio. Si los humillas con palabras, huyen. Es un código de honor. Muy tonto, pero código."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Retarlo a un duelo de insultos",
+              "goto": "acto2_insultos",
+              "tags": [
+                "charlatan"
+              ]
+            },
+            {
+              "text": "Pagar el «peaje» (15 monedas)",
+              "effects": {
+                "stats": {
+                  "dinero": -15
+                }
+              },
+              "goto": "acto2_viaje2",
+              "condition": {
+                "stats": {
+                  "dinero": ">=15"
+                }
+              },
+              "tags": [
+                "cobarde"
+              ]
+            },
+            {
+              "text": "Huir gritando entre los árboles",
+              "goto": "acto2_huida_bandidos",
+              "tags": [
+                "cobarde"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_insultos": {
+      "scenario": {
+        "name": "Emboscada en el bosque",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip13_battle_1.ogg"
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "insultos",
+          "npc": "bandido",
+          "maxTurns": 4,
+          "intro": [
+            "¿Un duelo de insultos? ¡JA! Empiezo yo: «Luchas como un granjero con resaca.»"
+          ],
+          "vars": {
+            "rival_nombre": "Bandido Tuerto",
+            "rival_descripcion": "jefe de una banda de bandidos incompetentes, tuerto y desdentado, muy orgulloso de su ingenio (que no tiene). Se ofende si le hablan de su ojo o de su madre."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 12,
+            "description": "Duelo de insultos contra el Bandido Tuerto"
+          },
+          "outcomes": {
+            "success": {
+              "text": "El Bandido Tuerto se queda sin palabras. Le tiembla el labio. Sus compañeros huyen avergonzados y él detrás, dejando caer su botín.",
+              "effects": {
+                "stats": {
+                  "dinero": 20,
+                  "sexi": 10
+                },
+                "flags": {
+                  "bandidos_humillados": true
+                }
+              },
+              "goto": "acto2_viaje2"
+            },
+            "partial": {
+              "text": "Empate. El bandido te respeta un poquito y te cobra medio peaje. «Por el espectáculo», dice. Hasta los ladrones tienen tarifas justas.",
+              "effects": {
+                "stats": {
+                  "dinero": -8,
+                  "sexi": 3
+                }
+              },
+              "goto": "acto2_viaje2"
+            },
+            "failure": {
+              "text": "El bandido te humilla tan fuerte que sus compañeros aplauden. Aprovechan tu crisis existencial para vaciarte los bolsillos.",
+              "effects": {
+                "stats": {
+                  "dinero": -20,
+                  "ganas_de_vivir": -10,
+                  "sexi": -5
+                }
+              },
+              "goto": "acto2_viaje2"
+            }
+          }
+        }
+      ]
+    },
+    "acto2_huida_bandidos": {
+      "scenario": {
+        "name": "Emboscada en el bosque",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip13_battle_1.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Corres entre los árboles gritando como si te persiguiera un dragón. Te persiguen tres idiotas con un cuchillo. Pero bueno, cada uno con sus miedos."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": 20,
+              "pis": 25,
+              "ganas_de_vivir": -5
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡BOB! ¡Espérame! ¡Las babosas no corremos!"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver por Nerly (y fingir que era una estrategia)",
+              "effects": {
+                "affinity": {
+                  "nerly": 3
+                }
+              },
+              "goto": "acto2_viaje2"
+            },
+            {
+              "text": "Seguir corriendo (Nerly ya te alcanzará)",
+              "effects": {
+                "affinity": {
+                  "nerly": -10
+                }
+              },
+              "goto": "acto2_viaje2",
+              "tags": [
+                "egoista"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_takashi": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "¡Oye, tú! ¿Has visto zombis por aquí? ¿Hordas? ¿Gente mordida? Llevo días buscando el apocalipsis y solo encuentro... ¿babosas?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Oh no. Un personaje de otra historia se coló en la nuestra. Esto es lo que pasa cuando no pagas al departamento de continuidad."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Espera... ¿tú también te llamas Takashi? Esto es una paradoja de derechos de autor. Si se tocan, el universo se demanda a sí mismo."
+          ],
+          "condition": {
+            "textMatches": {
+              "nombre_real": "takashi|komuro"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Hola. Aquí no hay zombis, solo entidades gastropódicas. Y un Rey gigante que absorbe todo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "¿Absorbe todo? ¿Como un virus? ¡¿Es un apocalipsis?!"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«No, amigo. Aquí solo hay babosas. Vete a casa.»",
+              "goto": "acto2_takashi_despedida",
+              "tags": [
+                "honesto"
+              ]
+            },
+            {
+              "text": "«¡Únete a nosotros! Nos vendría bien alguien con un bate.»",
+              "goto": "acto2_takashi_unirse",
+              "tags": [
+                "amable"
+              ]
+            },
+            {
+              "text": "«Sí. Los zombis están en el Abismo. Corre, ve primero.»",
+              "goto": "acto2_takashi_mentira",
+              "tags": [
+                "mentiroso"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_takashi_despedida": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "Qué decepción... Toma, al menos quédate con esto. Contra babosas no sirve de mucho, pero da seguridad."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": [
+              "bate_beisbol"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi se aleja arrastrando los pies hacia otra historia más famosa que esta. Te quedas con su bate. Y con envidia de su presupuesto."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir el camino",
+              "goto": "acto2_viaje2"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_takashi_unirse": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "No. Absolutamente no. Tiene su propia historia, su propio público y sus propios abogados. No vamos a pagar eso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "¿Con quién hablas?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Con nadie, Takashi. Vete. Shu, shu."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi se va, confundido. Te deja su bate por las molestias. Mejor que tu espada, probablemente."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": [
+              "bate_beisbol"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir el camino",
+              "goto": "acto2_viaje2"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_takashi_mentira": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "¡¿EN SERIO?! ¡POR FIN! ¡Gracias, extraño!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y Takashi sale corriendo hacia el Abismo de las Babosas con su bate, feliz como un niño. Acabas de mandar a un inocente a morir por diversión."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Me encanta. Anota eso en tu perfil: «mentiroso con consecuencias narrativas». Tal vez lo volvamos a ver. En partes."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Eso fue cruel, BOB."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "affinity": {
+              "nerly": -5
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir el camino (silbando)",
+              "goto": "acto2_viaje2"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_viaje2": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El sol empieza a caer. El brillo de la baba en el suelo se hace más intenso. Es bonito, si ignoras que es moco."
+          ]
+        },
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 1,
+              "text": "Un llanto agudo y pegajoso sale de un tronco hueco.",
+              "goto": "acto2_babosita"
+            },
+            {
+              "weight": 1,
+              "text": "El sendero se cierra. Un árbol enorme, cubierto de musgo que respira, bloquea el camino. Tiene ojos. Te está mirando.",
+              "goto": "acto2_arbol"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_babosita": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "babosita",
+          "lines": [
+            "Snif... snif... me perdí... mi mamá se fue al Abismo y no volvió..."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Oh, pobrecita. Es una cría de babosa del bosque. BOB, ¿podemos ayudarla? Por favor."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una babosa bebé llorando. Si le echas sal, te odiaré para siempre. Bueno, más que ahora."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Ayudarla a volver a su tronco y darle una miga de pan",
+              "effects": {
+                "affinity": {
+                  "nerly": 10
+                },
+                "flags": {
+                  "babosita_salvada": true
+                },
+                "unlockCodex": [
+                  "babosita"
+                ]
+              },
+              "goto": "acto2_fogata",
+              "tags": [
+                "amable"
+              ]
+            },
+            {
+              "text": "Echarle sal (¿por qué harías eso?)",
+              "goto": "acto2_babosita_sal",
+              "condition": {
+                "inventory": [
+                  "sal"
+                ]
+              },
+              "tags": [
+                "cruel"
+              ]
+            },
+            {
+              "text": "Ignorarla y seguir",
+              "effects": {
+                "affinity": {
+                  "nerly": -5
+                }
+              },
+              "goto": "acto2_fogata",
+              "tags": [
+                "frio"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_babosita_sal": {
+      "scenario": {
+        "name": "Acto II: El Camino",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Un bosque de hojas demasiado húmedas. El suelo se ablanda a cada paso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "...",
+            "No. No voy a narrar esto. Me niego. Fundido a negro."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly no dice nada por el resto del camino. Nada. Ni una palabra. Es peor que si gritara.)"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "affinity": {
+              "nerly": -30
+            },
+            "flags": {
+              "babosita_salada": true
+            },
+            "stats": {
+              "sexi": -10,
+              "ganas_de_vivir": -10
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir, sintiéndote un monstruo",
+              "goto": "acto2_fogata"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_arbol": {
+      "scenario": {
+        "name": "El Árbol Baboso",
+        "image": "images/scenarios/arbol_baboso.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "description": "Un árbol ancestral cubierto de musgo que respira. Sus ramas gotean baba luminosa."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "arbol_baboso",
+          "lines": [
+            "¿Por qué profanáis este sendero sagrado?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Es una Baboba Guardiana. Mitad planta, mitad espíritu. No se puede pelear con ella: solo convencerla de que eres sincero."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "arbol_baboso",
+          "lines": [
+            "Para avanzar debéis mostrar lo que verdaderamente sois. Quien miente caerá. Quien es sincero podrá continuar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una prueba de honestidad. Genial. Tu especialidad es mentir, BOB. Esto va a ser incómodo. Para ti."
+          ]
+        },
+        {
+          "type": "ai_chat",
+          "mode": "confesion",
+          "npc": "arbol_baboso",
+          "maxTurns": 3,
+          "vars": {
+            "pregunta": "¿Qué es lo que nunca le has dicho a nadie?",
+            "npc_descripcion": "Una Baboba Guardiana: árbol ancestral mitad planta mitad espíritu, solemne y poético, que solo deja pasar a los sinceros. Habla con voz de eco lejano."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 10,
+            "description": "Improvisar una confesión sincera"
+          },
+          "outcomes": {
+            "done": {
+              "text": "El árbol cruje, conmovido (o aburrido, con los árboles nunca se sabe). Las ramas se apartan con un sonido húmedo. «Pasad. Y recordad: no todos ahí dentro serán tan compasivos como yo.»",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": 10
+                },
+                "flags": {
+                  "confeso_arbol": true
+                },
+                "unlockCodex": [
+                  "arbol_baboso"
+                ]
+              },
+              "goto": "acto2_fogata"
+            }
+          }
+        }
+      ]
+    },
+    "acto2_fogata": {
+      "scenario": {
+        "name": "Fogata en el bosque",
+        "image": "images/scenarios/fogata.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Cae la noche. Encienden una fogata. Por primera vez desde que empezó esta historia, nadie intenta matarte. Disfrútalo, no va a durar."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ganas_de_vivir": 20,
+              "miedo": -20
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly se sienta lejos del fuego. Y lejos de ti. Sigue sin hablarte.)"
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¿Sabes? Cuando vivía en la corte del Rey, nunca había música. Él la odia. Por eso me encanta cantar."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¿Quieres componer una canción conmigo? Sobre nuestro viaje. Tú haces un verso y yo otro."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": false
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Componer la canción con Nerly",
+              "goto": "acto2_cancion",
+              "condition": {
+                "flags": {
+                  "babosita_salada": false
+                }
+              },
+              "tags": [
+                "sensible"
+              ]
+            },
+            {
+              "text": "Contar historias de terror junto al fuego",
+              "effects": {
+                "stats": {
+                  "miedo": 15
+                },
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "goto": "acto2_dormir",
+              "tags": [
+                "bromista"
+              ]
+            },
+            {
+              "text": "Dormir. Mañana hay que morir temprano.",
+              "effects": {
+                "affinity": {
+                  "nerly": -5
+                }
+              },
+              "goto": "acto2_dormir",
+              "tags": [
+                "aguafiestas"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_cancion": {
+      "scenario": {
+        "name": "Fogata en el bosque",
+        "image": "images/scenarios/fogata.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "cancion",
+          "npc": "nerly",
+          "maxTurns": 4,
+          "saveAs": "cancion_nerly",
+          "intro": [
+            "¡Yo empiezo! «Por un sendero de baba brillante / va un héroe torpe pero valiente...» ¡Ahora tú!"
+          ],
+          "vars": {
+            "tema": "el viaje de BOB y Nerly hacia el Abismo de las Babosas, el miedo, la amistad y la baba"
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 11,
+            "description": "Cantar a dúo con Nerly"
+          },
+          "outcomes": {
+            "success": {
+              "text": "Terminan la canción entre risas. Nerly brilla tanto que ilumina medio bosque. «¡La cantaré cuando derrotemos al Rey!», dice. Guardas la letra en tu memoria. Y en tu corazón, si tienes.",
+              "effects": {
+                "affinity": {
+                  "nerly": 20
+                },
+                "flags": {
+                  "cancion_bonita": true
+                }
+              },
+              "goto": "acto2_dormir"
+            },
+            "partial": {
+              "text": "La canción queda... digna. Tiene rima. A veces. Nerly la tararea igual, feliz.",
+              "effects": {
+                "affinity": {
+                  "nerly": 10
+                },
+                "flags": {
+                  "cancion_regular": true
+                }
+              },
+              "goto": "acto2_dormir"
+            },
+            "failure": {
+              "text": "La canción es un desastre. Un búho se va del árbol. Nerly aplaude igual, porque es muy educada. «¡Es... única!»",
+              "effects": {
+                "affinity": {
+                  "nerly": 3
+                },
+                "flags": {
+                  "cancion_horrible": true
+                }
+              },
+              "goto": "acto2_dormir"
+            }
+          }
+        }
+      ]
+    },
+    "acto2_dormir": {
+      "scenario": {
+        "name": "Fogata en el bosque",
+        "image": "images/scenarios/fogata.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "Una fogata pequeña. El bosque respira alrededor. Nerly brilla más que el fuego."
+      },
+      "sequence": [
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 1,
+              "text": "Sueñas que el Rey Baboso te invita a cenar. El plato principal eres tú. Te despiertas gritando. Nerly te mira preocupada.",
+              "effects": {
+                "stats": {
+                  "miedo": 15
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Sueñas con tu abuela y su cuchara de madera. Te dice «vendiste mi relicario, desgraciado». Despiertas con culpa.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Duermes como un bebé. Es decir, te despiertas cada dos horas llorando. Pero descansas.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": 10
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Amanece. Tu vejiga despierta antes que tú y te lo hace saber."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "pis": 30
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir hacia el Abismo",
+              "goto": "acto2_llegada"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_llegada": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Hemos llegado. Esta es la entrada principal al Abismo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¡Tachán! Contempla la glamorosa entrada al Abismo de las Babosas. Nótese el exquisito olor a descomposición y el brillo de fluidos corporales."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Es... imponente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Es un agujero en una montaña, BOB. No te emociones."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "A un lado de la entrada, un anciano fuma en pipa sentado sobre una roca. Lleva una camiseta que dice «SOBREVIVÍ AL ABISMO». Alguien tachó «SOBREVIVÍ» y escribió «CASI»."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "*cof cof* Así que otro aspirante a héroe, ¿eh? Déjame adivinar... ¿el Narrador te trajo?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Puedes ver al Narrador?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Después de cinco aventuras fallidas y tres muertes casi seguras, uno empieza a notar patrones. El Narrador es solo uno de los muchos seres que viven entre planos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ignora al viejo loco. Lamió demasiadas babosas alucinógenas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "El secreto está en no pisar lo verde... ni lo morado... ni lo transparente. En realidad, mejor no pises nada."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Ah, eres TÚ. El que ya murió {meta.muertes} veces. Los patrones, muchacho. Veo los patrones."
+          ],
+          "condition": {
+            "meta": {
+              "muertes": ">=2"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Hablar con el anciano",
+              "goto": "acto2_anciano"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_anciano": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«¿Algún consejo útil para sobrevivir ahí dentro?»",
+              "goto": "acto2_anciano_consejos",
+              "condition": {
+                "flags": {
+                  "consejo_anciano": false
+                }
+              }
+            },
+            {
+              "text": "«¿Qué pasó con tu camiseta?»",
+              "goto": "acto2_anciano_historia",
+              "condition": {
+                "flags": {
+                  "historia_anciano": false
+                }
+              },
+              "tags": [
+                "curioso"
+              ]
+            },
+            {
+              "text": "Es hora de entrar al Abismo",
+              "goto": "acto3_abismo",
+              "tags": [
+                "valiente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_anciano_consejos": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Consejos, consejos... Primero: el guardia de la entrada. Está más aburrido que una piedra. Le encanta la música; dicen que sueña con ser cantante. Halágalo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Segundo: si ves una piedra que brilla como una lágrima, tócala. O no. Una de las dos cosas te va a matar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Tercero: nunca, NUNCA, le pidas un préstamo al tipo de la casa de empeños."
+          ],
+          "condition": {
+            "flags": {
+              "deuda_prestamista": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Tercero: le debes dinero al prestamista, ¿no? Se te nota en la cara. Él siempre encuentra a sus deudores. Siempre. En el peor momento."
+          ],
+          "condition": {
+            "flags": {
+              "deuda_prestamista": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "consejo_anciano": true,
+              "pista_guardia": true
+            },
+            "unlockCodex": [
+              "anciano"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Gracias, abuelo.»",
+              "goto": "acto2_anciano"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_anciano_historia": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg",
+        "description": "Una caverna enorme en la ladera. El suelo brilla, el aire huele dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "¿La camiseta? La compré en la tienda de regalos del Abismo. Sí, hay una tienda de regalos. Nadie sabe quién la atiende."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Entré cinco veces. Salí cinco veces. Bueno, cuatro y media: una vez salió solo mi pierna y tuve que volver por el resto."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Esto no está en el guion. ¿Quién escribió a este viejo? ¿Yo? No lo recuerdo. Eso me preocupa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Toma, llévate una. Tengo muchas. Para cuando mueras, que el cadáver vaya bien vestido."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "historia_anciano": true
+            },
+            "inventory": [
+              "camiseta_sobrevivi"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Ponerte la camiseta encima (por qué no)",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              },
+              "goto": "acto2_anciano",
+              "tags": [
+                "optimista"
+              ]
+            },
+            {
+              "text": "Guardarla",
+              "goto": "acto2_anciano"
+            }
+          ]
         }
       ]
     }

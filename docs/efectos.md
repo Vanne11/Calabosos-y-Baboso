@@ -30,6 +30,7 @@ interface Effects {
 
   // --- Meta (persisten entre partidas) ---
   meta?: Record<string, number>;                // Sumar a contadores: { "muertes": 1 }
+  unlockCodex?: string[];                       // Desbloquear entradas del códice: ["babosa_acida"]
 }
 ```
 

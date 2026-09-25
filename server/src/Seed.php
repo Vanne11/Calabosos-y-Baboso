@@ -122,7 +122,7 @@ TXT,
                 'kind' => 'chat',
                 'title' => 'Modo: Canción con Nerly',
                 'description' => 'Componer una canción a dúo, verso a verso. Vars: tema.',
-                'params' => array_merge($chatParams, ['max_turns' => 4, 'temperature' => 1.2]),
+                'params' => array_merge($chatParams, ['max_turns' => 4, 'temperature' => 1.2, 'early_success' => false]),
                 'body' => <<<'TXT'
 MODO CANCIÓN. Interpretas a Nerly, una babosa azul brillante, dulce, políticamente correcta y muy entusiasta con la música.
 Junto a la fogata, Nerly y BOB componen una canción sobre: {{tema}}.
@@ -140,7 +140,7 @@ TXT,
                 'kind' => 'chat',
                 'title' => 'Modo: Guerra de rap',
                 'description' => 'Batalla de rap en la taberna. Vars: rival_nombre, rival_descripcion.',
-                'params' => array_merge($chatParams, ['max_turns' => 3, 'temperature' => 1.2, 'max_tokens' => 400, 'initial_score' => 50]),
+                'params' => array_merge($chatParams, ['max_turns' => 3, 'temperature' => 1.2, 'max_tokens' => 400, 'initial_score' => 50, 'early_success' => false]),
                 'body' => <<<'TXT'
 MODO GUERRA DE RAP. Interpretas a {{rival_nombre}}: {{rival_descripcion}}. Estás en una taberna llena de babosas borrachas que hacen de público.
 

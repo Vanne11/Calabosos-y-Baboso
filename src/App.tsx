@@ -20,6 +20,7 @@ import LevelUpWidget from './components/game/LevelUpWidget';
 import { useLoginFlow, welcomeMessages } from './hooks/useLoginFlow';
 import { useTerminalCommands } from './hooks/useTerminalCommands';
 import { useGameLoop } from './hooks/useGameLoop';
+import { useDebugStore } from './store/useDebugStore';
 import { useKeyboardInput } from './hooks/useKeyboardInput';
 import type {
   ChoicePrompt, DicePrompt, InputPrompt, ExaminePrompt, ChatPrompt,
@@ -111,6 +112,23 @@ const App: React.FC = () => {
     if (phase === 'game' && pendingSlotAction && trimmed) {
       addEntry({ type: 'command', content: trimmed });
       await handleSlotInput(trimmed, startScene);
+      return;
+    }
+
+    // Debug: saltar a una escena (/debug goto <escena>), solo con el modo debug activo
+    const gotoMatch = phase === 'game' ? trimmed.match(/^\/debug\s+goto\s+(\S+)$/i) : null;
+    if (gotoMatch) {
+      addEntry({ type: 'command', content: trimmed });
+      const engine = useAppStore.getState().engine;
+      const target = gotoMatch[1];
+      if (!useDebugStore.getState().active) {
+        addEntry({ type: 'system', content: '[yellow]Activa primero el modo depuración: /debug on[/yellow]' });
+      } else if (!engine?.hasScene(target)) {
+        addEntry({ type: 'error', content: `[red]No existe la escena "${target}".[/red]` });
+      } else {
+        useAppStore.getState().setPendingResult(null);
+        await startScene(target);
+      }
       return;
     }
 

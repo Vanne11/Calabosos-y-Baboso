@@ -29,7 +29,7 @@ $paramsValue = (string) ($_POST['params'] ?? json_encode((object) ($params ?: []
         <ul class="small">
           <li><code>temperature</code> creatividad (0-2) · <code>max_tokens</code> largo máximo de la respuesta del modelo</li>
           <li>Narración: <code>max_chars</code> recorte final del texto</li>
-          <li>Chat: <code>max_turns</code>, <code>initial_score</code>, <code>success_at</code> / <code>partial_at</code> (umbrales del veredicto), <code>max_step</code> (cuánto puede cambiar el puntaje por turno), <code>max_reply_chars</code>, <code>verdict: false</code> (sin ganar ni perder)</li>
+          <li>Chat: <code>max_turns</code>, <code>initial_score</code>, <code>success_at</code> / <code>partial_at</code> (umbrales del veredicto), <code>max_step</code> (cuánto puede cambiar el puntaje por turno), <code>early_success: false</code> (no terminar al alcanzar el éxito: jugar todos los turnos), <code>max_reply_chars</code>, <code>verdict: false</code> (sin ganar ni perder)</li>
           <li><code>use_base: false</code> para no anteponer la hoja del narrador</li>
         </ul>
       </details>

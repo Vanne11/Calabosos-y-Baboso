@@ -92,3 +92,23 @@ Suma `floor(stat / per) * amount` al modificador de **todas** las tiradas (paso 
 ```
 
 El motor recorta las stats tras cada efecto, antes de evaluar las reglas.
+
+## Códice / bestiario (`codex`)
+
+Enciclopedia del juego que el jugador va completando. Se abre con un comando in-game que define el juego.
+
+```jsonc
+"codex": {
+  "command": "bestiario",              // → /bestiario y /bestiario <n>
+  "title": "Bestiario Baboso",
+  "entries": {
+    "babosa_acida": { "title": "Babosa Ácida", "icon": "🟢", "category": "Especies", "text": "Derrite metal..." }
+  }
+}
+```
+
+- Desbloquear: `effects.unlockCodex: ["babosa_acida"]` (sin duplicados, en orden de descubrimiento; se guarda con la partida en `PlayerState.codex`).
+- Al desbloquear se muestra un aviso con el comando.
+- Condición: `{ "codex": ["babosa_acida"] }`.
+- `/bestiario` lista por categoría con el progreso (`5/11`); `/bestiario 3` lee la entrada 3.
+- El validador comprueba que las entradas desbloqueadas existan.
