@@ -40,7 +40,7 @@ try {
 use Cyb\App;
 use Cyb\PromptRepository;
 
-check(true, 'config.php cargado');
+check(App::hasConfigFile(), 'config.php cargado', 'No existe: instala desde /cyb/api/admin/ o copia config.example.php como config.php');
 $mock = (bool) App::config('deepseek.mock', false);
 $hasKey = (string) App::config('deepseek.api_key', '') !== '';
 check($mock || $hasKey, $mock ? 'DeepSeek en modo mock (sin llamadas reales)' : 'API key de DeepSeek configurada', 'Completa deepseek.api_key en config.php');

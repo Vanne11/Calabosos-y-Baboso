@@ -79,5 +79,5 @@ if (existsSync(join(API, 'config.php'))) throw new Error('config.php no debería
 console.log(`\n✔ release/${name}.tar.gz`);
 console.log(`   cyb/     ${mb(size(join(OUT, 'cyb')))} (incluye cyb/api/: ${mb(size(API))})`);
 console.log(`   Comprimido: ${mb(statSync(join(ROOT, 'release', `${name}.tar.gz`)).size)}\n`);
-console.log('Siguiente paso: crea cyb/api/config.php (con api_key, ip_salt y setup_token) y sube la carpeta cyb/.');
+console.log('Siguiente paso: sube la carpeta cyb/ y abre https://tudominio/cyb/api/admin/ para instalar (usuario + key de DeepSeek).');
 console.log('Guía paso a paso: DEPLOY.md, sección «Subir por FTP».\n');

@@ -35,16 +35,23 @@ final class Diagnostics
         self::add($out, 'Extensión curl', extension_loaded('curl') ? 'ok' : 'fail', extension_loaded('curl') ? 'Para llamar a DeepSeek.' : 'Sin curl no se puede llamar a DeepSeek: pídele al hosting que la active.');
         self::add($out, 'Extensión mbstring', extension_loaded('mbstring') ? 'ok' : 'info', extension_loaded('mbstring') ? '' : 'No está, pero se usa un reemplazo. Funciona igual.');
 
+        if (!App::hasConfigFile()) {
+            self::add($out, 'config.php', 'fail', ConfigWriter::canWrite()
+                ? 'Todavía no existe: guarda una vez en Ajustes y se crea solo.'
+                : 'No existe y el panel no puede crearlo: da permisos de escritura a la carpeta cyb/api/ (775) y guarda en Ajustes.');
+        } else {
+            self::add($out, 'config.php', 'ok', ConfigWriter::canWrite() ? 'Se puede editar desde Ajustes.' : 'Existe, pero es de solo lectura: los cambios de la key se hacen subiéndolo por FTP.');
+        }
         $mock = (bool) App::config('deepseek.mock', false);
         $hasKey = (string) App::config('deepseek.api_key', '') !== '';
         if ($mock) {
-            self::add($out, 'DeepSeek en modo mock', 'warn', 'Las respuestas son de prueba. Pon mock => false en config.php para usar la IA de verdad.');
+            self::add($out, 'DeepSeek en modo mock', 'warn', 'Las respuestas son de prueba. Desmarca «Modo prueba» en Ajustes para usar la IA de verdad.');
         } else {
-            self::add($out, 'API key de DeepSeek', $hasKey ? 'ok' : 'fail', $hasKey ? 'Configurada (no se muestra).' : 'Falta deepseek.api_key en config.php.');
+            self::add($out, 'API key de DeepSeek', $hasKey ? 'ok' : 'fail', $hasKey ? 'Configurada (no se muestra).' : 'Falta la key: ponla en Ajustes → Conexión con DeepSeek.');
         }
         $salt = (string) App::config('ip_salt', '');
         $saltOk = $salt !== '' && $salt !== 'cambia-esto-por-algo-largo-y-aleatorio';
-        self::add($out, 'ip_salt personalizada', $saltOk ? 'ok' : 'warn', $saltOk ? '' : 'Cámbiala en config.php por un texto largo y aleatorio.');
+        self::add($out, 'ip_salt personalizada', $saltOk ? 'ok' : 'warn', $saltOk ? '' : 'Guarda una vez en Ajustes y se genera sola.');
         self::add($out, 'HTTPS', AdminAuth::isHttps() ? 'ok' : 'warn', AdminAuth::isHttps() ? '' : 'El sitio no usa HTTPS: las contraseñas y conversaciones viajan sin cifrar. Activa HTTPS en el hosting (Let\'s Encrypt suele ser gratis).');
 
         $dir = dirname((string) App::config('db_path'));

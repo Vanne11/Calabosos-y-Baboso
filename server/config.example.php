@@ -1,7 +1,9 @@
 <?php
-// Copia este archivo como config.php (junto a este) y completa los valores.
+// NO HACE FALTA crear este archivo a mano: al abrir /cyb/api/admin/ por primera vez,
+// el instalador web crea config.php solo (y la key de DeepSeek se cambia en Ajustes).
+// Úsalo solo si instalas por consola o si tu hosting no deja escribir archivos:
+// cópialo como config.php (junto a este) y completa los valores.
 // config.php NUNCA se sube al repo (está en .gitignore).
-// Si puedes, deja la carpeta server/ fuera del webroot y publica solo server/public/.
 
 return [
     // Archivo SQLite (se crea solo). La carpeta debe ser escribible por PHP.
@@ -19,15 +21,11 @@ return [
     // Ejemplo durante desarrollo: ['http://127.0.0.1:5173']
     'allowed_origins' => [],
 
-    // Sal para anonimizar IPs (cámbiala por cualquier texto largo y aleatorio)
-    'ip_salt' => 'cambia-esto-por-algo-largo-y-aleatorio',
+    // Sal para anonimizar IPs: un texto largo y aleatorio (el instalador la genera sola)
+    'ip_salt' => '',
 
     'admin' => [
-        // true si el sitio usa HTTPS (recomendado). Si tu sitio es http://, pon false o no podrás iniciar sesión.
-        'secure_cookie' => true,
-        // Código para crear el primer usuario desde la web (instalación por FTP).
-        // Pon aquí un texto largo y aleatorio (mínimo 16 caracteres); se pide una sola vez en /cyb/api/admin/.
-        // Cuando ya exista un admin, el formulario se desactiva solo (puedes borrar el código).
-        'setup_token' => '',
+        // Cookie segura: si no se indica, se decide sola (segura cuando el sitio usa HTTPS).
+        // 'secure_cookie' => true,
     ],
 ];

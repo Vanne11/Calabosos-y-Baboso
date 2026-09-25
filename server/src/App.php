@@ -16,18 +16,55 @@ final class App
     /** @var Settings|null */
     private static $settings = null;
 
+    /** @var bool */
+    private static $hasConfigFile = false;
+
+    /**
+     * Carga config.php. Si todavía no existe (recién subido por FTP), arranca con valores
+     * por defecto: el instalador web del admin lo crea después.
+     */
     public static function boot(): void
     {
-        $path = getenv('CYB_CONFIG') ?: dirname(__DIR__) . '/config.php';
-        if (!is_file($path)) {
-            throw new RuntimeException('Falta config.php (copia config.example.php como config.php).');
+        date_default_timezone_set('UTC');
+        $path = self::configPath();
+        self::$hasConfigFile = is_file($path);
+        if (!self::$hasConfigFile) {
+            self::$config = self::defaults();
+            return;
         }
         $config = require $path;
         if (!is_array($config)) {
             throw new RuntimeException('config.php debe devolver un array.');
         }
-        self::$config = $config;
-        date_default_timezone_set('UTC');
+        self::$config = array_replace_recursive(self::defaults(), $config);
+    }
+
+    public static function configPath(): string
+    {
+        return getenv('CYB_CONFIG') ?: dirname(__DIR__) . '/config.php';
+    }
+
+    public static function hasConfigFile(): bool
+    {
+        return self::$hasConfigFile;
+    }
+
+    /** Configuración completa (para que el instalador la reescriba) */
+    public static function allConfig(): array
+    {
+        return self::$config;
+    }
+
+    /** Valores por defecto: permiten funcionar sin config.php (la IA queda sin key hasta configurarla) */
+    public static function defaults(): array
+    {
+        return [
+            'db_path' => dirname(__DIR__) . '/data/cyb.sqlite',
+            'deepseek' => ['api_key' => '', 'base_url' => 'https://api.deepseek.com', 'timeout' => 20, 'mock' => false],
+            'allowed_origins' => [],
+            'ip_salt' => '',
+            'admin' => ['setup_token' => ''],
+        ];
     }
 
     /** @return mixed */

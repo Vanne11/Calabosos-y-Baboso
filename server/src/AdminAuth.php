@@ -31,7 +31,7 @@ final class AdminAuth
         session_set_cookie_params([
             'lifetime' => 0,
             'path' => '/',
-            'secure' => (bool) App::config('admin.secure_cookie', true),
+            'secure' => self::secureCookie(),
             'httponly' => true,
             'samesite' => 'Strict',
         ]);
@@ -125,10 +125,20 @@ final class AdminAuth
         return strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
     }
 
+    /**
+     * Cookie segura cuando la petición llega por HTTPS. Por http:// no se marca (el navegador no la
+     * guardaría y no se podría entrar); una sesión iniciada por HTTPS nunca se envía por http://.
+     * Se ignora admin.secure_cookie de config.php antiguos.
+     */
+    public static function secureCookie(): bool
+    {
+        return self::isHttps();
+    }
+
     /** La cookie segura no se guarda en http://: el login fallaría en silencio */
     public static function cookieWillFail(): bool
     {
-        return (bool) App::config('admin.secure_cookie', true) && !self::isHttps();
+        return self::secureCookie() && !self::isHttps();
     }
 
     public static function createAdmin(Db $db, string $username, string $password): void

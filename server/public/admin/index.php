@@ -23,8 +23,8 @@ try {
     require __DIR__ . '/../../src/bootstrap.php';
 } catch (\Throwable $e) {
     installError(
-        'No se encontró config.php (o tiene un error).',
-        'Copia <code>config.example.php</code> como <code>config.php</code> en la carpeta <code>cyb/api/</code>, complétalo y vuelve a subirlo.'
+        'config.php tiene un error.',
+        'Borra <code>cyb/api/config.php</code> por FTP y vuelve a abrir esta página: el instalador lo crea de nuevo.'
     );
 }
 
@@ -33,6 +33,7 @@ use Cyb\Analytics;
 use Cyb\AiException;
 use Cyb\App;
 use Cyb\ChatService;
+use Cyb\ConfigWriter;
 use Cyb\DeepSeekClient;
 use Cyb\Diagnostics;
 use Cyb\Guard;
@@ -90,35 +91,50 @@ if ($page === 'setup') {
     if (!$needsSetup) {
         redirect('login');
     }
-    $token = (string) App::config('admin.setup_token', '');
-    $tokenReady = strlen($token) >= 16;
     $error = '';
-    if ($isPost && $tokenReady) {
+    if ($isPost) {
         $username = trim((string) ($_POST['username'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
+        $apiKey = trim((string) ($_POST['api_key'] ?? ''));
         if (!$auth->checkCsrf($_POST['csrf'] ?? null)) {
             $error = 'La sesión expiró. Intenta de nuevo.';
-        } elseif ($auth->isLocked()) {
-            $error = 'Demasiados intentos. Espera 15 minutos.';
-        } elseif (!hash_equals($token, (string) ($_POST['setup_token'] ?? ''))) {
-            $auth->recordFailure();
-            $error = 'El código de instalación no coincide con el de config.php.';
         } elseif (!preg_match('/^[a-zA-Z0-9_.-]{3,40}$/', $username)) {
             $error = 'El usuario debe tener entre 3 y 40 caracteres: letras, números, _ . -';
         } elseif (strlen($password) < 12) {
             $error = 'La contraseña debe tener al menos 12 caracteres.';
         } elseif ($password !== (string) ($_POST['password2'] ?? '')) {
             $error = 'Las contraseñas no coinciden.';
+        } elseif ($apiKey !== '' && !preg_match('/^[\x21-\x7e]{10,200}$/', $apiKey)) {
+            $error = 'La key de DeepSeek no parece válida (sin espacios; empieza con sk-).';
         } else {
+            // config.php: se conserva lo que ya hubiera y se completa lo que falta
+            $changes = [
+                'admin.setup_token' => null,   // ya no se usa
+                'admin.secure_cookie' => null, // automático: segura si el sitio usa HTTPS
+            ];
+            if ($apiKey !== '') {
+                $changes['deepseek.api_key'] = $apiKey;
+                $changes['deepseek.mock'] = false;
+            }
+            $config = ConfigWriter::merged($changes);
+            $written = ConfigWriter::write($config);
             AdminAuth::createAdmin($db, $username, $password);
             $auth->login($username, $password);
-            redirect('diagnostics', [], '¡Listo! Usuario creado. Revisa que todo esté en verde.');
+            if ($written) {
+                redirect('diagnostics', [], '¡Instalado! Revisa que todo esté en verde y prueba DeepSeek.');
+            }
+            View::render('config_manual', [
+                'user' => $username, 'csrf' => $auth->csrfToken(), 'flash' => '', 'ctx' => 'setup',
+                'content' => ConfigWriter::render($config),
+            ]);
+            exit;
         }
     }
     View::render('setup', [
         'error' => $error, 'csrf' => $auth->csrfToken(), 'user' => null,
-        'tokenReady' => $tokenReady, 'cookieWillFail' => AdminAuth::cookieWillFail(),
+        'cookieWillFail' => AdminAuth::cookieWillFail(),
         'username' => (string) ($_POST['username'] ?? ''),
+        'hasKey' => (string) App::config('deepseek.api_key', '') !== '',
     ]);
     exit;
 }
@@ -272,9 +288,34 @@ if ($page === 'settings') {
             }
         }
         $settings->set('funnel', $funnel);
-        redirect('settings', [], 'Ajustes guardados.');
+
+        // Conexión con DeepSeek: se guarda en config.php
+        $apiKey = trim((string) ($_POST['api_key'] ?? ''));
+        $mock = !empty($_POST['mock']);
+        if ($apiKey !== '' && !preg_match('/^[\x21-\x7e]{10,200}$/', $apiKey)) {
+            redirect('settings', [], 'La key de DeepSeek no parece válida (sin espacios; empieza con sk-). El resto se guardó.');
+        }
+        $changes = [];
+        if ($apiKey !== '') {
+            $changes['deepseek.api_key'] = $apiKey;
+        }
+        if ($mock !== (bool) App::config('deepseek.mock', false)) {
+            $changes['deepseek.mock'] = $mock;
+        }
+        if ($changes !== [] || !App::hasConfigFile()) {
+            $config = ConfigWriter::merged($changes);
+            if (!ConfigWriter::write($config)) {
+                View::render('config_manual', $common + ['content' => ConfigWriter::render($config), 'ctx' => 'settings']);
+                exit;
+            }
+        }
+        redirect('settings', [], $apiKey !== '' ? 'Ajustes guardados. Key de DeepSeek actualizada: pruébala en Diagnóstico.' : 'Ajustes guardados.');
     }
-    View::render('settings', $common + ['s' => $settings->all(), 'modes' => Settings::MODES]);
+    View::render('settings', $common + [
+        's' => $settings->all(), 'modes' => Settings::MODES,
+        'hasKey' => (string) App::config('deepseek.api_key', '') !== '',
+        'mock' => (bool) App::config('deepseek.mock', false),
+    ]);
     exit;
 }
 
@@ -310,7 +351,6 @@ if ($page === 'diagnostics') {
         'exposure' => $diag->exposure($apiRoot),
         'apiRoot' => $apiRoot,
         'aiTest' => $aiTest,
-        'tokenStillSet' => (string) App::config('admin.setup_token', '') !== '',
     ]);
     exit;
 }

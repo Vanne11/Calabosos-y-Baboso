@@ -9,6 +9,15 @@
     <label>Modelo <input name="model" value="<?= e($s['model']) ?>"></label>
   </section>
   <section class="card">
+    <h2>Conexión con DeepSeek</h2>
+    <p class="small"><?= $hasKey ? '✔ Hay una key guardada (no se muestra).' : '✘ Todavía no hay key: el juego funciona, pero sin IA.' ?>
+      Consíguela en <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">platform.deepseek.com</a>.</p>
+    <label>Key de DeepSeek <span class="muted small"><?= $hasKey ? '(déjalo vacío para conservar la actual)' : '' ?></span>
+      <input name="api_key" type="password" autocomplete="off" placeholder="sk-...">
+    </label>
+    <label class="check"><input type="checkbox" name="mock" value="1" <?= $mock ? 'checked' : '' ?>> Modo prueba (respuestas falsas, no gasta saldo)</label>
+  </section>
+  <section class="card">
     <h2>Modos chat</h2>
     <?php foreach ($modes as $mode): ?>
       <label class="check"><input type="checkbox" name="modes[<?= e($mode) ?>]" value="1" <?= !empty($s['modes_enabled'][$mode]) ? 'checked' : '' ?>> <?= e(ucfirst($mode)) ?></label>

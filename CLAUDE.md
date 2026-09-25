@@ -63,7 +63,7 @@ npx tsc --noEmit -p .                   # debe quedar sin errores
 ## Servidor de IA (server/)
 
 - PHP **7.4 y 8.x** (sin sintaxis de PHP 8: nada de match, enums, named args, union types, readonly). SQLite con migraciones (`PRAGMA user_version`).
-- La key de DeepSeek va **solo** en `server/config.php` (gitignored). Modo `mock` para desarrollo.
+- La key de DeepSeek va **solo** en `server/config.php` (gitignored). En producción lo crea el instalador web (`/cyb/api/admin/`, `ConfigWriter`) y la key se cambia en Ajustes; sin config.php la API arranca con valores por defecto. Modo `mock` para desarrollo.
 - Desarrollo: `php -S 127.0.0.1:8099 -t server/public` (Vite hace proxy de `/cyb/api`). En Arch el PHP del sistema no trae `pdo_sqlite`; hay un PHP 7.4 de prueba vía `micromamba create -c conda-forge php=7.4.26`.
 - Prompts editables y versionados en el admin; el contrato JSON de los modos chat lo fija el servidor. El veredicto lo calcula el servidor; el puntaje sube como máximo `max_step` por turno.
 

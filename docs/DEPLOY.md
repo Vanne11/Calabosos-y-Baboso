@@ -7,7 +7,7 @@ public_html/
 └── cyb/                 ← el juego         → https://tudominio/cyb/
     ├── index.html, assets/, games/ ...
     └── api/             ← la IA (PHP)       → https://tudominio/cyb/api/   (admin: /cyb/api/admin/)
-        ├── config.php   ← lo creas tú (key de DeepSeek). NUNCA viene en el paquete
+        ├── config.php   ← lo crea el instalador web (key de DeepSeek). NUNCA viene en el paquete
         └── data/        ← base de datos: prompts, conversaciones, analítica. NUNCA viene en el paquete
 ```
 
@@ -27,27 +27,30 @@ Si tu hosting solo tiene FTP (lo típico con cPanel), sigue estos pasos. No nece
    ```
    Queda en `release/calabosos-v1.0.0/cyb/`.
 
-2. **Crea `config.php`** en tu PC: en `release/calabosos-v1.0.0/cyb/api/`, copia `config.example.php` como `config.php` y completa:
-   - `deepseek.api_key`: tu key de DeepSeek.
-   - `ip_salt`: un texto largo y aleatorio.
-   - `admin.setup_token`: **otro** texto largo y aleatorio (mínimo 16 caracteres). Lo escribes una sola vez, para crear tu usuario.
-   - `admin.secure_cookie`: `true` si tu sitio usa `https://` (recomendado). Si usa `http://`, ponlo en `false`, o no podrás entrar al panel.
-   - `db_path` se deja como está.
+2. **Sube por FTP** la carpeta `release/calabosos-v1.0.0/cyb/` completa a la carpeta pública del hosting (`public_html/` o `www/`). Usa modo binario o automático. **No hace falta crear ni editar ningún archivo.**
 
-3. **Sube por FTP** la carpeta `release/calabosos-v1.0.0/cyb/` completa (con `api/config.php` adentro) a la carpeta pública del hosting (`public_html/` o `www/`). Usa modo binario o automático.
+3. **Permisos:** en tu cliente FTP, dale permisos de escritura (775; si da error, 777) a:
+   - `public_html/cyb/api/data/` (la base de datos).
+   - `public_html/cyb/api/` (para que el instalador cree `config.php`). Si prefieres no hacerlo, el instalador te muestra el contenido para que lo subas tú.
 
-4. **Permisos:** en tu cliente FTP, dale permisos de escritura a `public_html/cyb/api/data/` (775; si el panel da error, 777).
+4. **Instala:** abre `https://tudominio/cyb/api/admin/`. Aparece **Instalación**, un solo formulario:
+   - usuario y contraseña (12 caracteres o más) para el panel;
+   - key de DeepSeek (opcional; también se pone después en **Ajustes → Conexión con DeepSeek**).
 
-5. **Crea tu usuario:** abre `https://tudominio/cyb/api/admin/`. Aparece la pantalla **Instalación**: escribe el `setup_token`, tu usuario y una contraseña de 12 caracteres o más. El formulario desaparece en cuanto existe un admin.
+   Pulsa **Instalar**. Se crea `config.php` solo (con una sal aleatoria para anonimizar IPs) y entras al panel. La pantalla de instalación no vuelve a aparecer.
 
-6. **Revisa el Diagnóstico** (se abre solo después de crear el usuario). Todo debe salir en ✔. Lo más importante:
+   > Instala apenas termines de subir: mientras no exista tu usuario, cualquiera que abra esa URL podría crearlo.
+
+5. **Revisa el Diagnóstico** (se abre solo al instalar). Todo debe salir en ✔. Lo más importante:
    - **«La base de datos NO debe poder descargarse»** en ✔. Si sale ✘, tu hosting no aplica el `.htaccess` (pasa con Nginx): pide a soporte que bloquee la carpeta `cyb/api/data/`.
    - `pdo_sqlite` y `curl` en ✔. Si faltan, se activan en el panel del hosting, en la sección de extensiones de PHP.
    - Botón **Probar DeepSeek**: debe responder con una frase sarcástica.
 
+6. **Cambiar la key después:** **Ajustes → Conexión con DeepSeek**. Ahí también está el **modo prueba** (respuestas falsas, sin gastar saldo).
+
 7. **Juega:** abre `https://tudominio/cyb/`, escribe `run calabosos` y, dentro del juego, `/ia`. Debe decir «Servidor de IA conectado».
 
-Si falta algo (`config.php`, `pdo_sqlite` o permisos en `data/`), el panel muestra qué es y cómo arreglarlo, en lugar de una página en blanco.
+Si falta algo (`pdo_sqlite` o permisos en `data/`), el panel muestra qué es y cómo arreglarlo, en lugar de una página en blanco.
 
 ### Actualizar por FTP
 
@@ -70,12 +73,12 @@ ssh usuario@tuservidor
 tar -xzf calabosos-v1.0.0.tar.gz
 cp -r calabosos-v1.0.0/cyb /var/www/html/          # primera vez
 
-# configurar
+# permisos (después, instala desde https://tudominio/cyb/api/admin/)
 cd /var/www/html/cyb/api
-cp config.example.php config.php && nano config.php
-sudo chown -R www-data:www-data data && sudo chmod 750 data
+sudo chown -R www-data:www-data data . && sudo chmod 750 data
 
-# usuario y diagnóstico por consola (alternativa a la instalación web)
+# o todo por consola: config.php a mano + usuario + diagnóstico
+cp config.example.php config.php && nano config.php
 php bin/create-admin.php tu_usuario
 php bin/selftest.php --live
 ```
@@ -108,10 +111,10 @@ Con este bloque solo queda visible `cyb/api/public/`. `src/`, `data/`, `bin/` y 
 
 | Síntoma | Causa probable |
 |---|---|
-| `/cyb/api/admin/` muestra «Falta un paso» | Lo que dice la pantalla: `config.php`, `pdo_sqlite` o permisos de `data/` |
-| No puedo iniciar sesión (vuelve al login) | Sitio en `http://` con `secure_cookie => true` |
+| `/cyb/api/admin/` muestra «Falta un paso» | Lo que dice la pantalla: `pdo_sqlite`, permisos de `data/` o un `config.php` con errores (bórralo y el instalador lo crea de nuevo) |
+| «El hosting no deja que el panel guarde config.php» | Da permisos de escritura a `cyb/api/`, o sube el `config.php` que muestra la pantalla |
 | El juego dice «No hay conexión con el servidor de IA» (`/ia`) | Abre `https://tudominio/cyb/api/api/config.php`: debe mostrar un JSON. Si da 404, el `.htaccess` no se aplica (Nginx: ver arriba) |
-| La IA responde «[mock] …» | `'mock' => true` en `config.php` |
+| La IA responde «[mock] …» | **Ajustes → Modo prueba** está marcado |
 | Error de DeepSeek en Diagnóstico | Key incorrecta, sin saldo o falta la extensión `curl` |
 
 ## Apagar la IA sin tocar nada

@@ -15,7 +15,7 @@ Requisitos y garantías:
 
 ```
 server/
-├── config.example.php   → copiar como config.php (NO se sube al repo)
+├── config.example.php   → referencia; config.php lo crea el instalador web (NO se sube al repo)
 ├── public/              → lo único que debe ser accesible por web
 │   ├── api/             config.php · narrate.php · chat.php · events.php
 │   └── admin/           panel (index.php + admin.css)
@@ -30,10 +30,11 @@ En producción este servidor va **dentro del juego**, en `cyb/api/`: `npm run pa
 
 Guía paso a paso, por FTP o por consola: [`docs/DEPLOY.md`](../docs/DEPLOY.md). Resumen:
 
-1. Copia `config.example.php` como `config.php` y completa la API key, `ip_salt` y `setup_token`.
-2. Sube la carpeta `cyb/` y dale permisos de escritura a `cyb/api/data/`.
-3. Abre `/cyb/api/admin/`: la **instalación web** crea tu usuario (o por consola, `php bin/create-admin.php`).
-4. Revisa **Diagnóstico** (o por consola, `php bin/selftest.php --live`).
+1. Sube la carpeta `cyb/` y dale permisos de escritura a `cyb/api/data/` y a `cyb/api/`.
+2. Abre `/cyb/api/admin/`: el **instalador web** pide usuario, contraseña y (opcional) la key de DeepSeek, y crea `config.php` solo. La key se cambia después en **Ajustes**.
+3. Revisa **Diagnóstico** (o por consola, `php bin/selftest.php --live`).
+
+Por consola también sirve lo clásico: `cp config.example.php config.php` + `php bin/create-admin.php`.
 
 ## Panel admin
 

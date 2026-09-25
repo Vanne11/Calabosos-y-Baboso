@@ -43,7 +43,7 @@ final class DeepSeekClient
             return $this->mockResponse($messages, $json);
         }
         if ($this->apiKey === '') {
-            throw new AiException('Falta deepseek.api_key en config.php');
+            throw new AiException('Falta la key de DeepSeek (ponla en el panel: Ajustes)');
         }
         if (!function_exists('curl_init')) {
             throw new AiException('PHP no tiene la extensión curl');

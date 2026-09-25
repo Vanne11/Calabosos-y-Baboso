@@ -24,9 +24,6 @@ $fails = count(array_filter(array_merge($environment, $exposure), static functio
     <h2>Seguridad de la instalación</h2>
     <p class="muted small">El servidor se pide a sí mismo estas rutas desde <code><?= e($apiRoot) ?></code>: lo privado debe responder 403 o 404.</p>
     <ul class="plain diag-list"><?php $renderList($exposure); ?></ul>
-    <?php if ($tokenStillSet): ?>
-      <p class="small muted">El <code>setup_token</code> sigue en config.php. Ya no sirve (existe un admin), así que puedes borrarlo.</p>
-    <?php endif; ?>
   </section>
 </div>
 

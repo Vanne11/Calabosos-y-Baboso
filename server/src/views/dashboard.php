@@ -6,7 +6,7 @@
     <p class="muted">
       <?= $aiEnabled ? 'El juego usa DeepSeek para narración y modos chat.' : 'El juego usa solo los textos fijos y los dados como alternativa.' ?>
       <?php if ($mock): ?><br><strong>Modo mock:</strong> no se llama a DeepSeek (respuestas de prueba).<?php endif; ?>
-      <?php if (!$mock && !$hasKey): ?><br><strong class="error-text">Falta la API key en config.php.</strong><?php endif; ?>
+      <?php if (!$mock && !$hasKey): ?><br><strong class="error-text">Falta la key de DeepSeek: ponla en <a href="<?= e(url('settings')) ?>">Ajustes</a>.</strong><?php endif; ?>
     </p>
   </div>
   <form method="post" action="<?= e(url('toggle_ai')) ?>">
