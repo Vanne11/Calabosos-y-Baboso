@@ -47,3 +47,7 @@ Si hay `text`, se muestra como aviso antes de abrir la tienda. Los precios se re
 
 
 **Comportamiento:** Loop interactivo de compra/venta. El jugador ve sus monedas, items disponibles y puede comprar/vender. Sale con `shop_exit`.
+
+**Memoria de la IA:** al salir, lo que hizo el jugador (compras, ventas, regateos, robos, engaños, si lo echaron) queda
+en la memoria general y en la del dueño: `"npc": "tendero"` (si falta, el último personaje que habló en el lugar).
+Así, cuando después le hablas, sabe lo que le compraste.

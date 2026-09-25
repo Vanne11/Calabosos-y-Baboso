@@ -87,6 +87,9 @@ con `_checkpoint`** (el narrador recuerda tus muertes).
 | `citas` | la frase del jugador que más subió el medidor en cada chat, tal cual | últimas 3 de 8 |
 | `como_escribe` | los últimos mensajes del jugador en los chats, **sin corregir** (modismos, faltas) | 4 |
 | `ya_dijiste` | las últimas líneas del narrador con IA, para que no se repita | 5 |
+| `lleva` | lo que lleva encima ahora: objetos y monedas ("Espada oxidada, Saco de sal ×2. Monedas: 12") | — |
+| (tienda) | al salir de un `shop`: "Alex compró X, Y ×2 (60 monedas en total); le regateó…" → memoria general y del dueño (`shop.npc` o el último que habló en el lugar) | — |
+| (testigo) | una decisión con tags o una acción libre delante de un personaje → ese personaje la recuerda | — |
 | `historial_npc` | solo en chats: lo que ese personaje recuerda de Alex (`npcMemoria`: recuerdos de chats, gestos, `effects.npcMemo`) | 6 |
 | `ultima_decision` · `ultima_frase` | la última decisión y lo último que escribió (para el epitafio) | 1 |
 | `animo` | la stat `animo_narrador` (texto; el juego la cambia con `setStats` al empezar cada acto) | — |

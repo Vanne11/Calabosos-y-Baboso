@@ -14,7 +14,7 @@ final class PromptRenderer
      * demás (límite max_context_chars) y, si el prompt no las usa con {{variable}}, el servidor las agrega
      * solas en un bloque de contexto: así funcionan también con prompts editados antes de existir.
      */
-    const CONTEXT_VARS = ['genero', 'memoria', 'decisiones', 'historial_npc', 'citas', 'ya_dijiste', 'como_escribe', 'animo', 'npc_ficha', 'ficha_narrador'];
+    const CONTEXT_VARS = ['genero', 'lleva', 'memoria', 'decisiones', 'historial_npc', 'citas', 'ya_dijiste', 'como_escribe', 'animo', 'npc_ficha', 'ficha_narrador'];
 
     /** @var PromptRepository */
     private $prompts;
@@ -122,6 +122,7 @@ final class PromptRenderer
         $sections = [
             'genero' => 'GÉNERO DE Alex (respétalo siempre, también en tus burlas): %s',
             'animo' => 'Tu ánimo en este momento (que se note sin decirlo): %s',
+            'lleva' => 'Lo que Alex lleva encima ahora (objetos y monedas; úsalo si viene al caso): %s',
             'memoria' => "Lo que ha pasado en la partida, del más viejo al más reciente:\n%s",
             'decisiones' => "Sus decisiones recientes (lo que eligió, tal cual):\n%s",
             'historial_npc' => "Lo que ya pasó antes entre tú y Alex (acuérdate y sácalo si viene al caso):\n%s",

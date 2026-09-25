@@ -83,6 +83,15 @@ export type TalkResult =
   | { ok: true; speaker: TalkSpeaker; text: string; tone?: NarrateReply['tone']; lineId?: number }
   | { ok: false; reason: 'no_ai' | 'limit' | 'scene_limit' | 'failed'; speaker?: TalkSpeaker };
 
+/** Lo que hizo el jugador en una tienda (para la memoria de la IA) */
+interface ShopLedger {
+  bought: Map<string, number>;
+  sold: Map<string, number>;
+  spent: number;
+  earned: number;
+  events: string[];
+}
+
 /** Texto sin tildes y en minúsculas, para reconocer nombres ("Nérly," → "nerly,") */
 function fold(text: string): string {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -308,6 +317,7 @@ export class GameEngine {
       escena: this.getScenarioName(this._currentScene) ?? this._currentScene,
       escena_anterior: this.getScenarioName(this._previousScene) ?? this._previousScene,
       ...contextVars(this._state),
+      lleva: this.carrying(),
       // Para el epitafio y reacciones: lo último que hizo y escribió (tal cual)
       ultima_decision: this._state.decisiones?.[this._state.decisiones.length - 1] ?? '',
       ultima_frase: this._state.habla?.[this._state.habla.length - 1] ?? '',
@@ -1072,8 +1082,32 @@ export class GameEngine {
     }
   }
 
-  private async *processShop(
-    step: ShopStep
+  /** Tienda + memoria: al salir, el dueño (y la memoria general) recuerdan lo que hizo el jugador */
+  private async *processShop(step: ShopStep): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    const ledger: ShopLedger = { bought: new Map(), sold: new Map(), spent: 0, earned: 0, events: [] };
+    const result = yield* this.processShopInner(step, ledger);
+    this.recordShop(step, ledger);
+    return result;
+  }
+
+  /** Resumen de la visita a la tienda para la memoria de la IA ("Alex compró X y Y ×2 (60 monedas en total); …") */
+  private recordShop(step: ShopStep, ledger: ShopLedger): void {
+    const list = (m: Map<string, number>) => [...m].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name)).join(', ');
+    // "monedas" (la etiqueta que ve el jugador) en vez del nombre interno de la stat ("dinero")
+    const unit = (this.manifest.statDefs?.[step.currency]?.label ?? step.currency).toLowerCase();
+    const parts: string[] = [];
+    if (ledger.bought.size) parts.push(`compró ${list(ledger.bought)} (${ledger.spent} ${unit} en total)`);
+    if (ledger.sold.size) parts.push(`vendió ${list(ledger.sold)} (${ledger.earned} ${unit})`);
+    parts.push(...ledger.events);
+    if (!parts.length) return;
+    const summary = `${this.playerName} ${parts.join('; ')}`;
+    const owner = step.npc ?? this._sceneSpeakers[this._sceneSpeakers.length - 1];
+    this.applyState({ memo: this.memoHere(`en ${this.text(step.title)}: ${summary}`), ...(owner ? { npcMemo: { [owner]: summary } } : {}) });
+  }
+
+  private async *processShopInner(
+    step: ShopStep,
+    ledger: ShopLedger
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     // Multiplicador de precios por condición (ej: descuento ganado regateando antes)
     const priceRule = step.priceMultipliers?.find((m) => evaluateCondition(m.condition, this._state));
@@ -1112,6 +1146,7 @@ export class GameEngine {
       action: NonNullable<typeof step.haggle>,
       actionType: 'haggle' | 'steal' | 'deceive'
     ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | undefined> {
+      ledger.events.push('lo echaron de la tienda');
       if (action.bustEffects) {
         self.applyState(action.bustEffects);
         yield { type: 'effects', ...action.bustEffects };
@@ -1184,6 +1219,8 @@ export class GameEngine {
           this.syncSpecialStats();
           yield { type: 'effects', stats: { [currency]: -price }, inventory: [item.id] };
           lastMessage = `Has comprado ${item.name} por ${price} ${currency}.`;
+          ledger.bought.set(item.name, (ledger.bought.get(item.name) ?? 0) + 1);
+          ledger.spent += price;
         } else if (item) {
           lastMessage = `No tienes suficiente ${currency} para ${item.name}.`;
         }
@@ -1198,6 +1235,9 @@ export class GameEngine {
           });
           yield { type: 'effects', stats: { [currency]: sellPrice }, removeInventory: [action.itemId] };
           lastMessage = `Has vendido ${shopItem?.name || action.itemId} por ${sellPrice} ${currency}.`;
+          const soldName = shopItem?.name || this.items[action.itemId]?.name || action.itemId;
+          ledger.sold.set(soldName, (ledger.sold.get(soldName) ?? 0) + 1);
+          ledger.earned += sellPrice;
         }
 
       } else if (action.type === 'shop_haggle' && step.haggle) {
@@ -1240,6 +1280,7 @@ export class GameEngine {
           ? (step.haggle.successText || `¡Regateo exitoso! Nuevo precio: ${hagbledPrices[action.itemIndex]}`)
           : (step.haggle.failText || `El tendero se ofende... ¡Precio subido a ${hagbledPrices[action.itemIndex]}!`);
         lastMessage = haggleText;
+        ledger.events.push(success ? `le regateó el precio de ${item.name} y se lo bajó` : `le regateó ${item.name} y lo ofendió (le subió el precio)`);
 
         yield {
           type: 'shop_dice_result',
@@ -1302,6 +1343,7 @@ export class GameEngine {
           ? (step.steal.successText || `¡Has robado ${item.name} sin que nadie se diera cuenta!`)
           : (step.steal.failText || '¡Te han pillado intentando robar!');
         lastMessage = stealText;
+        ledger.events.push(success ? `le robó ${item.name} sin que se diera cuenta` : `intentó robarle ${item.name} y lo pillaron`);
 
         yield {
           type: 'shop_dice_result',
@@ -1362,6 +1404,7 @@ export class GameEngine {
           });
           const deceiveSuccessText = step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`;
           lastMessage = deceiveSuccessText;
+          ledger.events.push(`le coló ${shopItem?.name || itemId} a sobreprecio`);
           yield {
             type: 'shop_dice_result',
             action: 'deceive',
@@ -1376,6 +1419,7 @@ export class GameEngine {
           }
           const deceiveFailText = step.deceive.failText || '¡El tendero ha descubierto tu engaño!';
           lastMessage = deceiveFailText;
+          ledger.events.push(`intentó engañarlo vendiéndole ${shopItem?.name || itemId} y lo descubrió`);
           yield {
             type: 'shop_dice_result',
             action: 'deceive',
@@ -2082,6 +2126,18 @@ export class GameEngine {
     return [scene?.scenario?.name, scene?.scenario ? this.getScenarioDescription(scene) : ''].filter(Boolean).join(': ');
   }
 
+  /** Lo que lleva encima el protagonista, para la IA: "Espada oxidada, Saco de sal ×2. Monedas: 12" */
+  private carrying(): string {
+    const counts = new Map<string, number>();
+    for (const id of this._state.inventory) {
+      const name = this.items[id]?.name ?? id;
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+    const items = [...counts].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name)).join(', ') || 'nada';
+    const money = ['dinero', 'gold', 'money', 'coins', 'oro'].find((k) => typeof this._state.stats[k] === 'number');
+    return money ? `${items}. Monedas: ${this._state.stats[money]}` : items;
+  }
+
   /** Cómo se llama el protagonista en los textos (stat nombre_jugador; "Alex" si todavía no hay) */
   private get playerName(): string {
     const name = this._state.stats.nombre_jugador;
@@ -2287,6 +2343,11 @@ export class GameEngine {
     } else if (chosen.tags?.length && !chosen.effects?.memo) {
       // Las opciones con tags son decisiones con significado: la IA las recuerda tal cual
       this.addDecision(optionText);
+    }
+    // Quien estaba delante también se acuerda de lo que elegiste (el prestamista, del préstamo que aceptaste)
+    const witness = this._sceneSpeakers[this._sceneSpeakers.length - 1];
+    if (witness && (chosen.tags?.length || opts.playerText) && !chosen.effects?.npcMemo?.[witness]) {
+      this.applyState({ npcMemo: { [witness]: `${this.playerName} eligió: «${opts.playerText ?? optionText}»` } });
     }
     this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags, ...(opts.playerText ? { free: true } : {}) });
     if (chosen.sfx) yield { type: 'sound', sfx: chosen.sfx, volume: 1, wait: false };

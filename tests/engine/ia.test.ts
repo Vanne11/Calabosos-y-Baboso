@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import type { AiProvider, FreeActionReply, NarrateReply } from '../../src/engine/AiProvider';
 import type { GameEvent } from '../../src/engine/AiProvider';
 import type { StepResult } from '../../src/types/engine';
-import { baseManifest, makeEngine, drive, dialogLines } from '../helpers';
+import { baseManifest, makeEngine, drive, dialogLines, internals } from '../helpers';
 
 const manifest = baseManifest({
   characters: { narrator: { name: 'N', description: '', role: 'narrator' }, guardia: { name: 'Guardia', description: 'aburrido' } },
@@ -521,5 +521,52 @@ describe('charla libre: contesta quien esté', () => {
     const off = makeEngine(baseManifest({ ...m, ai: { talk: false } }), sc);
     off.setAiProvider(talkAi());
     expect(who(await off.talk('hola'))).toBe('no_ai');
+  });
+});
+
+describe('los personajes recuerdan lo que hiciste con ellos (no solo lo que hablaron)', () => {
+  const m = baseManifest({
+    characters: {
+      narrator: { name: 'Narrador', description: '', role: 'narrator' },
+      tendero: { name: 'Tendero', description: 'borracho', role: 'npc' },
+      prestamista: { name: 'Prestamista', description: 'usurero', role: 'npc' },
+    },
+    initialStats: { dinero: 100, nombre_jugador: 'Alex' },
+    items: { espada: { name: 'Espada oxidada', description: '' }, sal: { name: 'Saco de sal', description: '' } },
+  });
+  const sc = {
+    tienda: {
+      scenario: { name: 'Tienda' },
+      sequence: [
+        { type: 'dialog' as const, character: 'tendero', lines: ['¿Qué te vendo? *hic*'] },
+        { type: 'shop' as const, title: 'Tienda del Tendero', currency: 'dinero', items: [{ id: 'espada', name: 'Espada oxidada', price: 40 }, { id: 'sal', name: 'Saco de sal', price: 10 }] },
+      ],
+    },
+    empenos: {
+      scenario: { name: 'Casa de Empeños' },
+      sequence: [
+        { type: 'dialog' as const, character: 'prestamista', lines: ['Te presto 50.'] },
+        { type: 'choice' as const, options: [{ text: 'Aceptar el préstamo', tags: ['endeudado'], goto: 'tienda' }] },
+      ],
+    },
+  };
+
+  it('la tienda anota las compras en la memoria del dueño y en la general', async () => {
+    const engine = makeEngine(m, sc);
+    await drive(engine, 'tienda', [
+      { type: 'shop_buy', itemIndex: 0 }, { type: 'shop_buy', itemIndex: 1 }, { type: 'shop_buy', itemIndex: 1 }, { type: 'shop_exit' },
+    ]);
+    expect(engine.state.npcMemoria?.tendero).toEqual(['Alex compró Espada oxidada, Saco de sal ×2 (60 dinero en total)']);
+    expect(engine.state.memoria?.at(-1)).toBe('en Tienda del Tendero: Alex compró Espada oxidada, Saco de sal ×2 (60 dinero en total) (en Tienda)');
+    // Y cualquiera sabe lo que lleva
+    expect(internals(engine).aiVars().lleva).toBe('Espada oxidada, Saco de sal ×2. Monedas: 40');
+  });
+
+  it('quien está delante recuerda la decisión; salir de la tienda sin hacer nada no anota', async () => {
+    const engine = makeEngine(m, sc);
+    await drive(engine, 'empenos', [{ type: 'choose', index: 0 }]);
+    expect(engine.state.npcMemoria?.prestamista).toEqual(['Alex eligió: «Aceptar el préstamo»']);
+    await drive(engine, 'tienda', [{ type: 'shop_exit' }]);
+    expect(engine.state.npcMemoria?.tendero).toBeUndefined();
   });
 });

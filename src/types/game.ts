@@ -603,6 +603,8 @@ export interface CheckOutcome {
 export interface ShopStep {
   type: 'shop';
   title: string;
+  /** Dueño de la tienda (recuerda lo que compraste, regateaste o robaste). Default: el último que habló en el lugar */
+  npc?: string;
   currency: string; // stat usada como moneda
   items: ShopItem[];
   sellable?: boolean;

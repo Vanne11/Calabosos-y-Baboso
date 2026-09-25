@@ -918,6 +918,7 @@
         {
           "type": "shop",
           "title": "Sucursal Subterránea",
+          "npc": "tendero",
           "currency": "dinero",
           "priceMultipliers": [
             {

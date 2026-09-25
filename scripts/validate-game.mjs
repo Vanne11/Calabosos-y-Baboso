@@ -237,6 +237,7 @@ function validateGame(gameName) {
 
     // Acción libre y reacciones del narrador
     for (const [i, step] of seq.entries()) {
+      if (step?.type === 'shop' && step.npc && !characters[step.npc]) errors.push(`${where(id)} paso ${i + 1} (shop): npc "${step.npc}" no definido`);
       if (step?.type !== 'choice') continue;
       const ctx = `${where(id)} paso ${i + 1} (choice)`;
       if (step.freeText) {

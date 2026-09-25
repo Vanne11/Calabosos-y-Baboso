@@ -1291,6 +1291,7 @@
         {
           "type": "shop",
           "title": "Artículos para Aventureros Suicidas",
+          "npc": "tendero",
           "currency": "dinero",
           "priceMultipliers": [
             {
