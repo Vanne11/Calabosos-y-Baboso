@@ -35,10 +35,15 @@ You define your entire game in JSON (scenes, dialogues, items, skill trees, comb
 - Puzzle games with codes, riddles, locks, and sequences
 - Anything narrative-driven, really. The engine doesn't judge your genre. The Narrator, on the other hand...
 
-### Currently ships with two demos:
+### Ships with:
 
-- **Calabosos y Babosos** — A satirical fantasy adventure in the kingdom of Viscaria where you play as BOB trying to defeat the Slug King. Full narrative with shops, combat, NPCs, and a narrator who hates your guts.
-- **Demo Tecnica** — A technical showcase demonstrating all 18 step types: puzzles, crafting, combat, timed choices, level-up screens, and more.
+- **Calabosos y Babosos** (`run calabosos`) — The full game: ~1 hour of satirical adult fantasy (in Spanish) in the kingdom of Viscaria. BOB, a talking slug named Nerly and a narrator who hates your guts versus the Slug King. Prologue, 4 acts, 4 endings (one secret), bestiary, species-specific combat, checkpoints, and **free-form AI conversations**: persuade guards, haggle, rap battles, insult duels, write a song and confess to a tree.
+- **demo** — The first version of the story, kept as a narrative demo.
+- **demo2** — A technical showcase of the step types: puzzles, crafting, combat, timed choices, level-ups, and more.
+
+### AI server (optional)
+
+`server/` is a PHP (7.4 or 8.x) + SQLite backend that connects the game to DeepSeek, with an **admin panel** to edit prompts, switch AI off, read conversations and see **play analytics** (funnel, deaths, endings, duration). Without it the game still works with fixed text and dice. See [`server/README.md`](server/README.md) and [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ---
 

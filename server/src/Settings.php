@@ -26,6 +26,16 @@ final class Settings
             'ai_enabled' => true,
             'events_enabled' => true,
             'model' => 'deepseek-chat',
+            // Embudo de la analítica: escenas clave del juego, en orden
+            'funnel' => [
+                ['scene' => 'start', 'label' => 'Empieza la partida'],
+                ['scene' => 'acto1_plaza', 'label' => 'Acto I: el pueblo'],
+                ['scene' => 'acto2_camino', 'label' => 'Acto II: el camino'],
+                ['scene' => 'acto3_abismo', 'label' => 'Acto III: el Abismo'],
+                ['scene' => 'acto3_hacia_trono', 'label' => 'Termina el Acto III'],
+                ['scene' => 'acto4_sala_trono', 'label' => 'Llega al trono'],
+                ['scene' => 'acto4_desenlace', 'label' => 'Derrota al Rey'],
+            ],
             'narrate_enabled' => true,
             'modes_enabled' => array_fill_keys(self::MODES, true),
             'limits' => [
@@ -83,6 +93,12 @@ final class Settings
         return !empty($modes[$mode]);
     }
 
+    /** @param array<mixed> $value */
+    private static function isList(array $value): bool
+    {
+        return $value === [] || array_keys($value) === range(0, count($value) - 1);
+    }
+
     /**
      * Mezcla recursiva: los valores guardados pisan a los defaults,
      * pero los defaults nuevos aparecen aunque no estén guardados.
@@ -93,7 +109,8 @@ final class Settings
     private static function merge(array $defaults, array $stored): array
     {
         foreach ($stored as $key => $value) {
-            if (isset($defaults[$key]) && is_array($defaults[$key]) && is_array($value)) {
+            // Solo se mezclan objetos (arrays asociativos); las listas se reemplazan enteras
+            if (isset($defaults[$key]) && is_array($defaults[$key]) && is_array($value) && !self::isList($value) && !self::isList($defaults[$key])) {
                 $defaults[$key] = self::merge($defaults[$key], $value);
             } else {
                 $defaults[$key] = $value;

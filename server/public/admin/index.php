@@ -6,6 +6,7 @@ declare(strict_types=1);
 require __DIR__ . '/../../src/bootstrap.php';
 
 use Cyb\AdminAuth;
+use Cyb\Analytics;
 use Cyb\AiException;
 use Cyb\App;
 use Cyb\ChatService;
@@ -186,6 +187,15 @@ if ($page === 'settings') {
             $limits[$name] = max(0, (int) ($_POST['limits'][$name] ?? 0));
         }
         $settings->set('limits', $limits);
+        // Embudo: una línea por paso, "escena | Etiqueta"
+        $funnel = [];
+        foreach (preg_split('/\r?\n/', (string) ($_POST['funnel'] ?? '')) ?: [] as $line) {
+            $parts = array_map('trim', explode('|', $line, 2));
+            if ($parts[0] !== '' && preg_match('/^[a-zA-Z0-9_]{1,60}$/', $parts[0])) {
+                $funnel[] = ['scene' => $parts[0], 'label' => ($parts[1] ?? '') !== '' ? mb_substr($parts[1], 0, 60, 'UTF-8') : $parts[0]];
+            }
+        }
+        $settings->set('funnel', $funnel);
         redirect('settings', [], 'Ajustes guardados.');
     }
     View::render('settings', $common + ['s' => $settings->all(), 'modes' => Settings::MODES]);
@@ -208,6 +218,29 @@ if ($page === 'chat') {
         redirect('chats', [], 'Conversación no encontrada.');
     }
     View::render('chat', $common + ['chat' => $chat]);
+    exit;
+}
+
+// --- Analítica de partidas ---
+if ($page === 'analytics') {
+    $analytics = new Analytics($db);
+    if ($isPost && ($_POST['action'] ?? '') === 'purge') {
+        $days = max(7, (int) ($_POST['older_than'] ?? 90));
+        $deleted = $analytics->purge($days);
+        redirect('analytics', [], "Se borraron $deleted eventos de más de $days días.");
+    }
+    $games = $analytics->games();
+    $game = (string) ($_GET['game'] ?? ($games[0] ?? ''));
+    $days = (int) ($_GET['days'] ?? 7);
+    $days = in_array($days, [1, 7, 30, 90, 365], true) ? $days : 7;
+    $funnel = $settings->get('funnel');
+    View::render('analytics', $common + [
+        'games' => $games,
+        'game' => $game,
+        'days' => $days,
+        'r' => $game !== '' ? $analytics->report($game, $days, is_array($funnel) ? $funnel : []) : null,
+        'eventsTotal' => (int) $db->value('SELECT COUNT(*) FROM events'),
+    ]);
     exit;
 }
 

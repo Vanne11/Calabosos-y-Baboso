@@ -7,6 +7,7 @@ import TerminalInput from '../../shared/TerminalInput';
 import GotoSelect from '../../shared/GotoSelect';
 import EffectsEditor from './EffectsEditor';
 import ConditionEditor from './ConditionEditor';
+import TagInput from '../../shared/TagInput';
 
 interface ChoiceStepEditorProps {
   step: ChoiceStep;
@@ -55,6 +56,13 @@ const ChoiceStepEditor: React.FC<ChoiceStepEditorProps> = ({ step, onChange }) =
             label="Ir a (goto)"
             value={opt.goto || ''}
             onChange={(goto) => updateOption(i, { ...opt, goto: goto || undefined })}
+          />
+
+          <TagInput
+            label="Etiquetas de perfil (ej: cobarde, amable)"
+            tags={opt.tags || []}
+            onChange={(tags) => updateOption(i, { ...opt, tags: tags.length ? tags : undefined })}
+            placeholder="cobarde"
           />
 
           <EffectsEditor

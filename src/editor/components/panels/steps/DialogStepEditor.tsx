@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import type { DialogStep } from '../../../../types/game';
 import TerminalSelect from '../../shared/TerminalSelect';
 import ConditionEditor from './ConditionEditor';
+import TerminalInput from '../../shared/TerminalInput';
 import RichTextInput from './RichTextInput';
 import { useEditorStore } from '../../../store/useEditorStore';
 
@@ -63,6 +64,19 @@ const DialogStepEditor: React.FC<DialogStepEditorProps> = ({ step, onChange }) =
           </LineRow>
         ))}
       </LinesSection>
+
+      <TerminalInput
+        label="Pool de frases (linePools): se suma una línea al azar"
+        value={step.pool ?? ''}
+        onChange={(pool) => onChange({ ...step, pool: pool.trim() || undefined })}
+        placeholder="(opcional) ej: pifia"
+      />
+      <TerminalInput
+        label="Línea con IA: prompt narrate.<nombre> (reemplaza líneas y pool si la IA responde)"
+        value={step.ai?.prompt ?? ''}
+        onChange={(prompt) => onChange({ ...step, ai: prompt.trim() ? { ...step.ai, prompt: prompt.trim() } : undefined })}
+        placeholder="(opcional) ej: muerte"
+      />
 
       <ConditionEditor
         condition={step.condition}

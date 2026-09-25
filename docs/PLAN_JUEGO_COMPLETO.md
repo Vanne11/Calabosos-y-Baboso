@@ -237,7 +237,7 @@ UI: la terminal ya acepta texto (`CommandParser`). Se agrega un sub-modo "chat" 
 | **F5 · Acto II** ✅ | Viaje, insultos, anciano, bestiario, canción | Hasta la entrada del abismo |
 | **F6 · Acto III** ✅ | Guardia, 3 zonas, 5 especies | Hasta el trono |
 | **F7 · Acto IV + Finales** ✅ | Negociación, batalla en 3 fases, finales, recap | **Juego completo** |
-| **F8 · Analítica + Pulido** | Dashboard admin, balance con datos reales, imágenes finales, playtest de 1 hora, deploy | Versión 1.0 |
+| **F8 · Analítica + Pulido** ✅ | Dashboard admin, balance con datos reales, imágenes finales, playtest de 1 hora, deploy | Versión 1.0 |
 
 ### Verificación por fase
 - `npm run validate` sin errores.

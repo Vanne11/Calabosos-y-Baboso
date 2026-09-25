@@ -34,6 +34,8 @@ export interface EditorProject {
   time: TimeCycle;
   contentRating?: ContentRating;
   statDefs?: Record<string, StatDef>;
+  /** Campos del manifiesto que el editor no edita (pools, reglas, IA, códice...): se conservan tal cual al exportar */
+  manifestExtras?: Record<string, unknown>;
   createdAt: number;
   updatedAt: number;
 }
@@ -106,8 +108,17 @@ export function createDefaultScene(): Scene {
 
 // --- Conversión a formato del motor ---
 
+/** Campos del manifiesto que el editor modela directamente (el resto va a manifestExtras) */
+export const EDITOR_MANIFEST_FIELDS = [
+  'name', 'description', 'author', 'version', 'characters', 'initialStats', 'initialFlags',
+  'initialInventory', 'items', 'skillTrees', 'traits', 'time', 'contentRating', 'statDefs',
+  // sceneFiles no se conserva: el editor exporta un único scenes.json
+  'sceneFiles',
+] as const;
+
 export function projectToManifest(project: EditorProject): GameManifest {
   const manifest: GameManifest = {
+    ...(project.manifestExtras as Partial<GameManifest> | undefined),
     name: project.name,
     description: project.description,
     author: project.author,

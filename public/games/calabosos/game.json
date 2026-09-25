@@ -2,7 +2,7 @@
   "name": "Calabosos y Babosos",
   "description": "Una aventura grotesca, gloriosa y absolutamente viscosa. El narrador te odia un poquito.",
   "author": "Nicolás y Vanessa",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "contentRating": {
     "minAge": 18,
     "warnings": [

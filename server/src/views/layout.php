@@ -12,7 +12,7 @@
 <header class="top">
   <strong class="brand">🐌 Calabosos · Admin</strong>
   <nav>
-    <?php foreach (['dashboard' => 'Panel', 'prompts' => 'Prompts', 'settings' => 'Ajustes', 'chats' => 'Conversaciones', 'logs' => 'Registro'] as $p => $label): ?>
+    <?php foreach (['dashboard' => 'Panel', 'analytics' => 'Analítica', 'prompts' => 'Prompts', 'settings' => 'Ajustes', 'chats' => 'Conversaciones', 'logs' => 'Registro'] as $p => $label): ?>
       <a href="<?= e(url($p)) ?>" class="<?= ($page ?? '') === $p || (($page ?? '') === 'prompt' && $p === 'prompts') || (($page ?? '') === 'chat' && $p === 'chats') ? 'active' : '' ?>"><?= e($label) ?></a>
     <?php endforeach; ?>
   </nav>

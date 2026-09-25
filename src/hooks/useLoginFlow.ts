@@ -22,7 +22,8 @@ export const welcomeMessages = [
   { type: 'system' as const, content: '[purple]🐌 ¡Bienvenido al Motor Baboso! 🐌[/purple]' },
   { type: 'system' as const, content: ' ' },
   { type: 'system' as const, content: 'Escribe [green][bold]help[/bold][/green] para ver los comandos disponibles.' },
-  { type: 'system' as const, content: 'Escribe [green][bold]run demo[/bold][/green] para iniciar la aventura de demostración.' },
+  { type: 'system' as const, content: 'Escribe [green][bold]run calabosos[/bold][/green] para jugar [bold]Calabosos y Babosos[/bold], la aventura completa.' },
+  { type: 'system' as const, content: '[dim]Otras: [bold]list[/bold] para ver todos los juegos ([bold]demo[/bold], [bold]demo2[/bold]: demostraciones del motor).[/dim]' },
   { type: 'system' as const, content: ' ' },
 ];
 

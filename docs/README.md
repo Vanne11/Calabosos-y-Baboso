@@ -49,6 +49,7 @@
 - [Guía para Crear un Juego](guia-crear-juego.md)
 - [Herramientas de Juego (validar / imágenes provisorias)](herramientas.md)
 - [Servidor de IA (PHP + DeepSeek + admin)](../server/README.md)
+- [Publicar en tu servidor (paquete y guía)](DEPLOY.md)
 
 ---
 

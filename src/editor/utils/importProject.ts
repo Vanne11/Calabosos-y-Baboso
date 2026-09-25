@@ -3,7 +3,7 @@
 
 import JSZip from 'jszip';
 import type { SceneFlowNode, EditorProject } from '../types/editor';
-import { createDefaultProject } from '../types/editor';
+import { createDefaultProject, EDITOR_MANIFEST_FIELDS } from '../types/editor';
 import type { GameManifest, ScenesFile, Scene } from '../../types/game';
 import { saveAsset } from './assetStorage';
 import { fetchScenes } from '../../engine/GameLoader';
@@ -32,6 +32,9 @@ function convertToEditorProject(manifest: GameManifest, scenesFile: ScenesFile):
     time: manifest.time || { duration: 5, phases: ['morning', 'afternoon', 'night'], initial: 'morning' },
     contentRating: manifest.contentRating,
     statDefs: manifest.statDefs,
+    manifestExtras: Object.fromEntries(
+      Object.entries(manifest).filter(([key]) => !(EDITOR_MANIFEST_FIELDS as readonly string[]).includes(key))
+    ),
   };
 
   const sceneEntries = Object.entries(scenesFile.scenes);

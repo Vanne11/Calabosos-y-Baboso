@@ -1,8 +1,19 @@
-# Si subes toda la carpeta server/ dentro del webroot (Apache), esto protege lo privado.
-# Lo recomendado es publicar SOLO server/public/ (ver README.md).
-<FilesMatch "^(config\.php|config\.example\.php|README\.md|\.gitignore)$">
-    Require all denied
-</FilesMatch>
+# Si subes toda la carpeta server/ dentro del webroot (Apache), esto protege lo privado
+# y expone solo public/. Lo recomendado igual es publicar SOLO server/public/ (ver README.md).
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Archivos privados de la raíz. Ojo: se bloquean por RUTA, no por nombre,
+    # porque public/api/config.php es un endpoint público que debe funcionar.
+    RewriteRule ^(config\.php|config\.example\.php|README\.md|\.gitignore)$ - [F,L]
+    RewriteRule ^(src|data|bin)(/.*)?$ - [F,L]
+
+    # /cyb-api/api/... y /cyb-api/admin/... → public/
+    RewriteRule ^(api|admin)(/.*)?$ public/$1$2 [L]
+</IfModule>
+
+# Bases de datos, por si acaso (en cualquier carpeta)
 <FilesMatch "\.(sqlite|sqlite-wal|sqlite-shm)$">
     Require all denied
 </FilesMatch>

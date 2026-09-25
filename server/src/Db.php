@@ -220,6 +220,9 @@ CREATE TABLE events (
 );
 CREATE INDEX idx_events_type ON events(game, type, created_at);
 SQL,
+            2 => <<<'SQL'
+CREATE INDEX IF NOT EXISTS idx_events_session ON events(game, created_at, session_id);
+SQL,
         ];
     }
 }

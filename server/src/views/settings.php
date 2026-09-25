@@ -30,5 +30,10 @@
       <label><?= e($label) ?> <input type="number" min="0" name="limits[<?= e($name) ?>]" value="<?= (int) ($s['limits'][$name] ?? 0) ?>"></label>
     <?php endforeach; ?>
   </section>
+  <section class="card">
+    <h2>Embudo de la analítica</h2>
+    <p class="muted small">Escenas clave del juego, en orden. Una por línea: <code>id_escena | Etiqueta</code>.</p>
+    <textarea name="funnel" rows="8" class="mono"><?php foreach ((array) $s['funnel'] as $f) { echo e($f['scene'] . ' | ' . $f['label']) . "\n"; } ?></textarea>
+  </section>
   <div class="actions"><button class="primary">Guardar ajustes</button></div>
 </form>

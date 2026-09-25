@@ -12,6 +12,7 @@ import { join, extname, relative } from 'path'
 const DIST_DIR = process.argv[2] || 'dist'
 const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg'])
 const WEBP_QUALITY = 80
+const MAX_SIZE = 1280
 
 async function findFiles(dir, predicate) {
   const results = []
@@ -32,6 +33,8 @@ async function convertImage(filePath) {
   const originalSize = (await stat(filePath)).size
 
   await sharp(filePath)
+    // Ningún panel del juego muestra imágenes a más de ~1280 px: se reducen sin agrandar las chicas
+    .resize({ width: MAX_SIZE, height: MAX_SIZE, fit: 'inside', withoutEnlargement: true })
     .webp({ quality: WEBP_QUALITY })
     .toFile(webpPath)
 

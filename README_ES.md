@@ -35,10 +35,15 @@ Definis tu juego entero en JSON (escenas, dialogos, items, arboles de habilidade
 - Juegos de puzzles con codigos, acertijos, candados y secuencias
 - Cualquier cosa narrativa, realmente. Al motor no le importa tu genero. Al Narrador, por otro lado...
 
-### Actualmente viene con dos demos:
+### Viene con:
 
-- **Calabosos y Babosos** — Una aventura de fantasia satirica en el reino de Viscaria donde controlas a BOB intentando derrotar al Rey Baboso. Narrativa completa con tiendas, combate, NPCs, y un narrador que te odia con pasion.
-- **Demo Tecnica** — Un showcase tecnico que demuestra los 18 tipos de pasos: puzzles, crafteo, combate, opciones con tiempo, pantallas de subir nivel, y mas.
+- **Calabosos y Babosos** (`run calabosos`) — El juego completo: ~1 hora de fantasia satirica para adultos en el reino de Viscaria. BOB, una babosa parlante llamada Nerly y un narrador que te odia con pasion contra el Rey Baboso. Prologo, 4 actos, 4 finales (uno secreto), bestiario, combate con mecanicas por especie, puntos seguros, y **conversaciones libres con IA**: persuadir guardias, regatear, guerras de rap, duelos de insultos, componer una cancion y confesarle cosas a un arbol.
+- **demo** — La primera version de la historia, usada como demo narrativa.
+- **demo2** — Un showcase tecnico con los tipos de pasos: puzzles, crafteo, combate, opciones con tiempo, subir de nivel, y mas.
+
+### Servidor de IA (opcional)
+
+`server/` es un backend PHP (7.4 u 8.x) + SQLite que conecta el juego con DeepSeek, con **panel admin** para editar los prompts, apagar la IA, ver las conversaciones y la **analitica** de partidas (embudo, muertes, finales, duracion). Sin servidor, el juego funciona igual con textos fijos y dados. Ver [`server/README.md`](server/README.md) y [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ---
 

@@ -8,12 +8,16 @@
 //   npm run playtest -- calabosos 200 --seed=42
 //
 // Sin IA: los modos chat se resuelven con su tirada de respaldo (como en el juego sin servidor).
+//
+// Simular jugadores para la analítica del admin (manda los eventos al servidor):
+//   npm run playtest -- calabosos 200 --send-events=http://127.0.0.1:8099/api/events.php
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GameEngine } from '../src/engine/GameEngine';
 import type { GameManifest, ScenesFile } from '../src/types/game';
 import type { StepResult, PlayerAction } from '../src/types/engine';
+import type { GameEvent } from '../src/engine/AiProvider';
 
 const MAX_STEPS = 1500;
 const MAX_SCENE_ENTRIES = 400;
@@ -55,6 +59,32 @@ interface RunResult {
   scenes: string[];
   deaths: number;
   error?: string;
+}
+
+const sendArg = process.argv.find((a) => a.startsWith('--send-events='));
+const sendUrl = sendArg ? sendArg.slice('--send-events='.length) : null;
+let sentEvents = 0;
+
+/** Manda los eventos de una partida simulada al servidor, en lotes */
+async function sendEvents(events: (GameEvent & { t: number })[]): Promise<void> {
+  if (!sendUrl || !events.length) return;
+  const sessionId = crypto.randomUUID();
+  for (let i = 0; i < events.length; i += 50) {
+    let res: Response;
+    for (let attempt = 0; ; attempt++) {
+      res = await fetch(sendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, game, events: events.slice(i, i + 50) }),
+      });
+      // Límite por minuto del servidor: esperar y reintentar
+      if (res.status !== 429 || attempt >= 30) break;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    const data = (await res.json().catch(() => ({}))) as { stored?: number; error?: string };
+    if (!res.ok) throw new Error(`El servidor rechazó los eventos: ${res.status} ${data.error ?? ''}`);
+    sentEvents += data.stored ?? 0;
+  }
 }
 
 const game = process.argv[2];
@@ -138,10 +168,14 @@ const PROMPTS = new Set([
   'use_item_prompt', 'shop_prompt', 'combat_prompt', 'puzzle_prompt', 'craft_prompt', 'level_up_prompt', 'chat_prompt',
 ]);
 
-async function playOnce(): Promise<RunResult> {
+async function playOnce(): Promise<RunResult & { events: (GameEvent & { t: number })[] }> {
   const engine = new GameEngine(structuredClone(manifest), structuredClone(scenes));
   engine.loadMeta({});
-  const result: RunResult = { steps: 0, end: 'limit', scenes: [], deaths: 0 };
+  // Reloj simulado: cada evento avanza entre 2 y 12 segundos (duraciones realistas en la analítica)
+  const events: (GameEvent & { t: number })[] = [];
+  let clock = Date.now() - 3 * 3600 * 1000;
+  if (sendUrl) engine.setEventSink((ev) => { clock += 2000 + Math.floor(rand() * 10000); events.push({ ...ev, t: clock }); });
+  const result = { steps: 0, end: 'limit', scenes: [] as string[], deaths: 0, events };
   let scene = 'start';
   let entries = 0;
   let retries = 0;
@@ -211,7 +245,9 @@ let reachedLast = 0;
 for (let i = 0; i < runs; i++) {
   let res: RunResult;
   try {
-    res = await playOnce();
+    const played = await playOnce();
+    res = played;
+    if (sendUrl) await sendEvents(played.events);
   } catch (e) {
     const msg = e instanceof Error ? `${e.message}\n${e.stack?.split('\n').slice(1, 4).join('\n')}` : String(e);
     if (errors.length < 5) errors.push(msg);
@@ -271,5 +307,6 @@ if (weird.length || errors.length) {
   for (const e of weird) console.log(`   ${e}`);
   for (const e of errors) console.log(`   ${e}`);
 }
+if (sendUrl) console.log(`\n📨 Eventos enviados al servidor: ${sentEvents}`);
 console.log(problems ? `\n${problems} problema(s).\n` : '\n✔ Sin problemas.\n');
 process.exit(problems ? 1 : 0);

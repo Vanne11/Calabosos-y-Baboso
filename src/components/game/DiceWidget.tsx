@@ -2,6 +2,7 @@
 // Tirada D20 con animación
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useAppStore } from '../../store/useAppStore';
 import styled, { keyframes } from 'styled-components';
 
 const shake = keyframes`
@@ -126,11 +127,13 @@ const DiceWidget: React.FC<DiceWidgetProps> = ({
     };
   }, [handleRoll]);
 
+  const statLabel = useAppStore((st) => st.engine?.statDefs?.[stat]?.label) ?? stat;
+
   return (
     <DiceContainer>
       <DiceDescription>{description}</DiceDescription>
       <StatInfo>
-        Stat: {stat} | Dificultad: {difficulty} | D{faces}
+        Stat: {statLabel} | Dificultad: {difficulty} | D{faces}
       </StatInfo>
       <DiceFace $rolling={rolling}>🎲 {displayNum}</DiceFace>
       <br />

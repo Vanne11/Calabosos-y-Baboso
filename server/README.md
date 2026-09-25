@@ -62,6 +62,7 @@ server/
 | **Prompts** | Edita cada prompt. Cada guardado crea una **versión nueva** y puedes volver a cualquier versión anterior. Botón **Probar** con variables de ejemplo |
 | **Ajustes** | Modelo; activar o desactivar la narración, los eventos y cada modo chat; límites y presupuesto |
 | **Conversaciones** | Transcripciones de los modos chat, con puntaje y resultado |
+| **Analítica** | Embudo por actos, dónde mueren y abandonan, finales, duración real, modos chat, dados y decisiones; borrado de eventos viejos |
 | **Registro** | Cada llamada a la IA: tokens, latencia y errores |
 
 ### Prompts

@@ -53,3 +53,13 @@ Informa:
 En combate, el bot juega como un jugador razonable (se cura con poca vida, usa sal y luz, a veces defiende o huye). Al morir reintenta desde el punto seguro hasta 3 veces.
 
 Con la misma semilla, el resultado es reproducible. Sale con código 1 si encuentra problemas.
+
+Para simular jugadores y ver la analítica del admin con datos:
+
+```bash
+npm run playtest -- calabosos 200 --send-events=http://127.0.0.1:8099/api/events.php
+```
+
+## `npm run package [-- --sin-demos]`
+
+Genera `release/calabosos-v<versión>.tar.gz` listo para subir: valida, compila con base `/cyb/`, convierte y reduce las imágenes (WebP, máximo 1280 px), y copia el servidor sin `config.php` ni base de datos. Con `--sin-demos` publica solo Calabosos. Guía en [DEPLOY.md](DEPLOY.md).

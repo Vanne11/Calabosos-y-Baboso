@@ -428,7 +428,7 @@ export class GameEngine {
     if (this._currentScene !== sceneId) this._previousScene = this._currentScene;
     this._currentScene = sceneId;
     this._state.visitedScenes = [...this._state.visitedScenes, sceneId];
-    this.emit('scene');
+    this.emit('scene', this._previousScene ? { from: this._previousScene } : undefined);
     this._state.sceneCount = (this._state.sceneCount || 0) + 1;
 
     // Expire temporary traits
