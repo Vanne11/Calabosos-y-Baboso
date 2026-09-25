@@ -67,14 +67,26 @@ const FREE_TEXT_LABEL = '✍️ Hacer otra cosa…';
 const FREE_TEXT_PROMPT = '¿Qué haces? Escríbelo con tus palabras.';
 const FREE_TEXT_USES = 2;
 
-/** /narrador: valores por defecto */
-const NARRATOR_CHAT_USES = 10;
-const NARRATOR_CHAT_COOLDOWN = 2;
+/** Charla libre: valores por defecto */
+const TALK_PER_SCENE = 3;
+const TALK_MAX_USES = 40;
 
-/** Resultado de hablarle al narrador con /narrador */
-export type NarratorTalk =
-  | { ok: true; text: string; tone?: NarrateReply['tone']; lineId?: number }
-  | { ok: false; reason: 'no_ai' | 'limit' | 'cooldown' | 'failed'; scenesLeft?: number };
+/** Quién contesta en la charla libre */
+export interface TalkSpeaker {
+  id: string;
+  name: string;
+  image?: string;
+}
+
+/** Resultado de la charla libre (engine.talk) */
+export type TalkResult =
+  | { ok: true; speaker: TalkSpeaker; text: string; tone?: NarrateReply['tone']; lineId?: number }
+  | { ok: false; reason: 'no_ai' | 'limit' | 'scene_limit' | 'failed'; speaker?: TalkSpeaker };
+
+/** Texto sin tildes y en minúsculas, para reconocer nombres ("Nérly," → "nerly,") */
+function fold(text: string): string {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
 
 /** Pasos que no cambian el estado: se puede pedir por adelantado la narración con IA que viene después */
 const PASSIVE_STEPS = new Set(['dialog', 'sound', 'notify', 'wait']);
@@ -100,6 +112,10 @@ export class GameEngine {
   private _actionResolver: ((action: PlayerAction) => void) | null = null;
   private _metaListener: ((meta: Record<string, number>) => void) | null = null;
   private _ai: AiProvider | null = null;
+  /** Personajes que hablaron en el lugar actual (el último es "quien está enfrente" en la charla libre) */
+  private _sceneSpeakers: string[] = [];
+  /** Lugar (nombre del escenario) de esos personajes: al cambiar de lugar se olvidan */
+  private _speakersPlace: string | undefined;
   /** Narraciones con IA pedidas por adelantado (se esperan al llegar al paso) */
   private _prefetched = new Map<DialogStep, Promise<NarrateReply | null>>();
   private _eventSink: GameEventSink | null = null;
@@ -372,6 +388,7 @@ export class GameEngine {
   private buildDialog(character: string, lines: string[], poolId?: string, count?: number): StepResult | null {
     const all = [...lines, ...(poolId ? this.drawFromPool(poolId, count ?? 1) : [])];
     if (all.length === 0) return null;
+    this.noteSpeaker(character);
     return {
       type: 'dialog',
       character,
@@ -527,6 +544,12 @@ export class GameEngine {
 
     // La narración con IA del principio de la escena se pide mientras se muestra el escenario
     this._prefetched.clear();
+    // Quienes hablaron siguen presentes mientras no cambie el lugar (otra escena en la misma taberna)
+    const place = scene.scenario?.name;
+    if (place !== undefined && place !== this._speakersPlace) {
+      this._sceneSpeakers = [];
+      this._speakersPlace = place;
+    }
     this.prefetchNarration(scene.sequence, -1);
 
     // Yield scenario if present
@@ -594,6 +617,7 @@ export class GameEngine {
           if (ai) {
             const line = sanitizeAiText(ai.text);
             this._state = { ...this._state, iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX) };
+            this.noteSpeaker(dialogStep.character);
             if (dialogStep.ai.remember) this.applyState({ memo: `${dialogStep.ai.remember} «${line}»` });
             yield {
               type: 'dialog',
@@ -844,6 +868,7 @@ export class GameEngine {
     const npcName = this.getCharacterName(step.npc);
     const npcDef = this.manifest.characters[step.npc];
     const ai = this._ai;
+    this.noteSpeaker(step.npc);
 
     const start = ai?.available(step.mode)
       ? await ai.chatStart(
@@ -2030,35 +2055,105 @@ export class GameEngine {
     return [scene?.scenario?.name, scene?.scenario ? this.getScenarioDescription(scene) : ''].filter(Boolean).join(': ');
   }
 
-  /**
-   * /narrador: el jugador le habla al narrador fuera de la historia. Limitado por partida y con espera entre
-   * charlas (en escenas). No cambia la historia: solo memoria (lo que escribió, lo que el narrador dijo).
-   */
-  async talkToNarrator(message: string): Promise<NarratorTalk> {
-    const config = this.manifest.ai?.narratorChat;
-    const text = message.trim().slice(0, 400);
-    if (!this.manifest.ai || config === false || !this._ai?.available('narrate') || !text) return { ok: false, reason: 'no_ai' };
-    const maxUses = config?.maxUses ?? NARRATOR_CHAT_USES;
-    const cooldown = config?.cooldownScenes ?? NARRATOR_CHAT_COOLDOWN;
-    const used = this._state.narrador;
-    if (used && used.usos >= maxUses) return { ok: false, reason: 'limit' };
-    const since = (this._state.sceneCount ?? 0) - (used?.ultima ?? -Infinity);
-    if (used && since < cooldown) return { ok: false, reason: 'cooldown', scenesLeft: cooldown - since };
+  /** Anota quién habló en la escena (solo personajes con los que se puede charlar) */
+  private noteSpeaker(id: string): void {
+    const def = this.manifest.characters[id];
+    if (!def || def.talkable === false || (def.role !== 'npc' && def.role !== 'companion')) return;
+    this._sceneSpeakers = [...this._sceneSpeakers.filter((s) => s !== id), id];
+  }
 
-    this._state = { ...this._state, habla: pushRecent(this._state.habla, text, HABLA_MAX) };
-    const reply = await this._ai.narrate(config?.prompt ?? 'charla', this.aiVars({ situacion: this.sceneSituation() }), text);
-    if (!reply) return { ok: false, reason: 'failed' };
-    const line = sanitizeAiText(reply.text);
+  /** Personajes presentes para la charla libre: los que hablaron en la escena, los acompañantes y el narrador */
+  private talkCandidates(): string[] {
+    const chars = this.manifest.characters;
+    const companions = Object.keys(chars).filter(
+      (id) => chars[id].role === 'companion' && chars[id].talkable !== false && (!chars[id].joinFlag || this._state.flags[chars[id].joinFlag!])
+    );
+    return [...new Set([...this._sceneSpeakers, ...companions, this.getNarratorId()])];
+  }
+
+  /**
+   * A quién le habla: al que nombra al principio ("Nerly, ¿estás bien?", "@narrador …"); si no nombra a nadie, al
+   * último personaje que habló en la escena, al acompañante o al narrador. Devuelve el id y el texto sin el nombre.
+   */
+  private talkTarget(message: string, forced?: string): { id: string; text: string } {
+    const candidates = this.talkCandidates();
+    if (forced) return { id: forced, text: message };
+    const folded = fold(message).replace(/^@/, '');
+    for (const id of candidates) {
+      const name = fold(this.getCharacterName(id));
+      const keys = [...new Set([name, name.split(' ')[0], fold(id)])].filter((k) => k.length >= 3);
+      const key = keys.find((k) => folded.startsWith(k) && !/[a-zñ0-9]/.test(folded.charAt(k.length)));
+      if (key) {
+        const rest = message.replace(/^@?\s*/, '').slice(key.length).replace(/^[\s,:;.-]+/, '').trim();
+        return { id, text: rest || message };
+      }
+    }
+    const npc = this._sceneSpeakers[this._sceneSpeakers.length - 1];
+    return { id: npc ?? candidates[0], text: message };
+  }
+
+  /** Si la charla libre está disponible ahora (IA + no desactivada + quedan charlas en la escena y la partida) */
+  get canTalk(): boolean {
+    const config = this.manifest.ai?.talk;
+    if (!this.manifest.ai || config === false || !this._ai?.available('narrate')) return false;
+    const used = this._state.charla;
+    if (!used) return true;
+    const inScene = used.escena === (this._state.sceneCount ?? 0) ? used.enEscena : 0;
+    return used.usos < (config?.maxUses ?? TALK_MAX_USES) && inScene < (config?.perScene ?? TALK_PER_SCENE);
+  }
+
+  /** Quién contestaría este mensaje en la charla libre (para mostrar "X piensa…" mientras responde) */
+  talkSpeaker(message: string, to?: 'narrator'): TalkSpeaker {
+    return this.speakerInfo(this.talkTarget(message.trim(), to === 'narrator' ? this.getNarratorId() : undefined).id);
+  }
+
+  /** Datos para mostrar a quien habla fuera de la secuencia */
+  speakerInfo(id: string): TalkSpeaker {
+    return { id, name: this.getCharacterName(id), image: this.manifest.characters[id]?.image };
+  }
+
+  /**
+   * Charla libre: lo que el jugador escribe (que no es un comando) lo contesta quien esté presente, sin avanzar la
+   * historia. Límite por escena y por partida (ai.talk). Con `to` se fuerza el interlocutor (/narrador).
+   * Solo cambia la memoria: lo que escribió, lo que le contestaron y lo que ese personaje recuerda.
+   */
+  async talk(message: string, to?: 'narrator'): Promise<TalkResult> {
+    const config = this.manifest.ai?.talk;
+    const clean = message.trim().slice(0, 400);
+    if (!this.manifest.ai || config === false || !this._ai?.available('narrate') || !clean) return { ok: false, reason: 'no_ai' };
     const narrator = this.getNarratorId();
+    const target = this.talkTarget(clean, to === 'narrator' ? narrator : undefined);
+    const speaker = this.speakerInfo(target.id);
+
+    const scene = this._state.sceneCount ?? 0;
+    const used = this._state.charla ?? { usos: 0, escena: scene, enEscena: 0 };
+    const inScene = used.escena === scene ? used.enEscena : 0;
+    if (used.usos >= (config?.maxUses ?? TALK_MAX_USES)) return { ok: false, reason: 'limit', speaker };
+    if (inScene >= (config?.perScene ?? TALK_PER_SCENE)) return { ok: false, reason: 'scene_limit', speaker };
+
+    this._state = { ...this._state, habla: pushRecent(this._state.habla, clean, HABLA_MAX) };
+    const isNarrator = target.id === narrator;
+    const def = this.manifest.characters[target.id];
+    const reply = isNarrator
+      ? await this._ai.narrate(config?.prompt ?? 'charla', this.aiVars({ situacion: this.sceneSituation() }), target.text)
+      : await this._ai.narrate(
+          config?.npcPrompt ?? 'charla_npc',
+          this.aiVars({ situacion: this.sceneSituation(), npc_nombre: speaker.name, npc_descripcion: def?.description ?? '' }, target.id),
+          target.text
+        );
+    if (!reply) return { ok: false, reason: 'failed', speaker };
+
+    const line = sanitizeAiText(reply.text);
+    const quote = target.text.length > 100 ? `${target.text.slice(0, 99)}…` : target.text;
     this._state = {
       ...this._state,
-      iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX),
-      narrador: { usos: (used?.usos ?? 0) + 1, ultima: this._state.sceneCount ?? 0 },
+      ...(isNarrator ? { iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX) } : {}),
+      charla: { usos: used.usos + 1, escena: scene, enEscena: inScene + 1 },
     };
-    // El narrador se acuerda de lo que le dijiste (sale en sus chats, como el final secreto)
-    this.applyState({ npcMemo: { [narrator]: `BOB lo interrumpió para decirle «${text.length > 100 ? `${text.slice(0, 99)}…` : text}»` } });
-    this.emit('narrator_chat', { uses: this._state.narrador!.usos });
-    return { ok: true, text: line, tone: reply.tone, lineId: reply.lineId };
+    // El personaje se acuerda de lo que le dijiste (sale en sus chats y en las próximas charlas)
+    this.applyState({ npcMemo: { [target.id]: `BOB le dijo «${quote}»` } });
+    this.emit('talk', { to: target.id, uses: used.usos + 1 });
+    return { ok: true, speaker, text: line, tone: reply.tone, lineId: reply.lineId };
   }
 
   /** Configuración efectiva de la acción libre: la del paso sobre la del juego */

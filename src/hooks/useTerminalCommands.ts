@@ -58,7 +58,8 @@ export function useTerminalCommands() {
 [yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
 [yellow][bold]/ia[/bold][/yellow] [dim][on|off][/dim] - Estado del narrador con IA, o encenderlo/apagarlo.
 [yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
-[yellow][bold]/narrador[/bold][/yellow] [dim]<texto>[/dim] - Háblale al narrador cuando quieras (con IA). Pocas veces por partida: tiene sindicato.
+[yellow][bold]/narrador[/bold][/yellow] [dim]<texto>[/dim] - Háblale al narrador cuando quieras (con IA).
+[dim]O escribe sin "/" y te contesta quien esté: el personaje de enfrente, Nerly o el narrador. Empieza con un nombre para elegir ("Nerly, ¿tienes miedo?"). No avanza la historia.[/dim]
 [yellow][bold]/bien[/bold][/yellow] o [yellow][bold]/mal[/bold][/yellow] - Califica la última línea del narrador con IA. Le importa. Mucho. No se lo digas.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
 
@@ -121,38 +122,42 @@ export function useTerminalCommands() {
     });
   };
 
-  /** /narrador <texto>: el jugador le habla al narrador fuera de la historia */
-  const talkToNarrator = async (message: string) => {
+  /**
+   * Charla libre (texto que no es comando) y /narrador: contesta quien esté presente, sin avanzar la historia.
+   * `echo`: mostrar lo que escribió (el texto normal ya se mostró como comando).
+   */
+  const talk = async (message: string, opts: { to?: 'narrator'; echo?: boolean } = {}) => {
     const state = useAppStore.getState();
     const engine = state.engine;
-    if (!engine) {
-      addEntry({ type: 'system', content: '[dim]No hay partida en curso. El narrador está de vacaciones.[/dim]' });
-      return;
-    }
+    if (!engine) return;
     if (state.pendingResult?.type === 'chat_prompt') {
-      addEntry({ type: 'system', content: '[dim]Estás en medio de una conversación. El narrador espera su turno (y lo cobra).[/dim]' });
+      addEntry({ type: 'system', content: '[dim]Estás en medio de una conversación. Los demás esperan su turno.[/dim]' });
       return;
     }
     if (!message.trim()) {
-      addEntry({ type: 'system', content: '[dim]Uso: /narrador <lo que quieras decirle>. Ejemplo: /narrador ¿por qué me odias?[/dim]' });
+      addEntry({ type: 'system', content: '[dim]Uso: /narrador <lo que quieras decirle>. O escribe directamente y te contesta quien esté.[/dim]' });
       return;
     }
-    addEntry({ type: 'system', content: `[cyan]> (al narrador) ${message.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
-    addEntry({ type: 'system', content: '[dim italic]El narrador deja lo que estaba haciendo. Suspira…[/dim italic]' });
-    const res = await engine.talkToNarrator(message);
+    if (opts.echo) {
+      addEntry({ type: 'system', content: `[cyan]> ${message.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
+    }
+    const pending = engine.talkSpeaker(message, opts.to);
+    const thinking = `[dim italic]${pending.name} piensa qué contestarte…[/dim italic]`;
+    if (engine.canTalk) addEntry({ type: 'system', content: thinking });
+    const res = await engine.talk(message, opts.to);
     if (!res.ok) {
+      const who = res.speaker?.name ?? 'Nadie';
       const why: Record<typeof res.reason, string> = {
-        no_ai: '[dim]El narrador no está disponible para charlas (sin IA). Solo narra, y a regañadientes.[/dim]',
-        limit: '[yellow]Ya gastaste tus charlas con el narrador en esta partida.[/yellow] [dim]Tiene sindicato.[/dim]',
-        cooldown: `[yellow]El narrador está ocupado narrando.[/yellow] [dim]Vuelve a intentarlo en ${res.scenesLeft ?? 1} ${res.scenesLeft === 1 ? 'escena' : 'escenas'}.[/dim]`,
-        failed: '[yellow]El narrador se hizo el sordo[/yellow] [dim](sin respuesta del servidor).[/dim]',
+        no_ai: `[dim]Nadie te contesta: sin IA solo hablan los textos del juego.[/dim] [dim](/help para ver los comandos)[/dim]`,
+        limit: '[yellow]Ya hablaste demasiado en esta partida.[/yellow] [dim]Todos fingen no oírte. Avanza la historia.[/dim]',
+        scene_limit: `[dim]${who} ya no te hace caso aquí. Avanza a otra escena para seguir charlando.[/dim]`,
+        failed: `[dim]${who} se hizo el sordo (sin respuesta del servidor).[/dim]`,
       };
       addEntry({ type: 'system', content: why[res.reason] });
       return;
     }
-    const narrator = engine.narrator;
     state.addEntries([
-      { type: 'dialogHeader', content: narrator.name, image: narrator.image },
+      { type: 'dialogHeader', content: res.speaker.name, image: res.speaker.image },
       { type: 'dialog', content: res.text },
       ...(noteAiLine(res.lineId, res.text)
         ? [{ type: 'system' as const, content: '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal[/dim italic]' }]
@@ -370,7 +375,7 @@ ${lines.join('\n')}
         return true;
       case 'narrador':
       case 'hablar':
-        void talkToNarrator(args.join(' '));
+        void talk(args.join(' '), { to: 'narrator', echo: true });
         return true;
       case 'bien':
         void rateAiLine(1);
@@ -428,7 +433,14 @@ ${lines.join('\n')}
 
       // In-game: use game-specific commands
       if (phase === 'game') {
-        if (await processGameCommand(name, args, input)) return;
+        // Comandos: con "/" o una sola palabra (compatibilidad: "help", "save"...)
+        const isSlash = input.trim().startsWith('/');
+        if ((isSlash || !/\s/.test(input.trim())) && (await processGameCommand(name, args, input))) return;
+        // Texto que no es comando: charla libre con quien esté (Nerly, el narrador, el personaje de enfrente)
+        if (!isSlash && /\p{L}/u.test(input)) {
+          await talk(input);
+          return;
+        }
         addEntry({
           type: 'system',
           content: `[red]"${input}"[/red] no es un comando válido durante la partida.

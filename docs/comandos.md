@@ -39,7 +39,8 @@ Disponibles durante la partida. **Requieren prefijo `/`** para distinguirlos del
 | `/<códice>` | El comando del códice del juego (ej. `/bestiario`, `/bestiario 3`); ver [narrativa.md](narrativa.md#códice--bestiario-codex) |
 | `/debug goto <escena>` | Salta a una escena (solo con `/debug on`; para probar contenido) |
 | `/rendirse` | Abandona la conversación de un modo chat (`ai_chat`) → resultado *failure* |
-| `/narrador <texto>` · `/hablar <texto>` | Hablarle al narrador con IA en cualquier momento (no en medio de un chat). Límite por partida y espera entre charlas: `game.json → ai.narratorChat` |
+| *(texto sin `/`)* | Charla libre: contesta quien esté (el nombrado, el personaje de enfrente, el acompañante o el narrador). No avanza la historia. Límites: `game.json → ai.talk` |
+| `/narrador <texto>` · `/hablar <texto>` | Hablarle directamente al narrador (mismos límites que la charla libre) |
 | `/bien` · `/mal` | Califica la última línea de la IA (se ve en el admin → Calificaciones) |
 | `/inventario` | Abre/cierra el overlay expandido del inventario (aliases: `/inv`, `/inventory`) |
 | `/quit` / `/exit` | Sale de la partida y vuelve a la shell (no cierra sesión) |

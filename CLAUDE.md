@@ -72,6 +72,7 @@ npx tsc --noEmit -p .                   # debe quedar sin errores
 - La key de DeepSeek va **solo** en `server/config.php` (gitignored). En producción lo crea el instalador web (`/cyb/api/admin/`, `ConfigWriter`) y la key se cambia en Ajustes; sin config.php la API arranca con valores por defecto. Modo `mock` para desarrollo.
 - Desarrollo: `php -S 127.0.0.1:8099 -t server/public` (Vite hace proxy de `/cyb/api`). En Arch el PHP del sistema no trae `pdo_sqlite`; hay un PHP 7.4 de prueba vía `micromamba create -c conda-forge php=7.4.26`.
 - Memoria de la IA (`src/engine/AiContext.ts`): memos, decisiones con tags, citas, cómo escribe el jugador, ánimo y fichas (`characters.x.ai`); el servidor las agrega en un bloque de contexto (`PromptRenderer::contextBlock`). Detalle: `docs/ia.md`.
+- Charla libre: texto sin `/` lo contesta quien esté (`engine.talk`, `ai.talk`, prompts `narrate.charla` y `narrate.charla_npc`).
 - Calificaciones (`/bien`, `/mal` → `ai_lines`) y ejemplos por prompt (`prompt_examples`, admin → Calificaciones).
 - Cambiar prompts semilla (`Seed.php`) requiere una migración nueva que llame a `Seed::upgrade()` (no pisa prompts editados por el admin).
 - Prompts editables y versionados en el admin; el contrato JSON de los modos chat lo fija el servidor. El veredicto lo calcula el servidor; el puntaje sube como máximo `max_step` por turno.

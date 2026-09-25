@@ -180,17 +180,22 @@ export interface AiConfig {
   freeText?: FreeTextDef;
   /** Probabilidad (0-1) de que el narrador comente una decisión con tags (default: 0) */
   reactChance?: number;
-  /** /narrador: hablarle al narrador en cualquier momento (false = desactivado) */
-  narratorChat?: false | NarratorChatDef;
+  /**
+   * Charla libre: lo que el jugador escribe que no es comando lo contesta quien esté (el nombrado, el último
+   * personaje que habló en la escena, el acompañante o el narrador). No avanza la historia. false = desactivada
+   */
+  talk?: false | TalkDef;
 }
 
-export interface NarratorChatDef {
-  /** Veces por partida (default: 10) */
+export interface TalkDef {
+  /** Charlas por escena (default: 3) */
+  perScene?: number;
+  /** Charlas por partida (default: 40) */
   maxUses?: number;
-  /** Escenas que hay que avanzar entre una charla y otra (default: 2) */
-  cooldownScenes?: number;
-  /** Prompt del servidor (narrate.<prompt>, default: "charla") */
+  /** Prompt del narrador (narrate.<prompt>, default: "charla") */
   prompt?: string;
+  /** Prompt de los demás personajes (default: "charla_npc") */
+  npcPrompt?: string;
 }
 
 /** Acción libre en una decisión: la IA lleva lo escrito a una opción o a una consecuencia de la lista */
@@ -267,6 +272,8 @@ export interface CharacterDef {
   initialTraits?: string[];
   /** Ficha para la IA: cómo habla y qué lo mueve (ver docs/ia.md) */
   ai?: CharacterAi;
+  /** false = no contesta en la charla libre aunque aparezca en la escena (ej. una lápida) */
+  talkable?: boolean;
 }
 
 /** Ficha de personaje para la IA. Todo es opcional; los ejemplos son lo que más define la voz */

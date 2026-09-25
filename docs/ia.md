@@ -101,20 +101,31 @@ Los jugadores escriben como hablan y con faltas. No se corrige nada: `como_escri
 hoja del narrador pide contestar en el mismo registro, usar sus modismos, burlarse a veces de **una** falta concreta
 (nunca corregir como profesor) y no bajar el puntaje por ortografía.
 
-## Charla con el narrador (`/narrador`)
+## Charla libre (escribir en cualquier momento)
 
-El jugador le habla al narrador cuando quiere: `/narrador ¿por qué me odias?`. Responde con el prompt
-`narrate.charla` (su texto llega como mensaje aparte, solo en prompts con `player_message: true`), sabiendo la
-escena (`{{situacion}}`) y toda la memoria. Da pistas vagas, nunca resuelve acertijos ni cambia la historia.
+Lo que el jugador escribe que **no es un comando** (sin `/`) ya no da error: lo contesta quien esté, sin avanzar la
+historia. Solo es comando lo que empieza con `/` (o una palabra suelta que sea un comando, como `help`).
+
+- **Quién contesta**: el que nombra al principio ("Nerly, ¿tienes miedo?", "narrador: …", "@bardo …"); si no nombra
+  a nadie, el último personaje que habló **en el lugar actual** (siguen presentes mientras no cambie el nombre del
+  escenario); si no hay, el acompañante (`role: companion` con su `joinFlag`); si no, el narrador.
+- `/narrador <texto>` (o `/hablar`) le habla siempre al narrador.
+- Prompts: `narrate.charla` (narrador) y `narrate.charla_npc` (los demás, con su ficha y lo que recuerdan de BOB).
+  El texto del jugador va como mensaje aparte (`player_message: true`).
+- Límites en `game.json`:
 
 ```jsonc
-"ai": { "narratorChat": { "maxUses": 10, "cooldownScenes": 2 } }   // false = desactivado
+"ai": { "talk": { "perScene": 3, "maxUses": 40 } }   // false = desactivada
 ```
 
-- Límite por partida (`maxUses`) y escenas de espera entre charlas (`cooldownScenes`); no se recuperan al volver
-  al checkpoint.
-- Lo que escribió va a `como_escribe` y el narrador lo recuerda (`npcMemoria.narrator`: sale en el final secreto).
-- Motor: `GameEngine.talkToNarrator(texto)` → `{ ok, text, tone, lineId }` o `{ ok: false, reason }`.
+  Las charlas usadas no se recuperan al volver al checkpoint.
+- Cada personaje recuerda lo que le dijiste (`npcMemoria`); lo escrito va a `como_escribe`.
+- No contestan: el protagonista, `sistema` y los personajes con `"talkable": false` (la lápida).
+- Durante un chat (`ai_chat`) lo escrito va al chat; en una decisión con `freeText`, es una acción libre;
+  en un paso `input`, es la respuesta.
+- Enter con texto escrito no avanza la historia: primero se contesta y el diálogo sigue esperando.
+- Motor: `engine.talk(texto, 'narrator'?)` → `{ ok, speaker, text, tone, lineId }` o `{ ok: false, reason }`;
+  `engine.talkSpeaker(texto)` dice quién contestaría y `engine.canTalk` si quedan charlas.
 
 ## Epitafio y `dialog.ai.remember`
 

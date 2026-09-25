@@ -11,7 +11,7 @@ export const MEMO_FOR_AI = 10;
 export const DECISIONES_MAX = 12;
 export const DECISIONES_FOR_AI = 6;
 /** Campos del estado que forman la memoria de la IA: sobreviven a volver al checkpoint */
-export const AI_MEMORY_FIELDS = ['memoria', 'decisiones', 'citas', 'iaDijo', 'habla', 'npcMemoria', 'narrador'] as const;
+export const AI_MEMORY_FIELDS = ['memoria', 'decisiones', 'citas', 'iaDijo', 'habla', 'npcMemoria', 'charla'] as const;
 /** Recuerdos por personaje (y cuántos viajan a sus chats) */
 export const NPC_MEMO_MAX = 6;
 /** Citas guardadas en la partida y cuántas viajan a la IA */

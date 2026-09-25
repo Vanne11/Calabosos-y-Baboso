@@ -123,6 +123,9 @@ final class Db
             if ($target === 6) {
                 Seed::upgrade($this, 'Actualización: charla con el narrador (/narrador)');
             }
+            if ($target === 7) {
+                Seed::upgrade($this, 'Actualización: charla libre con los personajes');
+            }
         }
     }
 
@@ -267,6 +270,9 @@ CREATE INDEX idx_prompt_examples_key ON prompt_examples(prompt_key);
 SQL,
             6 => <<<'SQL'
 CREATE INDEX IF NOT EXISTS idx_ai_lines_session ON ai_lines(session_id, id);
+SQL,
+            7 => <<<'SQL'
+CREATE INDEX IF NOT EXISTS idx_ai_lines_prompt ON ai_lines(prompt_key, created_at);
 SQL,
         ];
     }

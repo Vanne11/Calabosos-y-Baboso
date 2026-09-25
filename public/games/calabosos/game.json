@@ -84,9 +84,9 @@
         }
       }
     },
-    "narratorChat": {
-      "maxUses": 10,
-      "cooldownScenes": 2
+    "talk": {
+      "perScene": 3,
+      "maxUses": 40
     }
   },
   "audio": {
@@ -414,7 +414,8 @@
     "lapida": {
       "name": "🪦 Lápida",
       "description": "Lo último que dirán de ti. Corto, porque la piedra es cara.",
-      "role": "npc"
+      "role": "npc",
+      "talkable": false
     },
     "sistema": {
       "name": "SISTEMA",

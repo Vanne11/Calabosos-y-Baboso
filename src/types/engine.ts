@@ -54,8 +54,8 @@ export interface PlayerState {
   habla?: string[];
   /** Lo que cada personaje recuerda de BOB (chats anteriores, effects.npcMemo, gestos) */
   npcMemoria?: Record<string, string[]>;
-  /** /narrador: charlas usadas y sceneCount de la última */
-  narrador?: { usos: number; ultima: number };
+  /** Charla libre: usadas en la partida, y en la escena actual (sceneCount de esa escena) */
+  charla?: { usos: number; escena: number; enEscena: number };
   /** Entradas del códice desbloqueadas (en orden) */
   codex?: string[];
   /** Último punto de control: escena y copia del estado en ese momento */

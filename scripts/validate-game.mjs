@@ -122,13 +122,14 @@ function validateGame(gameName) {
     }
   }
   checkConsequences(manifest.ai?.freeText?.consequences, 'ai.freeText');
-  const narratorChat = manifest.ai?.narratorChat;
-  if (narratorChat) {
-    for (const key of ['maxUses', 'cooldownScenes']) {
-      const v = narratorChat[key];
-      if (v !== undefined && (!Number.isInteger(v) || v < 0)) errors.push(`ai.narratorChat.${key} debe ser un entero >= 0`);
+  const talk = manifest.ai?.talk;
+  if (talk) {
+    for (const key of ['perScene', 'maxUses']) {
+      const v = talk[key];
+      if (v !== undefined && (!Number.isInteger(v) || v < 0)) errors.push(`ai.talk.${key} debe ser un entero >= 0`);
     }
   }
+  if (manifest.ai?.narratorChat !== undefined) warnings.push('ai.narratorChat ya no se usa: ahora es ai.talk { perScene, maxUses }');
   const reactChance = manifest.ai?.reactChance;
   if (reactChance !== undefined && (typeof reactChance !== 'number' || reactChance < 0 || reactChance > 1)) {
     errors.push('ai.reactChance debe ser un número entre 0 y 1');

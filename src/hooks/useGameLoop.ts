@@ -826,10 +826,12 @@ function meterLine(label: string, score: number): string {
 function waitForEnterKey(): Promise<void> {
   return new Promise((resolve) => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        cleanup();
-        resolve();
-      }
+      if (e.key !== 'Enter') return;
+      // Enter con texto en la entrada es para enviarlo (charla, comando): no avanza la historia
+      const target = e.target;
+      if ((target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) && target.value.trim()) return;
+      cleanup();
+      resolve();
     };
     const onTap = () => {
       cleanup();

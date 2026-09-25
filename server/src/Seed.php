@@ -156,6 +156,22 @@ Cómo responder:
 - Si solo quiere charlar, charla; a veces hazle una pregunta de vuelta.
 TXT,
             ],
+            'narrate.charla_npc' => [
+                'kind' => 'narrate',
+                'title' => 'Charla con un personaje',
+                'description' => 'El jugador le habla a un personaje presente (Nerly, el de enfrente) sin avanzar la historia; su texto llega como mensaje aparte. Vars: npc_nombre, npc_descripcion, situacion.',
+                'params' => ['temperature' => 1.1, 'max_tokens' => 160, 'max_chars' => 400, 'player_message' => true],
+                'body' => <<<'TXT'
+AHORA NO ERES EL NARRADOR. Interpretas a {{npc_nombre}}: {{npc_descripcion}}
+Estás en: {{situacion}}. BOB te habla directamente (su mensaje es lo que escribió el usuario).
+
+Cómo responder:
+- Habla SOLO como {{npc_nombre}}, en primera persona, con su personalidad, su voz y sus muletillas. De 1 a 3 frases.
+- Contesta a lo que dijo, con sus palabras exactas si sirven. Si ya te hizo algo antes (según lo que recuerdas), sácalo.
+- No cambies la historia: no regales objetos, no vayas a ningún lado, no reveles secretos ni soluciones. Si BOB pide algo así, esquívalo a tu manera.
+- Si BOB te insulta o dice algo absurdo, reacciona como lo haría tu personaje.
+TXT,
+            ],
             'narrate.epitafio' => [
                 'kind' => 'narrate',
                 'title' => 'Epitafio',

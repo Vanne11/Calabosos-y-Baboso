@@ -70,6 +70,13 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 - [x] El narrador recuerda lo que le dijiste (`npcMemoria.narrator`) y lo escrito va a `como_escribe`.
 - [x] Servidor: `player_message` en prompts de narración, migración 6, prueba con mensaje en el admin.
 
+## 6b. Charla libre en cualquier momento — HECHO
+
+- [x] Texto sin `/` ya no da error: contesta el nombrado, el personaje de enfrente (mientras no cambie el lugar),
+      el acompañante o el narrador (`engine.talk`, prompt `narrate.charla_npc`, migración 7).
+- [x] Límites `ai.talk` (3 por escena, 40 por partida); cada personaje recuerda lo que le dijiste.
+- [x] Enter con texto no avanza la historia.
+
 ## 7. Muertes y recap personales — HECHO
 
 - [x] Epitafio en la lápida al morir (`narrate.epitafio`: causa + última decisión + última frase tal cual); sin IA, pool `epitafio`.
