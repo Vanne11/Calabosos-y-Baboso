@@ -46,6 +46,7 @@ const App: React.FC = () => {
   const addCommandToHistory = useAppStore((s) => s.addCommandToHistory);
   const pendingResult = useAppStore((s) => s.pendingResult);
   const playerState = useAppStore((s) => s.playerState);
+  const usingItem = useAppStore((s) => s.usingItem);
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
@@ -153,6 +154,46 @@ const App: React.FC = () => {
         }, 3000);
       }
       await processCommand(trimmed);
+      return;
+    }
+
+    // Usar objeto: IN[n] elige el objeto del inventario, [1-N] lo usa en ese objetivo, "IN2 1" hace ambas, [0] sale
+    if (phase === 'game' && pendingResult?.type === 'use_item_prompt') {
+      const uip = pendingResult as UseItemPrompt;
+      const low = trimmed.toLowerCase();
+      const store = useAppStore.getState();
+      if (!low) return;
+      if (low === '0') {
+        sendAction({ type: 'use_item_exit' });
+        return;
+      }
+      const m = low.match(/^in(\d+)(?:\s+(\d+))?$/) ?? low.match(/^(?:in)?()(\d+)$/);
+      if (!m) {
+        addEntry({ type: 'system', content: '[dim]Elige un objeto con IN1, IN2… y después el número del objetivo (o todo junto: IN2 1). [0] para salir.[/dim]' });
+        return;
+      }
+      let item = store.usingItem && uip.playerInventory.includes(store.usingItem) ? store.usingItem : null;
+      if (m[1]) {
+        const stacked = stackInventory(uip.playerInventory);
+        const picked = stacked[parseInt(m[1]) - 1];
+        if (!picked) {
+          addEntry({ type: 'system', content: `[yellow]No tienes nada en IN${m[1]}.[/yellow]` });
+          return;
+        }
+        item = picked.id;
+        store.setUsingItem(item);
+      }
+      if (m[2]) {
+        const target = uip.targets[parseInt(m[2]) - 1];
+        if (!target) {
+          addEntry({ type: 'system', content: `[yellow]No hay objetivo [${m[2]}].[/yellow]` });
+        } else if (!item) {
+          addEntry({ type: 'system', content: '[yellow]Primero elige un objeto de tu inventario (IN1, IN2…).[/yellow]' });
+        } else {
+          addEntry({ type: 'option', content: `> Usar ${store.engine?.items?.[item]?.name ?? item} en ${target.label}` });
+          sendAction({ type: 'use_item_on', itemId: item, targetId: target.id });
+        }
+      }
       return;
     }
 
@@ -593,6 +634,10 @@ const App: React.FC = () => {
   };
 
   const handleUseItemOn = (itemId: string, targetId: string) => {
+    const uip = pendingResult as UseItemPrompt | null;
+    const itemName = useAppStore.getState().engine?.items?.[itemId]?.name ?? itemId;
+    const targetLabel = uip?.targets.find((t) => t.id === targetId)?.label ?? targetId;
+    addEntry({ type: 'option', content: `> Usar ${itemName} en ${targetLabel}` });
     sendAction({ type: 'use_item_on', itemId, targetId });
   };
   const handleUseItemExit = () => {
@@ -681,6 +726,11 @@ const App: React.FC = () => {
     } else if (pp.puzzleType !== 'sequence') {
       placeholder = pp.prompt || 'Tu respuesta...';
     }
+  } else if (pendingResult?.type === 'use_item_prompt') {
+    const uip = pendingResult as UseItemPrompt;
+    placeholder = usingItem
+      ? `Objetivo [1-${uip.targets.length}] · IN[n] cambia de objeto · [0] salir`
+      : `IN[n] elige un objeto · luego el objetivo [1-${uip.targets.length}] · [0] salir`;
   } else if (pendingResult?.type === 'dice_prompt' || pendingResult?.type === 'shop_dice_prompt') {
     placeholder = 'Pulsa [T] para lanzar el dado';
   }

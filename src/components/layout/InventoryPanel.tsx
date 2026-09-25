@@ -74,12 +74,15 @@ const SlotsGrid = styled.div`
   gap: 6px;
 `;
 
-const Slot = styled.div<{ $empty?: boolean }>`
+const Slot = styled.div<{ $empty?: boolean; $selected?: boolean; $pickable?: boolean }>`
   width: 90px;
   height: 90px;
-  border: 1px solid ${(props) => props.$empty
+  border: ${(props) => (props.$selected ? '2px' : '1px')} solid ${(props) => props.$selected
+    ? props.theme.terminal.success
+    : props.$empty
     ? props.theme.terminal.border
     : props.theme.accent};
+  box-shadow: ${(props) => (props.$pickable && !props.$selected ? `0 0 6px ${props.theme.accent}66` : 'none')};
   border-radius: 4px;
   background-color: ${(props) => props.$empty
     ? 'transparent'
@@ -157,6 +160,15 @@ const InBadge = styled.div`
   letter-spacing: -0.5px;
 `;
 
+const PickHint = styled.span`
+  color: ${(props) => props.theme.terminal.success};
+  font-size: 0.75rem;
+  animation: pickPulse 1.4s ease-in-out infinite;
+  @keyframes pickPulse {
+    50% { opacity: 0.45; }
+  }
+`;
+
 const Tooltip = styled.div`
   position: absolute;
   bottom: 100%;
@@ -217,6 +229,9 @@ const InventoryPanel: React.FC = () => {
   const phase = useAppStore((s) => s.phase);
   const gameBasePath = useAppStore((s) => s.gameBasePath);
   const engine = useAppStore((s) => s.engine);
+  const picking = useAppStore((s) => s.pendingResult?.type === 'use_item_prompt');
+  const usingItem = useAppStore((s) => s.usingItem);
+  const setUsingItem = useAppStore((s) => s.setUsingItem);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   if (phase !== 'game' || !playerState) return null;
@@ -260,11 +275,19 @@ const InventoryPanel: React.FC = () => {
           />
           <CoinPill $broke={dinero <= 0}>{dinero}</CoinPill>
         </CoinBadge>
+        {picking && (
+          <PickHint>
+            {usingItem ? `✓ ${getItemData(usingItem, manifestItems).name}` : 'elige qué usar: clic en un objeto o IN1, IN2…'}
+          </PickHint>
+        )}
       </Header>
       <SlotsGrid>
         {stacked.map((item, idx) => (
           <Slot
             key={item.id}
+            $pickable={picking}
+            $selected={picking && usingItem === item.id}
+            onClick={picking ? () => setUsingItem(usingItem === item.id ? null : item.id) : undefined}
             onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >

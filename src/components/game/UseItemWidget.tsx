@@ -1,7 +1,8 @@
 // components/game/UseItemWidget.tsx
-// Usar item sobre un objetivo (estilo LucasArts)
+// Usar item sobre un objetivo (estilo LucasArts). El objeto se elige en el panel de inventario
+// (clic o IN[n]); aquí solo están los objetivos: con un objeto elegido, tocar un objetivo lo usa.
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -21,23 +22,15 @@ const SectionLabel = styled.div`
   margin: 0.5rem 0 0.25rem;
 `;
 
-const SelectButton = styled.button<{ $selected: boolean }>`
-  background-color: ${(props) => props.$selected ? props.theme.button.hoverBackground : props.theme.button.background};
-  color: ${(props) => props.$selected ? props.theme.terminal.success : props.theme.terminal.accent};
-  border: 1px solid ${(props) => props.$selected ? props.theme.terminal.success : props.theme.terminal.accentDim};
-  border-radius: 3px;
-  padding: 8px 12px;
-  margin: 3px 0;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.9rem;
-  text-align: left;
-  width: 100%;
-  transition: all 0.2s ease;
+const Hint = styled.div`
+  color: ${(props) => props.theme.terminal.accentDim};
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0.5rem;
+`;
 
-  &:hover {
-    background-color: ${(props) => props.theme.button.hoverBackground};
-  }
+const Chosen = styled.span`
+  color: ${(props) => props.theme.terminal.success};
+  font-weight: bold;
 `;
 
 const ActionButton = styled.button<{ $disabled?: boolean }>`
@@ -76,65 +69,39 @@ interface UseItemWidgetProps {
   onExit: () => void;
 }
 
-const UseItemWidget: React.FC<UseItemWidgetProps> = ({
-  description,
-  targets,
-  playerInventory,
-  exitText,
-  onUse,
-  onExit,
-}) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
-
-  const handleUse = () => {
-    if (selectedItem && selectedTarget) {
-      onUse(selectedItem, selectedTarget);
-      setSelectedItem(null);
-      setSelectedTarget(null);
-    }
-  };
-
+const UseItemWidget: React.FC<UseItemWidgetProps> = ({ description, targets, playerInventory, exitText, onUse, onExit }) => {
+  const usingItem = useAppStore((st) => st.usingItem);
   const itemDefs = useAppStore((st) => st.engine?.items) ?? {};
+  // Si el objeto elegido ya no está (se gastó), no cuenta como elegido
+  const item = usingItem && playerInventory.includes(usingItem) ? usingItem : null;
+  const itemName = item ? itemDefs[item]?.name ?? item : '';
 
   return (
     <Container>
       {description && <Description>{description}</Description>}
 
-      <SectionLabel>🎒 Elige un item</SectionLabel>
-      {playerInventory.map((item) => (
-        <SelectButton
-          key={item}
-          $selected={selectedItem === item}
-          onClick={() => setSelectedItem(item)}
-        >
-          {selectedItem === item ? '✓ ' : ''}{itemDefs[item]?.name ?? item}
-        </SelectButton>
-      ))}
+      {playerInventory.length === 0 ? (
+        <Hint>No llevas nada encima. Ni dignidad.</Hint>
+      ) : item ? (
+        <Hint>
+          Usar <Chosen>{itemName}</Chosen> en… <span>(escribe el número)</span>
+        </Hint>
+      ) : (
+        <Hint>🎒 Primero elige un objeto de tu inventario (clic o IN1, IN2…), después el objetivo.</Hint>
+      )}
 
-      <SectionLabel>🎯 Elige un objetivo</SectionLabel>
-      {targets.map((target) => (
-        <SelectButton
+      <SectionLabel>🎯 Objetivos</SectionLabel>
+      {targets.map((target, i) => (
+        <ActionButton
           key={target.id}
-          $selected={selectedTarget === target.id}
-          onClick={() => setSelectedTarget(target.id)}
+          $disabled={!item}
+          disabled={!item}
+          onClick={() => item && onUse(item, target.id)}
         >
-          {selectedTarget === target.id ? '✓ ' : ''}{target.label}
-        </SelectButton>
+          [{i + 1}] {item ? `Usar ${itemName} en ${target.label}` : target.label}
+        </ActionButton>
       ))}
-
-      <ActionButton
-        $disabled={!selectedItem || !selectedTarget}
-        disabled={!selectedItem || !selectedTarget}
-        onClick={handleUse}
-      >
-        Usar {selectedItem || '...'} en {
-          selectedTarget
-            ? targets.find((t) => t.id === selectedTarget)?.label || selectedTarget
-            : '...'
-        }
-      </ActionButton>
-      <ExitButton onClick={onExit}>{exitText}</ExitButton>
+      <ExitButton onClick={onExit}>[0] {exitText}</ExitButton>
     </Container>
   );
 };

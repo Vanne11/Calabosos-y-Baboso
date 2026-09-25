@@ -1891,7 +1891,10 @@ export class GameEngine {
         if (accept && this._state.inventory.includes(action.itemId)) {
           // Success
           if (accept.consume !== false) {
-            this.applyState({ removeInventory: [action.itemId] });
+            // Se gasta una unidad (removeInventory quitaría todas las copias)
+            const inventory = [...this._state.inventory];
+            inventory.splice(inventory.indexOf(action.itemId), 1);
+            this._state = { ...this._state, inventory };
           }
           if (accept.effects) {
             this.applyState(accept.effects);

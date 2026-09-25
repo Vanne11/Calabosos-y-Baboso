@@ -57,6 +57,10 @@ interface AppStore {
   pendingResult: StepResult | null;
   setPendingResult: (result: StepResult | null) => void;
 
+  // Paso use_item: objeto elegido en el panel de inventario (se borra al salir del paso)
+  usingItem: string | null;
+  setUsingItem: (itemId: string | null) => void;
+
   // Image panel
   currentImage: string | null;
   setCurrentImage: (image: string | null) => void;
@@ -214,7 +218,11 @@ export const useAppStore = create<AppStore>((set) => ({
 
   // Pending result
   pendingResult: null,
-  setPendingResult: (pendingResult) => set({ pendingResult }),
+  setPendingResult: (pendingResult) =>
+    set((s) => ({ pendingResult, usingItem: pendingResult?.type === 'use_item_prompt' ? s.usingItem : null })),
+
+  usingItem: null,
+  setUsingItem: (usingItem) => set({ usingItem }),
 
   // Image
   currentImage: null,
@@ -286,6 +294,7 @@ export const useAppStore = create<AppStore>((set) => ({
       gameBasePath: '',
       currentScene: '',
       pendingResult: null,
+      usingItem: null,
       pendingSlotAction: null,
       inventoryExpanded: false,
       widgetDimmed: false,

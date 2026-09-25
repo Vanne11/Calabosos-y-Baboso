@@ -34,7 +34,7 @@ export async function collect(gen: AsyncGenerator<StepResult>): Promise<StepResu
   return out;
 }
 
-const PROMPTS = new Set(['choice_prompt', 'chat_prompt', 'dice_prompt', 'combat_prompt', 'shop_prompt', 'input_prompt']);
+const PROMPTS = new Set(['choice_prompt', 'chat_prompt', 'dice_prompt', 'combat_prompt', 'shop_prompt', 'input_prompt', 'use_item_prompt']);
 
 /**
  * Juega una escena respondiendo a cada prompt con la siguiente acción de la lista.
