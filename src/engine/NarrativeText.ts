@@ -1,21 +1,38 @@
 // engine/NarrativeText.ts
 // Texto narrativo: variables en textos y pools de frases sin repetición - puro TypeScript
 
-import type { PoolLine } from '../types/game';
+import type { GenderConfig, PoolLine } from '../types/game';
 import type { PlayerState } from '../types/engine';
 import { evaluateCondition } from './ConditionEvaluator';
 
 const VARIABLE_RE = /\{(meta\.)?([a-zA-Z0-9_]+)\}/g;
+/** Formas de género: {masculino|femenino|neutro} (al menos un "|") */
+const GENDER_RE = /\{([^{}|]*(?:\|[^{}|]*)+)\}/g;
+
+/** Índice de forma de género según la stat (0 si no hay configuración o valor) */
+export function genderForm(state: PlayerState, gender: GenderConfig | undefined): number {
+  if (!gender) return 0;
+  const value = state.stats[gender.stat];
+  return typeof value === 'string' ? gender.forms[value] ?? 0 : 0;
+}
 
 /**
  * Reemplaza variables en un texto:
  * - {stat}       → valor de la stat (ej: {nombre_jugador}, {dinero})
  * - {meta.clave} → contador meta (0 si no existe)
+ * - {a|b|c}      → forma de género del protagonista (manifest.gender): "elegid{o|a|e}"
  * Las variables desconocidas se dejan tal cual.
  */
-export function interpolate(text: string, state: PlayerState): string {
+export function interpolate(text: string, state: PlayerState, gender?: GenderConfig): string {
   if (!text || !text.includes('{')) return text;
-  return text.replace(VARIABLE_RE, (match, isMeta: string | undefined, key: string) => {
+  const form = genderForm(state, gender);
+  const gendered = text.includes('|')
+    ? text.replace(GENDER_RE, (_m, alts: string) => {
+        const parts = alts.split('|');
+        return parts[form] ?? parts[0];
+      })
+    : text;
+  return gendered.replace(VARIABLE_RE, (match, isMeta: string | undefined, key: string) => {
     if (isMeta) return String(state.meta?.[key] ?? 0);
     const value = state.stats[key];
     return value === undefined ? match : String(value);

@@ -313,6 +313,10 @@ export class GameEngine {
       ultima_frase: this._state.habla?.[this._state.habla.length - 1] ?? '',
     };
     if (npc) vars.historial_npc = npcHistory(this._state, npc);
+    // Género de BOB para que la IA concuerde (heroína, elegide...)
+    const gender = this.manifest.gender;
+    const genderValue = gender ? this._state.stats[gender.stat] : undefined;
+    if (gender?.ai && typeof genderValue === 'string' && gender.ai[genderValue]) vars.genero = gender.ai[genderValue];
     const sheet = characterSheet(this.manifest.characters[npc ?? this.getNarratorId()]);
     if (sheet) vars[npc ? 'npc_ficha' : 'ficha_narrador'] = sheet;
     for (const [key, value] of Object.entries(extra ?? {})) {
@@ -372,7 +376,7 @@ export class GameEngine {
   private text(value: string): string;
   private text(value: string | undefined): string | undefined;
   private text(value: string | undefined): string | undefined {
-    return value === undefined ? undefined : interpolate(value, this._state);
+    return value === undefined ? undefined : interpolate(value, this._state, this.manifest.gender);
   }
 
   /** Saca líneas de un pool (sin repetir) y registra las usadas en el estado */
@@ -520,8 +524,31 @@ export class GameEngine {
     }
   }
 
-  // Main generator: enter a scene and yield results
+  /**
+   * Entra a una escena y produce sus resultados. Todo texto que sale del motor pasa por las variables
+   * ({stat}, {meta.x}) y las formas de género ({o|a|e}), aunque el paso no lo haya resuelto.
+   */
   async *enterScene(sceneId: string): AsyncGenerator<StepResult> {
+    const inner = this.enterSceneRaw(sceneId);
+    let next = await inner.next();
+    while (!next.done) {
+      next = await inner.next(yield this.localize(next.value));
+    }
+  }
+
+  /** Resuelve variables y género en todos los textos de un resultado (los ids y rutas no llevan llaves) */
+  private localize<T>(value: T): T {
+    if (typeof value === 'string') return (value.includes('{') ? interpolate(value, this._state, this.manifest.gender) : value) as T;
+    if (Array.isArray(value)) return value.map((v) => this.localize(v)) as T;
+    if (value && typeof value === 'object') {
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(value)) out[k] = this.localize(v);
+      return out as T;
+    }
+    return value;
+  }
+
+  private async *enterSceneRaw(sceneId: string): AsyncGenerator<StepResult> {
     const scene = this.scenes.scenes[sceneId];
     if (!scene) {
       yield {

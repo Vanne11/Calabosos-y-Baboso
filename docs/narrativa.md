@@ -15,6 +15,33 @@ Disponibles en líneas de `dialog`, textos de `choice`, resultados de `dice`, `r
 
 Las variables desconocidas se dejan tal cual.
 
+
+## Género del protagonista
+
+El jugador elige el género al empezar (stat `genero`). Los textos se escriben con las formas separadas por `|`:
+
+```jsonc
+"Bienvenid{o|a|e} a la vida adulta."
+"¿Eres {el nuevo héroe|la nueva heroína|le nueve heroe}?"
+"{¿Estás loco?|¿Estás loca?|¿Perdiste la cabeza?}"   // cada forma puede ser una frase distinta
+```
+
+```jsonc
+// game.json
+"gender": {
+  "stat": "genero",
+  "forms": { "masculino": 0, "femenino": 1, "no_binario": 2, "misterioso": 2 },
+  "ai": { "femenino": "BOB es mujer: refiérete a BOB en femenino..." }   // lo que se le dice a la IA
+}
+```
+
+- Sin valor en la stat (antes de elegir), o si el texto trae menos formas, se usa la primera.
+- Funciona en **todo** texto que produce el motor (diálogos, opciones, dados, notify, examinar, tienda, pools, reglas):
+  `GameEngine.enterScene` resuelve variables y formas en cada resultado.
+- **No** funciona en `codex`, `items`, `traits` ni `characters` (la pantalla los muestra tal cual): ahí, redacción
+  neutra. El validador lo marca como error, y avisa si un texto trae menos formas de las que usa `gender.forms`.
+- La IA recibe `{{genero}}` (el texto de `gender.ai`) en el bloque de contexto, para que concuerde en sus burlas.
+
 ## Pools de frases (`linePools`)
 
 ```jsonc

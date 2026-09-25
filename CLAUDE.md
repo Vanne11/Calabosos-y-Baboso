@@ -64,7 +64,7 @@ npx tsc --noEmit -p .                   # debe quedar sin errores
 
 **Destinos especiales:** `_quit`, `_game_over`, `_restart`, `_age_accept`, `_checkpoint`.
 
-**Textos:** variables `{stat}` y `{meta.clave}`; rich text `[bold red]...[/bold red]`. El texto de la IA se sanea (`[` → `«`).
+**Textos:** variables `{stat}` y `{meta.clave}`; género del protagonista `{o|a|e}` / `{héroe|heroína|heroe}` (`game.json → gender`; no en codex/items/traits/characters); rich text `[bold red]...[/bold red]`. El texto de la IA se sanea (`[` → `«`).
 
 ## Servidor de IA (server/)
 

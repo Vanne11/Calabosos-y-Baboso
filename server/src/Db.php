@@ -126,6 +126,9 @@ final class Db
             if ($target === 7) {
                 Seed::upgrade($this, 'Actualización: charla libre con los personajes');
             }
+            if ($target === 8) {
+                Seed::upgrade($this, 'Actualización: BOB puede ser de cualquier género');
+            }
         }
     }
 
@@ -273,6 +276,9 @@ CREATE INDEX IF NOT EXISTS idx_ai_lines_session ON ai_lines(session_id, id);
 SQL,
             7 => <<<'SQL'
 CREATE INDEX IF NOT EXISTS idx_ai_lines_prompt ON ai_lines(prompt_key, created_at);
+SQL,
+            8 => <<<'SQL'
+CREATE INDEX IF NOT EXISTS idx_chats_npc ON chats(npc, created_at);
 SQL,
         ];
     }

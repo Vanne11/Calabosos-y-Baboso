@@ -122,6 +122,34 @@ function validateGame(gameName) {
     }
   }
   checkConsequences(manifest.ai?.freeText?.consequences, 'ai.freeText');
+  // --- Formas de género: {masculino|femenino|neutro} ---
+  const GENDER_RE = /\{([^{}|]*(?:\|[^{}|]*)+)\}/g;
+  const gender = manifest.gender;
+  const neededForms = gender ? Math.max(0, ...Object.values(gender.forms ?? {})) + 1 : 0;
+  if (gender) {
+    if (!(gender.stat in (manifest.initialStats ?? {})) && gender.stat !== 'genero') {
+      warnings.push(`gender.stat "${gender.stat}" no está en initialStats`);
+    }
+  }
+  const genderIssues = new Map();
+  const checkGender = (text, ctx) => {
+    if (typeof text !== 'string' || !text.includes('|')) return;
+    for (const m of text.matchAll(GENDER_RE)) {
+      if (!gender) genderIssues.set(ctx, `usa formas de género ({${m[1]}}) pero game.json no tiene "gender"`);
+      else if (m[1].split('|').length < neededForms) genderIssues.set(ctx, `"{${m[1]}}" tiene menos formas que las que usa gender.forms (${neededForms})`);
+    }
+  };
+  for (const [id, scene] of Object.entries(scenes)) walk(scene, (_k, v) => checkGender(v, where(id)));
+  for (const key of ['linePools', 'statRules', 'diceHooks']) walk(manifest[key], (_k, v) => checkGender(v, key));
+  for (const [ctx, msg] of genderIssues) warnings.push(`${ctx}: ${msg}`);
+  // La UI muestra estos textos directo del manifiesto: ahí las formas se verían crudas
+  for (const key of ['codex', 'items', 'traits', 'characters']) {
+    walk(manifest[key], (_k, v) => {
+      if (typeof v === 'string' && GENDER_RE.test(v)) errors.push(`${key}: las formas de género no funcionan aquí (la pantalla las muestra tal cual): "${v.slice(0, 60)}"`);
+      GENDER_RE.lastIndex = 0;
+    });
+  }
+
   const talk = manifest.ai?.talk;
   if (talk) {
     for (const key of ['perScene', 'maxUses']) {

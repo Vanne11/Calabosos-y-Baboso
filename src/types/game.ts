@@ -39,6 +39,20 @@ export interface GameManifest {
   codex?: CodexConfig;
   /** Música de situaciones y efectos automáticos (ver docs/audio.md) */
   audio?: AudioConfig;
+  /** Género del protagonista para los textos {masculino|femenino|neutro} (ver docs/narrativa.md) */
+  gender?: GenderConfig;
+}
+
+/**
+ * Formas de género en los textos: "{héroe|heroína|heroe}", "elegid{o|a|e}". La stat elige la forma:
+ * forms = { "masculino": 0, "femenino": 1, "no_binario": 2 }. Sin valor (o con uno desconocido) se usa la 0;
+ * si el texto trae menos formas que el índice, también la 0.
+ */
+export interface GenderConfig {
+  stat: string;
+  forms: Record<string, number>;
+  /** Cómo se lo explica el servidor a la IA, por valor de la stat ("BOB es mujer: háblale en femenino...") */
+  ai?: Record<string, string>;
 }
 
 export interface AudioConfig {

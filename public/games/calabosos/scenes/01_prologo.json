@@ -118,7 +118,7 @@
           "character": "narrator",
           "lines": [
             "...¿Nada? ¿No escribiste nada?",
-            "Un héroe sin nombre. Muy misterioso. Muy 'western'. Muy flojo."
+            "{Un héroe|Una heroína|Une heroe} sin nombre. Muy misterioso. Muy 'western'. Muy flojo."
           ],
           "condition": {
             "textMatches": {
@@ -226,7 +226,7 @@
           "character": "narrator",
           "lines": [
             "¿'Narrador'? ¿En serio? Ese es MI trabajo.",
-            "Hay un solo narrador en esta historia, y no eres tú. Tú eres el que se muere."
+            "Hay un solo narrador en esta historia, y no eres tú. Tú eres {el|la|le} que se muere."
           ],
           "condition": {
             "textMatches": {
@@ -445,7 +445,7 @@
               "id": "mochila",
               "label": "La mochila del gancho",
               "oneTime": true,
-              "text": "Una mochila raída con un agujero del tamaño de tus sueños. Te la cuelgas. Ahora pareces un aventurero. Uno pobre.",
+              "text": "Una mochila raída con un agujero del tamaño de tus sueños. Te la cuelgas. Ahora pareces {un aventurero. Uno pobre|una aventurera. Una pobre|une aventurere. Une pobre}.",
               "effects": {
                 "inventory": [
                   "mochila"
@@ -598,7 +598,7 @@
               ]
             }
           ],
-          "failText": "Eso no funciona. Nada funciona. Bienvenido a la vida adulta.",
+          "failText": "Eso no funciona. Nada funciona. Bienvenid{o|a|e} a la vida adulta.",
           "exitText": "Volver a revisar la habitación",
           "goto": "prologo_habitacion"
         }
@@ -628,7 +628,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Olvidas la mochila. Un héroe sin mochila. Esto va a ser una tragedia en tres actos. Cuatro, en realidad."
+            "Olvidas la mochila. {Un héroe|Una heroína|Une heroe} sin mochila. Esto va a ser una tragedia en tres actos. Cuatro, en realidad."
           ],
           "condition": {
             "flags": {
