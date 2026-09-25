@@ -166,16 +166,16 @@ describe('reacciones a dados (diceHooks)', () => {
 });
 
 describe('formas de género del protagonista', () => {
-  const gender = { stat: 'genero', forms: { masculino: 0, femenino: 1, no_binario: 2, misterioso: 2 }, ai: { femenino: 'BOB es mujer' } };
-  const st = (genero?: string) => ({ stats: genero ? { genero, nombre_jugador: 'BOB' } : { nombre_jugador: 'BOB' } }) as unknown as PlayerState;
+  const gender = { stat: 'genero', forms: { masculino: 0, femenino: 1, no_binario: 2, misterioso: 2 }, ai: { femenino: 'Alex es mujer' } };
+  const st = (genero?: string) => ({ stats: genero ? { genero, nombre_jugador: 'Alex' } : { nombre_jugador: 'Alex' } }) as unknown as PlayerState;
 
   it('elige la forma según la stat; sin valor o con menos formas usa la primera', () => {
     const t = 'Bienvenid{o|a|e}, {héroe|heroína|heroe} {nombre_jugador}. {El|La} que manda.';
-    expect(interpolate(t, st('masculino'), gender)).toBe('Bienvenido, héroe BOB. El que manda.');
-    expect(interpolate(t, st('femenino'), gender)).toBe('Bienvenida, heroína BOB. La que manda.');
-    expect(interpolate(t, st('no_binario'), gender)).toBe('Bienvenide, heroe BOB. El que manda.');
-    expect(interpolate(t, st(), gender)).toBe('Bienvenido, héroe BOB. El que manda.');
-    expect(interpolate(t, st('femenino'))).toBe('Bienvenido, héroe BOB. El que manda.');
+    expect(interpolate(t, st('masculino'), gender)).toBe('Bienvenido, héroe Alex. El que manda.');
+    expect(interpolate(t, st('femenino'), gender)).toBe('Bienvenida, heroína Alex. La que manda.');
+    expect(interpolate(t, st('no_binario'), gender)).toBe('Bienvenide, heroe Alex. El que manda.');
+    expect(interpolate(t, st(), gender)).toBe('Bienvenido, héroe Alex. El que manda.');
+    expect(interpolate(t, st('femenino'))).toBe('Bienvenido, héroe Alex. El que manda.');
   });
 
   it('el motor resuelve el género en cualquier texto que produce (notify, opciones) y avisa a la IA', async () => {
@@ -189,6 +189,6 @@ describe('formas de género del protagonista', () => {
     const out = await drive(engine, 'a', []);
     expect(out.find((r) => r.type === 'notify')).toMatchObject({ title: '¡Bienvenida!', text: 'Eres la elegida.' });
     expect(out.find((r) => r.type === 'choice_prompt')).toMatchObject({ options: [{ text: 'Seguir, cansada' }] });
-    expect(internals(engine).aiVars().genero).toBe('BOB es mujer');
+    expect(internals(engine).aiVars().genero).toBe('Alex es mujer');
   });
 });

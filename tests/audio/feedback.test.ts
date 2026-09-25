@@ -45,7 +45,7 @@ describe('diffState', () => {
   });
 
   it('snapshot ignora stats de texto y copia el inventario', () => {
-    const state = { stats: { vida: 3, nombre: 'BOB' }, inventory: ['x'], visitedScenes: ['a', 'b'] } as unknown as PlayerState;
+    const state = { stats: { vida: 3, nombre: 'Alex' }, inventory: ['x'], visitedScenes: ['a', 'b'] } as unknown as PlayerState;
     const s = snapshot(state);
     state.inventory.push('y');
     expect(s).toEqual({ stats: { vida: 3 }, inventory: ['x'], visited: 2 });

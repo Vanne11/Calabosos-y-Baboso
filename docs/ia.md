@@ -87,7 +87,7 @@ con `_checkpoint`** (el narrador recuerda tus muertes).
 | `citas` | la frase del jugador que más subió el medidor en cada chat, tal cual | últimas 3 de 8 |
 | `como_escribe` | los últimos mensajes del jugador en los chats, **sin corregir** (modismos, faltas) | 4 |
 | `ya_dijiste` | las últimas líneas del narrador con IA, para que no se repita | 5 |
-| `historial_npc` | solo en chats: lo que ese personaje recuerda de BOB (`npcMemoria`: recuerdos de chats, gestos, `effects.npcMemo`) | 6 |
+| `historial_npc` | solo en chats: lo que ese personaje recuerda de Alex (`npcMemoria`: recuerdos de chats, gestos, `effects.npcMemo`) | 6 |
 | `ultima_decision` · `ultima_frase` | la última decisión y lo último que escribió (para el epitafio) | 1 |
 | `animo` | la stat `animo_narrador` (texto; el juego la cambia con `setStats` al empezar cada acto) | — |
 
@@ -110,7 +110,7 @@ historia. Solo es comando lo que empieza con `/` (o una palabra suelta que sea u
   a nadie, el último personaje que habló **en el lugar actual** (siguen presentes mientras no cambie el nombre del
   escenario); si no hay, el acompañante (`role: companion` con su `joinFlag`); si no, el narrador.
 - `/narrador <texto>` (o `/hablar`) le habla siempre al narrador.
-- Prompts: `narrate.charla` (narrador) y `narrate.charla_npc` (los demás, con su ficha y lo que recuerdan de BOB).
+- Prompts: `narrate.charla` (narrador) y `narrate.charla_npc` (los demás, con su ficha y lo que recuerdan de Alex).
   El texto del jugador va como mensaje aparte (`player_message: true`).
 - Límites en `game.json`:
 

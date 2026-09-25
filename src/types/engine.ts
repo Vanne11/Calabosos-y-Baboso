@@ -52,7 +52,7 @@ export interface PlayerState {
   iaDijo?: string[];
   /** Últimos mensajes del jugador tal cual los escribió (modismos, faltas): la IA imita y se burla */
   habla?: string[];
-  /** Lo que cada personaje recuerda de BOB (chats anteriores, effects.npcMemo, gestos) */
+  /** Lo que cada personaje recuerda de Alex (chats anteriores, effects.npcMemo, gestos) */
   npcMemoria?: Record<string, string[]>;
   /** Charla libre: usadas en la partida, y en la escena actual (sceneCount de esa escena) */
   charla?: { usos: number; escena: number; enEscena: number };

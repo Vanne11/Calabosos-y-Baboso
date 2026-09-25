@@ -24,7 +24,7 @@ Define metadatos, personajes, configuración inicial y sistemas RPG.
       "role": "narrator"                    // narrator | protagonist | companion | npc
     },
     "bob": {
-      "name": "BOB",
+      "name": "Alex",
       "description": "El héroe involuntario",
       "image": "images/bob.png",
       "role": "protagonist",

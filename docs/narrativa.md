@@ -32,7 +32,7 @@ El jugador elige el género al empezar (stat `genero`). Los textos se escriben c
 "gender": {
   "stat": "genero",
   "forms": { "masculino": 0, "femenino": 1, "no_binario": 2, "misterioso": 2 },
-  "ai": { "femenino": "BOB es mujer: refiérete a BOB en femenino..." }   // lo que se le dice a la IA
+  "ai": { "femenino": "Alex es mujer: refiérete a Alex en femenino..." }   // lo que se le dice a la IA
 }
 ```
 

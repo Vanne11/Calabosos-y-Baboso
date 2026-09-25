@@ -51,7 +51,7 @@ export interface GameManifest {
 export interface GenderConfig {
   stat: string;
   forms: Record<string, number>;
-  /** Cómo se lo explica el servidor a la IA, por valor de la stat ("BOB es mujer: háblale en femenino...") */
+  /** Cómo se lo explica el servidor a la IA, por valor de la stat ("Alex es mujer: háblale en femenino...") */
   ai?: Record<string, string>;
 }
 
@@ -179,7 +179,7 @@ export interface AiChatStep {
 
 /** Gesto de un NPC en un chat: la IA decide cuándo, el juego define qué pasa */
 export interface ChatGesture {
-  /** Cuándo hacerlo (lo lee la IA, desde el NPC): "le tira la cerveza encima a BOB" */
+  /** Cuándo hacerlo (lo lee la IA, desde el NPC): "le tira la cerveza encima a Alex" */
   hint: string;
   /** Aviso en pantalla (default: el hint) */
   text?: string;
@@ -296,7 +296,7 @@ export interface CharacterAi {
   voz?: string;
   /** Palabras o frases que repite */
   muletillas?: string[];
-  /** Qué quiere (en general o de BOB) */
+  /** Qué quiere (en general o de Alex) */
   quiere?: string;
   /** A qué le teme o qué lo saca de quicio */
   teme?: string;
@@ -960,7 +960,7 @@ export interface Effects {
   checkpoint?: boolean;
   /** Hecho para la memoria de la IA ("se meó frente al rey"). Admite {variables} */
   memo?: string | string[];
-  /** Hecho para la memoria de un personaje (lo recuerda en sus chats): { "nerly": "BOB le echó sal" } */
+  /** Hecho para la memoria de un personaje (lo recuerda en sus chats): { "nerly": "Alex le echó sal" } */
   npcMemo?: Record<string, string>;
 }
 

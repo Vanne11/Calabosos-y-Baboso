@@ -4,7 +4,7 @@ Diagnóstico (2026-09-25): 117 escenas, 362 diálogos, solo 5 `dialog.ai` y 9 `a
 llega sin memoria de la partida (solo perfil de ≤6 etiquetas), los NPCs tienen una descripción de una línea
 y el recap final recibe solo números. Resultado: humor genérico, sin callbacks.
 
-## 1. Memoria de la partida ("diario de BOB") — HECHO
+## 1. Memoria de la partida ("diario de Alex") — HECHO
 
 - [x] `Effects.memo` (string | string[]): hechos en `PlayerState.memoria` (admite `{variables}`; tope 30, viajan 10).
 - [x] Hechos automáticos: resultado de cada `ai_chat` (también por dados) y memos de `statRules`, con la escena.
@@ -14,7 +14,7 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 - [x] La memoria de la IA sobrevive a `_checkpoint` (el narrador recuerda tus muertes).
 - [x] Servidor: límite aparte `max_context_chars` (1200) y bloque "CONTEXTO DE LA PARTIDA" automático.
 - [x] Contenido: memos en 22 desenlaces de dados/azar, 5 escenas (muerte, babosita, Takashi, prestamista, desenlace) y 4 reglas.
-- [x] Recap, muerte y reacción v2: piden usar la memoria y citar a BOB tal cual.
+- [x] Recap, muerte y reacción v2: piden usar la memoria y citar a Alex tal cual.
 - [x] Tests (4 nuevos en `tests/engine/ia.test.ts`) y docs (`docs/ia.md`, `docs/efectos.md`, CLAUDE.md).
 
 ## 1b. Cómo escribe el jugador (modismos y faltas) — HECHO
@@ -43,7 +43,7 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 
 - [x] `gestures` en `ai_chat`: la IA elige de una lista cerrada (cada gesto una vez); el juego muestra el aviso y aplica efectos.
 - [x] `"recuerdo"` al terminar el chat → memoria general y del NPC.
-- [x] `npcMemoria` + `effects.npcMemo` → `{{historial_npc}}` en los chats: los personajes recuerdan a BOB.
+- [x] `npcMemoria` + `effects.npcMemo` → `{{historial_npc}}` en los chats: los personajes recuerdan a Alex.
 - [x] Contenido: gestos en los 9 chats; 18 recuerdos por personaje (Nerly, tendero, bardo, guardia, rey).
 
 ## 4. Elecciones con texto libre — HECHO

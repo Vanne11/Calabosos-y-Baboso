@@ -14,7 +14,7 @@
           "type": "effects",
           "effects": {
             "setStats": {
-              "animo_narrador": "con resaca de narrar el prólogo; impaciente, quiere que BOB tome una decisión ya"
+              "animo_narrador": "con resaca de narrar el prólogo; impaciente, quiere que Alex tome una decisión ya"
             }
           }
         },
@@ -22,14 +22,14 @@
           "type": "dialog",
           "character": "protagonist",
           "lines": [
-            "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?"
+            "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas Alex?"
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Estás en Viscaria, obviamente. Y yo soy el Narrador, tu guía y, técnicamente, tu jefe. Lo de BOB me pareció simpático."
+            "Estás en Viscaria, obviamente. Y yo soy el Narrador, tu guía y, técnicamente, tu jefe. Lo de Alex fue por eficiencia: sirve para cualquier género y así no tengo que aprenderme nada de ti. De nada."
           ]
         },
         {
@@ -86,7 +86,7 @@
             }
           ],
           "freeText": {
-            "situation": "En la plaza de Viscaria, el Narrador acaba de encargarle a BOB salvar el reino del Rey Baboso. BOB no quiere."
+            "situation": "En la plaza de Viscaria, el Narrador acaba de encargarle a Alex salvar el reino del Rey Baboso. Alex no quiere."
           }
         }
       ]
@@ -151,7 +151,7 @@
           },
           "gestures": {
             "propina": {
-              "hint": "te apiadas y le tiras unas monedas a BOB desde el cielo (solo si te hizo reír de verdad)",
+              "hint": "te apiadas y le tiras unas monedas a Alex desde el cielo (solo si te hizo reír de verdad)",
               "text": "Caen unas monedas del cielo. Con desprecio, pero caen.",
               "effects": {
                 "stats": {
@@ -160,7 +160,7 @@
               }
             },
             "piedra": {
-              "hint": "haces aparecer una piedra para que BOB se tropiece, por insolente",
+              "hint": "haces aparecer una piedra para que Alex se tropiece, por insolente",
               "text": "Aparece una piedra de la nada. Tropiezas con ella.",
               "effects": {
                 "stats": {
@@ -317,7 +317,7 @@
             }
           ],
           "freeText": {
-            "situation": "BOB necesita dinero para equiparse antes de salir de la ciudad. Está en la plaza, sin un peso."
+            "situation": "Alex necesita dinero para equiparse antes de salir de la ciudad. Está en la plaza, sin un peso."
           }
         }
       ]
@@ -1016,7 +1016,7 @@
               "natural": 20
             },
             {
-              "text": "«¡LADRÓN! ¡GUARDIAS!» Oh, esto no pinta bien. Corre, BOB, ¡CORRE! Corres. Algo cálido baja por tu pierna. No es sudor.",
+              "text": "«¡LADRÓN! ¡GUARDIAS!» Oh, esto no pinta bien. Corre, Alex, ¡CORRE! Corres. Algo cálido baja por tu pierna. No es sudor.",
               "effects": {
                 "stats": {
                   "sexi": -15,
@@ -1143,7 +1143,7 @@
               ],
               "effects": {
                 "npcMemo": {
-                  "tendero": "BOB le dijo la verdad sobre cuánto dinero tenía"
+                  "tendero": "Alex le dijo la verdad sobre cuánto dinero tenía"
                 }
               }
             },
@@ -1154,7 +1154,7 @@
                   "mintio_tendero": true
                 },
                 "npcMemo": {
-                  "tendero": "BOB le mintió diciendo que tenía la mitad de su dinero"
+                  "tendero": "Alex le mintió diciendo que tenía la mitad de su dinero"
                 }
               },
               "goto": "acto1_regateo",
@@ -1170,13 +1170,13 @@
               ],
               "effects": {
                 "npcMemo": {
-                  "tendero": "BOB le ofreció un trueque en vez de dinero"
+                  "tendero": "Alex le ofreció un trueque en vez de dinero"
                 }
               }
             }
           ],
           "freeText": {
-            "situation": "En la tienda del Tendero borracho. BOB quiere el kit del aventurero, pero no le alcanza el dinero."
+            "situation": "En la tienda del Tendero borracho. Alex quiere el kit del aventurero, pero no le alcanza el dinero."
           }
         }
       ]
@@ -1249,7 +1249,7 @@
           },
           "gestures": {
             "regala_panal": {
-              "hint": "le regalas a BOB un pañal de aventurero, emocionado o llorando",
+              "hint": "le regalas a Alex un pañal de aventurero, emocionado o llorando",
               "text": "El Tendero te mete un pañal en el bolsillo. «Para el camino, *hic*.»",
               "effects": {
                 "inventory": [
@@ -1258,7 +1258,7 @@
               }
             },
             "trago": {
-              "hint": "le ofreces a BOB un trago de tu botella",
+              "hint": "le ofreces a Alex un trago de tu botella",
               "text": "Bebes de la botella del Tendero. Quema. Te sientes valiente y con ganas de mear.",
               "effects": {
                 "stats": {
@@ -1268,7 +1268,7 @@
               }
             },
             "llora": {
-              "hint": "te pones a llorar abrazado a BOB hablando de tu hermano",
+              "hint": "te pones a llorar abrazado a Alex hablando de tu hermano",
               "text": "El Tendero llora en tu hombro. Huele a ron. Te sientes extrañamente bien.",
               "effects": {
                 "stats": {
@@ -1547,7 +1547,7 @@
             }
           ],
           "freeText": {
-            "situation": "En la taberna «La Babosa Ebria». El Bardo Babosa desafía a BOB a una guerra de rap delante de todos."
+            "situation": "En la taberna «La Babosa Ebria». El Bardo Babosa desafía a Alex a una guerra de rap delante de todos."
           }
         }
       ]
@@ -1618,7 +1618,7 @@
           },
           "gestures": {
             "cerveza": {
-              "hint": "le tiras tu cerveza encima a BOB (si te humilló o te ofendió)",
+              "hint": "le tiras tu cerveza encima a Alex (si te humilló o te ofendió)",
               "text": "El Bardo te tira la cerveza encima. El público aplaude. A él.",
               "effects": {
                 "stats": {
@@ -1627,7 +1627,7 @@
               }
             },
             "respeto": {
-              "hint": "chocas la aleta con BOB en señal de respeto (si su barra fue muy buena)",
+              "hint": "chocas la aleta con Alex en señal de respeto (si su barra fue muy buena)",
               "text": "El Bardo te choca la aleta a regañadientes. La taberna enloquece.",
               "effects": {
                 "stats": {
@@ -1636,7 +1636,7 @@
               }
             },
             "tomatazo": {
-              "hint": "el público le tira comida a BOB (si su barra fue malísima)",
+              "hint": "el público le tira comida a Alex (si su barra fue malísima)",
               "text": "Un tomate te da en la cara. Alguien grita «¡FUERA!».",
               "effects": {
                 "stats": {
@@ -1687,7 +1687,7 @@
                 },
                 "memo": "se durmió borracho en la taberna y le dibujaron un bigote",
                 "npcMemo": {
-                  "bardo": "BOB se durmió borracho en su taberna y le dibujaron un bigote"
+                  "bardo": "Alex se durmió borracho en su taberna y le dibujaron un bigote"
                 }
               },
               "sfx": "ronquido"
@@ -1702,7 +1702,7 @@
                 },
                 "memo": "cantó a dúo con un borracho en la taberna y lo hizo bien; el Bardo lo odia",
                 "npcMemo": {
-                  "bardo": "BOB cantó a dúo con un borracho en su taberna y le robó el público"
+                  "bardo": "Alex cantó a dúo con un borracho en su taberna y le robó el público"
                 }
               },
               "sfx": "aplauso"
@@ -1788,7 +1788,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "No tan rápido, BOB. Según el guion, ahora tomas un callejón inquietante y potencialmente mortal porque... bueno, porque lo digo yo."
+            "No tan rápido, Alex. Según el guion, ahora tomas un callejón inquietante y potencialmente mortal porque... bueno, porque lo digo yo."
           ]
         },
         {
@@ -1950,7 +1950,7 @@
               ],
               "effects": {
                 "npcMemo": {
-                  "nerly": "BOB desconfió de ella por ser babosa"
+                  "nerly": "Alex desconfió de ella por ser babosa"
                 }
               }
             },
@@ -1961,7 +1961,7 @@
                   "nerly": 10
                 },
                 "npcMemo": {
-                  "nerly": "BOB le agradeció la ayuda apenas la conoció"
+                  "nerly": "Alex le agradeció la ayuda apenas la conoció"
                 }
               },
               "goto": "acto1_nerly_se_une",
@@ -1977,13 +1977,13 @@
               ],
               "effects": {
                 "npcMemo": {
-                  "nerly": "BOB le preguntó qué ganaba ella ayudándolo"
+                  "nerly": "Alex le preguntó qué ganaba ella ayudándolo"
                 }
               }
             }
           ],
           "freeText": {
-            "situation": "En un callejón, una babosa azul que habla (Nerly) le ofrece ayuda a BOB para llegar al Abismo."
+            "situation": "En un callejón, una babosa azul que habla (Nerly) le ofrece ayuda a Alex para llegar al Abismo."
           }
         }
       ]
@@ -2157,7 +2157,7 @@
                 },
                 "memo": "le tiró la sal encima a Nerly y la derritió (se regeneró, pero le guarda rencor)",
                 "npcMemo": {
-                  "nerly": "BOB le tiró la sal encima y la derritió (se regeneró, pero le guarda rencor)"
+                  "nerly": "Alex le tiró la sal encima y la derritió (se regeneró, pero le guarda rencor)"
                 }
               },
               "natural": 1,
@@ -2190,7 +2190,7 @@
                 },
                 "memo": "le dejó una ampolla de sal a Nerly",
                 "npcMemo": {
-                  "nerly": "BOB le dejó una ampolla de sal"
+                  "nerly": "Alex le dejó una ampolla de sal"
                 }
               },
               "max": 5,
@@ -2358,7 +2358,7 @@
             }
           ],
           "freeText": {
-            "situation": "Los guardias de la puerta de la ciudad no dejan salir a nadie sin permiso. Nerly está con BOB."
+            "situation": "Los guardias de la puerta de la ciudad no dejan salir a nadie sin permiso. Nerly está con Alex."
           }
         }
       ]

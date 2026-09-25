@@ -35,7 +35,7 @@ interface Effects {
 
   // --- IA ---
   memo?: string | string[];                     // Hecho para la memoria de la IA: "se meó frente al rey" (admite {stat})
-  npcMemo?: Record<string, string>;             // Lo recuerda un personaje en sus chats: { "nerly": "BOB le echó sal" }
+  npcMemo?: Record<string, string>;             // Lo recuerda un personaje en sus chats: { "nerly": "Alex le echó sal" }
 }
 ```
 
@@ -53,7 +53,7 @@ Después de aplicar cualquier efecto, el motor recorta las stats a los `min`/`ma
 { "setStats": { "gold": 100 } }   // → gold = 100 (asignación directa)
 
 // Strings se asignan directamente
-{ "stats": { "player_name": "BOB" } }  // → player_name = "BOB"
+{ "stats": { "player_name": "Alex" } }  // → player_name = "Alex"
 ```
 
 ## Afinidad

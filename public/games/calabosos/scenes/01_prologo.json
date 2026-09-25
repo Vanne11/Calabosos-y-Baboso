@@ -149,12 +149,12 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "¿BOB? ¿Escribiste BOB?",
-            "Me ahorraste el trámite. Te iba a llamar así de todas formas. Da un poco de miedo que lo supieras."
+            "¿Alex? ¿Escribiste Alex?",
+            "Me ahorraste el trámite. Te iba a llamar así de todas formas: sirve para cualquier género y no me obliga a conocerte. Da un poco de miedo que lo supieras."
           ],
           "condition": {
             "textMatches": {
-              "nombre_real": "^\\s*bob\\s*$"
+              "nombre_real": "^\\s*alex\\s*$"
             },
             "flags": {
               "nombre_reaccionado": false
@@ -170,7 +170,7 @@
           },
           "condition": {
             "textMatches": {
-              "nombre_real": "^\\s*bob\\s*$"
+              "nombre_real": "^\\s*alex\\s*$"
             },
             "flags": {
               "nombre_reaccionado": false
@@ -377,7 +377,7 @@
           "sfx": "trompeta",
           "condition": {
             "textMatches": {
-              "nombre_real": "^(?!\\s*bob\\s*$)"
+              "nombre_real": "^(?!\\s*alex\\s*$)"
             }
           }
         },
@@ -385,12 +385,12 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Así que desde ahora te llamarás BOB. Sí, BOB. Es corto, es barato y no tiene dueño.",
+            "Así que desde ahora te llamarás Alex. Sí, Alex. Sirve para cualquier género, cualquier especie y cualquier nivel de incompetencia. Es corto, es barato y no tiene dueño. Qué narrador tan inclusivo soy. Pueden aplaudir.",
             "¿Qué? ¿No te gusta? Qué pena. Yo soy el narrador y mando yo."
           ],
           "condition": {
             "textMatches": {
-              "nombre_real": "^(?!\\s*bob\\s*$)"
+              "nombre_real": "^(?!\\s*alex\\s*$)"
             }
           }
         },
@@ -398,8 +398,8 @@
           "type": "effects",
           "effects": {
             "setStats": {
-              "nombre_jugador": "BOB",
-              "_prompt": "bob"
+              "nombre_jugador": "Alex",
+              "_prompt": "alex"
             }
           }
         },
@@ -426,7 +426,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Bien, BOB. Esta es tu habitación. Tu reino. Tu pocilga.",
+            "Bien, Alex. Esta es tu habitación. Tu reino. Tu pocilga.",
             "Antes de salvar el mundo, vamos a aprender algo básico: [bold]mirar cosas[/bold]. Sí, así de bajo empezamos.",
             "Revisa lo que quieras. Yo esperaré aquí, envejeciendo."
           ]

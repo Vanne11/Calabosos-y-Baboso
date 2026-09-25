@@ -24,7 +24,7 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 
 ## POR CREAR (hoy son provisorias)
 
-### scenarios/habitacion_bob.png — La habitación de BOB
+### scenarios/habitacion_bob.png — La habitación de Alex
 **Escenas:** `start` (Prólogo: El Despertar)
 
 16-bit pixel art. Habitación medieval pequeña y desordenada, vista panorámica. Cama de paja deshecha con una sábana que ha visto cosas. Ropa tirada por el suelo, un plato con restos de algo verde que ya tiene vida propia. Una mochila vieja colgando de un gancho, una lámpara de aceite apagada sobre una mesa coja, una carta con sello de cera morado sobre el suelo junto a la puerta. Ventana abierta con cortinas raídas que dejan entrar luz de mañana. Póster medieval de un héroe musculoso en la pared (contraste irónico). Paleta: marrones cálidos, luz amarilla de mañana, detalles morados.
@@ -52,7 +52,7 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 
 ---
 
-### dialogs/protagonist_misterioso.png — BOB (Misterioso)
+### dialogs/protagonist_misterioso.png — Alex (Misterioso)
 **Personaje:** `protagonist` (variante "misterioso")
 
 16-bit pixel art. Retrato de busto. Figura completamente envuelta en una capucha y capa marrón gastada, con el rostro en sombra total salvo dos ojos redondos brillantes con expresión de "¿qué hago aquí?". Una gota de sudor visible. Mismo chaleco de campesino que las otras versiones asomando por la capa. Intenta verse enigmático y fracasa. Fondo oscuro.
@@ -118,7 +118,7 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 ### scenarios/fogata.png — Fogata en el bosque
 **Escenas:** `acto2_fogata`, `acto2_cancion`, `acto2_dormir`
 
-16-bit pixel art. Claro de bosque de noche con una fogata pequeña en el centro. A un lado, BOB sentado en un tronco con cara de cansancio; al otro, Nerly (babosa azul brillante) iluminando su alrededor más que el fuego. Árboles húmedos y retorcidos alrededor, ojos brillantes entre las sombras, luciérnagas. El suelo con rastros de baba fosforescente. Cielo estrellado morado. Ambiente cálido y un poco inquietante.
+16-bit pixel art. Claro de bosque de noche con una fogata pequeña en el centro. A un lado, Alex sentado en un tronco con cara de cansancio; al otro, Nerly (babosa azul brillante) iluminando su alrededor más que el fuego. Árboles húmedos y retorcidos alrededor, ojos brillantes entre las sombras, luciérnagas. El suelo con rastros de baba fosforescente. Cielo estrellado morado. Ambiente cálido y un poco inquietante.
 
 ---
 
@@ -243,7 +243,7 @@ Retratos de babosa, 256×256, pixel art 16 bits, fondo oscuro de caverna. Cada u
 ### scenarios/cabana.png — Final: Retiro Pacífico
 **Escenas:** `final_retiro`
 
-16-bit pixel art. Cabaña de madera acogedora a las afueras de un pueblo medieval, con un huerto de zanahorias y coles. Nerly (babosa azul brillante) se desliza feliz entre las plantas. BOB con sombrero de paja y una azada. A lo lejos, en la plaza del pueblo, una estatua de BOB con proporciones exageradas. Atardecer cálido y pacífico. Colores suaves, verdes y dorados.
+16-bit pixel art. Cabaña de madera acogedora a las afueras de un pueblo medieval, con un huerto de zanahorias y coles. Nerly (babosa azul brillante) se desliza feliz entre las plantas. Alex con sombrero de paja y una azada. A lo lejos, en la plaza del pueblo, una estatua de Alex con proporciones exageradas. Atardecer cálido y pacífico. Colores suaves, verdes y dorados.
 
 ---
 

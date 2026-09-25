@@ -313,7 +313,7 @@ export class GameEngine {
       ultima_frase: this._state.habla?.[this._state.habla.length - 1] ?? '',
     };
     if (npc) vars.historial_npc = npcHistory(this._state, npc);
-    // Género de BOB para que la IA concuerde (heroína, elegide...)
+    // Género de Alex para que la IA concuerde (heroína, elegide...)
     const gender = this.manifest.gender;
     const genderValue = gender ? this._state.stats[gender.stat] : undefined;
     if (gender?.ai && typeof genderValue === 'string' && gender.ai[genderValue]) vars.genero = gender.ai[genderValue];
@@ -925,7 +925,7 @@ export class GameEngine {
     let best: { text: string; delta: number } | null = null;
     // Recuerdo que escribe la IA al terminar (una frase de lo que pasó)
     let memory: string | null = null;
-    const playerName = String(this._state.stats.nombre_jugador ?? 'BOB');
+    const playerName = this.playerName;
 
     for (;;) {
       yield { type: 'chat_prompt', npcName, turnsLeft, score, meterLabel, maxInputChars: start.maxInputChars };
@@ -2082,6 +2082,12 @@ export class GameEngine {
     return [scene?.scenario?.name, scene?.scenario ? this.getScenarioDescription(scene) : ''].filter(Boolean).join(': ');
   }
 
+  /** Cómo se llama el protagonista en los textos (stat nombre_jugador; "Alex" si todavía no hay) */
+  private get playerName(): string {
+    const name = this._state.stats.nombre_jugador;
+    return typeof name === 'string' && name.trim() ? name : 'Alex';
+  }
+
   /** Anota quién habló en la escena (solo personajes con los que se puede charlar) */
   private noteSpeaker(id: string): void {
     const def = this.manifest.characters[id];
@@ -2178,7 +2184,7 @@ export class GameEngine {
       charla: { usos: used.usos + 1, escena: scene, enEscena: inScene + 1 },
     };
     // El personaje se acuerda de lo que le dijiste (sale en sus chats y en las próximas charlas)
-    this.applyState({ npcMemo: { [target.id]: `BOB le dijo «${quote}»` } });
+    this.applyState({ npcMemo: { [target.id]: `${this.playerName} le dijo «${quote}»` } });
     this.emit('talk', { to: target.id, uses: used.usos + 1 });
     return { ok: true, speaker, text: line, tone: reply.tone, lineId: reply.lineId };
   }

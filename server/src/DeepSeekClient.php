@@ -135,7 +135,7 @@ final class DeepSeekClient
                 'done' => false,
                 'tono' => $tone,
                 'gesto' => $len > 20 ? ($g[1] ?? '') : '',
-                'recuerdo' => '[mock] BOB dijo "' . mb_substr($said, 0, 40, 'UTF-8') . '" y nadie aplaudió.',
+                'recuerdo' => '[mock] Alex dijo "' . mb_substr($said, 0, 40, 'UTF-8') . '" y nadie aplaudió.',
             ], JSON_UNESCAPED_UNICODE);
         } else {
             $content = '[mock] El narrador suspira: qué forma tan original de fracasar.';

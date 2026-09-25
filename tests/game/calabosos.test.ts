@@ -99,7 +99,7 @@ describe('finales', () => {
   it('Nerly canta la canción compuesta en la fogata', async () => {
     // El recap elige al azar entre las frases que aplican; con azar 0 sale la primera (la del cobarde)
     vi.spyOn(Math, 'random').mockReturnValue(0);
-    const song = 'BOB: verso uno\nNerly: «verso dos»';
+    const song = 'Alex: verso uno\nNerly: «verso dos»';
     const out = await run('final_heroico', (st) => { st.stats.cancion_nerly = song; st.profile = { cobarde: 4 }; });
     expect(dialogLines(out)).toContain(song);
     expect(dialogLines(out).some((l) => l.includes('sendero de baba brillante'))).toBe(false);

@@ -8,7 +8,7 @@ import { baseManifest, makeEngine, drive, dialogLines } from '../helpers';
 
 const manifest = baseManifest({
   characters: { narrator: { name: 'N', description: '', role: 'narrator' }, guardia: { name: 'Guardia', description: 'aburrido' } },
-  initialStats: { sexi: 50, nombre_jugador: 'BOB', nombre_real: 'Pepe' },
+  initialStats: { sexi: 50, nombre_jugador: 'Alex', nombre_real: 'Pepe' },
   linePools: { burla: ['del pool'] },
 });
 const chatStep = {
@@ -61,7 +61,7 @@ describe('ai_chat con IA', () => {
     const out = await drive(engine, 'chat', [{ type: 'chat_message', text: 'hola' }, { type: 'chat_message', text: 'por favor' }]);
     expect(types(out)).toEqual(['chat_start', 'dialog', 'chat_prompt', 'chat_reply', 'chat_prompt', 'chat_reply', 'chat_end', 'navigate']);
     const vars = ai.calls[0][3] as Record<string, string>;
-    expect(vars).toMatchObject({ objetivo: 'pasar BOB', npc_nombre: 'Guardia', nombre_real: 'Pepe' });
+    expect(vars).toMatchObject({ objetivo: 'pasar Alex', npc_nombre: 'Guardia', nombre_real: 'Pepe' });
     expect(vars.perfil).toContain('cobarde');
     const replies = out.filter((r) => r.type === 'chat_reply');
     expect(replies[1]).toMatchObject({ delta: 50 });
@@ -140,7 +140,7 @@ describe('memoria de la partida para la IA', () => {
       narrator: { name: 'N', description: '', role: 'narrator', ai: { voz: 'seco', ejemplos: ['Qué original.'] } },
       guardia: { name: 'Guardia', description: 'aburrido', ai: { muletillas: ['*bostezo*'], secreto: 'canta' } },
     },
-    initialStats: { sexi: 50, nombre_jugador: 'BOB', animo_narrador: 'resacoso' },
+    initialStats: { sexi: 50, nombre_jugador: 'Alex', animo_narrador: 'resacoso' },
     linePools: { burla: ['del pool'] },
     statRules: [{ id: 'susto', once: true, condition: { stats: { sexi: '<=10' } }, effects: { memo: 'se asustó' } }],
   });
@@ -159,8 +159,8 @@ describe('memoria de la partida para la IA', () => {
     await drive(engine, 'start', [{ type: 'choose', index: 0 }]);
     await drive(engine, 'hecho', []);
     await drive(engine, 'feo', []);
-    expect(engine.state.decisiones).toEqual(['«Huyo», dice BOB (en Plaza)']);
-    expect(engine.state.memoria).toEqual(['BOB rompió la estatua', 'se asustó (en Pantano)']);
+    expect(engine.state.decisiones).toEqual(['«Huyo», dice Alex (en Plaza)']);
+    expect(engine.state.memoria).toEqual(['Alex rompió la estatua', 'se asustó (en Pantano)']);
   });
 
   it('el chat guarda la mejor frase tal cual, cómo escribe y el resultado; manda la ficha del NPC', async () => {
@@ -185,7 +185,7 @@ describe('memoria de la partida para la IA', () => {
     await drive(engine, 'narr', []);
     await drive(engine, 'narr', []);
     const first = ai.calls[0][2] as Record<string, string>;
-    expect(first).toMatchObject({ memoria: '- BOB rompió la estatua', animo: 'resacoso', ya_dijiste: '' });
+    expect(first).toMatchObject({ memoria: '- Alex rompió la estatua', animo: 'resacoso', ya_dijiste: '' });
     expect(first.ficha_narrador).toContain('«Qué original.»');
     expect((ai.calls[1][2] as Record<string, string>).ya_dijiste).toBe('- burla «red»generadax');
   });
@@ -358,12 +358,12 @@ describe('narración: reacción a decisiones y pedido adelantado', () => {
 describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', () => {
   const m = baseManifest({
     characters: { narrator: { name: 'N', description: '', role: 'narrator' }, bardo: { name: 'Bardo', description: 'rapero' } },
-    initialStats: { sexi: 50, nombre_jugador: 'BOB', causa_muerte: 'un tomate' },
-    linePools: { epi: ['Aquí yace BOB.'] },
+    initialStats: { sexi: 50, nombre_jugador: 'Alex', causa_muerte: 'un tomate' },
+    linePools: { epi: ['Aquí yace Alex.'] },
   });
   const rap = {
     type: 'ai_chat' as const, mode: 'rap' as const, npc: 'bardo',
-    gestures: { cerveza: { hint: 'le tira la cerveza encima a BOB', text: 'Te tiran cerveza.', effects: { stats: { sexi: -5 } } } },
+    gestures: { cerveza: { hint: 'le tira la cerveza encima a Alex', text: 'Te tiran cerveza.', effects: { stats: { sexi: -5 } } } },
     fallback: { stat: 'sexi', difficulty: 1 },
     outcomes: { success: { goto: 'fin' }, failure: { goto: 'fin' } },
   };
@@ -379,14 +379,14 @@ describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', ()
     return {
       calls,
       available: () => true,
-      narrate: async (p, v) => { calls.push(['narrate', p, v]); return { text: 'Aquí yace BOB, que rimó «pan» con «pan».', lineId: 7 }; },
+      narrate: async (p, v) => { calls.push(['narrate', p, v]); return { text: 'Aquí yace Alex, que rimó «pan» con «pan».', lineId: 7 }; },
       freeAction: async () => null,
       chatStart: async (mode, npc, vars, max, gestures) => { calls.push(['start', vars, gestures]); return { chatId: 'c', maxTurns: 2, score: 50, maxInputChars: 100 }; },
       chatSay: async () => {
         turn++;
         return turn === 1
           ? { reply: 'Toma', score: 40, done: false, verdict: null, turnsLeft: 1, gesture: 'cerveza', lineId: 11 }
-          : { reply: 'Fin', score: 30, done: true, verdict: 'failure', turnsLeft: 0, gesture: 'inventado', memory: 'BOB rimó «pan» con «pan» y lo abuchearon', lineId: 12 };
+          : { reply: 'Fin', score: 30, done: true, verdict: 'failure', turnsLeft: 0, gesture: 'inventado', memory: 'Alex rimó «pan» con «pan» y lo abuchearon', lineId: 12 };
       },
       chatGiveUp: async () => {},
     };
@@ -399,17 +399,17 @@ describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', ()
     await drive(engine, 'antes', []);
     const out = await drive(engine, 'rap', [{ type: 'chat_message', text: 'pan pan' }, { type: 'chat_message', text: 'pan' }]);
     const [, vars, gestures] = ai.calls[0] as [string, Record<string, string>, Record<string, string>];
-    expect(vars.historial_npc).toBe('- BOB le robó el público');
-    expect(gestures).toEqual({ cerveza: 'le tira la cerveza encima a BOB' });
+    expect(vars.historial_npc).toBe('- Alex le robó el público');
+    expect(gestures).toEqual({ cerveza: 'le tira la cerveza encima a Alex' });
     expect(out.find((r) => r.type === 'notify')).toMatchObject({ title: 'Bardo', text: 'Te tiran cerveza.' });
     expect(engine.state.stats.sexi).toBe(45);
     // El gesto inventado por la IA se ignora; el recuerdo va a la memoria general y a la del Bardo
     expect(out.filter((r) => r.type === 'notify')).toHaveLength(1);
-    expect(engine.state.memoria).toEqual(['se batió a rap contra Bardo y perdió: BOB rimó «pan» con «pan» y lo abuchearon (en Taberna)']);
+    expect(engine.state.memoria).toEqual(['se batió a rap contra Bardo y perdió: Alex rimó «pan» con «pan» y lo abuchearon (en Taberna)']);
     expect(engine.state.npcMemoria?.bardo).toEqual([
-      'BOB le robó el público',
-      'le tira la cerveza encima a BOB',
-      'BOB rimó «pan» con «pan» y lo abuchearon (se batió a rap contra Bardo y perdió)',
+      'Alex le robó el público',
+      'le tira la cerveza encima a Alex',
+      'Alex rimó «pan» con «pan» y lo abuchearon (se batió a rap contra Bardo y perdió)',
     ]);
     expect(out.filter((r) => r.type === 'chat_reply').map((r) => (r as { aiLineId?: number }).aiLineId)).toEqual([11, 12]);
   });
@@ -423,7 +423,7 @@ describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', ()
     const vars = ai.calls.find((c) => c[0] === 'narrate')![2] as Record<string, string>;
     expect(vars).toMatchObject({ causa: 'un tomate', ultima_frase: 'ke onda' });
     expect(out[0]).toMatchObject({ type: 'dialog', aiLineId: 7 });
-    expect(engine.state.memoria?.at(-1)).toBe('su lápida decía «Aquí yace BOB, que rimó «pan» con «pan».»');
+    expect(engine.state.memoria?.at(-1)).toBe('su lápida decía «Aquí yace Alex, que rimó «pan» con «pan».»');
   });
 });
 
@@ -431,7 +431,7 @@ describe('charla libre: contesta quien esté', () => {
   const m = baseManifest({
     characters: {
       narrator: { name: 'Narrador', description: '', role: 'narrator' },
-      nerly: { name: 'Nerly', description: 'babosa azul', role: 'companion', joinFlag: 'nerly_joined', ai: { muletillas: ['¡Ay, BOB!'] } },
+      nerly: { name: 'Nerly', description: 'babosa azul', role: 'companion', joinFlag: 'nerly_joined', ai: { muletillas: ['¡Ay, Alex!'] } },
       bardo: { name: 'Bardo Babosa', description: 'rapero', role: 'npc' },
       lapida: { name: 'Lápida', description: '', role: 'npc', talkable: false },
     },
@@ -467,7 +467,7 @@ describe('charla libre: contesta quien esté', () => {
     expect(await engine.talk('  ola narrador ke onda  ')).toMatchObject({ ok: true, speaker: { id: 'narrator' }, text: 'Déjame «trabajar».', tone: 'enojo', lineId: 3 });
     expect(ai.calls[0]).toMatchObject(['narrate', 'charla', { situacion: 'Plaza: huele a pescado' }, 'ola narrador ke onda']);
     expect(engine.state.habla).toEqual(['ola narrador ke onda']);
-    expect(engine.state.npcMemoria?.narrator).toEqual(['BOB le dijo «ola narrador ke onda»']);
+    expect(engine.state.npcMemoria?.narrator).toEqual(['Alex le dijo «ola narrador ke onda»']);
   });
 
   it('contesta el último personaje de la escena; se puede nombrar a otro; la lápida no cuenta', async () => {
@@ -484,7 +484,7 @@ describe('charla libre: contesta quien esté', () => {
     expect(engine.talkSpeaker('Nérly, ¿tienes miedo?').id).toBe('nerly');
     expect(who(await engine.talk('Nérly, ¿tienes miedo?'))).toBe('nerly');
     expect(ai.calls[1][3]).toBe('¿tienes miedo?');
-    expect((ai.calls[1][2] as Record<string, string>).npc_ficha).toContain('¡Ay, BOB!');
+    expect((ai.calls[1][2] as Record<string, string>).npc_ficha).toContain('¡Ay, Alex!');
 
     // Otra escena en el mismo lugar: el Bardo sigue ahí
     await drive(engine, 'barra', []);

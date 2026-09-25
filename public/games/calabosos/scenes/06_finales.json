@@ -97,14 +97,14 @@
           "type": "dialog",
           "character": "alcalde",
           "lines": [
-            "¡Ciudadanos de Viscaria! ¡Hoy celebramos la derrota del terror que asoló nuestras tierras por generaciones! ¡El Rey Baboso ha caído gracias a... eh... (lee un papel) BOB!"
+            "¡Ciudadanos de Viscaria! ¡Hoy celebramos la derrota del terror que asoló nuestras tierras por generaciones! ¡El Rey Baboso ha caído gracias a... eh... (lee un papel) Alex!"
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "De «BOB {el|la|lx} incompetente» a {salvador|salvadora|salvadorx} del reino. Vaya ascenso."
+            "De «Alex {el|la|lx} incompetente» a {salvador|salvadora|salvadorx} del reino. Vaya ascenso."
           ]
         },
         {
@@ -148,7 +148,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "(Nerly sube al escenario con una pequeña corona de flores.) BOB... ¿te acuerdas de la canción de la fogata? Voy a cantarla. Para todos."
+            "(Nerly sube al escenario con una pequeña corona de flores.) Alex... ¿te acuerdas de la canción de la fogata? Voy a cantarla. Para todos."
           ],
           "condition": {
             "textMatches": {
@@ -296,7 +296,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "Podría quedarme con ellas, pero... ya probé la aventura. Y me gusta estar contigo, BOB."
+            "Podría quedarme con ellas, pero... ya probé la aventura. Y me gusta estar contigo, Alex."
           ],
           "condition": {
             "affinity": {
@@ -593,7 +593,7 @@
           "npc": "narrator",
           "maxTurns": 3,
           "vars": {
-            "pregunta": "Ahora que sabes la verdad, BOB, dime: ¿por qué seguiste adelante, cuando todo te decía que te rindieras?",
+            "pregunta": "Ahora que sabes la verdad, Alex, dime: ¿por qué seguiste adelante, cuando todo te decía que te rindieras?",
             "npc_descripcion": "El Narrador revelado como el Verdadero Rey Baboso: antiguo, sabio, todavía sarcástico, pero por una vez sincero y casi tierno."
           },
           "fallback": {
@@ -613,7 +613,7 @@
           },
           "gestures": {
             "lagrima": {
-              "hint": "se te escapa una lágrima (si BOB dijo algo sincero)",
+              "hint": "se te escapa una lágrima (si Alex dijo algo sincero)",
               "text": "Al Narrador se le quiebra la voz. Dice que es alergia."
             }
           }
@@ -622,7 +622,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Hasta la próxima historia, «BOB». Y recuerda: las babosas no siempre son lo que parecen. Los narradores, tampoco."
+            "Hasta la próxima historia, «Alex». Y recuerda: las babosas no siempre son lo que parecen. Los narradores, tampoco."
           ]
         },
         {

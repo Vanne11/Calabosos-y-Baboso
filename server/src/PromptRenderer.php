@@ -120,13 +120,13 @@ final class PromptRenderer
     public static function contextBlock(array $vars, string $usedText): string
     {
         $sections = [
-            'genero' => 'GÉNERO DE BOB (respétalo siempre, también en tus burlas): %s',
+            'genero' => 'GÉNERO DE Alex (respétalo siempre, también en tus burlas): %s',
             'animo' => 'Tu ánimo en este momento (que se note sin decirlo): %s',
             'memoria' => "Lo que ha pasado en la partida, del más viejo al más reciente:\n%s",
             'decisiones' => "Sus decisiones recientes (lo que eligió, tal cual):\n%s",
-            'historial_npc' => "Lo que ya pasó antes entre tú y BOB (acuérdate y sácalo si viene al caso):\n%s",
-            'citas' => "Frases textuales que dijo BOB (puedes citarlas para burlarte o recordárselas):\n%s",
-            'como_escribe' => "Así escribe BOB de verdad (tal cual, con sus modismos y faltas). Contéstale en su mismo registro:\n%s",
+            'historial_npc' => "Lo que ya pasó antes entre tú y Alex (acuérdate y sácalo si viene al caso):\n%s",
+            'citas' => "Frases textuales que dijo Alex (puedes citarlas para burlarte o recordárselas):\n%s",
+            'como_escribe' => "Así escribe Alex de verdad (tal cual, con sus modismos y faltas). Contéstale en su mismo registro:\n%s",
             'ya_dijiste' => "Líneas que YA dijiste hace poco: no las repitas, ni su chiste ni su estructura:\n%s",
             'ficha_narrador' => "Tu voz, con ejemplos:\n%s",
             'npc_ficha' => "FICHA DE TU PERSONAJE (interprétalo según ella):\n%s",
@@ -179,8 +179,8 @@ final class PromptRenderer
         $contract = 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
             . '{"reply": "lo que dices, máximo ' . $maxReplyChars . ' caracteres", "score": número entero de 0 a 100, "done": true o false, '
             . '"tono": "...", "gesto": "..." , "recuerdo": "..."}. ' . self::toneGuide() . '. '
-            . '"recuerdo": si "done" es true o es el último turno, UNA frase corta en tercera persona y en pasado sobre lo que pasó entre tú y BOB, '
-            . 'con un detalle concreto de lo que dijo (ej: "BOB le rapeó que su laúd tenía más cuerdas que neuronas y el público lo abucheó"); si no, "".';
+            . '"recuerdo": si "done" es true o es el último turno, UNA frase corta en tercera persona y en pasado sobre lo que pasó entre tú y Alex, '
+            . 'con un detalle concreto de lo que dijo (ej: "Alex le rapeó que su laúd tenía más cuerdas que neuronas y el público lo abucheó"); si no, "".';
         if ($gestures) {
             $list = [];
             foreach ($gestures as $id => $hint) {

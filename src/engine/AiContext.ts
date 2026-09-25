@@ -43,7 +43,7 @@ export function contextVars(state: PlayerState): Record<string, string> {
   };
 }
 
-/** Lo que un personaje recuerda de BOB, como lista para el prompt */
+/** Lo que un personaje recuerda de Alex, como lista para el prompt */
 export function npcHistory(state: PlayerState, npc: string): string {
   return (state.npcMemoria?.[npc] ?? []).map((i) => `- ${i}`).join('\n');
 }

@@ -59,7 +59,7 @@ El NPC puede **hacer algo** a mitad de la conversación. La IA decide cuándo; e
 ```jsonc
 "gestures": {
   "cerveza": {
-    "hint": "le tiras tu cerveza encima a BOB (si te humilló o te ofendió)",  // lo lee la IA, desde el NPC
+    "hint": "le tiras tu cerveza encima a Alex (si te humilló o te ofendió)",  // lo lee la IA, desde el NPC
     "text": "El Bardo te tira la cerveza encima. El público aplaude. A él.",  // aviso en pantalla (default: hint)
     "effects": { "stats": { "sexi": -5 } }
   }
@@ -72,8 +72,8 @@ El NPC puede **hacer algo** a mitad de la conversación. La IA decide cuándo; e
 
 ## Recuerdo y memoria por personaje
 
-Al terminar, la IA escribe un **recuerdo**: una frase de lo que pasó, con un detalle concreto ("BOB le rapeó que su
+Al terminar, la IA escribe un **recuerdo**: una frase de lo que pasó, con un detalle concreto ("Alex le rapeó que su
 laúd tenía más cuerdas que neuronas y el público lo abucheó"). Va a la memoria general y a la del NPC.
 
-Cada personaje guarda lo que recuerda de BOB en `npcMemoria` (conversaciones, gestos y `effects.npcMemo`), y en sus
+Cada personaje guarda lo que recuerda de Alex en `npcMemoria` (conversaciones, gestos y `effects.npcMemo`), y en sus
 chats lo recibe como `{{historial_npc}}`: el Bardo sabe que le robaste el público y Nerly, que le echaste sal.

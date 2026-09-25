@@ -13,7 +13,7 @@
           "type": "effects",
           "effects": {
             "setStats": {
-              "animo_narrador": "aburrido del viaje y un poco celoso de que BOB le haga más caso a Nerly"
+              "animo_narrador": "aburrido del viaje y un poco celoso de que Alex le haga más caso a Nerly"
             }
           }
         },
@@ -71,7 +71,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Genial: sigues un sendero de moco fosforescente. Tu vida alcanzó un nuevo punto bajo, BOB. Y eso que venimos del establo."
+            "Genial: sigues un sendero de moco fosforescente. Tu vida alcanzó un nuevo punto bajo, Alex. Y eso que venimos del establo."
           ]
         },
         {
@@ -262,7 +262,7 @@
                   "nerly": 5
                 },
                 "npcMemo": {
-                  "nerly": "BOB le dijo «lo siento» cuando le contó su historia"
+                  "nerly": "Alex le dijo «lo siento» cuando le contó su historia"
                 }
               },
               "goto": "acto2_camino_menu",
@@ -279,7 +279,7 @@
               "sfx": "grillo",
               "effects": {
                 "npcMemo": {
-                  "nerly": "BOB hizo un chiste («¿con la lengua?») cuando le contó su historia triste"
+                  "nerly": "Alex hizo un chiste («¿con la lengua?») cuando le contó su historia triste"
                 }
               }
             }
@@ -733,7 +733,7 @@
             }
           ],
           "freeText": {
-            "situation": "En el bosque, una banda de bandidos incompetentes (jefe tuerto) embosca a BOB y Nerly y les exige peaje."
+            "situation": "En el bosque, una banda de bandidos incompetentes (jefe tuerto) embosca a Alex y Nerly y les exige peaje."
           }
         }
       ]
@@ -801,7 +801,7 @@
           },
           "gestures": {
             "golpe": {
-              "hint": "pierdes la paciencia y le das un golpe a BOB (si te habló de tu ojo o de tu madre)",
+              "hint": "pierdes la paciencia y le das un golpe a Alex (si te habló de tu ojo o de tu madre)",
               "text": "El Bandido Tuerto te da un puñetazo. Con el ojo bueno cerrado, para más drama.",
               "effects": {
                 "stats": {
@@ -811,7 +811,7 @@
               }
             },
             "diente": {
-              "hint": "te ríes tanto con un insulto de BOB que se te cae un diente",
+              "hint": "te ríes tanto con un insulto de Alex que se te cae un diente",
               "text": "Al Bandido se le cae un diente de la risa. Le quedan tres.",
               "effects": {
                 "stats": {
@@ -820,7 +820,7 @@
               }
             },
             "banda_se_rie": {
-              "hint": "tu banda se ríe de BOB a carcajadas",
+              "hint": "tu banda se ríe de Alex a carcajadas",
               "text": "Los bandidos se ríen de ti. Uno se cae del árbol.",
               "effects": {
                 "stats": {
@@ -862,7 +862,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡BOB! ¡Espérame! ¡Las babosas no corremos!"
+            "¡Alex! ¡Espérame! ¡Las babosas no corremos!"
           ]
         },
         {
@@ -884,7 +884,7 @@
                   "nerly": -10
                 },
                 "npcMemo": {
-                  "nerly": "BOB huyó de los bandidos y la dejó atrás"
+                  "nerly": "Alex huyó de los bandidos y la dejó atrás"
                 }
               },
               "goto": "acto2_viaje2",
@@ -1129,7 +1129,7 @@
             },
             "memo": "mandó a Takashi, un chico inocente con un bate, a morir al Abismo con una mentira",
             "npcMemo": {
-              "nerly": "BOB mandó a Takashi a morir al Abismo con una mentira"
+              "nerly": "Alex mandó a Takashi a morir al Abismo con una mentira"
             }
           }
         },
@@ -1137,7 +1137,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "Eso fue cruel, BOB."
+            "Eso fue cruel, Alex."
           ]
         },
         {
@@ -1215,7 +1215,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "Oh, pobrecita. Es una cría de babosa del bosque. BOB, ¿podemos ayudarla? Por favor."
+            "Oh, pobrecita. Es una cría de babosa del bosque. Alex, ¿podemos ayudarla? Por favor."
           ]
         },
         {
@@ -1241,7 +1241,7 @@
                   "babosita"
                 ],
                 "npcMemo": {
-                  "nerly": "BOB ayudó a una babosita perdida a volver a su tronco"
+                  "nerly": "Alex ayudó a una babosita perdida a volver a su tronco"
                 }
               },
               "goto": "acto2_fogata",
@@ -1275,7 +1275,7 @@
             }
           ],
           "freeText": {
-            "situation": "En el camino hay una cría de babosa perdida que llora buscando a su mamá. Nerly mira a BOB."
+            "situation": "En el camino hay una cría de babosa perdida que llora buscando a su mamá. Nerly mira a Alex."
           }
         }
       ]
@@ -1327,7 +1327,7 @@
             },
             "memo": "le echó sal a una babosita perdida del bosque, delante de Nerly",
             "npcMemo": {
-              "nerly": "BOB le echó sal a una babosita perdida delante de ella"
+              "nerly": "Alex le echó sal a una babosita perdida delante de ella"
             }
           }
         },
@@ -1377,7 +1377,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Una prueba de honestidad. Genial. Tu especialidad es mentir, BOB. Esto va a ser incómodo. Para ti."
+            "Una prueba de honestidad. Genial. Tu especialidad es mentir, Alex. Esto va a ser incómodo. Para ti."
           ]
         },
         {
@@ -1413,7 +1413,7 @@
           },
           "gestures": {
             "fruto": {
-              "hint": "dejas caer un fruto de savia brillante a los pies de BOB (si fue sincero de verdad)",
+              "hint": "dejas caer un fruto de savia brillante a los pies de Alex (si fue sincero de verdad)",
               "text": "Del árbol cae un fruto tibio y brillante. Sabe a verdad. Y a savia.",
               "effects": {
                 "stats": {
@@ -1564,7 +1564,7 @@
             "¡Yo empiezo! «Por un sendero de baba brillante / va {un héroe torpe|una heroína torpe|unx herox torpe} pero valiente...» ¡Ahora tú!"
           ],
           "vars": {
-            "tema": "el viaje de BOB y Nerly hacia el Abismo de las Babosas, el miedo, la amistad y la baba"
+            "tema": "el viaje de Alex y Nerly hacia el Abismo de las Babosas, el miedo, la amistad y la baba"
           },
           "fallback": {
             "stat": "sexi",
@@ -1611,7 +1611,7 @@
           },
           "gestures": {
             "abrazo": {
-              "hint": "abrazas a BOB con toda tu baba (si su verso fue tierno)",
+              "hint": "abrazas a Alex con toda tu baba (si su verso fue tierno)",
               "text": "Nerly te abraza. Quedas {pegajoso|pegajosa|pegajosx} y un poco más feliz.",
               "effects": {
                 "affinity": {
@@ -1623,7 +1623,7 @@
               }
             },
             "sonrojo": {
-              "hint": "te pones azul oscuro de vergüenza (si BOB fue grosero)",
+              "hint": "te pones azul oscuro de vergüenza (si Alex fue grosero)",
               "text": "Nerly se pone azul oscuro y mira el fuego. Muy fijo.",
               "effects": {
                 "affinity": {
@@ -1750,7 +1750,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Es un agujero en una montaña, BOB. No te emociones."
+            "Es un agujero en una montaña, Alex. No te emociones."
           ]
         },
         {

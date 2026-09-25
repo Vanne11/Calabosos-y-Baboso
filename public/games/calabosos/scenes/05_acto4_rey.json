@@ -293,7 +293,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡BOB! ¡El Rey odia la mala música! ¡Y sus guardianas también! ¡Canta! ¡Canta horrible!"
+            "¡Alex! ¡El Rey odia la mala música! ¡Y sus guardianas también! ¡Canta! ¡Canta horrible!"
           ],
           "condition": {
             "flags": {
@@ -965,7 +965,7 @@
           },
           "gestures": {
             "duda": {
-              "hint": "te quedas en silencio y el cristal de tu frente parpadea (si BOB tocó tu punto débil)",
+              "hint": "te quedas en silencio y el cristal de tu frente parpadea (si Alex tocó tu punto débil)",
               "text": "El cristal de la frente del Rey parpadea. Por un segundo, parece una babosa normal.",
               "effects": {
                 "stats": {
@@ -974,7 +974,7 @@
               }
             },
             "lenguetazo": {
-              "hint": "le das un lengüetazo de baba a BOB para saborearlo",
+              "hint": "le das un lengüetazo de baba a Alex para saborearlo",
               "text": "El Rey te da un lengüetazo. Ahora sabes cómo se siente un helado.",
               "effects": {
                 "stats": {
@@ -984,7 +984,7 @@
               }
             },
             "rugido": {
-              "hint": "ruges tan fuerte que tiembla la sala (si BOB te ofendió)",
+              "hint": "ruges tan fuerte que tiembla la sala (si Alex te ofendió)",
               "text": "El rugido del Rey hace temblar la sala. Algo cálido baja por tu pierna.",
               "effects": {
                 "stats": {
@@ -1185,7 +1185,7 @@
           "type": "dialog",
           "character": "prestamista",
           "lines": [
-            "¡BOB! ¡AHÍ ESTÁS! ¡Mis 100 monedas! Te dije que siempre te encuentro."
+            "¡Alex! ¡AHÍ ESTÁS! ¡Mis 100 monedas! Te dije que siempre te encuentro."
           ]
         },
         {
@@ -1431,7 +1431,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡BOB! ¡Voy a sujetarle los tentáculos! ¡No te detengas!"
+            "¡Alex! ¡Voy a sujetarle los tentáculos! ¡No te detengas!"
           ],
           "condition": {
             "relationshipTier": {
@@ -1505,7 +1505,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡Toma, BOB! (Nerly te escupe musgo cicatrizante en la herida. Es asqueroso. Funciona.)"
+            "¡Toma, Alex! (Nerly te escupe musgo cicatrizante en la herida. Es asqueroso. Funciona.)"
           ],
           "condition": {
             "affinity": {
@@ -1852,7 +1852,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡Usa todo lo que tengas, BOB! ¡Sal, pociones, lo que sea!"
+            "¡Usa todo lo que tengas, Alex! ¡Sal, pociones, lo que sea!"
           ]
         },
         {
@@ -2049,7 +2049,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Así termina la gran aventura de BOB, {el héroe improbable|la heroína improbable|lx herox improbable} que, contra todo pronóstico y todo sentido común, derrotó al Rey Baboso."
+            "Así termina la gran aventura de Alex, {el héroe improbable|la heroína improbable|lx herox improbable} que, contra todo pronóstico y todo sentido común, derrotó al Rey Baboso."
           ]
         },
         {
