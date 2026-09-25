@@ -27,8 +27,9 @@ console.log(`\n📦 Empaquetando ${name}\n`);
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
-// 1. Validar antes de empaquetar
+// 1. Validar y probar antes de empaquetar
 run('node scripts/validate-game.mjs calabosos');
+run('npx vitest run');
 
 // 2. Juego compilado (base /cyb/) + imágenes a WebP
 run(`npx vite build --outDir "${join(OUT, 'cyb')}" --emptyOutDir`);

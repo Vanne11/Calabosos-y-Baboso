@@ -22,6 +22,7 @@ public/games/
   demo/, demo2/  Demos de capacidades del motor
   Calabosos y Babosos/original_datos/   Guion original en markdown (solo referencia)
 server/          API de IA en PHP 7.4/8.x + SQLite + panel admin (ver server/README.md)
+tests/           Vitest: engine/ (narrativa, ia, combate), game/ (calabosos real), editor/, helpers.ts
 scripts/         validate-game.mjs, playtest.ts, make-placeholders.mjs, package-release.mjs,
                  optimize-images.mjs, shared/game-data.mjs
 docs/            Wiki del motor, plan, DEPLOY.md
@@ -36,6 +37,7 @@ npm run dev                             # http://127.0.0.1:5173/cyb/  → run ca
 npm run validate -- calabosos           # gotos rotos, alcanzabilidad, personajes, items, pools, códice, assets
 npm run playtest -- calabosos 500       # bot: cobertura, atascos, variables {x} sin resolver, muertes por causa
 npm run placeholders -- calabosos       # imágenes provisorias para toda referencia que falte
+npm test                                # Vitest: motor, IA, combate, datos reales del juego, editor
 npx tsc --noEmit -p .                   # debe quedar sin errores
 ```
 

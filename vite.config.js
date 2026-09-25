@@ -12,6 +12,10 @@ export default defineConfig({
     react(),
     glob()
   ],
+  test: {
+    include: ['tests/**/*.test.ts'],
+    environment: 'node',
+  },
   server: {
     // En producción el juego (/cyb/) y la API (/cyb-api/) comparten dominio; en desarrollo lo imita este proxy
     proxy: {

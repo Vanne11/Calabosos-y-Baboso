@@ -2,6 +2,21 @@
 
 # Herramientas de Juego (scripts)
 
+## `npm test`
+
+Pruebas con **Vitest** en `tests/` (se corren también antes de `npm run package`):
+
+| Archivo | Qué cubre |
+|---|---|
+| `engine/narrativa.test.ts` | Variables, pools sin repetición, meta, reglas automáticas, límites de stats, reacciones y modificadores de dados, condiciones, códice |
+| `engine/ia.test.ts` | `ai_chat` con un proveedor de IA falso: veredicto, puntaje, rendirse, respaldo por dados (sin IA o si falla a mitad), narración con IA, perfil y eventos |
+| `engine/combate.test.ts` | Rasgos de combate por especie, armas, dados por tramos, multiplicadores de precio y puntos seguros |
+| `game/calabosos.test.ts` | Datos reales de Calabosos: validación completa, reglas del juego y los finales |
+| `editor/roundtrip.test.ts` | Que el editor no pierda campos del manifiesto al exportar |
+
+`tests/helpers.ts` tiene utilidades para conducir el motor sin UI (`drive`, `collect`, `loadGameFromDisk`...). `npm run test:watch` las vuelve a correr al guardar.
+
+
 Scripts de Node para trabajar con los juegos de `public/games/`. Comparten `scripts/shared/game-data.mjs` (carga de manifiesto + escenas, `sceneFiles` incluido).
 
 ## `npm run validate`
