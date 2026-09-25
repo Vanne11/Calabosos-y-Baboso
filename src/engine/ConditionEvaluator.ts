@@ -32,6 +32,13 @@ export function evaluateCondition(
     }
   }
 
+  // Not inventory: ["sal"]
+  if (condition.notInventory) {
+    for (const item of condition.notInventory) {
+      if (state.inventory.includes(item)) return false;
+    }
+  }
+
   // Visited scenes
   if (condition.visitedScenes) {
     for (const scene of condition.visitedScenes) {

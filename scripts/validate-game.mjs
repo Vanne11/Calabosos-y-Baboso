@@ -90,7 +90,8 @@ function validateGame(gameName) {
 
     const targets = new Set();
     walk(seq, (key, value, parent) => {
-      if (key === 'goto' && typeof value === 'string') {
+      // goto y variantes como bustGoto (tienda) cuentan como destinos
+      if ((key === 'goto' || /Goto$/.test(key)) && typeof value === 'string' && value !== '') {
         targets.add(value);
         if (!validTargets.has(value)) errors.push(`${where(id)}: goto a escena inexistente "${value}"`);
       }
@@ -108,6 +109,13 @@ function validateGame(gameName) {
       }
     });
     edges[id] = [...targets];
+
+    // La escena actual ya cuenta como visitada al entrar: estas condiciones nunca se comportan como se espera
+    walk(seq, (key, value) => {
+      if ((key === 'unvisitedScenes' || key === 'visitedScenes') && Array.isArray(value) && value.includes(id)) {
+        warnings.push(`${where(id)}: ${key} incluye la propia escena (ya está visitada al entrar); usa un flag`);
+      }
+    });
 
     // Modos chat
     for (const [i, step] of seq.entries()) {

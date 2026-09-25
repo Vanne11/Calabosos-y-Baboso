@@ -17,7 +17,7 @@ npm run validate -- calabosos --strict    # los avisos también fallan (exit 1)
 | Nivel | Qué revisa |
 |---|---|
 | **ERROR** | JSON inválido, archivos de escenas faltantes, IDs duplicados entre archivos, falta `start`, `gateScene` inexistente, `goto` a escena inexistente (en cualquier profundidad del paso), personaje de `dialog` no definido, `dialog` sin `lines` ni `pool`, pool inexistente (en `dialog`, `statRules` o `diceHooks`), `statRules` sin `id`/`condition` o con `id` duplicado |
-| **aviso** | Reglas repetibles sin `effects` ni `goto` (se dispararían en bucle), pools vacíos, escenas vacías, escenas sin salida (ningún `goto`), escenas inalcanzables desde `start`, items no definidos en `items` (si el juego define `items`), assets (imágenes/audio) que no existen |
+| **aviso** | `visitedScenes`/`unvisitedScenes` que incluyen la propia escena (ya está visitada al entrar), reglas repetibles sin `effects` ni `goto` (se dispararían en bucle), pools vacíos, escenas vacías, escenas sin salida (ningún `goto`), escenas inalcanzables desde `start`, items no definidos en `items` (si el juego define `items`), assets (imágenes/audio) que no existen |
 | **info** | Cantidad de imágenes provisorias pendientes |
 
 Los destinos de `statRules[].goto` cuentan como alcanzables (una regla puede dispararse en cualquier escena).
@@ -32,3 +32,21 @@ Genera una imagen provisoria (PNG con el nombre del archivo y dónde se usa) par
 - Al reemplazar un archivo por el arte final, la siguiente ejecución lo saca del registro (el hash ya no coincide).
 - El audio faltante solo se informa.
 - Usa `sharp` (devDependency).
+
+## `npm run playtest -- <juego> [partidas] [--seed=N]`
+
+Bot que juega muchas partidas al azar con el **motor real** y los datos del juego (sin IA: los modos chat se resuelven con su tirada de respaldo, como en el juego sin servidor).
+
+```bash
+npm run playtest -- calabosos              # 300 partidas
+npm run playtest -- calabosos 1000 --seed=42
+```
+
+Informa:
+- cómo terminan las partidas (`_quit`, `_restart`, límite de pasos...) y el % que llega a un final (`final_*`);
+- **cobertura**: escenas nunca visitadas;
+- escenas donde la partida se queda **atascada** (terminan sin navegar);
+- **variables sin resolver** en textos (`{algo}` que no existe);
+- errores del motor, y la escena más repetida en partidas que no terminan (bucles).
+
+Con la misma semilla, el resultado es reproducible. Sale con código 1 si encuentra problemas.

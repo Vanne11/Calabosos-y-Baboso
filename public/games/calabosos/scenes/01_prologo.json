@@ -370,17 +370,242 @@
           }
         },
         {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Mirar alrededor",
+              "goto": "prologo_habitacion"
+            }
+          ]
+        }
+      ]
+    },
+    "prologo_habitacion": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "Tu habitación. Huele a calcetín y a potencial desperdiciado."
+      },
+      "sequence": [
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "[dim](Aquí irá el resto del prólogo: la habitación, la mochila, la lámpara y la carta misteriosa. En construcción, como tu autoestima.)[/dim]"
+            "Bien, BOB. Esta es tu habitación. Tu reino. Tu pocilga.",
+            "Antes de salvar el mundo, vamos a aprender algo básico: [bold]mirar cosas[/bold]. Sí, así de bajo empezamos.",
+            "Revisa lo que quieras. Yo esperaré aquí, envejeciendo."
           ]
+        },
+        {
+          "type": "examine",
+          "description": "¿Qué quieres revisar?",
+          "subjects": [
+            {
+              "id": "cama",
+              "label": "La cama",
+              "text": "Una cama de paja con una sábana que ha visto cosas. Cosas que ni yo, el narrador omnisciente, quiero saber."
+            },
+            {
+              "id": "mochila",
+              "label": "La mochila del gancho",
+              "oneTime": true,
+              "text": "Una mochila raída con un agujero del tamaño de tus sueños. Te la cuelgas. Ahora pareces un aventurero. Uno pobre.",
+              "effects": {
+                "inventory": [
+                  "mochila"
+                ],
+                "flags": {
+                  "tiene_mochila": true
+                }
+              }
+            },
+            {
+              "id": "lampara",
+              "label": "La lámpara de la mesa coja",
+              "oneTime": true,
+              "text": "Una lámpara de aceite. La enciendes al tercer intento y casi te quemas las cejas. Progreso.",
+              "effects": {
+                "inventory": [
+                  "lampara"
+                ]
+              }
+            },
+            {
+              "id": "bajo_cama_oscuro",
+              "label": "Debajo de la cama",
+              "condition": {
+                "notInventory": [
+                  "lampara"
+                ]
+              },
+              "text": "Está demasiado oscuro. Algo se mueve ahí abajo. Probablemente un calcetín con vida propia. Necesitas luz, genio.",
+              "effects": {
+                "stats": {
+                  "miedo": 10
+                }
+              }
+            },
+            {
+              "id": "bajo_cama",
+              "label": "Debajo de la cama (con la lámpara)",
+              "oneTime": true,
+              "condition": {
+                "inventory": [
+                  "lampara"
+                ]
+              },
+              "text": "Con la lámpara ves: pelusas del tamaño de gatos, un calcetín fosilizado y... una llave oxidada. ¿Por qué estaba ahí? Nunca lo sabremos. Te la llevas.",
+              "effects": {
+                "inventory": [
+                  "llave_oxidada"
+                ]
+              }
+            },
+            {
+              "id": "carta",
+              "label": "La carta junto a la puerta",
+              "oneTime": true,
+              "text": "Una carta con sello de cera morado. Dice: «Por decreto del Reino de Viscaria, se convoca al portador a enfrentar al Rey Baboso en el Abismo. Se ofrece gloria eterna (no incluye seguro médico). Firmado: el Narrador». Qué casualidad. Qué sospechoso. Qué bien escrita.",
+              "effects": {
+                "inventory": [
+                  "carta_misteriosa"
+                ],
+                "flags": {
+                  "carta_leida": true
+                }
+              }
+            },
+            {
+              "id": "ventana",
+              "label": "La ventana abierta",
+              "text": "Por la ventana entra el olor del pueblo: pescado, estiércol y esperanza rancia. La cierras. El olor se queda. Ya es parte de ti.",
+              "effects": {
+                "flags": {
+                  "ventana_cerrada": true
+                }
+              }
+            },
+            {
+              "id": "espejo",
+              "label": "El espejo",
+              "text": "Te miras al espejo. El espejo te mira a ti. Ambos se arrepienten."
+            },
+            {
+              "id": "poster",
+              "label": "El póster del héroe musculoso",
+              "text": "Un héroe musculoso posa con una espada. Debajo alguien escribió: «algún día». Esa letra es tuya. Qué tierno. Qué triste."
+            }
+          ],
+          "exitText": "Ir a la puerta",
+          "goto": "prologo_puerta"
+        }
+      ]
+    },
+    "prologo_puerta": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La puerta. Tu primer gran desafío. Está cerrada con llave, como tu futuro."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Otra vez aquí sin llave? Te doy una pista, porque me das pena: las cosas perdidas suelen estar debajo de las camas. Y debajo de las camas está oscuro. Oscuro. Luz. ¿Ves por dónde voy?"
+          ],
+          "condition": {
+            "flags": {
+              "puerta_vista": true
+            },
+            "notInventory": [
+              "llave_oxidada"
+            ]
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "puerta_vista": true
+            }
+          }
+        },
+        {
+          "type": "use_item",
+          "description": "Usa algo de tu inventario en la puerta.",
+          "targets": [
+            {
+              "id": "puerta",
+              "label": "La puerta",
+              "defaultText": "Eso no abre puertas. Eso no abre nada. Igual que tu mente.",
+              "accepts": [
+                {
+                  "itemId": "llave_oxidada",
+                  "consume": true,
+                  "text": "La llave gira con un chirrido de ultratumba. La puerta se abre. Felicidades: hiciste algo que un niño de cuatro años hace sin ayuda.",
+                  "goto": "prologo_salida"
+                }
+              ]
+            }
+          ],
+          "failText": "Eso no funciona. Nada funciona. Bienvenido a la vida adulta.",
+          "exitText": "Volver a revisar la habitación",
+          "goto": "prologo_habitacion"
+        }
+      ]
+    },
+    "prologo_salida": {
+      "scenario": {
+        "name": "Prólogo: El Despertar",
+        "image": "images/scenarios/habitacion_bob.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Ni siquiera leíste la carta? Te la resumo: vas a ir al Abismo de las Babosas a matar a un rey gigante y pegajoso. Probablemente morirás. Fin del resumen."
+          ],
+          "condition": {
+            "flags": {
+              "carta_leida": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Olvidas la mochila. Un héroe sin mochila. Esto va a ser una tragedia en tres actos. Cuatro, en realidad."
+          ],
+          "condition": {
+            "flags": {
+              "tiene_mochila": false
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Tutorial completado",
+          "text": "Aprendiste a mirar cosas y a abrir una puerta. El reino está a salvo. (No.)",
+          "icon": "🏆"
         },
         {
           "type": "choice",
           "options": [
             {
-              "text": "Salir de la habitación",
+              "text": "Salir a la calle",
               "goto": "acto1_plaza"
             }
           ]

@@ -233,7 +233,7 @@ UI: la terminal ya acepta texto (`CommandParser`). Se agrega un sub-modo "chat" 
 | **F1 · Sarcasmo** ✅ | Stats, `linesPool`, contador meta, pools de burlas, reacción al nombre | Sistemas listos |
 | **F2 · Servidor PHP** ✅ | `server/`: API DeepSeek, DB, admin con login, prompts versionados, límites, kill switch | Admin funcionando en tu servidor |
 | **F3 · IA en el motor** ✅ | `src/ai/`, `ai_narrate`, `ai_chat` con los 6 modos, `profile.ts`, eventos, fallbacks, editores de los steps nuevos | Modos chat jugables con y sin IA |
-| **F4 · Prólogo + Acto I** | Tutorial, migrar demo, taberna/rap, regateo libre | Jugable hasta que Nerly se une |
+| **F4 · Prólogo + Acto I** ✅ | Tutorial, migrar demo, taberna/rap, regateo libre | Jugable hasta que Nerly se une |
 | **F5 · Acto II** | Viaje, insultos, anciano, bestiario, canción | Hasta la entrada del abismo |
 | **F6 · Acto III** | Guardia, 3 zonas, 5 especies | Hasta el trono |
 | **F7 · Acto IV + Finales** | Negociación, batalla en 3 fases, finales, recap | **Juego completo** |

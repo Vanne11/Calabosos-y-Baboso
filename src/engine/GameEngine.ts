@@ -529,8 +529,8 @@ export class GameEngine {
             : 0;
         const result = resolveRoll(step.faces, statVal, step.difficulty, 10, this.globalDiceModifier());
 
-        // Get outcome text and effects
-        const outcomeData = this.getDiceOutcome(step, result.outcome);
+        // Get outcome text and effects (tramos si existen)
+        const outcomeData = this.pickDiceTier(step, result.roll, result.total) ?? this.getDiceOutcome(step, result.outcome);
 
         // Apply effects
         if (outcomeData.effects) {
@@ -892,6 +892,17 @@ export class GameEngine {
   private async *processShop(
     step: ShopStep
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    // Multiplicador de precios por condición (ej: descuento ganado regateando antes)
+    const priceRule = step.priceMultipliers?.find((m) => evaluateCondition(m.condition, this._state));
+    if (priceRule && priceRule.multiplier !== 1) {
+      step = {
+        ...step,
+        items: step.items.map((item) => ({ ...item, price: Math.max(1, Math.round(item.price * priceRule.multiplier)) })),
+      };
+      if (priceRule.text) {
+        yield { type: 'notify', style: 'info', title: 'Precios', text: this.text(priceRule.text), icon: '🏷️' };
+      }
+    }
     const currency = step.currency;
     const sellRatio = step.sellRatio ?? 0.5;
     const hagbledPrices: Record<number, number> = {};
@@ -1786,6 +1797,18 @@ export class GameEngine {
     if (chosen.goto) {
       return { type: 'navigate' as const, scene: chosen.goto };
     }
+  }
+
+  /** Tramo de dado: primero por dado natural, luego por total dentro de [min, max] */
+  private pickDiceTier(step: DiceStep, roll: number, total: number) {
+    if (!step.tiers?.length) return null;
+    const natural = step.tiers.find((t) => t.natural !== undefined && t.natural === roll);
+    if (natural) return natural;
+    return (
+      step.tiers.find(
+        (t) => t.natural === undefined && (t.min === undefined || total >= t.min) && (t.max === undefined || total <= t.max)
+      ) ?? null
+    );
   }
 
   private getDiceOutcome(step: DiceStep, outcome: string) {

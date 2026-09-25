@@ -13,6 +13,7 @@ interface StepCondition {
   stats?: Record<string, string>;          // { "perception": ">=50" }
   flags?: Record<string, boolean>;         // { "intro_done": true }
   inventory?: string[];                    // ["sword", "key"]
+  notInventory?: string[];                 // ["sal"] — items que NO debe tener
   visitedScenes?: string[];                // ["tienda", "callejon"]
   unvisitedScenes?: string[];              // ["final"]
   skillLevel?: Record<string, string>;     // { "fireball": ">=2" }

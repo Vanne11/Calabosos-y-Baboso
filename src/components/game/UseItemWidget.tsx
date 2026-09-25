@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useAppStore } from '../../store/useAppStore';
 
 const Container = styled.div`
   margin: 1rem 0;
@@ -94,6 +95,8 @@ const UseItemWidget: React.FC<UseItemWidgetProps> = ({
     }
   };
 
+  const itemDefs = useAppStore((st) => st.engine?.items) ?? {};
+
   return (
     <Container>
       {description && <Description>{description}</Description>}
@@ -105,7 +108,7 @@ const UseItemWidget: React.FC<UseItemWidgetProps> = ({
           $selected={selectedItem === item}
           onClick={() => setSelectedItem(item)}
         >
-          {selectedItem === item ? '✓ ' : ''}{item}
+          {selectedItem === item ? '✓ ' : ''}{itemDefs[item]?.name ?? item}
         </SelectButton>
       ))}
 

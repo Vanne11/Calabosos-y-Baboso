@@ -2,7 +2,145 @@
   "scenes": {
     "acto1_plaza": {
       "scenario": {
-        "name": "Acto I: El Pueblo",
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg",
+        "description": "La plaza de Viscaria: huele a pescado, a sudor y a decisiones que vas a lamentar."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Dónde estoy? ¿Quién eres? ¿Por qué me llamas BOB?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Estás en Viscaria, obviamente. Y yo soy el Narrador, tu guía y, técnicamente, tu jefe. Lo de BOB me pareció simpático."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "No entiendo nada. ¿Qué se supone que debo hacer?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Versión resumida: entras al Abismo de las Babosas, derrotas al Rey Baboso, vuelves como héroe. Calabozos, monstruos viscosos y muerte probable. Lo típico."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Y si me niego?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¡Qué adorable! Crees que tienes elección. Tengo seis historias más que narrar después de ti. ¿Por las buenas o por las malas?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Está bien, acepto la misión. ¿Cuál es el plan?»",
+              "goto": "acto1_decision",
+              "tags": [
+                "obediente"
+              ]
+            },
+            {
+              "text": "«Ni hablar. Buscaré una taberna y me emborracharé.»",
+              "goto": "acto1_taberna",
+              "tags": [
+                "borracho"
+              ]
+            },
+            {
+              "text": "«¿Y qué gano yo con todo esto?»",
+              "goto": "acto1_negociar_narrador",
+              "tags": [
+                "codicioso"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_negociar_narrador": {
+      "scenario": {
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "persuadir",
+          "npc": "narrator",
+          "maxTurns": 4,
+          "intro": [
+            "¿Ganar? ¿Además del privilegio de ser narrado por MÍ?",
+            "Bien. Convénceme de que mereces una recompensa. Tienes pocos turnos y yo tengo mucha paciencia. Mentira, no tengo."
+          ],
+          "vars": {
+            "objetivo": "que el Narrador le prometa una recompensa decente por salvar el reino",
+            "debilidad": "su ego enorme: ama que alaben su voz, su prosa y su talento para narrar"
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 14,
+            "description": "Negociar tu recompensa con el Narrador"
+          },
+          "outcomes": {
+            "success": {
+              "text": "Está bien, está bien. Te prometo una recompensa digna. Y toma, un adelanto, para que veas que soy generoso (cuando me adulan).",
+              "effects": {
+                "stats": {
+                  "dinero": 15
+                },
+                "flags": {
+                  "promesa_recompensa": true
+                }
+              },
+              "goto": "acto1_decision"
+            },
+            "partial": {
+              "text": "Te prometo... una estatua. De barro. Pequeña. En un rincón. Tómalo o déjalo.",
+              "effects": {
+                "flags": {
+                  "promesa_estatua": true
+                }
+              },
+              "goto": "acto1_decision"
+            },
+            "failure": {
+              "text": "Tu recompensa será seguir vivo. A veces. Ahora muévete.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              },
+              "goto": "acto1_decision"
+            }
+          }
+        }
+      ]
+    },
+    "acto1_decision": {
+      "scenario": {
+        "name": "Plaza Principal",
         "image": "images/scenarios/plaza.png",
         "music": "audio/rpgchip03_town.ogg"
       },
@@ -11,101 +149,56 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "La plaza principal de Viscaria. Huele a pescado, a sudor y a decisiones que vas a lamentar.",
-            "[dim](Acto I en construcción: dinero, tienda, taberna, callejón y Nerly.)[/dim]",
-            "Un perro callejero sale de detrás de un barril. Tiene tres ojos, una oreja y ninguna paciencia. Te gruñe."
-          ]
+            "El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como héroe. Bla, bla, bla.",
+            "¿Ves esa tienda? La del letrero «ARTÍCULOS PARA AVENTUREROS SUICIDAS». Sí, esa."
+          ],
+          "condition": {
+            "flags": {
+              "plan_explicado": false
+            }
+          }
         },
         {
-          "type": "choice",
-          "options": [
-            {
-              "text": "Plantarle cara (tirada de qué tan sexi)",
-              "goto": "acto1_perro_valiente",
-              "tags": [
-                "valiente"
-              ]
-            },
-            {
-              "text": "Huir gritando",
-              "effects": {
-                "stats": {
-                  "miedo": 45,
-                  "pis": 55
-                }
-              },
-              "goto": "acto1_perro_huida",
-              "tags": [
-                "cobarde"
-              ]
-            },
-            {
-              "text": "Intentar acariciarlo",
-              "effects": {
-                "stats": {
-                  "ganas_de_vivir": -60,
-                  "miedo": 30
-                }
-              },
-              "goto": "acto1_perro_caricia",
-              "tags": [
-                "temerario"
-              ]
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "plan_explicado": true
             }
-          ]
-        }
-      ]
-    },
-    "acto1_perro_valiente": {
-      "scenario": {
-        "name": "Acto I: El Pueblo",
-        "image": "images/scenarios/plaza.png"
-      },
-      "sequence": [
+          }
+        },
         {
-          "type": "dice",
-          "stat": "sexi",
-          "difficulty": 11,
-          "faces": 20,
-          "description": "Mirada intimidante",
-          "results": {
-            "critical_success": {
-              "text": "Lo miras tan intensamente que el perro se sienta, te ofrece la pata y se va a buscar trabajo honrado.",
-              "effects": {
-                "stats": {
-                  "sexi": 10
-                }
-              }
-            },
-            "success": {
-              "text": "El perro evalúa la situación y decide que no vales la mordida. Se va. Ganaste, supongo.",
-              "effects": {
-                "stats": {
-                  "sexi": 5
-                }
-              }
-            },
-            "failure": {
-              "text": "El perro no se impresiona. Te muerde el trasero y se va con un trozo de pantalón.",
-              "effects": {
-                "stats": {
-                  "ganas_de_vivir": -20,
-                  "miedo": 25,
-                  "pis": 30,
-                  "sexi": -5
-                }
-              }
-            },
-            "critical_failure": {
-              "text": "Tropiezas al intentar verte amenazante. El perro te muerde, se ríe (los perros de Viscaria se ríen) y te orina encima.",
-              "effects": {
-                "stats": {
-                  "ganas_de_vivir": -35,
-                  "miedo": 40,
-                  "pis": 40,
-                  "sexi": -15
-                }
-              }
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Y con qué compro equipo? No tengo dinero."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": "<10"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Siempre hay algo, ¿verdad? Tendrás que conseguir dinero primero. Qué incómodo. Esto no estaba en el guion."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": "<10"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tienes {dinero} monedas. Una fortuna. Para una rata."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=10"
             }
           }
         },
@@ -113,79 +206,2392 @@
           "type": "choice",
           "options": [
             {
-              "text": "Seguir hacia el Abismo",
-              "goto": "acto2_camino"
+              "text": "Buscar un trabajo rápido (tablón de anuncios)",
+              "goto": "acto1_tablon",
+              "condition": {
+                "flags": {
+                  "trabajo_hecho": false
+                }
+              },
+              "tags": [
+                "trabajador"
+              ]
+            },
+            {
+              "text": "Buscar algo de valor que vender",
+              "goto": "acto1_relicario",
+              "condition": {
+                "flags": {
+                  "relicario_resuelto": false
+                }
+              }
+            },
+            {
+              "text": "Tomar prestado algo de dinero... sin permiso",
+              "goto": "acto1_robo",
+              "condition": {
+                "flags": {
+                  "robo_intentado": false
+                }
+              },
+              "tags": [
+                "ladron"
+              ]
+            },
+            {
+              "text": "Pedir un préstamo en la casa de empeños",
+              "goto": "acto1_prestamo",
+              "condition": {
+                "flags": {
+                  "deuda_prestamista": false,
+                  "prestamo_rechazado": false
+                }
+              }
+            },
+            {
+              "text": "Ir a la tienda del Tendero",
+              "goto": "acto1_tienda",
+              "condition": {
+                "stats": {
+                  "dinero": ">=10"
+                }
+              }
+            },
+            {
+              "text": "Ir a la tienda con los bolsillos vacíos (a ver qué pasa)",
+              "goto": "acto1_tienda",
+              "condition": {
+                "stats": {
+                  "dinero": "<10"
+                },
+                "flags": {
+                  "trabajo_hecho": true,
+                  "relicario_resuelto": true,
+                  "robo_intentado": true
+                }
+              }
             }
           ]
         }
       ]
     },
-    "acto1_perro_huida": {
+    "acto1_tablon": {
       "scenario": {
-        "name": "Acto I: El Pueblo",
-        "image": "images/scenarios/plaza.png"
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
       },
       "sequence": [
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Corres. Gritas. Corres gritando. Todo el pueblo lo ve. Un niño te señala.",
-            "El perro ni se movió. Solo quería ver hasta dónde llegabas."
+            "¡Qué iniciativa! Nada dice «héroe legendario» como un trabajo temporal mal pagado.",
+            "Las opciones son fascinantes: limpiador de establos, probador de pociones experimentales o ayudante del verdugo. Todas igual de terribles."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Limpiar establos (suena lo menos peligroso)",
+              "effects": {
+                "flags": {
+                  "trabajo_hecho": true
+                }
+              },
+              "goto": "acto1_establos"
+            },
+            {
+              "text": "Probar pociones (al menos será interesante)",
+              "effects": {
+                "flags": {
+                  "trabajo_hecho": true
+                }
+              },
+              "goto": "acto1_pociones",
+              "tags": [
+                "temerario"
+              ]
+            },
+            {
+              "text": "Ayudar al verdugo (debe pagar bien)",
+              "goto": "acto1_verdugo",
+              "condition": {
+                "flags": {
+                  "verdugo_rechazado": false
+                }
+              },
+              "tags": [
+                "cruel"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_verdugo": {
+      "scenario": {
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "No. Ni hablar. Esto es demasiado oscuro hasta para mí, y eso que te voy a dejar pelear con babosas gigantes.",
+            "Además el verdugo está de vacaciones. Se cortó a sí mismo. Larga historia."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "verdugo_rechazado": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver al tablón",
+              "goto": "acto1_tablon"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_establos": {
+      "scenario": {
+        "name": "Establos",
+        "image": "images/scenarios/establos.png",
+        "music": "audio/rpgchip03_town.ogg",
+        "description": "Caballos de guerra mutantes. Echan fuego por un extremo. Adivina cuál."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "dueno_establos",
+          "lines": [
+            "¿Vienes por el trabajo? Perfecto. Los caballos están de buen humor hoy. Solo quemaron a dos."
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
-          "lines": [],
+          "lines": [
+            "Te acercas con cautela a los caballos de guerra mutantes. Cautela que, sospecho, no va a servir de nada."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 16,
+          "faces": 20,
+          "description": "Limpiar el establo sin morir",
+          "results": {
+            "success": {
+              "text": "Sorprendentemente limpias el establo sin incidentes mayores. Solo un chamuscado en la capa y un mordisco superficial. ¡Casi un éxito! 70 monedas."
+            },
+            "failure": {
+              "text": "Limpias la mitad antes de que un caballo decida que tu pelo es comestible. Trabajo a medias, corte de pelo nuevo. 40 monedas."
+            }
+          },
+          "tiers": [
+            {
+              "text": "No debiste acercarte tanto al trasero del caballo. Lo que parecía un resoplido era... digamos que ahora sabes por qué les llaman «caballos de fuego». El dueño te da 10 monedas «por las molestias».",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -20,
+                  "miedo": 30,
+                  "dinero": 10
+                },
+                "addTraits": [
+                  "quemado"
+                ]
+              },
+              "natural": 1
+            },
+            {
+              "text": "Los caballos no solo te dejan limpiar: te ADORAN. Uno te regala una bolsita que tenía escondida en el pesebre. «¿Eres un encantador de caballos?», balbucea el dueño. 100 monedas y un amuleto que encontró en el estómago de un caballo.",
+              "effects": {
+                "stats": {
+                  "sexi": 15,
+                  "ganas_de_vivir": 5,
+                  "dinero": 100
+                },
+                "inventory": [
+                  "bolsa_misteriosa",
+                  "amuleto_equino"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "Cinco minutos y ya: un caballo te muerde el hombro, otro te pisa, un tercero te escupe algo verde. Es oficial: te odian. «Duraste más que el anterior», dice el dueño. 20 monedas.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -15,
+                  "miedo": 20,
+                  "dinero": 20
+                },
+                "inventory": [
+                  "baba_caballo"
+                ]
+              },
+              "max": 5
+            },
+            {
+              "text": "Limpias la mitad antes de que un caballo decida que tu pelo es comestible. Trabajo a medias, corte de pelo nuevo. 40 monedas.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -10,
+                  "sexi": -5,
+                  "dinero": 40
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Sorprendentemente limpias el establo sin incidentes mayores. Solo un chamuscado en la capa y un mordisco superficial. ¡Casi un éxito! 70 monedas.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5,
+                  "sexi": 5,
+                  "dinero": 70
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "¿Tienes un don con los animales? Los caballos te respetan. Limpias todo sin un rasguño. El dueño, atónito, te da 90 monedas y un silbato para caballos.",
+              "effects": {
+                "stats": {
+                  "sexi": 10,
+                  "dinero": 90
+                },
+                "inventory": [
+                  "silbato_caballos"
+                ]
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la plaza",
+              "goto": "acto1_decision"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_pociones": {
+      "scenario": {
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El alquimista del pueblo te pasa un frasco burbujeante de color «no». Te paga por adelantado, lo que ya es mala señal."
+          ]
+        },
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 1,
+              "text": "Te bebes la poción. Durante una hora solo puedes hablar en rimas. El alquimista toma notas, emocionado. 35 monedas.",
+              "effects": {
+                "stats": {
+                  "dinero": 35,
+                  "sexi": -5
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Te bebes la poción. Tu vejiga se llena al instante, como si hubieras tomado tres barriles. Es una poción diurética experimental. 40 monedas, y corre.",
+              "effects": {
+                "stats": {
+                  "dinero": 40,
+                  "pis": 60
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Te bebes la poción. Ves colores que no existen y a Dios, que resulta ser una babosa. 30 monedas y un trauma gratis.",
+              "effects": {
+                "stats": {
+                  "dinero": 30,
+                  "miedo": 25
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la plaza",
+              "goto": "acto1_decision"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_relicario": {
+      "scenario": {
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Veamos... tienes tu ropa, tu dignidad y... (revisando) ah, un relicario familiar en tu inventario. Qué conveniente que no lo mencionara antes."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": [
+              "relicario"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Un relicario? ¿De dónde salió?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Es parte de tu trasfondo, que acabo de inventar. Perteneció a tu abuela, que derrotó a un dragón con una cuchara de madera. O podrías vender tus zapatos, supongo."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Vender el relicario, supongo",
+              "goto": "acto1_empenos"
+            },
+            {
+              "text": "«Mis zapatos no, los necesito para la aventura»",
+              "goto": "acto1_zapatos"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_zapatos": {
+      "scenario": {
+        "name": "Plaza Principal",
+        "image": "images/scenarios/plaza.png",
+        "music": "audio/rpgchip03_town.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nadie te pidió los zapatos. Era una broma. Tu abuela y su cuchara te miran desde el más allá, decepcionadas."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Vender el relicario de una vez",
+              "goto": "acto1_empenos"
+            },
+            {
+              "text": "Guardar el relicario y volver",
+              "effects": {
+                "flags": {
+                  "relicario_resuelto": true
+                }
+              },
+              "goto": "acto1_decision",
+              "tags": [
+                "sentimental"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_empenos": {
+      "scenario": {
+        "name": "Casa de Empeños",
+        "image": "images/scenarios/casa_empenos.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Un edificio decrépito que huele a desesperación ajena."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tu pobre abuela se revolvería en su tumba. Por suerte, la cremaron."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "Mmm... oro de baja calidad, grabados mediocres, y esta gema... (la lame) es vidrio coloreado. Te doy 30 monedas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Está mintiendo. Vale al menos 100. Regatea. Con suerte y algo de encanto. Del que no tienes."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "removeInventory": [
+              "relicario"
+            ],
+            "flags": {
+              "relicario_resuelto": true
+            }
+          }
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 12,
+          "faces": 20,
+          "description": "Regatear con el prestamista",
+          "results": {
+            "success": {
+              "text": "«Está bien, está bien. 65 monedas y este mapa viejo que encontré en un cadáver la semana pasada.» El mapa todavía está tibio."
+            },
+            "failure": {
+              "text": "«Mira, te doy 40 y es mi oferta final.» Es la tercera «oferta final» que dice. Aceptas la cuarta."
+            }
+          },
+          "tiers": [
+            {
+              "text": "«¿Más? ¡JA! Ahora que lo miro, parece falsificado. 15 monedas, y me arriesgo.» Te acaba de estafar en tu cara. Y le diste las gracias.",
+              "effects": {
+                "stats": {
+                  "dinero": 15,
+                  "sexi": -10
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "«Nunca pensé que diría esto, pero me impresionaste. 100 monedas, un mapa del Abismo y una daga ceremonial.» Tu abuela sonríe desde las cenizas.",
+              "effects": {
+                "stats": {
+                  "dinero": 100,
+                  "sexi": 10
+                },
+                "inventory": [
+                  "mapa_detallado",
+                  "daga_ceremonial"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "«Tómalo o déjalo. No tengo todo el día.» Lo tomas. Siempre lo tomas. 30 monedas.",
+              "effects": {
+                "stats": {
+                  "dinero": 30
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "«Mira, te doy 40 y es mi oferta final.» Es la tercera «oferta final» que dice. Aceptas la cuarta.",
+              "effects": {
+                "stats": {
+                  "dinero": 40
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "«Está bien, está bien. 65 monedas y este mapa viejo que encontré en un cadáver la semana pasada.» El mapa todavía está tibio.",
+              "effects": {
+                "stats": {
+                  "dinero": 65
+                },
+                "inventory": [
+                  "mapa_sospechoso"
+                ]
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "«Sabes negociar. 80 monedas y este amuleto de protección que nadie quiere comprar.» Nadie. Nunca. Por algo será.",
+              "effects": {
+                "stats": {
+                  "dinero": 80
+                },
+                "inventory": [
+                  "amuleto_proteccion"
+                ]
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "Y si alguna vez necesitas un préstamo... ya sabes dónde encontrarme. Yo siempre sé dónde encontrarte a ti."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la plaza",
+              "goto": "acto1_decision"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_prestamo": {
+      "scenario": {
+        "name": "Casa de Empeños",
+        "image": "images/scenarios/casa_empenos.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Un edificio decrépito que huele a desesperación ajena."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "¿Un préstamo? Claro. Te presto 50 monedas. Me devuelves 100. Si no me pagas... te encuentro. Siempre te encuentro.",
+            "No es una amenaza. Es un servicio de atención al cliente muy personalizado."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Aceptar el préstamo (¿qué podría salir mal?)",
+              "effects": {
+                "stats": {
+                  "dinero": 50
+                },
+                "flags": {
+                  "deuda_prestamista": true
+                }
+              },
+              "goto": "acto1_decision",
+              "tags": [
+                "endeudado"
+              ]
+            },
+            {
+              "text": "Rechazarlo y retroceder lentamente",
+              "effects": {
+                "flags": {
+                  "prestamo_rechazado": true
+                }
+              },
+              "goto": "acto1_decision",
+              "tags": [
+                "prudente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_robo": {
+      "scenario": {
+        "name": "Mercado",
+        "image": "images/scenarios/mercado.png",
+        "music": "audio/rpgchip03_town.ogg",
+        "description": "El mercado: vendedores gritones, carteristas profesionales y un noble muy distraído."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¡Qué escandaloso! El héroe elegido recurriendo al hurto. Me encanta este giro argumental."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Solo lo tomaré prestado. Lo devolveré... algún día."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Claro, claro. Hay un noble gordo pavoneándose por el mercado. Bolsillos llenos, atención en otra parte. Finges admirar una estatua mientras deslizas la mano..."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "robo_intentado": true
+            }
+          }
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 13,
+          "faces": 20,
+          "description": "Robarle al noble",
+          "results": {
+            "success": {
+              "text": "¡Lo conseguiste! Una bolsa con 50 monedas. El crimen paga, aparentemente. Tu conciencia no opina; está durmiendo."
+            },
+            "failure": {
+              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de ladrón."
+            }
+          },
+          "tiers": [
+            {
+              "text": "¡MAGNÍFICO! El noble es el Jefe de la Guardia disfrazado. «¡Te tengo, ratero! Justo buscaba a alguien para una misión suicida. O vienes al Abismo o te pudres en las mazmorras.» Felicidades: ahora eres héroe obligado. Por ley.",
+              "effects": {
+                "stats": {
+                  "sexi": -30,
+                  "miedo": 20
+                },
+                "flags": {
+                  "reclutado_por_guardia": true
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "¡Por todas las babosas! 100 monedas, una llave misteriosa y un mapa parcial del Abismo. El noble ni se entera. Deberías cambiar de profesión.",
+              "effects": {
+                "stats": {
+                  "dinero": 100,
+                  "ganas_de_vivir": 10
+                },
+                "inventory": [
+                  "llave_misteriosa",
+                  "mapa_parcial"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "«¡LADRÓN! ¡GUARDIAS!» Oh, esto no pinta bien. Corre, BOB, ¡CORRE! Corres. Algo cálido baja por tu pierna. No es sudor.",
+              "effects": {
+                "stats": {
+                  "sexi": -15,
+                  "miedo": 15,
+                  "pis": 20
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de ladrón.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "¡Lo conseguiste! Una bolsa con 50 monedas. El crimen paga, aparentemente. Tu conciencia no opina; está durmiendo.",
+              "effects": {
+                "stats": {
+                  "dinero": 50,
+                  "sexi": -10,
+                  "ganas_de_vivir": 5
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "¡Impresionante! 80 monedas y un amuleto extraño. Útil o basura brillante, quién sabe. Tu confianza sube. Tu moral baja.",
+              "effects": {
+                "stats": {
+                  "dinero": 80,
+                  "sexi": -5,
+                  "miedo": -5
+                },
+                "inventory": [
+                  "amuleto_extrano"
+                ]
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "jefe_guardia",
+          "lines": [
+            "Te espero en la puerta de la ciudad. Si no apareces, te buscaré. Y créeme, no soy el único que te está buscando."
+          ],
+          "condition": {
+            "flags": {
+              "reclutado_por_guardia": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Alejarse silbando",
+              "goto": "acto1_decision"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_tienda": {
+      "scenario": {
+        "name": "Tienda del Tendero",
+        "image": "images/scenarios/tienda.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "¡Bienvenido a mi humilde es... estab... tienda! ¿Qué te ofrezco para tu in-inevitable... digo, emocionante aventura? *hic*"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nuestro amigo ha estado probando su propio inventario de pociones. Aprovecha para regatear."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Necesito equipo para entrar al Abismo de las Babosas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "¿El Abismo? *hic* ¡Ja! Nadie vuelve de ahí... ¡excepto yo! Fui tres... no, siete veces. O fue un sueño. *hic*",
+            "Tengo la mejor espada de Viscaria, un bolso de escr... escro... piel de elefante muy espacioso, y sal. La sal mata babosas. Muy cara.",
+            "Normalmente todo serían 500 monedas pero... (mira confundido una botella vacía) ¿cuánto tienes?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Tengo {dinero} monedas.» (la verdad)",
+              "goto": "acto1_regateo",
+              "tags": [
+                "honesto"
+              ]
+            },
+            {
+              "text": "«Tengo... la mitad de eso.» (mentir para regatear)",
+              "effects": {
+                "flags": {
+                  "mintio_tendero": true
+                }
+              },
+              "goto": "acto1_regateo",
+              "tags": [
+                "mentiroso"
+              ]
+            },
+            {
+              "text": "«¿Aceptas trueque?»",
+              "goto": "acto1_regateo",
+              "tags": [
+                "regateador"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_regateo": {
+      "scenario": {
+        "name": "Tienda del Tendero",
+        "image": "images/scenarios/tienda.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "negociar",
+          "npc": "tendero",
+          "maxTurns": 4,
+          "intro": [
+            "Mmm... *hic* A ver, convénceme. Pero te aviso: mi último descuento le costó un dedo a un cliente. No preguntes cómo."
+          ],
+          "vars": {
+            "objeto": "el kit del aventurero suicida: espada oxidada, bolso de escroto de elefante, sal, pociones y pañales",
+            "precio_inicial": "500 monedas (aunque en realidad se conforma con menos)",
+            "precio_minimo": "la mitad de lo que suele cobrar",
+            "npc_descripcion": "Un vendedor borracho, sentimental y llorón. Hipa al hablar (*hic*). Si le recuerdan a su hermano muerto o le hacen reír, se ablanda."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 12,
+            "description": "Regatear con el Tendero borracho"
+          },
+          "outcomes": {
+            "success": {
+              "text": "El Tendero rompe a llorar: «¡Eres igual que mi hermano!» *hic* Te hace un descuento enorme y te abraza. Hueles a licor ajeno.",
+              "effects": {
+                "flags": {
+                  "descuento_grande": true
+                },
+                "stats": {
+                  "sexi": 5
+                }
+              },
+              "goto": "acto1_tienda_compra"
+            },
+            "partial": {
+              "text": "«Me caes bien. O eres un espejismo. *hic* Un poquito de descuento, nada más.»",
+              "effects": {
+                "flags": {
+                  "descuento_chico": true
+                }
+              },
+              "goto": "acto1_tienda_compra"
+            },
+            "failure": {
+              "text": "«¿ESTÁS INTENTANDO ESTAFARME? *hic* ¡Mi abuelo murió por culpa de un regateo! ¡Todo te costará más!»",
+              "effects": {
+                "flags": {
+                  "precio_ofendido": true
+                },
+                "stats": {
+                  "sexi": -5
+                }
+              },
+              "goto": "acto1_tienda_compra"
+            }
+          }
+        }
+      ]
+    },
+    "acto1_tienda_compra": {
+      "scenario": {
+        "name": "Tienda del Tendero",
+        "image": "images/scenarios/tienda.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
+      },
+      "sequence": [
+        {
+          "type": "shop",
+          "title": "Artículos para Aventureros Suicidas",
+          "currency": "dinero",
+          "priceMultipliers": [
+            {
+              "condition": {
+                "flags": {
+                  "descuento_grande": true
+                }
+              },
+              "multiplier": 0.5,
+              "text": "Descuento de «hermano muerto»: todo a mitad de precio."
+            },
+            {
+              "condition": {
+                "flags": {
+                  "descuento_chico": true
+                }
+              },
+              "multiplier": 0.8,
+              "text": "Descuento de «me caes bien»: 20% menos."
+            },
+            {
+              "condition": {
+                "flags": {
+                  "precio_ofendido": true
+                }
+              },
+              "multiplier": 1.5,
+              "text": "Precio de «ofendiste a mi abuelo»: 50% más caro."
+            }
+          ],
+          "items": [
+            {
+              "id": "escroto_elefante",
+              "name": "Bolso de escroto de elefante",
+              "price": 15,
+              "description": "Tratado en sal para reducir su tamaño, pero no su capacidad. Guarda todas tus monedas. No preguntes más."
+            },
+            {
+              "id": "espada_oxidada",
+              "name": "Espada oxidada",
+              "price": 25,
+              "description": "La mejor espada de Viscaria, según el Tendero. El óxido es decorativo. Casi todo."
+            },
+            {
+              "id": "sal",
+              "name": "Saco de sal",
+              "price": 12,
+              "description": "Mata babosas. No la acerques a Nerly. Todavía no sabes quién es Nerly. Ya sabrás."
+            },
+            {
+              "id": "pocion_sospechosa",
+              "name": "Poción sospechosa",
+              "price": 10,
+              "description": "Recupera ganas de vivir. O te da hipo. Una de dos."
+            },
+            {
+              "id": "panal",
+              "name": "Pañal de aventurero",
+              "price": 6,
+              "description": "Para cuando el miedo gane. Porque va a ganar."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.5,
+          "haggle": {
+            "stat": "sexi",
+            "difficulty": 12,
+            "maxAttempts": 3,
+            "difficultyIncrease": 2,
+            "successText": "*hic* Bueno, bueno, te lo dejo más barato. Por tu linda cara. O la de tu hermano. ¿Tienes hermano?",
+            "failText": "*hic* ¡Más caro! ¡Por insolente!"
+          },
+          "steal": {
+            "stat": "sexi",
+            "difficulty": 15,
+            "maxAttempts": 1,
+            "successText": "Te lo metes en la mochila. El Tendero está tan borracho que te da las gracias por la compra.",
+            "failText": "El Tendero te ve. Está borracho, no ciego.",
+            "bustGoto": "acto1_expulsado",
+            "bustText": "«¡LADRÓN! *hic* ¡FUERA!» Te echa a patadas. Con puntería sorprendente.",
+            "bustEffects": {
+              "stats": {
+                "sexi": -10,
+                "ganas_de_vivir": -10
+              }
+            }
+          },
+          "goto": "acto1_tienda_salida"
+        }
+      ]
+    },
+    "acto1_expulsado": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Aterrizas de cara en el callejón de al lado. Qué conveniente: justo por donde yo quería que fueras."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Levantarte con la dignidad que te queda",
+              "goto": "acto1_callejon",
+              "tags": [
+                "ladron"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_tienda_salida": {
+      "scenario": {
+        "name": "Tienda del Tendero",
+        "image": "images/scenarios/tienda.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "Cuídate ahí abajo. Y si ves a mi primo, el tendero de las alcantarillas, dile que me debe dinero. *hic*"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Felicidades: tienes el equipo básico de cualquier suicida profesional. Tus ganas de vivir bajaron un poco solo por estar en esta tienda."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ganas_de_vivir": -5
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y ese bolso... no pienses de dónde viene. Solo úsalo."
+          ],
+          "condition": {
+            "inventory": [
+              "escroto_elefante"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Ir hacia la puerta de la ciudad",
+              "goto": "acto1_callejon"
+            },
+            {
+              "text": "Tomar un descanso en la taberna",
+              "goto": "acto1_taberna",
+              "condition": {
+                "flags": {
+                  "taberna_visitada": false
+                }
+              },
+              "tags": [
+                "borracho"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_taberna": {
+      "scenario": {
+        "name": "Taberna «La Babosa Ebria»",
+        "image": "images/scenarios/taberna.png",
+        "music": "audio/rpgchip05_pavane.ogg",
+        "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "taberna_visitada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La taberna «La Babosa Ebria». Aquí viene la gente a olvidar. Tú vas a venir a que te recuerden por las razones equivocadas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "bardo",
+          "lines": [
+            "¡Eh, tú, el de la cara de «soy el elegido»! Aquí nadie bebe gratis sin ganarse el respeto.",
+            "Guerra de rap. Tú contra mí. Si ganas, la casa invita y te llevas el bote. Si pierdes... te bañamos en cerveza tibia."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una babosa con laúd y gafas de sol te desafía a una guerra de rap. En serio. Esto está pasando."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Aceptar la guerra de rap",
+              "goto": "acto1_rap",
+              "tags": [
+                "charlatan"
+              ]
+            },
+            {
+              "text": "Solo pedir una cerveza",
+              "goto": "acto1_cerveza",
+              "tags": [
+                "borracho"
+              ]
+            },
+            {
+              "text": "Irse con la cola entre las piernas",
+              "goto": "acto1_taberna_salida",
+              "tags": [
+                "cobarde"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_rap": {
+      "scenario": {
+        "name": "Taberna «La Babosa Ebria»",
+        "image": "images/scenarios/taberna.png",
+        "music": "audio/rpgchip05_pavane.ogg",
+        "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "rap",
+          "npc": "bardo",
+          "maxTurns": 3,
+          "intro": [
+            "(El público golpea las mesas. Alguien vomita al ritmo.)",
+            "Yo empiezo, novato: «Llegó el elegido, qué miedo me da / tiene menos flow que una babosa en la sal»."
+          ],
+          "vars": {
+            "rival_nombre": "Bardo Babosa",
+            "rival_descripcion": "una babosa verde lima con laúd diminuto, gafas de sol y cadena de oro falso. Se cree la estrella de la taberna. Presume de su baba brillante y odia la sal."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 12,
+            "description": "Guerra de rap contra el Bardo Babosa"
+          },
+          "outcomes": {
+            "success": {
+              "text": "¡La taberna explota! El público te levanta en hombros (pegajosos). El Bardo, humillado, te da el bote y se va a llorar al baño.",
+              "effects": {
+                "stats": {
+                  "sexi": 10,
+                  "dinero": 20
+                },
+                "flags": {
+                  "rap_ganado": true
+                }
+              },
+              "goto": "acto1_taberna_salida"
+            },
+            "partial": {
+              "text": "Empate técnico. El público no sabe a quién abuchear, así que abuchea a los dos. El Bardo te da la mano. Está mojada. No preguntes.",
+              "effects": {
+                "stats": {
+                  "sexi": 3
+                }
+              },
+              "goto": "acto1_taberna_salida"
+            },
+            "failure": {
+              "text": "El público decide: te bañan en cerveza tibia. El Bardo hace una reverencia. Tu dignidad se va por el desagüe.",
+              "effects": {
+                "stats": {
+                  "sexi": -10,
+                  "pis": 15
+                },
+                "flags": {
+                  "rap_perdido": true
+                }
+              },
+              "goto": "acto1_taberna_salida"
+            }
+          }
+        }
+      ]
+    },
+    "acto1_cerveza": {
+      "scenario": {
+        "name": "Taberna «La Babosa Ebria»",
+        "image": "images/scenarios/taberna.png",
+        "music": "audio/rpgchip05_pavane.ogg",
+        "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
+      },
+      "sequence": [
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 2,
+              "text": "La cerveza sabe a baba y a arrepentimiento. Te sientes más valiente. Y con muchas ganas de ir al baño.",
+              "effects": {
+                "stats": {
+                  "miedo": -20,
+                  "pis": 35,
+                  "dinero": -3
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Te duermes sobre la mesa. Despiertas con un bigote dibujado y 5 monedas menos. El Bardo sonríe demasiado.",
+              "effects": {
+                "stats": {
+                  "dinero": -5,
+                  "sexi": -5
+                }
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Terminas cantando a dúo con un borracho. Resulta que eres bueno. Te dan propina. El Bardo te mira con odio.",
+              "effects": {
+                "stats": {
+                  "dinero": 8,
+                  "sexi": 5
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Salir de la taberna",
+              "goto": "acto1_taberna_salida"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_taberna_salida": {
+      "scenario": {
+        "name": "Taberna «La Babosa Ebria»",
+        "image": "images/scenarios/taberna.png",
+        "music": "audio/rpgchip05_pavane.ogg",
+        "description": "Mesas pegajosas, clientes pegajosos, cerveza pegajosa. Todo es pegajoso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Muy bonito todo, pero no viniste a beber. Bueno, sí. Pero la historia no. Al trabajo."
+          ],
+          "condition": {
+            "unvisitedScenes": [
+              "acto1_tienda"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Suficiente vida nocturna. El Abismo no se va a conquistar solo. Aunque contigo, quizás sería mejor."
+          ],
+          "condition": {
+            "visitedScenes": [
+              "acto1_tienda"
+            ]
+          }
+        },
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "unvisitedScenes": [
+                  "acto1_tienda"
+                ]
+              },
+              "goto": "acto1_decision"
+            },
+            {
+              "goto": "acto1_callejon"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_callejon": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "No tan rápido, BOB. Según el guion, ahora tomas un callejón inquietante y potencialmente mortal porque... bueno, porque lo digo yo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Por qué tengo que venir por aquí?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Desarrollo de personaje, atmósfera, tensión narrativa. Elige la excusa que más te guste."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Un sonido viscoso sale de las sombras. Debe ser una rata. O un asesino. ¿Por qué no vas a investigar?"
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Investigar el sonido",
+              "goto": "acto1_nerly",
+              "tags": [
+                "curioso"
+              ]
+            },
+            {
+              "text": "Ignorarlo y seguir adelante",
+              "effects": {
+                "stats": {
+                  "miedo": 10
+                }
+              },
+              "goto": "acto1_callejon_ignorar",
+              "tags": [
+                "cobarde"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_callejon_ignorar": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Qué bonito intento. Das tres pasos y el sonido viscoso te sigue. Das tres más: te sigue. Te das vuelta."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Esto es lo que llamamos «libre albedrío ilusorio». Es mi favorito."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Mirar qué es, ya que insistes",
+              "goto": "acto1_nerly"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_nerly": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Entre la basura ves una pequeña babosa de un azul brillante, casi luminoso. Te mira. Parpadea. Las babosas no parpadean."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Hola! ¿Eres el nuevo héroe?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Una babosa que habla?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Disculpa, pero «babosa» es un poco despectivo. Prefiero «entidad gastropódica semitranslúcida». Pero puedes llamarme Nerly."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Genial. Una babosa políticamente correcta. La historia mejora a cada minuto."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Sé que vas al Abismo. Conozco sus caminos y las debilidades de los monstruos de ahí. Puedo ser tu guía."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«¿Por qué debería confiar en una babosa?»",
+              "goto": "acto1_nerly_explica",
+              "tags": [
+                "desconfiado"
+              ]
+            },
+            {
+              "text": "«Gracias. Me vendría bien la ayuda.»",
+              "effects": {
+                "affinity": {
+                  "nerly": 10
+                }
+              },
+              "goto": "acto1_nerly_se_une",
+              "tags": [
+                "amable"
+              ]
+            },
+            {
+              "text": "«¿Y tú qué ganas con esto?»",
+              "goto": "acto1_nerly_motivo",
+              "tags": [
+                "codicioso"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_nerly_explica": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Porque la alternativa es entrar solo al Abismo. Y tú, con todo respeto, tienes cara de morir en el primer pasillo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tiene razón. Lo tengo anotado en mis apuestas."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Vale. Vienes conmigo.»",
+              "goto": "acto1_nerly_se_une"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_nerly_motivo": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¿Yo? Digamos que el Rey Baboso y yo tenemos... historia. Y que no todas las babosas estamos de su lado."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Algún día te lo contaré. Si sobrevives. Lo cual, estadísticamente..."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Oh. Un misterio. Qué emoción. Tomaré nota por si alguna vez importa. (Importa.)"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nerly_misterio": true
+            },
+            "affinity": {
+              "nerly": 5
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Está bien. Vamos juntos.»",
+              "goto": "acto1_nerly_se_une"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_nerly_se_une": {
+      "scenario": {
+        "name": "Callejón Lateral",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip09_rainy_streets.ogg",
+        "description": "Oscuro y húmedo. Algo hace ruidos viscosos en las sombras."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "nerly_joined": true
+            },
+            "affinity": {
+              "nerly": 10
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "discovery",
+          "title": "Nerly se une al grupo",
+          "text": "Una babosa azul, políticamente correcta y sospechosamente bien informada.",
+          "icon": "🐌"
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Excelente! Sabía que eras diferente. La mayoría intenta pisarme o echarme sal. A propósito... ¿no llevas sal, verdad?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Ay, sí llevas! Mantenla lejos de mí. Es mortal para mi especie."
+          ],
+          "condition": {
+            "inventory": [
+              "sal"
+            ]
+          }
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 15,
+          "faces": 20,
+          "description": "Guardar la sal con cuidado delante de Nerly",
+          "results": {
+            "success": {
+              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser cuidadoso. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»"
+            },
+            "failure": {
+              "text": "Guardas la sal, pero Nerly mantiene una distancia prudente. «Avísame antes de usarla, ¿sí? Para ponerme a cubierto.»"
+            }
+          },
+          "tiers": [
+            {
+              "text": "Tropiezas. El saco se abre. La sal cae sobre Nerly. «¡AAAAH! ¡ME DERRIIIITOOO!» Nerly se disuelve en un charquito azul burbujeante... que, tras un minuto eterno, se vuelve a juntar. «Las babosas regeneramos», jadea. «Pero te odio un poquito.»",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -25,
+                  "sexi": -30
+                },
+                "removeInventory": [
+                  "sal"
+                ],
+                "affinity": {
+                  "nerly": -40
+                },
+                "flags": {
+                  "nerly_derretida": true
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "Divides la sal en bolsitas etiquetadas con un cuidado casi ceremonial. Nerly te mira emocionada: «Nunca un humano fue tan considerado. Te enseñaré a hacer un ungüento anti-sal para que luchemos juntos.»",
+              "effects": {
+                "stats": {
+                  "sexi": 20
+                },
+                "affinity": {
+                  "nerly": 30
+                },
+                "flags": {
+                  "taxonomia_babosa": true,
+                  "alianza_babosa": true
+                }
+              },
+              "natural": 20
+            },
+            {
+              "text": "Intentas guardar la sal, pero el saco tiene un agujero. Unos granos caen sobre Nerly. «¡AY! Ahora tengo una ampolla del tamaño de una moneda.»",
+              "effects": {
+                "stats": {
+                  "sexi": -15
+                },
+                "affinity": {
+                  "nerly": -15
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Guardas la sal, pero Nerly mantiene una distancia prudente. «Avísame antes de usarla, ¿sí? Para ponerme a cubierto.»",
+              "effects": {
+                "affinity": {
+                  "nerly": -5
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser cuidadoso. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                },
+                "affinity": {
+                  "nerly": 10
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Envuelves la sal en un paño y la guardas al fondo. Nerly se relaja. «No todas las babosas somos iguales. Te enseñaré cuáles merecen sal.»",
+              "effects": {
+                "stats": {
+                  "sexi": 15
+                },
+                "affinity": {
+                  "nerly": 20
+                },
+                "flags": {
+                  "taxonomia_babosa": true
+                }
+              },
+              "min": 16
+            }
+          ],
+          "condition": {
+            "inventory": [
+              "sal"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Bueno, vamos a la puerta de la ciudad. Hay un guardia al que vas a tener que convencer."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Ir a la puerta de la ciudad",
+              "goto": "acto1_puerta"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_puerta": {
+      "scenario": {
+        "name": "Puerta de la Ciudad",
+        "image": "images/scenarios/puerta_ciudad.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "jefe_guardia",
+          "lines": [
+            "Ah, mi reclutado favorito. Tus papeles están en orden porque yo los firmé. Adelante, a morir por el reino."
+          ],
+          "condition": {
+            "flags": {
+              "reclutado_por_guardia": true
+            }
+          }
+        },
+        {
+          "type": "branch",
+          "condition": {
+            "flags": {
+              "reclutado_por_guardia": true
+            }
+          },
+          "branches": [
+            {
+              "goto": "acto1_salida"
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "guardias",
+          "lines": [
+            "Alto ahí. Nadie sale de la ciudad sin permiso especial."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Qué cliché. Siempre hay un guardia impidiendo avanzar en estas historias."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Necesito salir para ir al Abismo de las Babosas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "guardias",
+          "lines": [
+            "¿El Abismo? ¿Estás loco? Nadie va allí voluntariamente. Necesitas un Permiso de Salida Suicida firmado por el administrador de misiones heroicas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Pst. El administrador es un burócrata insufrible. Pero conozco a alguien más... flexible."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Buscar ese permiso",
+              "goto": "acto1_mago",
+              "tags": [
+                "obediente"
+              ]
+            },
+            {
+              "text": "«¿No hay otra forma de salir?» (saltar el muro)",
+              "goto": "acto1_muro",
+              "tags": [
+                "temerario"
+              ]
+            },
+            {
+              "text": "«Soy el héroe elegido. Déjenme pasar.»",
+              "goto": "acto1_intimidar",
+              "tags": [
+                "valiente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_muro": {
+      "scenario": {
+        "name": "Puerta de la Ciudad",
+        "image": "images/scenarios/puerta_ciudad.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Saltar el muro? ¿Con esos brazos? Bueno, adelante. Me encantan las caídas."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 18,
+          "faces": 20,
+          "description": "Escalar el muro de la ciudad",
+          "results": {
+            "critical_success": {
+              "text": "Escalas como una araña con autoestima. Los guardias te aplauden sin querer. Estás fuera.",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                }
+              },
+              "goto": "acto1_salida"
+            },
+            "success": {
+              "text": "Subes, resbalas, subes otra vez y caes del lado correcto. Casi con estilo.",
+              "goto": "acto1_salida"
+            },
+            "failure": {
+              "text": "Subes medio metro y caes de espaldas. Los guardias ni se molestan en detenerte: se ríen demasiado.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -15,
+                  "sexi": -5
+                }
+              },
+              "goto": "acto1_mago"
+            },
+            "critical_failure": {
+              "text": "Caes de cabeza sobre un carro de coles. El dueño del carro te cobra las coles. Y la dignidad.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -25,
+                  "dinero": -5,
+                  "sexi": -10
+                }
+              },
+              "goto": "acto1_mago"
+            }
+          }
+        }
+      ]
+    },
+    "acto1_intimidar": {
+      "scenario": {
+        "name": "Puerta de la Ciudad",
+        "image": "images/scenarios/puerta_ciudad.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
+      },
+      "sequence": [
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 16,
+          "faces": 20,
+          "description": "Intimidar a los guardias",
+          "results": {
+            "critical_success": {
+              "text": "Tu mirada es tan intensa que un guardia se pone a llorar y el otro te abre la puerta. «Perdón, señor elegido.»",
+              "effects": {
+                "stats": {
+                  "sexi": 15
+                }
+              },
+              "goto": "acto1_salida"
+            },
+            "success": {
+              "text": "Los guardias se miran, se encogen de hombros y te dejan pasar. No les pagan lo suficiente para esto.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              },
+              "goto": "acto1_salida"
+            },
+            "failure": {
+              "text": "«Ajá. Y yo soy el Rey Baboso.» Te ignoran. Nerly suspira. Hay que buscar ese permiso.",
+              "effects": {
+                "stats": {
+                  "sexi": -5
+                }
+              },
+              "goto": "acto1_mago"
+            },
+            "critical_failure": {
+              "text": "Te pones de puntillas para parecer más alto. Se te escapa un gallo. Los guardias te hacen una foto mental para siempre.",
+              "effects": {
+                "stats": {
+                  "sexi": -15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto1_mago"
+            }
+          }
+        }
+      ]
+    },
+    "acto1_mago": {
+      "scenario": {
+        "name": "Callejón del Mago",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Humo morado y olor a queso rancio. Nunca buena señal."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "No necesitamos al administrador. Conozco a alguien que puede ayudarnos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "mago",
+          "lines": [
+            "¡Vaya, vaya! ¿Qué tenemos aquí? Un aspirante a héroe y su... mascota viscosa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡No soy una mascota!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "mago",
+          "lines": [
+            "Necesitas un permiso. Puedo conseguirte uno por un módico precio: un mechón de tu pelo, tres gotas de tu sangre y el nombre de tu primer amor. O 50 monedas. Lo que prefieras."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Este tipo da escalofríos. Y eso que he narrado historias sobre demonios del inframundo."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Aquí tienes 50 monedas.»",
+              "effects": {
+                "stats": {
+                  "dinero": -50
+                }
+              },
+              "goto": "acto1_permiso",
+              "condition": {
+                "stats": {
+                  "dinero": ">=50"
+                }
+              },
+              "tags": [
+                "pagador"
+              ]
+            },
+            {
+              "text": "«¿Para qué quieres mi pelo y mi sangre?»",
+              "goto": "acto1_mago_truco",
+              "tags": [
+                "curioso"
+              ]
+            },
+            {
+              "text": "«No tengo 50 monedas.» (mirar al suelo)",
+              "goto": "acto1_mago_truco",
+              "condition": {
+                "stats": {
+                  "dinero": "<50"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_mago_truco": {
+      "scenario": {
+        "name": "Callejón del Mago",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Humo morado y olor a queso rancio. Nunca buena señal."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "mago",
+          "lines": [
+            "¿Para qué? ¡Para la MAGIA, claro! Pero ya que preguntas... hagamos esto a mi manera. ¡Necesito un voluntario para mi siguiente truco!"
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 13,
+          "faces": 20,
+          "description": "Ser el asistente del Mago",
+          "results": {
+            "success": {
+              "text": "Le das un botón. Lo transforma en... un botón ligeramente más brillante. «Brilla en la oscuridad. Útil para no tropezar.» Casi útil."
+            },
+            "failure": {
+              "text": "Convierte agua en «vino» (jugo de uva con colorante) con tu «financiación mágica». Te devuelve 5 monedas por ser buen deportista."
+            }
+          },
+          "tiers": [
+            {
+              "text": "El Mago agita un pañuelo sobre tu cabeza y... ¡POOF! Tu pelo ahora es rosa brillante. «¡Ups! Eso debía convertir tus monedas en palomas. Se quita en una semana. O un año.»",
+              "effects": {
+                "stats": {
+                  "sexi": -15,
+                  "ganas_de_vivir": -10
+                },
+                "addTraits": [
+                  "pelo_rosa"
+                ]
+              },
+              "natural": 1
+            },
+            {
+              "text": "Pone un cristal en tu mano. Piensas en un lugar y el cristal lo proyecta en el aire. El Mago palidece: «No esperaba que funcionara de verdad. Quédatelo. Y si sobrevives, búscame.»",
+              "effects": {
+                "stats": {
+                  "sexi": 20,
+                  "ganas_de_vivir": 10
+                },
+                "inventory": [
+                  "cristal_vision"
+                ],
+                "flags": {
+                  "afinidad_magica": true
+                }
+              },
+              "natural": 20
+            },
+            {
+              "text": "Le muestras tu bolsa para «comparar después». Unos pases mágicos y «¡ahora tienes una moneda extra!». Cuentas: tienes 20 menos. El Mago ya no está. Vuelve. Te da el permiso igual. Es un profesional.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5,
+                  "dinero": -20
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Convierte agua en «vino» (jugo de uva con colorante) con tu «financiación mágica». Te devuelve 5 monedas por ser buen deportista.",
+              "effects": {
+                "stats": {
+                  "dinero": -5
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Le das un botón. Lo transforma en... un botón ligeramente más brillante. «Brilla en la oscuridad. Útil para no tropezar.» Casi útil.",
+              "effects": {
+                "inventory": [
+                  "boton_luminiscente"
+                ]
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Hace desaparecer un huevo de tu mano. «Aparecerá cuando más lo necesites.» Más tarde lo encuentras en tu mochila, cubierto de runas que zumban.",
+              "effects": {
+                "stats": {
+                  "miedo": 5,
+                  "ganas_de_vivir": 5
+                },
+                "inventory": [
+                  "huevo_runico"
+                ]
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«¿Y mi permiso?»",
+              "goto": "acto1_permiso"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_permiso": {
+      "scenario": {
+        "name": "Callejón del Mago",
+        "image": "images/scenarios/callejon.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Humo morado y olor a queso rancio. Nunca buena señal."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Mago hace unos pases con las manos y aparece un papel oficial entre sus dedos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "mago",
+          "lines": [
+            "Un Permiso de Salida Suicida, completamente legal... más o menos. Y si alguien pregunta, nunca me has visto.",
+            "Por cierto, si sobrevives, pásate por mi espectáculo. Hago desaparecer babosas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Oye!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "mago",
+          "lines": [
+            "Es broma... o no. (Desaparece en una nube de humo que huele sospechosamente a queso rancio.)"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": [
+              "permiso_salida"
+            ],
+            "stats": {
+              "miedo": 15
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la puerta con el permiso",
+              "goto": "acto1_salida"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_salida": {
+      "scenario": {
+        "name": "Puerta de la Ciudad",
+        "image": "images/scenarios/puerta_ciudad.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Aquí tienen: un Permiso de Salida Suicida."
+          ],
+          "condition": {
+            "inventory": [
+              "permiso_salida"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "guardias",
+          "lines": [
+            "Mmm... parece auténtico. Aunque la firma está hecha con crayón.",
+            "Todos los permisos de este mes están así. El administrador tuvo un accidente con la tinta."
+          ],
+          "condition": {
+            "inventory": [
+              "permiso_salida"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "guardias",
+          "lines": [
+            "¿Deberíamos advertirle sobre lo que hay allá afuera?",
+            "Nah. Que lo descubra solo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y así, nuestro valiente o increíblemente estúpido protagonista dio sus primeros pasos hacia el Abismo de las Babosas.",
+            "Sin saber que el verdadero peligro no eran los monstruos... bueno, sí eran los monstruos. Pero yo también soy un peligro, a mi manera."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Vamos! El Abismo está a unas horas de camino. Si nos apuramos, llegamos antes del anochecer."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_joined": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tu pipí acumulado aumentó bastante con tanta conversación. Quizás deberías buscar un arbusto antes de seguir."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "pis": 20
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Fin del Acto I",
+          "text": "Saliste de la ciudad. Con {dinero} monedas, una babosa parlante y cero dignidad.",
+          "icon": "🏰"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Ir directo al Abismo",
+              "goto": "acto2_camino",
+              "tags": [
+                "valiente"
+              ]
+            },
+            {
+              "text": "Buscar un arbusto primero",
+              "effects": {
+                "setStats": {
+                  "pis": 0
+                }
+              },
+              "goto": "acto2_camino",
+              "tags": [
+                "prudente"
+              ]
+            },
+            {
+              "text": "«¿Seguro que quiero hacer esto?»",
+              "goto": "acto1_duda",
+              "tags": [
+                "dudoso"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_duda": {
+      "scenario": {
+        "name": "Puerta de la Ciudad",
+        "image": "images/scenarios/puerta_ciudad.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Una puerta enorme y dos guardias con cara de lunes eterno."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "No. Nadie está seguro de nada. Pero la puerta ya se cerró detrás de ti y los guardias tiraron la llave. Literalmente. Un guardia se la tragó."
+          ],
           "pool": "error"
         },
         {
           "type": "choice",
           "options": [
             {
-              "text": "Volver a la plaza con la dignidad que te queda",
-              "goto": "acto1_plaza"
-            },
-            {
-              "text": "Seguir hacia el Abismo (lejos del perro)",
-              "goto": "acto2_camino"
-            }
-          ]
-        }
-      ]
-    },
-    "acto1_perro_caricia": {
-      "scenario": {
-        "name": "Acto I: El Pueblo",
-        "image": "images/scenarios/plaza.png"
-      },
-      "sequence": [
-        {
-          "type": "dialog",
-          "character": "narrator",
-          "lines": [
-            "Estiras la mano hacia el perro de tres ojos que te está gruñendo.",
-            "El perro no puede creer su suerte. Tú tampoco deberías."
-          ]
-        },
-        {
-          "type": "choice",
-          "options": [
-            {
-              "text": "Insistir con la caricia",
-              "effects": {
-                "stats": {
-                  "ganas_de_vivir": -60
-                }
-              },
-              "goto": "acto1_plaza",
-              "tags": [
-                "temerario"
-              ]
-            },
-            {
-              "text": "Retirar la mano (lo que queda de ella)",
+              "text": "Caminar hacia el Abismo, resignado",
               "goto": "acto2_camino"
             }
           ]

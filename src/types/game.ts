@@ -283,6 +283,8 @@ export interface StepCondition {
   stats?: Record<string, string>; // e.g. { "perception": ">=50" }
   flags?: Record<string, boolean>;
   inventory?: string[];
+  /** Items que NO deben estar en el inventario */
+  notInventory?: string[];
   visitedScenes?: string[];
   unvisitedScenes?: string[];
   /** Nivel mínimo de skill: { "fireball": ">=2" } */
@@ -362,7 +364,19 @@ export interface DiceStep {
   faces: number;
   description: string;
   results: DiceResults;
+  /** Tramos por resultado (tienen prioridad sobre results). Se elige el primero que coincida:
+   *  `natural` compara el dado sin modificador; `min`/`max` comparan el total (dado + modificador). */
+  tiers?: DiceTier[];
   condition?: StepCondition;
+}
+
+export interface DiceTier {
+  natural?: number;
+  min?: number;
+  max?: number;
+  text: string;
+  effects?: Effects;
+  goto?: string;
 }
 
 export interface InputStep {
@@ -437,6 +451,8 @@ export interface ShopStep {
   haggle?: ShopDiceAction;    // regatear precios
   steal?: ShopDiceAction;     // intentar robar
   deceive?: ShopDiceAction;   // engañar al vender (precio inflado)
+  /** Multiplicador de precios según condición (el primero que se cumpla). Ej: descuento por regateo previo */
+  priceMultipliers?: { condition: StepCondition; multiplier: number; text?: string }[];
   goto?: string;
   condition?: StepCondition;
 }

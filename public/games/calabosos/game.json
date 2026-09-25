@@ -99,6 +99,24 @@
       "image": "images/dialogs/rey_baboso.png",
       "role": "npc"
     },
+    "mago": {
+      "name": "Mago de las Calles",
+      "description": "Un ilusionista callejero de túnica raída que vende permisos dudosos y huele a queso rancio. Da escalofríos.",
+      "image": "images/dialogs/mago.png",
+      "role": "npc"
+    },
+    "guardias": {
+      "name": "Guardias de la Puerta",
+      "description": "Dos guardias aburridos que viven para decir «alto ahí».",
+      "image": "images/dialogs/guardias.png",
+      "role": "npc"
+    },
+    "jefe_guardia": {
+      "name": "Jefe de la Guardia",
+      "description": "Se disfraza de noble para atrapar carteristas y reclutarlos para misiones suicidas.",
+      "image": "images/dialogs/jefe_guardia.png",
+      "role": "npc"
+    },
     "sistema": {
       "name": "SISTEMA",
       "description": "Notificaciones del sistema de juego.",
@@ -188,6 +206,31 @@
       "goto": "muerte"
     },
     {
+      "id": "panal_salvador",
+      "condition": {
+        "stats": {
+          "pis": ">=100"
+        },
+        "inventory": [
+          "panal"
+        ]
+      },
+      "lines": [
+        "Sientes el calorcito de siempre... pero esta vez el pañal de aventurero cumple su deber. Tu dignidad sobrevive. El pañal, no."
+      ],
+      "effects": {
+        "setStats": {
+          "pis": 0
+        },
+        "removeInventory": [
+          "panal"
+        ],
+        "meta": {
+          "panales_usados": 1
+        }
+      }
+    },
+    {
       "id": "accidente_pis",
       "condition": {
         "stats": {
@@ -240,6 +283,23 @@
       "lines": [
         "Noto cierta... humedad en el ambiente. No diré de dónde viene. Todos lo sabemos."
       ]
+    },
+    {
+      "id": "bolsillos_rotos",
+      "condition": {
+        "stats": {
+          "dinero": ">60"
+        },
+        "notInventory": [
+          "escroto_elefante"
+        ]
+      },
+      "pool": "bolsillos_rotos",
+      "effects": {
+        "setStats": {
+          "dinero": 60
+        }
+      }
     }
   ],
   "linePools": {
@@ -381,6 +441,156 @@
       {
         "text": "Bienvenido de nuevo. Te guardé tu lugar. Nadie más quería este trabajo, así que fue fácil."
       }
+    ],
+    "bolsillos_rotos": [
+      "Tus bolsillos tienen más agujeros que tu plan. Solo te caben 60 monedas; el resto rueda por la calle y un niño lo recoge feliz.",
+      "Tintín, tintín: monedas cayendo. Sin un bolso decente no cargas más de 60. El Tendero vende uno. De escroto de elefante. No preguntes.",
+      "Otra vez se te caen las monedas. 60 es tu límite hasta que tengas dónde guardarlas. Tu pobreza tiene un tope. Qué ironía."
     ]
+  },
+  "items": {
+    "mochila": {
+      "name": "Mochila raída",
+      "description": "Tiene un agujero del tamaño de tus sueños.",
+      "image": "images/items/mochila.png"
+    },
+    "lampara": {
+      "name": "Lámpara de aceite",
+      "description": "Ilumina lo justo para ver lo que preferirías no ver.",
+      "image": "images/items/lampara.png"
+    },
+    "llave_oxidada": {
+      "name": "Llave oxidada",
+      "description": "Estaba debajo de la cama. No preguntes por qué.",
+      "image": "images/items/llave_oxidada.png"
+    },
+    "carta_misteriosa": {
+      "name": "Carta misteriosa",
+      "description": "Convocatoria para morir en el Abismo. Firmada por el Narrador.",
+      "image": "images/items/carta_misteriosa.png"
+    },
+    "relicario": {
+      "name": "Relicario familiar",
+      "description": "De tu abuela, la que venció a un dragón con una cuchara. Trasfondo inventado hace cinco minutos.",
+      "image": "images/items/relicario_familiar.png"
+    },
+    "baba_caballo": {
+      "name": "Baba de caballo",
+      "description": "Verde, tibia y con opiniones propias.",
+      "image": "images/items/baba_caballo.png"
+    },
+    "silbato_caballos": {
+      "name": "Silbato para caballos",
+      "description": "Los caballos mutantes te obedecen. A veces.",
+      "image": "images/items/silbato_caballos.png"
+    },
+    "bolsa_misteriosa": {
+      "name": "Bolsa misteriosa",
+      "description": "Un caballo te la regaló. Nadie sabe qué hay dentro. Tintinea.",
+      "image": "images/items/bolsa_monedas.png"
+    },
+    "amuleto_equino": {
+      "name": "Amuleto equino",
+      "description": "Lo encontraron en el estómago de un caballo. Límpialo antes de usarlo.",
+      "image": "images/items/amuleto_equino.png"
+    },
+    "mapa_sospechoso": {
+      "name": "Mapa sospechoso del Abismo",
+      "description": "Sacado de un cadáver. Todavía está tibio.",
+      "image": "images/items/mapa_sospechoso.png"
+    },
+    "amuleto_proteccion": {
+      "name": "Amuleto de protección menor",
+      "description": "Nadie lo quiso comprar. Por algo será.",
+      "image": "images/items/amuleto_proteccion.png"
+    },
+    "mapa_detallado": {
+      "name": "Mapa detallado del Abismo",
+      "description": "Un mapa de verdad. Qué raro.",
+      "image": "images/items/mapa_detallado.png"
+    },
+    "daga_ceremonial": {
+      "name": "Daga ceremonial",
+      "description": "Más bonita que filosa. Como tu plan.",
+      "image": "images/items/daga_ceremonial.png"
+    },
+    "amuleto_extrano": {
+      "name": "Amuleto extraño",
+      "description": "Útil o basura brillante. Quién sabe.",
+      "image": "images/items/amuleto_extrano.png"
+    },
+    "llave_misteriosa": {
+      "name": "Llave misteriosa",
+      "description": "Robada a un noble. Abre algo. Algún día.",
+      "image": "images/items/llave_misteriosa.png"
+    },
+    "mapa_parcial": {
+      "name": "Mapa parcial del Abismo",
+      "description": "Le falta la mitad. La mitad importante, seguro.",
+      "image": "images/items/mapa_parcial.png"
+    },
+    "escroto_elefante": {
+      "name": "Bolso de escroto de elefante",
+      "description": "Tratado en sal para reducir su tamaño, pero no su capacidad. Guarda todas tus monedas.",
+      "image": "images/items/zurron_espacioso.png"
+    },
+    "espada_oxidada": {
+      "name": "Espada oxidada",
+      "description": "La mejor espada de Viscaria, según un borracho.",
+      "image": "images/items/espada_oxidada.png"
+    },
+    "sal": {
+      "name": "Saco de sal",
+      "description": "Mata babosas. Mantener lejos de Nerly.",
+      "image": "images/items/sal_anti_babosas.png"
+    },
+    "pocion_sospechosa": {
+      "name": "Poción sospechosa",
+      "description": "Recupera ganas de vivir. O da hipo.",
+      "image": "images/items/pocion_sospechosa.png"
+    },
+    "panal": {
+      "name": "Pañal de aventurero",
+      "description": "Para cuando el miedo gane. Porque va a ganar.",
+      "image": "images/items/panal.png"
+    },
+    "boton_luminiscente": {
+      "name": "Botón luminiscente",
+      "description": "Brilla en la oscuridad. Casi útil.",
+      "image": "images/items/boton_luminiscente.png"
+    },
+    "huevo_runico": {
+      "name": "Huevo rúnico",
+      "description": "Zumba. Tiene runas. No lo hagas tortilla.",
+      "image": "images/items/huevo_runico.png"
+    },
+    "cristal_vision": {
+      "name": "Cristal de visión",
+      "description": "Proyecta lo que imaginas. El Mago se asustó.",
+      "image": "images/items/cristal_vision.png"
+    },
+    "permiso_salida": {
+      "name": "Permiso de Salida Suicida",
+      "description": "Legal... más o menos. Firmado con crayón.",
+      "image": "images/items/permiso_salida.png"
+    }
+  },
+  "traits": {
+    "quemado": {
+      "name": "Quemado",
+      "description": "Un caballo mutante te prendió fuego. Te duele sentarte.",
+      "icon": "🔥",
+      "diceModifier": -1,
+      "duration": 4
+    },
+    "pelo_rosa": {
+      "name": "Pelo rosa",
+      "description": "Cortesía del Mago. Se quita en una semana. O un año.",
+      "icon": "💗",
+      "statModifiers": {
+        "sexi": -5
+      },
+      "duration": 8
+    }
   }
 }

@@ -171,6 +171,9 @@ export function getNodeDestinations(steps: SequenceStep[]): string[] {
       if (results.failure?.goto) destinations.push(results.failure.goto);
       if (results.critical_success?.goto) destinations.push(results.critical_success.goto);
       if (results.critical_failure?.goto) destinations.push(results.critical_failure.goto);
+      for (const tier of step.tiers ?? []) {
+        if (tier.goto) destinations.push(tier.goto);
+      }
     } else if (step.type === 'input' && step.goto) {
       destinations.push(step.goto);
     } else if (step.type === 'branch') {

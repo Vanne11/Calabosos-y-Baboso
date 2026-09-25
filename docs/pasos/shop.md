@@ -32,4 +32,18 @@ Sistema de compra/venta interactivo con una stat como moneda.
 }
 ```
 
+### Multiplicadores de precio (`priceMultipliers`)
+
+Cambian todos los precios según una condición (el primero que se cumpla). Útil para que un regateo previo (por ejemplo un `ai_chat` en modo `negociar`) afecte a la tienda.
+
+```jsonc
+"priceMultipliers": [
+  { "condition": { "flags": { "descuento_grande": true } }, "multiplier": 0.5, "text": "Todo a mitad de precio." },
+  { "condition": { "flags": { "precio_ofendido": true } }, "multiplier": 1.5 }
+]
+```
+
+Si hay `text`, se muestra como aviso antes de abrir la tienda. Los precios se redondean y nunca bajan de 1.
+
+
 **Comportamiento:** Loop interactivo de compra/venta. El jugador ve sus monedas, items disponibles y puede comprar/vender. Sale con `shop_exit`.
