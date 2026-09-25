@@ -38,6 +38,12 @@ export const SPECIAL_DESTINATIONS: Record<string, { label: string; icon: string;
     color: '#f1fa8c',
     description: 'Reinicia el juego desde el inicio',
   },
+  _checkpoint: {
+    label: 'PUNTO SEGURO',
+    icon: '🚩',
+    color: '#8be9fd',
+    description: 'Vuelve al último punto de control (effects.checkpoint)',
+  },
   _age_accept: {
     label: 'EDAD OK',
     icon: '🔞',

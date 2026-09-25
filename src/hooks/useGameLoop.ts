@@ -123,7 +123,7 @@ export function useGameLoop() {
       const { value, done } = await iterator.next();
       if (done || !value || stale()) break;
 
-      await handleResult(value);
+      await handleResult(value, stale);
       if (stale()) break;
 
       // If the result requires player input, stop consuming
@@ -169,6 +169,23 @@ export function useGameLoop() {
           audioManager.stop();
           return;
         }
+        if (value.scene === '_checkpoint') {
+          const { addEntry: add, setPlayerState: syncState, fadeOldEntries } = useAppStore.getState();
+          const cpScene = engine?.restoreCheckpoint() ?? null;
+          audioManager.stop();
+          fadeOldEntries();
+          if (engine && cpScene) {
+            add({ type: 'system', content: '[italic yellow]Volviendo al último punto seguro... (el narrador lo recuerda todo)[/italic yellow]' });
+            syncState({ ...engine.state });
+            await startScene(cpScene);
+          } else if (engine) {
+            add({ type: 'system', content: '[italic yellow]No hay punto seguro. Desde el principio, entonces.[/italic yellow]' });
+            engine.reset();
+            syncState({ ...engine.state });
+            await startScene('start');
+          }
+          return;
+        }
         if (value.scene === AGE_ACCEPT) {
           const rating = engine?.contentRating;
           if (rating) {
@@ -201,7 +218,7 @@ export function useGameLoop() {
     }
   };
 
-  const handleResult = async (result: StepResult) => {
+  const handleResult = async (result: StepResult, isStale: () => boolean = () => false) => {
     const currentSpeed = useAppStore.getState().speed;
 
     switch (result.type) {
@@ -241,6 +258,7 @@ export function useGameLoop() {
         });
 
         for (let i = 0; i < result.lines.length; i++) {
+          if (isStale()) return; // otra escena tomó el control: no seguir imprimiendo
           addEntry({ type: 'dialog', content: result.lines[i] });
           if (i < result.lines.length - 1) {
             await delay(300, currentSpeed);

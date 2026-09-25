@@ -118,7 +118,8 @@ const CombatWidget: React.FC<CombatWidgetProps> = ({
 
       <RoundInfo>Ronda {round}</RoundInfo>
 
-      {actions.map((action) => (
+      {/* "use_item" se muestra como un botón por cada objeto usable (abajo) */}
+      {actions.filter((action) => action !== 'use_item').map((action) => (
         <ActionButton key={action} onClick={() => onAction(action)}>
           {actionLabels[action] || action}
         </ActionButton>

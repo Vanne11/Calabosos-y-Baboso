@@ -61,7 +61,7 @@
           "ai": {
             "prompt": "muerte",
             "vars": {
-              "causa": "sus ganas de vivir llegaron a cero"
+              "causa": "{causa_muerte}"
             }
           }
         },
@@ -76,7 +76,11 @@
           "type": "choice",
           "options": [
             {
-              "text": "Intentarlo de nuevo (el reino no tiene a nadie más)",
+              "text": "Volver al último punto seguro (el narrador no olvida)",
+              "goto": "_checkpoint"
+            },
+            {
+              "text": "Empezar de cero (masoquista)",
               "goto": "_restart"
             },
             {

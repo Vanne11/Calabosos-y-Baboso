@@ -509,6 +509,8 @@ export interface CombatStep {
   actions: ('attack' | 'defend' | 'flee' | 'use_item')[];
   /** Items usables durante el combate con efectos especiales */
   combatItems?: CombatItemDef[];
+  /** Armas: se usa la de mayor bonus que tenga el jugador (suma daño al atacar) */
+  weapons?: CombatWeapon[];
   results: CombatResults;
   condition?: StepCondition;
 }
@@ -519,6 +521,30 @@ export interface CombatEnemy {
   hp: number;
   attack: number;
   defense: number;
+  /** Ataca una vez antes del primer turno del jugador */
+  firstStrike?: boolean;
+  firstStrikeText?: string;
+  /** Probabilidad (0-1) de esquivar ataques normales. Un item con reveal la anula */
+  dodgeChance?: number;
+  /** Daño extra al jugador cada ronda (ácido, veneno) */
+  damagePerTurn?: number;
+  damagePerTurnText?: string;
+  /** Armas (item ids) que puede destruir cuando la atacas con ellas */
+  corrodes?: string[];
+  /** Probabilidad (0-1) de destruir el arma en cada ataque (default 0.5) */
+  corrodeChance?: number;
+  /** Al llegar a 0 HP se divide una vez y vuelve con este HP (salvo item con preventSplit) */
+  split?: { hp: number; text: string };
+  /** Daño al jugador si muere por un ataque cuerpo a cuerpo (los items la matan sin riesgo) */
+  deathDamage?: number;
+  deathText?: string;
+}
+
+export interface CombatWeapon {
+  itemId: string;
+  name: string;
+  /** Daño extra al atacar */
+  bonus: number;
 }
 
 /** Item usable en combate: requiere tenerlo en inventario */
@@ -530,6 +556,10 @@ export interface CombatItemDef {
   heal?: number;      // Curación al jugador
   consume?: boolean;  // Si se consume al usar (default true)
   effects?: Effects;  // Efectos adicionales
+  /** Revela al enemigo: anula su dodgeChance el resto del combate (luz contra fantasmas) */
+  reveal?: boolean;
+  /** Si mata al enemigo con este item, no se divide (sal contra gemelas) */
+  preventSplit?: boolean;
 }
 
 export interface CombatResults {
@@ -772,6 +802,8 @@ export interface Effects {
   meta?: Record<string, number>;
   /** Desbloquear entradas del códice (bestiario): ["babosa_acida"] */
   unlockCodex?: string[];
+  /** Guardar un punto de control en la escena actual (se vuelve con goto "_checkpoint") */
+  checkpoint?: boolean;
 }
 
 // --- Conditions file ---

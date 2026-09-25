@@ -166,6 +166,73 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 
 ---
 
+### scenarios/tunel_sigiloso.png — Túnel de las Babosas Mineras
+**Escenas:** `acto3_tunel_sigilo`
+
+16-bit pixel art. Túnel estrecho y bajo excavado en roca húmeda, visto desde dentro, en perspectiva hacia una luz lejana. Paredes con parches de esporas brillantes (rosa, cian) y marcas de raspado de babosas mineras. Raíces colgando, charcos de baba. Claustrofóbico y asqueroso. Paleta: marrones oscuros, verdes, destellos rosa y cian.
+
+---
+
+### scenarios/cavernas_cria.png — Cavernas de Cría
+**Escenas:** `acto3_cria`, `acto3_cria_madres`, `acto3_cria_huevos`
+
+16-bit pixel art. Caverna cálida y húmeda llena de nidos de baba con cientos de huevos translúcidos que laten con siluetas diminutas dentro. En el centro, un huevo más grande con vetas doradas. Al fondo, una babosa madre enorme vigilando. Techo alto con babosas saltarinas colgando. Luz rosada y ámbar, vapor en el aire.
+
+---
+
+### scenarios/abismo_profundo.png — Abismo Profundo (Sistema Digestivo)
+**Escenas:** `acto3_profundo`, `acto3_masa`, `acto3_explosiva`, `acto3_gemelas`, `acto3_profundo_fin`, `acto3_hacia_trono`
+
+16-bit pixel art. Pasaje orgánico cuyas paredes parecen tejido vivo: pulsan, tienen venas brillantes y formaciones que parecen órganos. Suelo de baba densa. Una masa gelatinosa con boca bloquea parcialmente el camino. Al fondo, una luz verde que late como un corazón. Perturbador. Paleta: rojos oscuros, morados, verde tóxico.
+
+---
+
+### scenarios/tienda_abismo.png — Sucursal Subterránea
+**Escenas:** `acto3_tienda`
+
+16-bit pixel art. Nicho excavado en la roca del Abismo convertido en tienda improvisada: mostrador de tablones, estantes con antorchas, sacos de sal y pociones de colores, un cartel de madera torcido (sin texto legible). Detrás, el Tendero borracho con su delantal manchado, saludando. Luz cálida de velas contra la oscuridad verde del Abismo. Absurdo y acogedor.
+
+---
+
+### dialogs/ian.png — Ian
+**Personaje:** `ian`
+
+16-bit pixel art. Retrato de busto. Joven delgado de sonrisa demasiado amplia y ojos entrecerrados de vendedor ambulante. Abrigo lleno de bolsillos con frascos burbujeantes de colores asomando. Pelo engominado, un pequeño bigote. Un leve humo morado a su alrededor (el mismo del Mago). Simpático y nada confiable. Fondo del Abismo.
+
+---
+
+### dialogs/ — Las cinco especies (se usan como imagen del enemigo en combate)
+
+Retratos de babosa, 256×256, pixel art 16 bits, fondo oscuro de caverna. Cada una con personalidad propia.
+
+| Archivo | Especie | Descripción para el prompt |
+|---|---|---|
+| `babosa_acida.png` | Babosa Ácida | Babosa rojiza del tamaño de un perro grande, cuerpo que gotea líquido verde humeante, ojos malvados, suelo derretido bajo ella |
+| `babosa_saltarina.png` | Babosa Saltarina | Babosa amarilla musculosa y compacta, en pleno salto desde el techo, antenas hacia atrás, expresión de alegría sádica |
+| `babosas_gemelas.png` | Babosas Gemelas | Dos babosas moradas idénticas y sincronizadas, una con un tajo a medio cerrar, sonriendo igual |
+| `babosa_fantasma.png` | Babosa Fantasma | Babosa blanca semitransparente, sin cara visible, atravesando una pared de cristal, rastro de niebla |
+| `babosa_explosiva.png` | Babosa Explosiva | Babosa naranja hinchada como un globo, brillando por dentro, con la piel tensa y cara de ofendida |
+
+---
+
+### items/ — Objetos del Acto III (256×256, fondo transparente)
+
+| Archivo | Objeto | Descripción para el prompt |
+|---|---|---|
+| `corazon_cristalino.png` | Corazón de Babosa Cristalina | Cristal con forma de corazón que contiene luz líquida azul |
+| `residuo_acido.png` | Residuo ácido | Frasco con líquido verde que burbujea y humea |
+| `baba_maternal.png` | Baba maternal | Frasco con baba verde clara brillante y un lazo |
+| `huevo_babosa.png` | Huevo dorado de babosa | Huevo translúcido con vetas doradas y una silueta dormida dentro |
+| `pocion_ian.png` | Poción sospechosa de Ian | Frasco violeta burbujeante con etiqueta de «garantizado» |
+| `mapa_dudoso.png` | Mapa dudoso de Ian | Mapa dibujado a mano con garabatos y una calavera sonriente |
+| `antidoto_real.png` | Antídoto real | Frasco pequeño transparente con tapón de cera verde |
+| `repelente_genuino.png` | Repelente genuino | Atomizador de latón con líquido azul |
+| `mapa_secreto_mago.png` | Mapa secreto del Mago | Pergamino morado con runas y una ruta marcada que brilla |
+| `fragmentos_lagrima.png` | Fragmentos de la Lágrima | Puñado de cristales multicolor brillantes |
+| `antorcha.png` | Antorcha | Antorcha de madera con llama naranja viva |
+
+---
+
 ### items/ — Objetos del Prólogo y el Acto I (256×256, fondo transparente)
 
 Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para que se lea sobre fondos morados.
@@ -208,6 +275,4 @@ Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para qu
 ## PRÓXIMAS (se agregan a medida que se escriben los actos)
 
 Se sumarán fichas a este documento en cada fase. Ya están previstas:
-- **Escenarios:** Cavernas de Cría, Abismo Profundo, túnel sigiloso, Corazón del Abismo, pasaje secreto, finales (retiro pacífico, nuevas aventuras, el verdadero narrador).
-- **Retratos:** las 5 especies de babosa (ácida, saltarina, gemelas, fantasma, explosiva).
-- **Items:** huevo de babosa, Lágrima de Cristal.
+- **Escenarios:** Corazón del Abismo, pasaje secreto, finales (retiro pacífico, nuevas aventuras, el verdadero narrador).

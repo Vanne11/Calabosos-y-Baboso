@@ -2,24 +2,175 @@
   "scenes": {
     "acto3_abismo": {
       "scenario": {
-        "name": "Acto III: El Abismo",
+        "name": "Entrada al Abismo",
         "image": "images/scenarios/entrada_abismo.png",
-        "music": "audio/rpgchip06_dungeon.ogg"
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "La boca del Abismo exhala un aliento dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "checkpoint": true
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Entra de una vez. Tengo un horario que cumplir, y después de ti tengo que narrar la historia de un conejo parlante con problemas existenciales."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Junto a la entrada hay un bate de béisbol tirado. Y un zapato escolar. Y un rastro de baba que se pierde en la oscuridad. Takashi encontró su apocalipsis. Más o menos."
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Cómo debería entrar?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Hay varias formas. La entrada principal es la más directa, pero también la más vigilada. Si prefieres sigilo, conozco un túnel lateral."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "«Entraré sigilosamente.» (túnel lateral)",
+              "goto": "acto3_tunel_sigilo",
+              "tags": [
+                "sigiloso"
+              ]
+            },
+            {
+              "text": "«¡A la carga!» (entrada principal)",
+              "goto": "acto3_guardia",
+              "tags": [
+                "temerario"
+              ]
+            },
+            {
+              "text": "«Primero lanzaré algo para ver si es seguro.»",
+              "goto": "acto3_prueba",
+              "condition": {
+                "flags": {
+                  "prueba_hecha": false
+                }
+              },
+              "tags": [
+                "prudente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_prueba": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "La boca del Abismo exhala un aliento dulce y podrido."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "prueba_hecha": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tomas una piedra y la lanzas hacia la entrada. Cae en un charco de baba. Burbujea. Un tentáculo sale, la agarra y se la lleva al fondo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Conclusión científica: no es seguro. Nada aquí es seguro. Excelente experimento, doctor BOB."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": 10
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Entrar por el túnel lateral",
+              "goto": "acto3_tunel_sigilo",
+              "tags": [
+                "sigiloso"
+              ]
+            },
+            {
+              "text": "Entrar por la puerta principal",
+              "goto": "acto3_guardia",
+              "tags": [
+                "temerario"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_guardia": {
+      "scenario": {
+        "name": "Entrada al Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "La boca del Abismo exhala un aliento dulce y podrido."
       },
       "sequence": [
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "La entrada al Abismo de las Babosas. Húmeda, oscura y pegajosa. Como tu historial de navegación.",
-            "Una babosa acorazada bloquea el paso. Lleva un yelmo tres tallas más chico y cara de odiar su trabajo.",
-            "[dim](Acto III en construcción: las tres zonas y las cinco especies. El guardia ya está listo.)[/dim]"
+            "Una babosa acorazada bloquea la entrada principal. Lleva un yelmo tres tallas más chico y cara de odiar su trabajo."
           ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(susurrando) Es el Guardia del Abismo. Recuerda lo que dijo el anciano: sueña con ser cantante."
+          ],
+          "condition": {
+            "flags": {
+              "pista_guardia": true
+            }
+          }
         },
         {
           "type": "ai_chat",
           "mode": "persuadir",
           "npc": "guardia",
+          "maxTurns": 5,
           "intro": [
             "Alto ahí, bípedo. Nadie entra al Abismo sin permiso del Rey.",
             "Y el Rey no da permisos. Así que... fuera."
@@ -28,7 +179,6 @@
             "objetivo": "que el guardia lo deje entrar al Abismo sin pelear",
             "debilidad": "está aburridísimo de su turno eterno, adora los halagos a su baba y sueña con ser cantante"
           },
-          "maxTurns": 5,
           "fallback": {
             "stat": "sexi",
             "difficulty": 13,
@@ -45,53 +195,2282 @@
                   "guardia_convencido": true
                 }
               },
-              "goto": "acto4_trono"
+              "goto": "acto3_sala_entrada"
             },
             "partial": {
-              "text": "'Está bien, pasa... pero el peaje son todas tus monedas.' Te vacía los bolsillos con una antena.",
+              "text": "«Está bien, pasa... pero el peaje son todas tus monedas.» Te vacía los bolsillos con una antena.",
               "effects": {
                 "setStats": {
                   "dinero": 0
                 }
               },
-              "goto": "acto4_trono"
+              "goto": "acto3_sala_entrada"
             },
             "failure": {
               "text": "El guardia te empuja con la lanza. Ruedas cuesta abajo hasta un túnel lateral. Lleno de cosas que crujen.",
               "effects": {
                 "stats": {
-                  "ganas_de_vivir": -25,
-                  "miedo": 30,
-                  "pis": 25
+                  "ganas_de_vivir": -15,
+                  "miedo": 20,
+                  "pis": 20
                 }
               },
-              "goto": "acto3_tunel"
+              "goto": "acto3_tunel_sigilo"
             }
           }
         }
       ]
     },
-    "acto3_tunel": {
+    "acto3_tunel_sigilo": {
       "scenario": {
-        "name": "Túnel lateral",
-        "image": "images/scenarios/sala_entrada.png",
-        "music": "audio/rpgchip06_dungeon.ogg"
+        "name": "Túnel de las Babosas Mineras",
+        "image": "images/scenarios/tunel_sigiloso.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "Estrecho, húmedo y apestoso. Como las fosas nasales de un gigante con sinusitis."
       },
       "sequence": [
         {
           "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Este túnel lo excavaron las Babosas Mineras. Son inofensivas, solo les gusta cavar. No toques las paredes: algunas tienen esporas alucinógenas."
+          ]
+        },
+        {
+          "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Te arrastras por un túnel que huele a pies de troll. Algo te roza la nuca. Decides no averiguar qué.",
-            "Al final, una luz. O un ojo gigante. Resulta ser una luz. Esta vez."
+            "Ni siquiera necesitas lamer babosas para drogarte aquí. Qué época para estar vivo. Por ahora."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 16,
+          "faces": 20,
+          "description": "Arrastrarte por el túnel sin tocar las esporas",
+          "results": {
+            "success": {
+              "text": "Con cautela y determinación esquivas las esporas. «Lo haces muy bien», dice Nerly. «Muchos humanos se asustan aquí.»"
+            },
+            "failure": {
+              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final sudado y con rasguños."
+            }
+          },
+          "tiers": [
+            {
+              "text": "Apoyas la mano justo en un parche de esporas brillantes. Las próximas horas conversas filosóficamente con tu mochila y juras ser una babosa atrapada en un cuerpo humano.",
+              "effects": {
+                "stats": {
+                  "miedo": 30,
+                  "ganas_de_vivir": -20
+                },
+                "addTraits": [
+                  "alucinaciones"
+                ]
+              },
+              "natural": 1
+            },
+            {
+              "text": "Avanzas con gracia sobrenatural y ves un brillo en una grieta: un cristal que contiene luz líquida. «¡Un Corazón de Babosa Cristalina!», exclama Nerly. «Cura heridas.»",
+              "effects": {
+                "stats": {
+                  "miedo": -20,
+                  "sexi": 15,
+                  "ganas_de_vivir": 10
+                },
+                "inventory": [
+                  "corazon_cristalino"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "Te quedas atascado. Pánico. Nerly vuelve con unas Babosas Lubricantes que... mejor no preguntes qué hacen, pero te liberan. Una hora humillante.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "sexi": -15,
+                  "pis": 15
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final sudado y con rasguños.",
+              "effects": {
+                "stats": {
+                  "miedo": 5
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Con cautela y determinación esquivas las esporas. «Lo haces muy bien», dice Nerly. «Muchos humanos se asustan aquí.»",
+              "effects": {
+                "stats": {
+                  "miedo": -5,
+                  "sexi": 5
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Te mueves como si hubieras nacido para arrastrarte. «Eres como una babosa honoraria», dice Nerly. No sabes si es un cumplido.",
+              "effects": {
+                "stats": {
+                  "miedo": -10,
+                  "sexi": 10
+                },
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "min": 16
+            }
           ]
         },
         {
           "type": "choice",
           "options": [
             {
-              "text": "Seguir hacia el trono",
-              "goto": "acto4_trono"
+              "text": "Salir del túnel",
+              "goto": "acto3_sala_entrada"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_sala_entrada": {
+      "scenario": {
+        "name": "Sala de Entrada",
+        "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Esta es la Sala de Entrada. Relativamente segura. A veces pasan patrullas de Babosas Centinela."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Siempre me pregunté cómo patrullan las babosas. ¿Se arrastran muy enérgicamente?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Hay tres caminos. El de la izquierda va a las Cavernas de Cría. El central, al Abismo Profundo. El de la derecha, a las Grutas de Cristal."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "El trono del Rey está al fondo, pero el paso se abre solo cuando... bueno, cuando hayamos recorrido lo suficiente. El Abismo es así. Caprichoso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "takashi",
+          "lines": [
+            "¡TÚ! ¡ME MENTISTE! ¡Aquí no hay zombis! ¡Solo babosas! ¡Una me quitó un zapato!"
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi, cubierto de baba, te señala con un dedo tembloroso. Luego da media vuelta y se va a buscar una historia con mejor presupuesto. Le debes un zapato."
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "sexi": -5
+            }
+          },
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y entonces, un sonido viscoso detrás de ti. Una babosa rojiza del tamaño de un perro grande se arrastra hacia ustedes, dejando un rastro humeante."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Cuidado! ¡Una Babosa Ácida! ¡Su baba derrite el metal! ¡No la ataques con la espada!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": 10
+            },
+            "unlockCodex": [
+              "babosa_acida"
+            ]
+          }
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosa Ácida",
+            "image": "images/dialogs/babosa_acida.png",
+            "hp": 20,
+            "attack": 5,
+            "defense": 0,
+            "damagePerTurn": 2,
+            "damagePerTurnText": "El ácido del suelo te quema los pies",
+            "corrodes": [
+              "espada_oxidada",
+              "daga_ceremonial"
+            ],
+            "corrodeChance": 0.5
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "flee",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un buen puñado de sal. La babosa burbujea, chilla y se retuerce como tu dignidad."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. Recuperas ganas de vivir. Y te da hipo. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón de Babosa Cristalina brilla y te cura. Es precioso. Lo acabas de gastar. Bravo."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. La luz revela cada rincón y le chamusca las antenas a la babosa."
+            },
+            {
+              "itemId": "lampara",
+              "name": "Alzar la lámpara",
+              "damage": 3,
+              "consume": false,
+              "reveal": true,
+              "text": "Levantas la lámpara de aceite. No es gran cosa, pero la luz la deja al descubierto."
+            },
+            {
+              "itemId": "boton_luminiscente",
+              "name": "Mostrar el botón luminiscente",
+              "consume": false,
+              "reveal": true,
+              "text": "Sacas el botón luminiscente del Mago. Brilla. La babosa, desconcertada, queda a la vista."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "La Babosa Ácida se disuelve en un charco humeante. Entre los restos queda un frasco de residuo ácido. Asqueroso. Útil. Asquerosamente útil.",
+              "effects": {
+                "inventory": [
+                  "residuo_acido"
+                ],
+                "stats": {
+                  "sexi": 5,
+                  "miedo": -5
+                },
+                "meta": {
+                  "babosas_vencidas": 1
+                }
+              },
+              "goto": "acto3_hub"
+            },
+            "defeat": {
+              "text": "Todo se vuelve negro y pegajoso.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "disuelto por una Babosa Ácida en la Sala de Entrada"
+                }
+              },
+              "goto": "muerte"
+            },
+            "flee": {
+              "text": "Corres en círculos hasta que la babosa, aburrida, se va. Técnicamente ganaste. Técnicamente.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto3_hub"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_hub": {
+      "scenario": {
+        "name": "Sala de Entrada",
+        "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "checkpoint": true
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La Sala de Entrada. Tres túneles, tu cara de miedo y una babosa azul que confía demasiado en ti."
+          ],
+          "condition": {
+            "stats": {
+              "zonas_completadas": "==0"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "De vuelta en la Sala de Entrada. Una zona menos. Sigues vivo, contra todo pronóstico."
+          ],
+          "condition": {
+            "stats": {
+              "zonas_completadas": "==1"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¿Sientes eso? El Abismo tiembla. El paso hacia el trono se abrió. El Rey sabe que venimos."
+          ],
+          "condition": {
+            "stats": {
+              "zonas_completadas": ">=2"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Izquierda: Cavernas de Cría",
+              "goto": "acto3_cria",
+              "condition": {
+                "flags": {
+                  "zona_cria": false
+                }
+              }
+            },
+            {
+              "text": "Centro: Abismo Profundo",
+              "goto": "acto3_profundo",
+              "condition": {
+                "flags": {
+                  "zona_profundo": false
+                }
+              }
+            },
+            {
+              "text": "Derecha: Grutas de Cristal",
+              "goto": "acto3_grutas",
+              "condition": {
+                "flags": {
+                  "zona_grutas": false
+                }
+              }
+            },
+            {
+              "text": "Visitar la «Sucursal Subterránea» del Tendero",
+              "goto": "acto3_tienda",
+              "condition": {
+                "stats": {
+                  "zonas_completadas": ">=1"
+                }
+              }
+            },
+            {
+              "text": "Descansar un momento contra la pared",
+              "goto": "acto3_descanso",
+              "condition": {
+                "flags": {
+                  "descanso_abismo": false
+                },
+                "stats": {
+                  "zonas_completadas": ">=1"
+                }
+              }
+            },
+            {
+              "text": "Avanzar hacia el trono del Rey Baboso",
+              "goto": "acto3_hacia_trono",
+              "condition": {
+                "stats": {
+                  "zonas_completadas": ">=2"
+                }
+              },
+              "tags": [
+                "valiente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_descanso": {
+      "scenario": {
+        "name": "Sala de Entrada",
+        "image": "images/scenarios/sala_entrada.png",
+        "music": "audio/rpgchip06_dungeon.ogg",
+        "description": "Hongos bioluminiscentes, baba brillante en el suelo y tres túneles que prometen nada bueno."
+      },
+      "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "descanso_abismo": true
+            },
+            "stats": {
+              "ganas_de_vivir": 20,
+              "miedo": -15
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Te sientas contra la pared. Está húmeda. Y tibia. Y late. Decides no pensar en eso y descansas igual."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Toma, un poco de musgo nutritivo. Sabe horrible, pero cura."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_joined": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Levantarse",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_tienda": {
+      "scenario": {
+        "name": "Sucursal Subterránea",
+        "image": "images/scenarios/tienda_abismo.png",
+        "music": "audio/rpgchip04_in_the_royal_court.ogg",
+        "description": "Un nicho en la roca, un mostrador improvisado y un Tendero imposible."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Tú? ¿Cómo es posible?"
+          ],
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "¡Bienvenido a la Sucursal Subterránea de Artículos para Aventureros Suicidas! *hic* Especialidad en antorchas y productos anti-babosas.",
+            "¿Cómo llegué? Estaba aquí ayer. O el año pasado. El tiempo es relativo cuando vendes a héroes que van a morir."
+          ],
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Este tipo tiene serios problemas con el alcohol o es un maestro de la teletransportación. O ambos. Probablemente ambos."
+          ],
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "¡Volviste! *hic* Mi cliente favorito. Mi único cliente. Los demás están muertos."
+          ],
+          "condition": {
+            "flags": {
+              "tienda_abismo_vista": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "tienda_abismo_vista": true
+            }
+          }
+        },
+        {
+          "type": "shop",
+          "title": "Sucursal Subterránea",
+          "currency": "dinero",
+          "priceMultipliers": [
+            {
+              "condition": {
+                "flags": {
+                  "descuento_grande": true
+                }
+              },
+              "multiplier": 0.7,
+              "text": "«Para mi hermano... digo, cliente favorito: descuento.» *hic*"
+            },
+            {
+              "condition": {
+                "flags": {
+                  "precio_ofendido": true
+                }
+              },
+              "multiplier": 1.3,
+              "text": "«Tú eres el que insultó a mi abuelo.» Precios de rencor."
+            }
+          ],
+          "items": [
+            {
+              "id": "pocion_sospechosa",
+              "name": "Poción sospechosa",
+              "price": 12,
+              "description": "Cura 25 de ganas de vivir en combate. Da hipo."
+            },
+            {
+              "id": "antorcha",
+              "name": "Antorcha",
+              "price": 10,
+              "description": "Revela babosas fantasma. Chamusca antenas."
+            },
+            {
+              "id": "sal",
+              "name": "Saco de sal",
+              "price": 15,
+              "description": "Mata babosas. Impide que las gemelas se dividan."
+            },
+            {
+              "id": "panal",
+              "name": "Pañal de aventurero",
+              "price": 8,
+              "description": "El Abismo da miedo. Tu vejiga lo sabe."
+            },
+            {
+              "id": "escroto_elefante",
+              "name": "Bolso de escroto de elefante",
+              "price": 20,
+              "description": "Por si todavía no tienes uno. No juzgo."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.5,
+          "haggle": {
+            "stat": "sexi",
+            "difficulty": 13,
+            "maxAttempts": 2,
+            "difficultyIncrease": 2,
+            "successText": "*hic* Llévatelo más barato. Total, vas a morir.",
+            "failText": "*hic* ¡Más caro! Aquí abajo el transporte es carísimo."
+          },
+          "goto": "acto3_hub"
+        }
+      ]
+    },
+    "acto3_cria": {
+      "scenario": {
+        "name": "Cavernas de Cría",
+        "image": "images/scenarios/cavernas_cria.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Las Cavernas de Cría. Cientos de huevos translúcidos laten en nidos de baba tibia. Adentro se mueven cositas. Muchas cositas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(susurrando) Aquí nacen las babosas. Las madres protegen los nidos. Si nos ven, estamos fritos. Bueno, disueltos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una babosa madre del tamaño de una carreta gira la cabeza hacia ustedes. Tienes tres segundos para decidir. Dos. Uno y medio."
+          ]
+        },
+        {
+          "type": "timed_choice",
+          "duration": 7000,
+          "defaultIndex": 2,
+          "timeoutText": "Te quedas congelado. Tu cuerpo decidió por ti: nada. Mala elección.",
+          "options": [
+            {
+              "text": "Tirarte al suelo entre los huevos",
+              "effects": {
+                "stats": {
+                  "miedo": 5
+                }
+              },
+              "goto": "acto3_cria_huevos",
+              "tags": [
+                "sigiloso"
+              ]
+            },
+            {
+              "text": "Correr hacia la oscuridad",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 20
+                }
+              },
+              "goto": "acto3_cria_madres",
+              "tags": [
+                "cobarde"
+              ]
+            },
+            {
+              "text": "Quedarte quieto como una estatua",
+              "effects": {
+                "stats": {
+                  "miedo": 10
+                }
+              },
+              "goto": "acto3_cria_madres"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_cria_madres": {
+      "scenario": {
+        "name": "Cavernas de Cría",
+        "image": "images/scenarios/cavernas_cria.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La madre se acerca. Te huele. Tus rodillas tiemblan."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "babosita",
+          "lines": [
+            "¡MAMÁ! ¡Es el humano que me ayudó en el bosque!"
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "De detrás de la madre sale la babosita perdida del bosque. La madre te mira... y te lame la cara. Es su forma de dar las gracias. Es asqueroso. Es precioso."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "affinity": {
+              "nerly": 10
+            },
+            "stats": {
+              "ganas_de_vivir": 15,
+              "miedo": -15
+            },
+            "inventory": [
+              "baba_maternal"
+            ],
+            "unlockCodex": [
+              "mama_babosa"
+            ]
+          },
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "branch",
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          },
+          "branches": [
+            {
+              "goto": "acto3_cria_huevos"
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La madre suelta un chillido. Del techo cae una Babosa Saltarina guardiana, directo hacia tu cabeza."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡ARRIBA! ¡Te dije que miraras arriba!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosa_saltarina"
+            ]
+          }
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosa Saltarina",
+            "image": "images/dialogs/babosa_saltarina.png",
+            "hp": 20,
+            "attack": 5,
+            "defense": 0,
+            "firstStrike": true,
+            "firstStrikeText": "¡La Babosa Saltarina cae del techo sobre tu cara!"
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "flee",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un buen puñado de sal. La babosa burbujea, chilla y se retuerce como tu dignidad."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. Recuperas ganas de vivir. Y te da hipo. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón de Babosa Cristalina brilla y te cura. Es precioso. Lo acabas de gastar. Bravo."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. La luz revela cada rincón y le chamusca las antenas a la babosa."
+            },
+            {
+              "itemId": "lampara",
+              "name": "Alzar la lámpara",
+              "damage": 3,
+              "consume": false,
+              "reveal": true,
+              "text": "Levantas la lámpara de aceite. No es gran cosa, pero la luz la deja al descubierto."
+            },
+            {
+              "itemId": "boton_luminiscente",
+              "name": "Mostrar el botón luminiscente",
+              "consume": false,
+              "reveal": true,
+              "text": "Sacas el botón luminiscente del Mago. Brilla. La babosa, desconcertada, queda a la vista."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "La Saltarina rebota una última vez contra la pared y queda quieta. La madre, impresionada o asustada, se aparta.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                },
+                "meta": {
+                  "babosas_vencidas": 1
+                }
+              },
+              "goto": "acto3_cria_huevos"
+            },
+            "defeat": {
+              "text": "Todo se vuelve negro y pegajoso.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "aplastado por una Babosa Saltarina que cayó del techo"
+                }
+              },
+              "goto": "muerte"
+            },
+            "flee": {
+              "text": "Huyes de vuelta a la Sala de Entrada con la Saltarina rebotando detrás. Las Cavernas quedan pendientes.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto3_hub"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_cria_huevos": {
+      "scenario": {
+        "name": "Cavernas de Cría",
+        "image": "images/scenarios/cavernas_cria.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "Cálidas, húmedas y llenas de huevos translúcidos que laten. Las madres vigilan."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Llegas al nido central. Hay un huevo más grande que los demás, con vetas doradas. Late despacio, como un corazón dormido."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Es un huevo real. De la línea del Rey. Se dice que abren pasajes que solo la familia real puede usar..."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_historia": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "No... no lo toques. Por favor. Es un bebé."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Robar el huevo dorado",
+              "effects": {
+                "inventory": [
+                  "huevo_babosa"
+                ],
+                "affinity": {
+                  "nerly": -5
+                }
+              },
+              "tags": [
+                "ladron"
+              ]
+            },
+            {
+              "text": "Dejar los huevos en paz",
+              "effects": {
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "tags": [
+                "respetuoso"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Guardas el huevo en la mochila. Late contra tu espalda. Esto no puede salir mal. Seguro. Segurísimo."
+          ],
+          "condition": {
+            "inventory": [
+              "huevo_babosa"
+            ]
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "zona_cria": true
+            },
+            "stats": {
+              "zonas_completadas": 1,
+              "ganas_de_vivir": 10
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Zona completada: Cavernas de Cría",
+          "text": "Te acercas un poco más al trono. Y a la muerte. Mismo camino.",
+          "icon": "🗺️"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la Sala de Entrada",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_profundo": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Estamos entrando al Sistema Digestivo del Abismo. Lo llamamos así porque... bueno, muchos no salen."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Estás literalmente caminando por las entrañas de una mazmorra. Tu carrera de aventurero alcanza nuevas cotas de glamour."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una figura sale de detrás de una roca, sonriendo como si pasear por un abismo mortal fuera lo más normal del mundo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "ian",
+          "lines": [
+            "¡Hola, hola! ¿Disfrutando del tour? Soy Ian. Recolecto ingredientes exóticos. Las glándulas de Babosa Explosiva hacen maravillas para la indigestión."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "O para provocarla, según cómo las uses."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(susurrando) No confío en él. Huele a mentira. Y a queso rancio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Queso rancio. Como el humo del Mago de las Calles. Qué coincidencia más sospechosa."
+          ],
+          "condition": {
+            "visitedScenes": [
+              "acto1_mago"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "ian",
+          "lines": [
+            "¡Qué mascota tan adorable! Tengo justo lo que necesitas: Repelente de Babosas Ultra-Potente. Mantiene a raya hasta al Rey Baboso."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "ian"
+            ]
+          }
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 14,
+          "faces": 20,
+          "description": "Calar a Ian",
+          "results": {
+            "success": {
+              "text": "«No confío en tus productos, Ian.» Se aleja ofendido. «Buena decisión», dice Nerly. «Olía a glándula de Babosa Atrayente.»"
+            },
+            "failure": {
+              "text": "«Gracias, pero no.» Ian se encoge de hombros y te regala un mapa «dibujado por él». «Seguro lleva a una trampa», susurra Nerly."
+            }
+          },
+          "tiers": [
+            {
+              "text": "Te rocías el «repelente» con entusiasmo. Las paredes empiezan a latir. «¡ES ATRAYENTE DE BABOSAS!», grita Nerly. Corren. Mucho.",
+              "effects": {
+                "stats": {
+                  "miedo": 30,
+                  "ganas_de_vivir": -25
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "«Sé para quién trabajas», mientes con aplomo. Ian palidece: «¡Para el Mago de las Calles! Él y el Rey tienen un acuerdo. Yo espío aventureros.» Te da repelente de verdad y un mapa de un pasaje secreto al trono.",
+              "effects": {
+                "stats": {
+                  "sexi": 20,
+                  "miedo": -15
+                },
+                "inventory": [
+                  "repelente_genuino",
+                  "mapa_secreto_mago"
+                ],
+                "flags": {
+                  "pacto_mago_rey": true
+                },
+                "unlockCodex": [
+                  "pacto_mago_rey"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "Con dudas, le compras el frasco por 30 monedas. «No lo uses hasta que yo lo huela», susurra Nerly.",
+              "effects": {
+                "stats": {
+                  "dinero": -30
+                },
+                "inventory": [
+                  "pocion_ian"
+                ]
+              },
+              "max": 5
+            },
+            {
+              "text": "«Gracias, pero no.» Ian se encoge de hombros y te regala un mapa «dibujado por él». «Seguro lleva a una trampa», susurra Nerly.",
+              "effects": {
+                "inventory": [
+                  "mapa_dudoso"
+                ]
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "«No confío en tus productos, Ian.» Se aleja ofendido. «Buena decisión», dice Nerly. «Olía a glándula de Babosa Atrayente.»",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Lo acorralas con preguntas. Suda. «Trabajo para... alguien que tiene interés en el Abismo. ¡No es el Rey, lo juro!» Te da un antídoto de verdad para que lo dejes en paz.",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                },
+                "inventory": [
+                  "antidoto_real"
+                ],
+                "flags": {
+                  "ian_sospechoso": true
+                }
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "ian",
+          "lines": [
+            "Bueno, ¡me voy! Si me necesitan, estaré... por ahí. Siempre estoy por ahí."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir por el pasaje orgánico",
+              "goto": "acto3_masa"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_masa": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El túnel está bloqueado por una masa gelatinosa enorme. Tiene... ¿una boca? Tiene una boca. Y habla."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Es un Guardián Gelatinoso. Solo deja pasar a quien resuelve su acertijo. Si fallas, te traga un rato. Es muy desagradable."
+          ]
+        },
+        {
+          "type": "puzzle",
+          "puzzleType": "riddle",
+          "description": "La masa gelatinosa burbujea y pregunta con voz de gárgaras:",
+          "config": {
+            "type": "riddle",
+            "question": "Me arrastro sin pies, dejo un camino sin tinta, cargo mi casa o no la tengo, y si me das sal, me voy sin despedirme. ¿Qué soy?",
+            "answers": [
+              "babosa",
+              "una babosa",
+              "la babosa",
+              "babosas",
+              "caracol",
+              "un caracol"
+            ],
+            "hint": "Llevas todo el juego rodeado de ellas."
+          },
+          "maxAttempts": 3,
+          "hintText": "Mira a tu compañera de viaje.",
+          "success": {
+            "text": "La masa tiembla de placer intelectual y se aparta con un sonido de gelatina feliz. «Correcto. Pasa, criatura pensante.»",
+            "effects": {
+              "stats": {
+                "sexi": 5
+              }
+            },
+            "goto": "acto3_explosiva"
+          },
+          "failure": {
+            "text": "La masa te traga. Adentro está tibio y oscuro y huele a sopa. Después de un minuto eterno te escupe del otro lado. Pasaste. Técnicamente.",
+            "effects": {
+              "stats": {
+                "ganas_de_vivir": -10,
+                "sexi": -10,
+                "miedo": 15
+              }
+            },
+            "goto": "acto3_explosiva"
+          }
+        }
+      ]
+    },
+    "acto3_explosiva": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Más adelante, en medio del pasaje, una babosa naranja hinchada como un globo duerme. Cada vez que ronca, brilla."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Una Babosa Explosiva! No la mires. No la despiertes. Y si peleas, nada de golpes: si revienta cerca, revientas tú. Usa la sal desde lejos."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosa_explosiva"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Pasar de puntillas sin mirarla",
+              "goto": "acto3_explosiva_sigilo",
+              "tags": [
+                "sigiloso"
+              ]
+            },
+            {
+              "text": "Atacarla antes de que despierte",
+              "goto": "acto3_explosiva_pelea",
+              "tags": [
+                "temerario"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_explosiva_sigilo": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 15,
+          "faces": 20,
+          "description": "Pasar de puntillas junto a la Babosa Explosiva",
+          "results": {
+            "critical_success": {
+              "text": "Pasas tan silencioso que la babosa ni se entera. Nerly te aplaude sin hacer ruido. Eso es talento.",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                }
+              },
+              "goto": "acto3_gemelas"
+            },
+            "success": {
+              "text": "Pasas conteniendo la respiración. La babosa ronca, brilla... y sigue durmiendo. Uf.",
+              "goto": "acto3_gemelas"
+            },
+            "failure": {
+              "text": "Pisas un charco que hace «pluf». La babosa abre un ojo. Se hincha. Mucho.",
+              "effects": {
+                "stats": {
+                  "miedo": 15
+                }
+              },
+              "goto": "acto3_explosiva_pelea"
+            },
+            "critical_failure": {
+              "text": "Estornudas. En su cara. La babosa se despierta furiosa e hinchada como nunca.",
+              "effects": {
+                "stats": {
+                  "miedo": 25,
+                  "pis": 20
+                }
+              },
+              "goto": "acto3_explosiva_pelea"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_explosiva_pelea": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosa Explosiva",
+            "image": "images/dialogs/babosa_explosiva.png",
+            "hp": 16,
+            "attack": 5,
+            "defense": 0,
+            "deathDamage": 18,
+            "deathText": "¡La Babosa Explosiva REVIENTA en tu cara! Llueve baba naranja."
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "flee",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un buen puñado de sal. La babosa burbujea, chilla y se retuerce como tu dignidad."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. Recuperas ganas de vivir. Y te da hipo. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón de Babosa Cristalina brilla y te cura. Es precioso. Lo acabas de gastar. Bravo."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. La luz revela cada rincón y le chamusca las antenas a la babosa."
+            },
+            {
+              "itemId": "lampara",
+              "name": "Alzar la lámpara",
+              "damage": 3,
+              "consume": false,
+              "reveal": true,
+              "text": "Levantas la lámpara de aceite. No es gran cosa, pero la luz la deja al descubierto."
+            },
+            {
+              "itemId": "boton_luminiscente",
+              "name": "Mostrar el botón luminiscente",
+              "consume": false,
+              "reveal": true,
+              "text": "Sacas el botón luminiscente del Mago. Brilla. La babosa, desconcertada, queda a la vista."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "Silencio. Olor a caramelo quemado. Nerly sale de detrás de una roca: «¿Sigues entero? ¿Sí? ¿Todos los dedos?» Te unta un musgo cicatrizante en las quemaduras. Arde, pero ayuda.",
+              "effects": {
+                "stats": {
+                  "miedo": -5,
+                  "ganas_de_vivir": 15
+                },
+                "meta": {
+                  "babosas_vencidas": 1
+                }
+              },
+              "goto": "acto3_gemelas"
+            },
+            "defeat": {
+              "text": "Todo se vuelve negro y pegajoso.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "reventado por una Babosa Explosiva (y por no hacerle caso a Nerly)"
+                }
+              },
+              "goto": "muerte"
+            },
+            "flee": {
+              "text": "Sales corriendo más allá de la babosa, que explota de rabia contra una pared. Sobrevives cubierto de baba naranja.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto3_gemelas"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_gemelas": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El pasaje se ensancha. Dos babosas idénticas se deslizan hacia ustedes, sincronizadas como bailarinas de nado. Bueno, una. Parece una. Son dos. Es confuso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Babosas Gemelas! Si las cortas, se multiplican. ¡Sal, BOB! ¡La sal las mata sin que se dividan!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosas_gemelas"
+            ]
+          }
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosas Gemelas",
+            "image": "images/dialogs/babosas_gemelas.png",
+            "hp": 14,
+            "attack": 5,
+            "defense": 0,
+            "split": {
+              "hp": 10,
+              "text": "¡La babosa se parte en dos y las mitades se vuelven a levantar! Te lo advirtieron."
+            }
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "flee",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un buen puñado de sal. La babosa burbujea, chilla y se retuerce como tu dignidad."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. Recuperas ganas de vivir. Y te da hipo. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón de Babosa Cristalina brilla y te cura. Es precioso. Lo acabas de gastar. Bravo."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. La luz revela cada rincón y le chamusca las antenas a la babosa."
+            },
+            {
+              "itemId": "lampara",
+              "name": "Alzar la lámpara",
+              "damage": 3,
+              "consume": false,
+              "reveal": true,
+              "text": "Levantas la lámpara de aceite. No es gran cosa, pero la luz la deja al descubierto."
+            },
+            {
+              "itemId": "boton_luminiscente",
+              "name": "Mostrar el botón luminiscente",
+              "consume": false,
+              "reveal": true,
+              "text": "Sacas el botón luminiscente del Mago. Brilla. La babosa, desconcertada, queda a la vista."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "Las gemelas (o cuatrillizas, perdiste la cuenta) quedan en un charco sincronizado. Al fondo, el pasaje sigue hacia la oscuridad del trono.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                },
+                "meta": {
+                  "babosas_vencidas": 1
+                }
+              },
+              "goto": "acto3_profundo_fin"
+            },
+            "defeat": {
+              "text": "Todo se vuelve negro y pegajoso.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "multiplicado por cero por unas Babosas Gemelas"
+                }
+              },
+              "goto": "muerte"
+            },
+            "flee": {
+              "text": "Retrocedes hasta la Sala de Entrada. Las gemelas no te siguen: están ocupadas peleando entre ellas por quién es la original.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto3_hub"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_profundo_fin": {
+      "scenario": {
+        "name": "Abismo Profundo",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "El «Sistema Digestivo del Abismo». Paredes que laten y formaciones que parecen órganos."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Desde aquí se siente el latido del trono. Estamos cerca. Muy cerca."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "zona_profundo": true
+            },
+            "stats": {
+              "zonas_completadas": 1,
+              "ganas_de_vivir": 10
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Zona completada: Abismo Profundo",
+          "text": "Te acercas un poco más al trono. Y a la muerte. Mismo camino.",
+          "icon": "🗺️"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la Sala de Entrada",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_grutas": {
+      "scenario": {
+        "name": "Grutas de Cristal",
+        "image": "images/scenarios/grutas_cristal.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Las Grutas de Cristal. Aquí vienen algunas babosas a meditar. Las Babosas Iluminadas pueden vivir siglos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Las babosas meditan?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Babosas filosóficas. ¿Qué sigue? ¿Ratas con doctorado? ¿Un héroe competente? No, eso ya sería fantasía."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una babosa vieja y translúcida medita flotando sobre un cristal. Abre un ojo y te dice: «El camino que buscas está dentro de ti». Luego cierra el ojo. Gracias por nada."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosas_iluminadas"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "De pronto, el aire se enfría. Una silueta semitransparente atraviesa la pared de cristal y se detiene frente a ti. No tiene cara. Pero te está mirando."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Babosa Fantasma! ¡Tus golpes la atraviesan! ¡Luz, BOB, necesitas luz!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosa_fantasma"
+            ]
+          }
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosa Fantasma",
+            "image": "images/dialogs/babosa_fantasma.png",
+            "hp": 20,
+            "attack": 5,
+            "defense": 0,
+            "dodgeChance": 0.5
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "flee",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un buen puñado de sal. La babosa burbujea, chilla y se retuerce como tu dignidad."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. Recuperas ganas de vivir. Y te da hipo. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón de Babosa Cristalina brilla y te cura. Es precioso. Lo acabas de gastar. Bravo."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. La luz revela cada rincón y le chamusca las antenas a la babosa."
+            },
+            {
+              "itemId": "lampara",
+              "name": "Alzar la lámpara",
+              "damage": 3,
+              "consume": false,
+              "reveal": true,
+              "text": "Levantas la lámpara de aceite. No es gran cosa, pero la luz la deja al descubierto."
+            },
+            {
+              "itemId": "boton_luminiscente",
+              "name": "Mostrar el botón luminiscente",
+              "consume": false,
+              "reveal": true,
+              "text": "Sacas el botón luminiscente del Mago. Brilla. La babosa, desconcertada, queda a la vista."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "La Babosa Fantasma se deshace en un suspiro helado. Los cristales dejan de temblar. Tu vejiga, no.",
+              "effects": {
+                "stats": {
+                  "pis": 15,
+                  "sexi": 5
+                },
+                "meta": {
+                  "babosas_vencidas": 1
+                }
+              },
+              "goto": "acto3_lagrima"
+            },
+            "defeat": {
+              "text": "Todo se vuelve negro y pegajoso.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "atravesado por una Babosa Fantasma (y por la falta de una lámpara)"
+                }
+              },
+              "goto": "muerte"
+            },
+            "flee": {
+              "text": "Sales corriendo de las Grutas. La Fantasma no te sigue: los fantasmas tienen mejores cosas que hacer. Como atravesar paredes.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              },
+              "goto": "acto3_hub"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_lagrima": {
+      "scenario": {
+        "name": "Grutas de Cristal",
+        "image": "images/scenarios/grutas_cristal.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En el centro de la gruta, sobre un pedestal de cristal, algo brilla con intensidad."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Eso es... una Lágrima de Cristal. Se dice que la formaron los pensamientos de la primera babosa que existió.",
+            "Si la tocas, podrías ver el pasado o el futuro. O podrías explotar. Las leyendas no son claras."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Un artefacto legendario convenientemente colocado para que el héroe lo encuentre. Qué original. Me encanta mi trabajo."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "lagrima_cristal"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Tocar la Lágrima de Cristal",
+              "goto": "acto3_vision",
+              "tags": [
+                "temerario"
+              ]
+            },
+            {
+              "text": "Dejarla donde está",
+              "effects": {
+                "flags": {
+                  "lagrima_ignorada": true
+                }
+              },
+              "goto": "acto3_grutas_fin",
+              "tags": [
+                "prudente"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_vision": {
+      "scenario": {
+        "name": "Grutas de Cristal",
+        "image": "images/scenarios/grutas_cristal.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Últimas palabras antes de explotar en mil pedazos viscosos? ¿No? Bueno. Tocas la Lágrima. Una luz blanca lo inunda todo."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "toco_lagrima": true
+            }
+          }
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 18,
+          "faces": 20,
+          "description": "Resistir la visión de la Lágrima",
+          "results": {
+            "success": {
+              "text": "Ves el pasado: una sustancia que cayó del cielo y transformó a una babosa ordinaria en el Rey. Ahora sabes contra qué te enfrentas."
+            },
+            "failure": {
+              "text": "Fragmentos: el Rey, una sala del trono de cristal, algo sobre una debilidad... La imagen se desvanece antes de entenderla."
+            }
+          },
+          "tiers": [
+            {
+              "text": "Tu mente colapsa. Ves mil futuros y en todos el Rey Baboso triunfa y el mundo se ahoga en baba. Despiertas en el suelo con un mechón de pelo blanco.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -30,
+                  "miedo": 25
+                },
+                "addTraits": [
+                  "trauma_psiquico"
+                ],
+                "flags": {
+                  "vision_mala": true
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "La Lágrima se eleva y te lo muestra todo: el cristal en la frente del Rey, el camino más seguro hasta él, y que sal mezclada con residuo cristalino atraviesa sus defensas. Luego se parte en fragmentos que caen en tu mano.",
+              "effects": {
+                "stats": {
+                  "miedo": -20,
+                  "sexi": 20,
+                  "ganas_de_vivir": 15
+                },
+                "flags": {
+                  "vision_debilidad": true,
+                  "vision_completa": true
+                },
+                "inventory": [
+                  "fragmentos_lagrima"
+                ],
+                "unlockCodex": [
+                  "origen_rey",
+                  "punto_debil_rey"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "Imágenes confusas: el Abismo devorando ciudades... ¿Nerly traicionándote? ¿O salvándote? No lo sabes. «¿Qué viste?», pregunta ella. No le contestas.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -15,
+                  "miedo": 15
+                },
+                "affinity": {
+                  "nerly": -10
+                },
+                "flags": {
+                  "vision_confusa": true
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Fragmentos: el Rey, una sala del trono de cristal, algo sobre una debilidad... La imagen se desvanece antes de entenderla.",
+              "effects": {
+                "stats": {
+                  "miedo": 5,
+                  "ganas_de_vivir": -5
+                },
+                "flags": {
+                  "vision_parcial": true
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Ves el pasado: una sustancia que cayó del cielo y transformó a una babosa ordinaria en el Rey. Ahora sabes contra qué te enfrentas.",
+              "effects": {
+                "stats": {
+                  "miedo": -10,
+                  "sexi": 5
+                },
+                "flags": {
+                  "vision_origen": true
+                },
+                "unlockCodex": [
+                  "origen_rey"
+                ]
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Ves al Rey en su trono... y su punto débil: un pequeño cristal incrustado en su frente que controla toda su masa. «¡Lo vi! ¡Sé cómo derrotarlo!»",
+              "effects": {
+                "stats": {
+                  "miedo": -15,
+                  "sexi": 10,
+                  "ganas_de_vivir": 10
+                },
+                "flags": {
+                  "vision_debilidad": true
+                },
+                "unlockCodex": [
+                  "origen_rey",
+                  "punto_debil_rey"
+                ]
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Recuperar el aliento",
+              "goto": "acto3_grutas_fin"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_grutas_fin": {
+      "scenario": {
+        "name": "Grutas de Cristal",
+        "image": "images/scenarios/grutas_cristal.png",
+        "music": "audio/rpgchip10_fountain_of_the_fairies.ogg",
+        "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Deberíamos seguir. El Rey no va a derrotarse solo. Aunque sería muy conveniente."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "zona_grutas": true
+            },
+            "stats": {
+              "zonas_completadas": 1,
+              "ganas_de_vivir": 10
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Zona completada: Grutas de Cristal",
+          "text": "Te acercas un poco más al trono. Y a la muerte. Mismo camino.",
+          "icon": "🗺️"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la Sala de Entrada",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_hacia_trono": {
+      "scenario": {
+        "name": "Hacia el trono",
+        "image": "images/scenarios/abismo_profundo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El pasaje central se abre con un sonido húmedo, como un bostezo gigante. Al fondo, una luz verde late al ritmo de algo enorme que respira."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Es él. Puedo sentirlo. BOB... pase lo que pase, gracias por traerme hasta aquí."
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": ">=40"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Vamos. Terminemos con esto."
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": "<40"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El mapa del Mago muestra un pasaje secreto hacia el trono. Tal vez sirva. Tal vez sea una trampa. Con el Mago, ambas cosas a la vez."
+          ],
+          "condition": {
+            "inventory": [
+              "mapa_secreto_mago"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Has vencido a {meta.babosas_vencidas} babosas en total, contando todas tus vidas. El Rey ya sabe tu nombre. Bueno, sabe «BOB»."
+          ],
+          "condition": {
+            "meta": {
+              "babosas_vencidas": ">=3"
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Fin del Acto III",
+          "text": "Sobreviviste al Abismo. Casi. Lo difícil viene ahora.",
+          "icon": "🕳️"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Enfrentar al Rey Baboso",
+              "goto": "acto4_trono",
+              "tags": [
+                "valiente"
+              ]
             }
           ]
         }

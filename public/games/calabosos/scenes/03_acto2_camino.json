@@ -9,6 +9,12 @@
       },
       "sequence": [
         {
+          "type": "effects",
+          "effects": {
+            "checkpoint": true
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [

@@ -42,6 +42,8 @@ export interface PlayerState {
   profile?: Record<string, number>;
   /** Entradas del códice desbloqueadas (en orden) */
   codex?: string[];
+  /** Último punto de control: escena y copia del estado en ese momento */
+  checkpoint?: { scene: string; state: Omit<PlayerState, 'checkpoint'> };
 }
 
 // Lo que el motor produce paso a paso

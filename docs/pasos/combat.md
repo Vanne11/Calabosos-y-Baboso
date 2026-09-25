@@ -67,3 +67,28 @@ Sistema de combate con HP, ataque, defensa y acciones.
 
 **Daño enemigo:** `max(1, enemy.attack - floor(defenseStat/20)) + random(0-3)`
 **Defendiendo:** `max(1, floor(daño_base * 0.5))`
+
+## Rasgos del enemigo y armas
+
+Campos opcionales en `enemy` para darle personalidad a cada combate:
+
+| Campo | Efecto |
+|---|---|
+| `firstStrike` (+ `firstStrikeText`) | Ataca una vez antes del primer turno del jugador |
+| `dodgeChance` | Probabilidad (0-1) de esquivar ataques normales. Un item con `reveal: true` la anula el resto del combate |
+| `damagePerTurn` (+ `damagePerTurnText`) | Daño extra al jugador cada ronda mientras siga vivo |
+| `corrodes` (+ `corrodeChance`, default 0.5) | Armas (item ids) que puede destruir cuando la atacas con ellas |
+| `split: { hp, text }` | Al llegar a 0 HP se divide una vez y vuelve con `hp`, salvo que muera por un item con `preventSplit: true` |
+| `deathDamage` (+ `deathText`) | Daño al jugador si muere por un ataque cuerpo a cuerpo (con items no hay riesgo) |
+
+Armas (`weapons`): se usa automáticamente la de mayor `bonus` que el jugador tenga en el inventario; si una se corroe, pasa a la siguiente.
+
+```jsonc
+"weapons": [{ "itemId": "espada_oxidada", "name": "la espada oxidada", "bonus": 4 }],
+"combatItems": [
+  { "itemId": "sal", "name": "Lanzar sal", "damage": 12, "consume": false, "preventSplit": true, "text": "..." },
+  { "itemId": "antorcha", "name": "Alzar la antorcha", "damage": 6, "consume": false, "reveal": true, "text": "..." }
+]
+```
+
+Los textos de resultado (`victory`/`defeat`/`flee`) admiten variables. El botón genérico «use_item» no se muestra: cada item usable tiene su propio botón.

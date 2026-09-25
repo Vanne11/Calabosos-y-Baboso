@@ -141,6 +141,12 @@
       "image": "images/dialogs/babosita.png",
       "role": "npc"
     },
+    "ian": {
+      "name": "Ian",
+      "description": "Recolector de «ingredientes exóticos» que aparece donde no debería. Sonríe demasiado. Huele a queso rancio.",
+      "image": "images/dialogs/ian.png",
+      "role": "npc"
+    },
     "sistema": {
       "name": "SISTEMA",
       "description": "Notificaciones del sistema de juego.",
@@ -176,6 +182,10 @@
       "label": "Monedas",
       "icon": "🪙",
       "min": 0
+    },
+    "zonas_completadas": {
+      "label": "Zonas completadas",
+      "hidden": true
     }
   },
   "initialStats": {
@@ -183,7 +193,9 @@
     "miedo": 0,
     "pis": 0,
     "sexi": 50,
-    "dinero": 0
+    "dinero": 0,
+    "zonas_completadas": 0,
+    "causa_muerte": "sus ganas de vivir llegaron a cero"
   },
   "initialFlags": {},
   "initialInventory": [],
@@ -612,6 +624,61 @@
       "name": "Camiseta «Sobreviví (casi) al Abismo»",
       "description": "De la tienda de regalos del Abismo. Nadie sabe quién la atiende.",
       "image": "images/items/camiseta_sobrevivi.png"
+    },
+    "corazon_cristalino": {
+      "name": "Corazón de Babosa Cristalina",
+      "description": "Un cristal con luz líquida dentro. Cura heridas graves.",
+      "image": "images/items/corazon_cristalino.png"
+    },
+    "residuo_acido": {
+      "name": "Residuo ácido",
+      "description": "Lo que quedó de una Babosa Ácida. Burbujea en el frasco.",
+      "image": "images/items/residuo_acido.png"
+    },
+    "baba_maternal": {
+      "name": "Baba maternal",
+      "description": "Regalo de la mamá de la babosita. Las babosas de la cría te reconocen como amigo.",
+      "image": "images/items/baba_maternal.png"
+    },
+    "huevo_babosa": {
+      "name": "Huevo dorado de babosa",
+      "description": "Un huevo de la línea real. Late contra tu espalda. Esto no puede salir mal.",
+      "image": "images/items/huevo_babosa.png"
+    },
+    "pocion_ian": {
+      "name": "Poción sospechosa de Ian",
+      "description": "Violeta y burbujeante. Nerly quiere olerla antes.",
+      "image": "images/items/pocion_ian.png"
+    },
+    "mapa_dudoso": {
+      "name": "Mapa dudoso de Ian",
+      "description": "«Dibujado por él.» Seguro lleva a una trampa.",
+      "image": "images/items/mapa_dudoso.png"
+    },
+    "antidoto_real": {
+      "name": "Antídoto real",
+      "description": "Ian te lo dio para que lo dejaras en paz. Parece genuino.",
+      "image": "images/items/antidoto_real.png"
+    },
+    "repelente_genuino": {
+      "name": "Repelente de babosas genuino",
+      "description": "Este sí funciona. Ian lo juró por su jefe.",
+      "image": "images/items/repelente_genuino.png"
+    },
+    "mapa_secreto_mago": {
+      "name": "Mapa secreto del Mago",
+      "description": "Muestra un pasaje secreto hasta la cámara del Rey.",
+      "image": "images/items/mapa_secreto_mago.png"
+    },
+    "fragmentos_lagrima": {
+      "name": "Fragmentos de la Lágrima de Cristal",
+      "description": "Con sal, forman un proyectil que atraviesa las defensas del Rey.",
+      "image": "images/items/fragmentos_lagrima.png"
+    },
+    "antorcha": {
+      "name": "Antorcha",
+      "description": "Revela babosas fantasma y chamusca antenas.",
+      "image": "images/items/antorcha.png"
     }
   },
   "traits": {
@@ -637,6 +704,20 @@
       "icon": "🧠",
       "diceModifier": 1,
       "duration": 12
+    },
+    "alucinaciones": {
+      "name": "Alucinaciones",
+      "description": "Tocaste esporas. Tu mochila te habla. Tú le contestas.",
+      "icon": "🍄",
+      "diceModifier": -2,
+      "duration": 5
+    },
+    "trauma_psiquico": {
+      "name": "Trauma psíquico",
+      "description": "La Lágrima te mostró demasiado. Tienes un mechón blanco.",
+      "icon": "😵",
+      "diceModifier": -1,
+      "duration": 10
     }
   },
   "codex": {
@@ -647,31 +728,31 @@
         "title": "Babosa Ácida",
         "icon": "🟢",
         "category": "Especies",
-        "text": "Segrega un líquido corrosivo que derrite metal, cuero y autoestima. [dim]Consejo de Nerly: nunca la toques con armas de metal; se las come.[/dim]"
+        "text": "Segrega un líquido corrosivo que derrite metal, cuero y autoestima. [dim]Consejo de Nerly: nunca la toques con armas de metal; se las come.[/dim] [dim]En combate: quema cada ronda y puede derretir espadas y dagas. El bate de madera es inmune.[/dim]"
       },
       "babosa_saltarina": {
         "title": "Babosa Saltarina",
         "icon": "🦘",
         "category": "Especies",
-        "text": "Se lanza desde el techo sobre víctimas distraídas. O sea, sobre ti. [dim]Consejo: mira siempre hacia arriba. Sí, siempre.[/dim]"
+        "text": "Se lanza desde el techo sobre víctimas distraídas. O sea, sobre ti. [dim]Consejo: mira siempre hacia arriba. Sí, siempre.[/dim] [dim]En combate: ataca primero, antes de tu turno.[/dim]"
       },
       "babosas_gemelas": {
         "title": "Babosas Gemelas",
         "icon": "👯",
         "category": "Especies",
-        "text": "Si cortas una por la mitad, se convierten en dos. Porque por supuesto que sí. [dim]Consejo: no las cortes. Aplástalas. O sal.[/dim]"
+        "text": "Si cortas una por la mitad, se convierten en dos. Porque por supuesto que sí. [dim]Consejo: no las cortes. Aplástalas. O sal.[/dim] [dim]En combate: se dividen una vez al morir, salvo que las mates con sal.[/dim]"
       },
       "babosa_fantasma": {
         "title": "Babosa Fantasma",
         "icon": "👻",
         "category": "Especies",
-        "text": "Semitransparente, atraviesa paredes y aparece donde menos la quieres. [dim]Consejo: odia la luz fuerte.[/dim]"
+        "text": "Semitransparente, atraviesa paredes y aparece donde menos la quieres. [dim]Consejo: odia la luz fuerte.[/dim] [dim]En combate: esquiva la mayoría de los golpes hasta que la ilumines (lámpara, antorcha, botón luminiscente).[/dim]"
       },
       "babosa_explosiva": {
         "title": "Babosa Explosiva",
         "icon": "💥",
         "category": "Especies",
-        "text": "Explota cuando se siente amenazada. Se siente amenazada muy fácilmente. [dim]Consejo: no la mires. Ni feo ni bonito. No la mires.[/dim]"
+        "text": "Explota cuando se siente amenazada. Se siente amenazada muy fácilmente. [dim]Consejo: no la mires. Ni feo ni bonito. No la mires.[/dim] [dim]En combate: si la matas a golpes, te explota encima. La sal la mata a distancia.[/dim]"
       },
       "rey_baboso": {
         "title": "El Rey Baboso",
@@ -708,6 +789,48 @@
         "icon": "📜",
         "category": "Notas",
         "text": "Ácidas: nada de metal. Saltarinas: mirar arriba. Gemelas: aplastar, no cortar. Fantasma: luz fuerte. Explosivas: no mirar. Tú: no morir."
+      },
+      "mama_babosa": {
+        "title": "Mamá de la babosita",
+        "icon": "💚",
+        "category": "Personajes",
+        "text": "La madre de la babosita del bosque. Te reconoció en las Cavernas de Cría y te lamió la cara en agradecimiento. Asqueroso. Precioso."
+      },
+      "ian": {
+        "title": "Ian",
+        "icon": "🧪",
+        "category": "Personajes",
+        "text": "Dice recolectar ingredientes exóticos. Huele a queso rancio, como el humo del Mago de las Calles. Nerly no confía en él. Nadie debería."
+      },
+      "pacto_mago_rey": {
+        "title": "El pacto del Mago y el Rey",
+        "icon": "🤝",
+        "category": "Secretos",
+        "text": "Ian lo confesó: trabaja para el Mago de las Calles, y el Mago tiene un acuerdo con el Rey Baboso. Ian espía aventureros. Tu permiso de salida... ¿también era parte del plan?"
+      },
+      "babosas_iluminadas": {
+        "title": "Babosas Iluminadas",
+        "icon": "🧘",
+        "category": "Especies",
+        "text": "Babosas que viven siglos y meditan en las Grutas de Cristal. Dicen frases profundas e inútiles como «el camino está dentro de ti»."
+      },
+      "lagrima_cristal": {
+        "title": "Lágrima de Cristal",
+        "icon": "💧",
+        "category": "Objetos",
+        "text": "Formada por los pensamientos de la primera babosa. Quien la toca puede ver el pasado o el futuro. O explotar."
+      },
+      "origen_rey": {
+        "title": "Origen del Rey",
+        "icon": "☄️",
+        "category": "Secretos",
+        "text": "Una sustancia cayó del cielo sobre una pequeña cueva y transformó a una babosa ordinaria. Así empezó todo."
+      },
+      "punto_debil_rey": {
+        "title": "Punto débil del Rey",
+        "icon": "🎯",
+        "category": "Secretos",
+        "text": "Un pequeño cristal incrustado en la frente del Rey controla toda su masa. Golpéalo ahí. Con sal, si puedes."
       }
     }
   }

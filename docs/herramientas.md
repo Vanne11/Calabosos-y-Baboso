@@ -47,6 +47,9 @@ Informa:
 - **cobertura**: escenas nunca visitadas;
 - escenas donde la partida se queda **atascada** (terminan sin navegar);
 - **variables sin resolver** en textos (`{algo}` que no existe);
-- errores del motor, y la escena más repetida en partidas que no terminan (bucles).
+- errores del motor, y la escena más repetida en partidas que no terminan (bucles);
+- **muertes por causa** (stat `causa_muerte`) y escena donde ocurren: sirve para balancear combates.
+
+En combate, el bot juega como un jugador razonable (se cura con poca vida, usa sal y luz, a veces defiende o huye). Al morir reintenta desde el punto seguro hasta 3 veces.
 
 Con la misma semilla, el resultado es reproducible. Sale con código 1 si encuentra problemas.

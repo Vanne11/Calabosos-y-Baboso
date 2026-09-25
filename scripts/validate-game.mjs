@@ -16,7 +16,7 @@ import {
   readPlaceholders,
 } from './shared/game-data.mjs';
 
-const SPECIAL_DESTINATIONS = new Set(['_quit', '_game_over', '_restart', '_age_accept']);
+const SPECIAL_DESTINATIONS = new Set(['_quit', '_game_over', '_restart', '_age_accept', '_checkpoint']);
 const CHAT_MODES = new Set(['persuadir', 'negociar', 'cancion', 'rap', 'insultos', 'confesion']);
 const AGE_GATE_SCENE = '_age_gate';
 

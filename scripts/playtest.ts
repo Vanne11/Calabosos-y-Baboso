@@ -19,6 +19,7 @@ const MAX_STEPS = 1500;
 const MAX_SCENE_ENTRIES = 400;
 const NAMES = ['Pepe', 'bob', 'Takashi', '', 'Link', 'Narrador', 'Juanito Pérez de la Rosa Sánchez', 'culo'];
 const SPECIAL = new Set(['_quit', '_restart', '_game_over', '_age_accept']);
+const MAX_CHECKPOINT_RETRIES = 3; // el bot reintenta desde el punto seguro, como haría un jugador
 
 // --- Azar reproducible (mulberry32) ---
 const seedArg = process.argv.find((a) => a.startsWith('--seed='));
@@ -69,6 +70,7 @@ const leaks = new Map<string, string>(); // texto con {variable} sin resolver �
 const stuck = new Map<string, number>();
 const ends = new Map<string, number>();
 const errors: string[] = [];
+const deathCauses = new Map<string, number>();
 const loopScenes = new Map<string, number>(); // escenas más repetidas en partidas que llegan al límite
 
 function checkText(text: string | undefined, scene: string): void {
@@ -106,8 +108,18 @@ function answer(r: StepResult, examined: Set<string>): PlayerAction | null {
       if (r.canSteal && r.items.length && rand() < 0.05) return { type: 'shop_steal', itemIndex: Math.floor(rand() * r.items.length) };
       return { type: 'shop_exit' };
     }
-    case 'combat_prompt':
-      return { type: 'combat_action', action: pick(r.actions) };
+    case 'combat_prompt': {
+      // Jugador razonable: se cura con poca vida, usa sal y luz, a veces defiende o huye
+      const items = r.usableItems ?? [];
+      const has = (re: RegExp) => items.find((i) => re.test(i.itemId));
+      const heal = has(/pocion|corazon/);
+      if (heal && r.playerHp < 35) return { type: 'combat_action', action: `use_item:${heal.itemId}` };
+      const smart = has(/^sal$|antorcha|lampara|boton/);
+      if (smart && rand() < 0.5) return { type: 'combat_action', action: `use_item:${smart.itemId}` };
+      if (r.actions.includes('flee') && r.playerHp < 20 && rand() < 0.5) return { type: 'combat_action', action: 'flee' };
+      if (rand() < 0.15) return { type: 'combat_action', action: 'defend' };
+      return { type: 'combat_action', action: 'attack' };
+    }
     case 'puzzle_prompt':
       return { type: 'puzzle_exit' };
     case 'craft_prompt':
@@ -132,11 +144,16 @@ async function playOnce(): Promise<RunResult> {
   const result: RunResult = { steps: 0, end: 'limit', scenes: [], deaths: 0 };
   let scene = 'start';
   let entries = 0;
+  let retries = 0;
   const examined = new Set<string>();
 
   while (entries++ < MAX_SCENE_ENTRIES) {
     result.scenes.push(scene);
-    if (scene === 'muerte') result.deaths++;
+    if (scene === 'muerte') {
+      result.deaths++;
+      const cause = String(engine.state.stats.causa_muerte ?? '?') + ` (desde ${result.scenes[result.scenes.length - 2] ?? '?'})`;
+      deathCauses.set(cause, (deathCauses.get(cause) ?? 0) + 1);
+    }
     const it = engine.enterScene(scene);
     let next: string | null = null;
     let r = await it.next();
@@ -165,6 +182,14 @@ async function playOnce(): Promise<RunResult> {
     if (!next) {
       result.end = `atascado:${scene}`;
       return result;
+    }
+    if (next === '_checkpoint') {
+      const cp = retries++ < MAX_CHECKPOINT_RETRIES ? engine.restoreCheckpoint() : null;
+      if (!cp) {
+        result.end = 'se rinde tras morir';
+        return result;
+      }
+      next = cp;
     }
     if (SPECIAL.has(next)) {
       result.end = next;
@@ -217,6 +242,11 @@ for (const [end, n] of [...ends].sort((a, b) => b[1] - a[1])) console.log(`   ${
 if (loopScenes.size) {
   console.log('\nEn las partidas que llegan al límite, la escena más repetida fue:');
   for (const [s, n] of [...loopScenes].sort((a, b) => b[1] - a[1]).slice(0, 5)) console.log(`   ${s} (${n} partidas)`);
+}
+
+if (deathCauses.size) {
+  console.log('\nMuertes (causa · escena anterior):');
+  for (const [c, n] of [...deathCauses].sort((a, b) => b[1] - a[1]).slice(0, 8)) console.log(`   ${String(n).padStart(5)}  ${c}`);
 }
 
 const never = allScenes.filter((s) => !coverage.has(s) && !s.startsWith('edad'));

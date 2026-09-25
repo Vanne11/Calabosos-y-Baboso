@@ -24,6 +24,7 @@ import type {
   AiChatStep,
   ChatOutcome,
   ChatMode,
+  CombatItemDef,
 } from '../types/game';
 import type { PlayerState, StepResult, PlayerAction, CharacterState } from '../types/engine';
 import { evaluateCondition } from './ConditionEvaluator';
@@ -143,6 +144,19 @@ export class GameEngine {
     this._state = { ...state, meta };
   }
 
+  /**
+   * Vuelve al último punto de control (goto "_checkpoint"). Conserva los contadores meta actuales.
+   * Devuelve la escena a la que hay que ir, o null si no hay punto de control.
+   */
+  restoreCheckpoint(): string | null {
+    const cp = this._state.checkpoint;
+    if (!cp) return null;
+    const meta = this._state.meta;
+    this._state = { ...structuredClone(cp.state), meta, checkpoint: cp };
+    this.syncSpecialStats();
+    return cp.scene;
+  }
+
   /** Carga los contadores meta persistidos (los lee el game loop al iniciar) */
   loadMeta(meta: Record<string, number>): void {
     this._state = { ...this._state, meta: { ...meta } };
@@ -219,6 +233,10 @@ export class GameEngine {
     this._state = applyEffects(this._state, effects);
     this.clampStats();
     this.syncSpecialStats();
+    if (effects.checkpoint) {
+      const { checkpoint: _previous, ...snapshot } = this._state;
+      this._state = { ...this._state, checkpoint: { scene: this._currentScene, state: structuredClone(snapshot) } };
+    }
     if (effects.meta && this._state.meta !== prevMeta && this._metaListener) {
       this._metaListener({ ...(this._state.meta ?? {}) });
     }
@@ -1232,36 +1250,65 @@ export class GameEngine {
   private async *processCombat(
     step: CombatStep
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
-    let enemyHp = step.enemy.hp;
-    const enemyMaxHp = step.enemy.hp;
+    const enemy = step.enemy;
+    let enemyHp = enemy.hp;
+    const enemyMaxHp = enemy.hp;
     let round = 0;
+    let revealed = false;
+    let splitUsed = false;
+    const playerHpNow = () =>
+      typeof this._state.stats[step.playerStat] === 'number' ? (this._state.stats[step.playerStat] as number) : 0;
+    const hurtPlayer = (amount: number) => {
+      if (amount > 0) this.applyState({ stats: { [step.playerStat]: -amount } });
+    };
+    const enemyStrike = (defenseStat: number, factor = 1) => {
+      const base = Math.max(1, enemy.attack - Math.floor(defenseStat / 20));
+      const dmg = Math.max(1, Math.floor((base + Math.floor(Math.random() * 4)) * factor));
+      hurtPlayer(dmg);
+      return dmg;
+    };
+    /** Mejor arma que el jugador tiene ahora (puede cambiar si una se corroe) */
+    const bestWeapon = () =>
+      (step.weapons ?? [])
+        .filter((w) => this._state.inventory.includes(w.itemId))
+        .sort((a, b) => b.bonus - a.bonus)[0];
+    const outcomeEnd = function* (this: GameEngine, kind: 'victory' | 'defeat' | 'flee') {
+      const outcome = step.results[kind]!;
+      yield { type: 'combat_end' as const, outcome: kind, text: this.text(outcome.text) };
+      if (outcome.effects) {
+        this.applyState(outcome.effects);
+        yield { type: 'effects' as const, ...outcome.effects };
+      }
+      return outcome.goto;
+    };
+
+    // Ataque sorpresa (saltarinas)
+    if (enemy.firstStrike) {
+      const dmg = enemyStrike(0);
+      yield {
+        type: 'combat_turn',
+        playerAction: 'ambush',
+        playerDamage: 0,
+        enemyDamage: dmg,
+        enemyHp,
+        playerHp: playerHpNow(),
+        text: `${this.text(enemy.firstStrikeText ?? `¡${enemy.name} ataca primero!`)} Te hace ${dmg} de daño.`,
+      };
+    }
 
     while (true) {
       round++;
-      const playerHp = typeof this._state.stats[step.playerStat] === 'number'
-        ? (this._state.stats[step.playerStat] as number) : 0;
+      const playerHp = playerHpNow();
 
       if (playerHp <= 0) {
-        // Defeat
-        const outcome = step.results.defeat;
-        yield { type: 'combat_end', outcome: 'defeat', text: outcome.text };
-        if (outcome.effects) {
-          this.applyState(outcome.effects);
-          yield { type: 'effects', ...outcome.effects };
-        }
-        if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
+        const goto = yield* outcomeEnd.call(this, 'defeat');
+        if (goto) return { type: 'navigate' as const, scene: goto };
         break;
       }
 
       if (enemyHp <= 0) {
-        // Victory
-        const outcome = step.results.victory;
-        yield { type: 'combat_end', outcome: 'victory', text: outcome.text };
-        if (outcome.effects) {
-          this.applyState(outcome.effects);
-          yield { type: 'effects', ...outcome.effects };
-        }
-        if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
+        const goto = yield* outcomeEnd.call(this, 'victory');
+        if (goto) return { type: 'navigate' as const, scene: goto };
         break;
       }
 
@@ -1273,8 +1320,8 @@ export class GameEngine {
       // Prompt player action
       yield {
         type: 'combat_prompt',
-        enemyName: step.enemy.name,
-        enemyImage: step.enemy.image,
+        enemyName: enemy.name,
+        enemyImage: enemy.image,
         enemyHp,
         enemyMaxHp,
         playerHp,
@@ -1287,13 +1334,8 @@ export class GameEngine {
       if (action.type !== 'combat_action') continue;
 
       if (action.action === 'flee' && step.results.flee) {
-        const outcome = step.results.flee;
-        yield { type: 'combat_end', outcome: 'flee', text: outcome.text };
-        if (outcome.effects) {
-          this.applyState(outcome.effects);
-          yield { type: 'effects', ...outcome.effects };
-        }
-        if (outcome.goto) return { type: 'navigate' as const, scene: outcome.goto };
+        const goto = yield* outcomeEnd.call(this, 'flee');
+        if (goto) return { type: 'navigate' as const, scene: goto };
         break;
       }
 
@@ -1305,64 +1347,75 @@ export class GameEngine {
 
       let playerDamage = 0;
       let enemyDamage = 0;
-      let turnText = '';
+      const parts: string[] = [];
+      let killedByItem: CombatItemDef | null = null;
+      let killedByMelee = false;
 
       if (action.action.startsWith('use_item:')) {
-        // Use item in combat
-        const itemId = action.action.slice(9); // "use_item:sal_anti_babosas" -> "sal_anti_babosas"
+        const itemId = action.action.slice(9);
         const combatItem = (step.combatItems || []).find((ci) => ci.itemId === itemId);
 
         if (combatItem && this._state.inventory.includes(itemId)) {
-          // Apply item damage to enemy
           if (combatItem.damage) {
             playerDamage = combatItem.damage;
             enemyHp = Math.max(0, enemyHp - playerDamage);
+            if (enemyHp <= 0) killedByItem = combatItem;
           }
-
-          // Apply item heal to player
-          if (combatItem.heal) {
-            this.applyState({ stats: { [step.playerStat]: combatItem.heal } });
-          }
-
-          // Consume item (default true)
-          if (combatItem.consume !== false) {
-            this.applyState({ removeInventory: [itemId] });
-          }
-
-          // Apply extra effects
-          if (combatItem.effects) {
-            this.applyState(combatItem.effects);
-          }
-
-          turnText = combatItem.text;
-
-          // Enemy still attacks (but doesn't if item killed it)
+          if (combatItem.heal) this.applyState({ stats: { [step.playerStat]: combatItem.heal } });
+          if (combatItem.consume !== false) this.applyState({ removeInventory: [itemId] });
+          if (combatItem.effects) this.applyState(combatItem.effects);
+          if (combatItem.reveal) revealed = true;
+          parts.push(this.text(combatItem.text));
           if (enemyHp > 0) {
-            const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 20));
-            enemyDamage = Math.max(1, enemyBaseDmg + Math.floor(Math.random() * 4));
-            this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
-            turnText += ` ${step.enemy.name} contraataca por ${enemyDamage}.`;
+            enemyDamage = enemyStrike(defenseStat);
+            parts.push(`${enemy.name} contraataca por ${enemyDamage}.`);
           }
         }
       } else if (action.action === 'attack') {
-        // Player attacks: base damage from attackStat/10 + random
-        const baseDmg = Math.max(1, Math.floor(attackStat / 10));
-        playerDamage = baseDmg + Math.floor(Math.random() * 6) + 1;
-        enemyHp = Math.max(0, enemyHp - playerDamage);
-
-        // Enemy attacks back
-        const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 20));
-        enemyDamage = Math.max(1, enemyBaseDmg + Math.floor(Math.random() * 4));
-        this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
-
-        turnText = `Atacas por ${playerDamage} de daño. ${step.enemy.name} contraataca por ${enemyDamage}.`;
+        const weapon = bestWeapon();
+        if (enemy.dodgeChance && !revealed && Math.random() < enemy.dodgeChance) {
+          parts.push(`Tu golpe atraviesa a ${enemy.name} como si no estuviera ahí. Literalmente.`);
+        } else {
+          const baseDmg = Math.max(1, Math.floor(attackStat / 10));
+          playerDamage = baseDmg + Math.floor(Math.random() * 6) + 1 + (weapon?.bonus ?? 0);
+          enemyHp = Math.max(0, enemyHp - playerDamage);
+          if (enemyHp <= 0) killedByMelee = true;
+          parts.push(weapon ? `Atacas con ${weapon.name} por ${playerDamage} de daño.` : `Atacas por ${playerDamage} de daño.`);
+          // Corrosión: el ácido se come el arma de metal
+          if (weapon && enemy.corrodes?.includes(weapon.itemId) && Math.random() < (enemy.corrodeChance ?? 0.5)) {
+            this.applyState({ removeInventory: [weapon.itemId] });
+            parts.push(`¡El ácido se come tu ${weapon.name}! Solo queda el mango. Y tu vergüenza.`);
+          }
+        }
+        if (enemyHp > 0) {
+          enemyDamage = enemyStrike(defenseStat);
+          parts.push(`${enemy.name} contraataca por ${enemyDamage}.`);
+        }
       } else if (action.action === 'defend') {
-        // Defend: reduced incoming damage
-        const enemyBaseDmg = Math.max(1, step.enemy.attack - Math.floor(defenseStat / 10));
+        const enemyBaseDmg = Math.max(1, enemy.attack - Math.floor(defenseStat / 10));
         enemyDamage = Math.max(1, Math.floor(enemyBaseDmg * 0.5));
-        this.applyState({ stats: { [step.playerStat]: -enemyDamage } });
+        hurtPlayer(enemyDamage);
+        parts.push(`Te defiendes. ${enemy.name} te causa solo ${enemyDamage} de daño.`);
+      }
 
-        turnText = `Te defiendes. ${step.enemy.name} te causa solo ${enemyDamage} de daño.`;
+      // División (gemelas): vuelve una vez con más HP, salvo item que lo impida
+      if (enemyHp <= 0 && enemy.split && !splitUsed && !killedByItem?.preventSplit) {
+        splitUsed = true;
+        enemyHp = enemy.split.hp;
+        killedByMelee = false;
+        parts.push(this.text(enemy.split.text));
+      }
+      // Explosión al morir cuerpo a cuerpo
+      if (enemyHp <= 0 && killedByMelee && enemy.deathDamage) {
+        hurtPlayer(enemy.deathDamage);
+        enemyDamage += enemy.deathDamage;
+        parts.push(`${this.text(enemy.deathText ?? `¡${enemy.name} explota!`)} Te hace ${enemy.deathDamage} de daño.`);
+      }
+      // Daño por turno (ácido) mientras siga viva
+      if (enemyHp > 0 && enemy.damagePerTurn) {
+        hurtPlayer(enemy.damagePerTurn);
+        enemyDamage += enemy.damagePerTurn;
+        parts.push(`${this.text(enemy.damagePerTurnText ?? 'El ácido te quema')} (-${enemy.damagePerTurn}).`);
       }
 
       yield {
@@ -1371,9 +1424,8 @@ export class GameEngine {
         playerDamage,
         enemyDamage,
         enemyHp,
-        playerHp: typeof this._state.stats[step.playerStat] === 'number'
-          ? (this._state.stats[step.playerStat] as number) : 0,
-        text: turnText,
+        playerHp: playerHpNow(),
+        text: parts.join(' '),
       };
     }
   }

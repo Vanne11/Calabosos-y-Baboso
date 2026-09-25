@@ -8,9 +8,17 @@
       },
       "sequence": [
         {
+          "type": "effects",
+          "effects": {
+            "checkpoint": true
+          }
+        },
+        {
           "type": "dialog",
           "character": "rey_baboso",
-          "lines": ["¿ESTO es lo que mandaron? ¿En serio?"]
+          "lines": [
+            "¿ESTO es lo que mandaron? ¿En serio?"
+          ]
         },
         {
           "type": "dialog",
@@ -22,7 +30,12 @@
         },
         {
           "type": "choice",
-          "options": [{ "text": "Ganar mágicamente (modo esqueleto)", "goto": "final_heroico" }]
+          "options": [
+            {
+              "text": "Ganar mágicamente (modo esqueleto)",
+              "goto": "final_heroico"
+            }
+          ]
         }
       ]
     }
