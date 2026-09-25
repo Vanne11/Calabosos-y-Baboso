@@ -179,6 +179,8 @@ final class PromptRenderer
         $contract = 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
             . '{"reply": "lo que dices, máximo ' . $maxReplyChars . ' caracteres", "score": número entero de 0 a 100, "done": true o false, '
             . '"tono": "...", "gesto": "..." , "recuerdo": "..."}. ' . self::toneGuide() . '. '
+            . '"score": cómo va la conversación DESPUÉS de este mensaje (partes del puntaje anterior); muévelo cuando lo que dijo el jugador '
+            . 'te afecte, para bien o para mal, aunque sea un poco: el jugador ve el medidor moverse turno a turno. '
             . '"recuerdo": si "done" es true o es el último turno, UNA frase corta en tercera persona y en pasado sobre lo que pasó entre tú y Alex, '
             . 'con un detalle concreto de lo que dijo (ej: "Alex le rapeó que su laúd tenía más cuerdas que neuronas y el público lo abucheó"); si no, "".';
         if ($gestures) {

@@ -476,11 +476,17 @@ export function useGameLoop() {
         if (isFirstTime) markCharacterSeen(result.character);
         if (result.delta !== 0) sfx.play(result.delta > 0 ? 'subir' : 'bajar');
         playTone(result.tone, 450);
-        const deltaText = result.delta === 0 ? '' : result.delta > 0 ? ` [green](+${result.delta})[/green]` : ` [red](${result.delta})[/red]`;
+        // El medidor siempre dice qué pasó (también si no cambió) y los turnos van en su propia línea, bien visibles
+        const deltaText = result.delta === 0 ? ' [dim](sin cambios)[/dim]' : result.delta > 0 ? ` [green](+${result.delta})[/green]` : ` [red](${result.delta})[/red]`;
+        const turnsText =
+          result.turnsLeft > 1 ? `[yellow]⏳ Te quedan ${result.turnsLeft} turnos.[/yellow]`
+          : result.turnsLeft === 1 ? '[bold yellow]⏳ ¡Último turno! Que valga la pena.[/bold yellow]'
+          : '';
         useAppStore.getState().addEntries([
           { type: 'dialogHeader', content: result.characterName, image: result.characterImage, firstAppearance: isFirstTime && !!result.characterImage },
           { type: 'dialog', content: result.text },
-          { type: 'system', content: meterLine(result.meterLabel, result.score) + deltaText + (result.turnsLeft > 0 ? ` [dim]· quedan ${result.turnsLeft}[/dim]` : '') },
+          { type: 'system', content: meterLine(result.meterLabel, result.score) + deltaText },
+          ...(turnsText ? [{ type: 'system' as const, content: turnsText }] : []),
           ...(noteAiLine(result.aiLineId, result.text) ? [{ type: 'system' as const, content: RATE_HINT }] : []),
           { type: 'system', content: '' },
         ]);
