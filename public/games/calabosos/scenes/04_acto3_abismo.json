@@ -142,7 +142,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Conclusión científica: no es seguro. Nada aquí es seguro. Excelente experimento, {doctor|doctora|doctore} BOB."
+            "Conclusión científica: no es seguro. Nada aquí es seguro. Excelente experimento, {doctor|doctora|doctorx} BOB."
           ]
         },
         {
@@ -324,7 +324,7 @@
               "text": "Con cautela y determinación esquivas las esporas. «Lo haces muy bien», dice Nerly. «Muchos humanos se asustan aquí.»"
             },
             "failure": {
-              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final {sudado|sudada|sudade} y con rasguños."
+              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final {sudado|sudada|sudadx} y con rasguños."
             }
           },
           "tiers": [
@@ -358,7 +358,7 @@
               "sfx": "magia"
             },
             {
-              "text": "Te quedas {atascado|atascada|atascade}. Pánico. Nerly vuelve con unas Babosas Lubricantes que... mejor no preguntes qué hacen, pero te liberan. Una hora humillante.",
+              "text": "Te quedas {atascado|atascada|atascadx}. Pánico. Nerly vuelve con unas Babosas Lubricantes que... mejor no preguntes qué hacen, pero te liberan. Una hora humillante.",
               "effects": {
                 "stats": {
                   "miedo": 15,
@@ -370,7 +370,7 @@
               "sfx": "baba"
             },
             {
-              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final {sudado|sudada|sudade} y con rasguños.",
+              "text": "Avanzas lento, rozando las paredes sin tocar ninguna espora. Llegas al final {sudado|sudada|sudadx} y con rasguños.",
               "effects": {
                 "stats": {
                   "miedo": 5
@@ -679,7 +679,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "De vuelta en la Sala de Entrada. Una zona menos. Sigues {vivo|viva|vive}, contra todo pronóstico."
+            "De vuelta en la Sala de Entrada. Una zona menos. Sigues {vivo|viva|vivx}, contra todo pronóstico."
           ],
           "condition": {
             "stats": {
@@ -865,7 +865,7 @@
           "type": "dialog",
           "character": "tendero",
           "lines": [
-            "¡Bienvenid{o|a|e} a la Sucursal Subterránea de Artículos para Aventureros Suicidas! *hic* Especialidad en antorchas y productos anti-babosas.",
+            "¡Bienvenid{o|a|x} a la Sucursal Subterránea de Artículos para Aventureros Suicidas! *hic* Especialidad en antorchas y productos anti-babosas.",
             "¿Cómo llegué? Estaba aquí ayer. O el año pasado. El tiempo es relativo cuando vendes a héroes que van a morir."
           ],
           "condition": {
@@ -899,7 +899,7 @@
           "type": "dialog",
           "character": "tendero",
           "lines": [
-            "¡Volviste! *hic* Mi cliente {favorito|favorita|favorite}. {Mi único|Mi única|Le únique} cliente. Los demás están muertos."
+            "¡Volviste! *hic* Mi cliente {favorito|favorita|favoritx}. {Mi único|Mi única|Lx únicx} cliente. Los demás están muertos."
           ],
           "condition": {
             "flags": {
@@ -927,7 +927,7 @@
                 }
               },
               "multiplier": 0.7,
-              "text": "«Para mi hermano... digo, cliente {favorito|favorita|favorite}: descuento.» *hic*"
+              "text": "«Para mi hermano... digo, cliente {favorito|favorita|favoritx}: descuento.» *hic*"
             },
             {
               "condition": {
@@ -936,7 +936,7 @@
                 }
               },
               "multiplier": 1.3,
-              "text": "«Tú eres {el|la|le} que insultó a mi abuelo.» Precios de rencor."
+              "text": "«Tú eres {el|la|lx} que insultó a mi abuelo.» Precios de rencor."
             }
           ],
           "items": [
@@ -1023,7 +1023,7 @@
           "type": "timed_choice",
           "duration": 7000,
           "defaultIndex": 2,
-          "timeoutText": "Te quedas {congelado|congelada|congelade}. Tu cuerpo decidió por ti: nada. Mala elección.",
+          "timeoutText": "Te quedas {congelado|congelada|congeladx}. Tu cuerpo decidió por ti: nada. Mala elección.",
           "options": [
             {
               "text": "Tirarte al suelo entre los huevos",
@@ -1088,7 +1088,7 @@
           "type": "dialog",
           "character": "babosita",
           "lines": [
-            "¡MAMÁ! ¡Es {el humano|la humana|le humane} que me ayudó en el bosque!"
+            "¡MAMÁ! ¡Es {el humano|la humana|lx humanx} que me ayudó en el bosque!"
           ],
           "condition": {
             "flags": {
@@ -1440,7 +1440,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Estás literalmente caminando por las entrañas de una mazmorra. Tu carrera de {aventurero|aventurera|aventurere} alcanza nuevas cotas de glamour."
+            "Estás literalmente caminando por las entrañas de una mazmorra. Tu carrera de {aventurero|aventurera|aventurerx} alcanza nuevas cotas de glamour."
           ]
         },
         {
@@ -1762,7 +1762,7 @@
           "description": "Pasar de puntillas junto a la Babosa Explosiva",
           "results": {
             "critical_success": {
-              "text": "Pasas tan {silencioso|silenciosa|silenciose} que la babosa ni se entera. Nerly te aplaude sin hacer ruido. Eso es talento.",
+              "text": "Pasas tan {silencioso|silenciosa|silenciosx} que la babosa ni se entera. Nerly te aplaude sin hacer ruido. Eso es talento.",
               "effects": {
                 "stats": {
                   "sexi": 10
@@ -1895,7 +1895,7 @@
           ],
           "results": {
             "victory": {
-              "text": "Silencio. Olor a caramelo quemado. Nerly sale de detrás de una roca: «¿Sigues {entero|entera|entere}? ¿Sí? ¿Todos los dedos?» Te unta un musgo cicatrizante en las quemaduras. Arde, pero ayuda.",
+              "text": "Silencio. Olor a caramelo quemado. Nerly sale de detrás de una roca: «¿Sigues {entero|entera|enterx}? ¿Sí? ¿Todos los dedos?» Te unta un musgo cicatrizante en las quemaduras. Arde, pero ayuda.",
               "effects": {
                 "stats": {
                   "miedo": -5,
@@ -2353,7 +2353,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Un artefacto legendario convenientemente colocado para que {el héroe|la heroína|le heroe} lo encuentre. Qué original. Me encanta mi trabajo."
+            "Un artefacto legendario convenientemente colocado para que {el héroe|la heroína|lx herox} lo encuentre. Qué original. Me encanta mi trabajo."
           ]
         },
         {

@@ -43,7 +43,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Versión resumida: entras al Abismo de las Babosas, derrotas al Rey Baboso, vuelves como {héroe|heroína|heroe}. Calabozos, monstruos viscosos y muerte probable. Lo típico."
+            "Versión resumida: entras al Abismo de las Babosas, derrotas al Rey Baboso, vuelves como {héroe|heroína|herox}. Calabozos, monstruos viscosos y muerte probable. Lo típico."
           ]
         },
         {
@@ -184,7 +184,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como {héroe|heroína|heroe}. Bla, bla, bla.",
+            "El plan es simple: ve a la tienda, consigue equipo, sal de la ciudad, entra al Abismo, mata al Rey Baboso, vuelve como {héroe|heroína|herox}. Bla, bla, bla.",
             "¿Ves esa tienda? La del letrero «ARTÍCULOS PARA AVENTUREROS SUICIDAS». Sí, esa."
           ],
           "condition": {
@@ -338,7 +338,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "¡Qué iniciativa! Nada dice «{héroe legendario|heroína legendaria|heroe legendarie}» como un trabajo temporal mal pagado.",
+            "¡Qué iniciativa! Nada dice «{héroe legendario|heroína legendaria|herox legendarix}» como un trabajo temporal mal pagado.",
             "Las opciones son fascinantes: limpiador de establos, probador de pociones experimentales o ayudante del verdugo. Todas igual de terribles."
           ]
         },
@@ -481,7 +481,7 @@
               "sfx": "pedo"
             },
             {
-              "text": "Los caballos no solo te dejan limpiar: te ADORAN. Uno te regala una bolsita que tenía escondida en el pesebre. «¿Eres {un encantador|una encantadora|une encantadore} de caballos?», balbucea el dueño. 100 monedas y un amuleto que encontró en el estómago de un caballo.",
+              "text": "Los caballos no solo te dejan limpiar: te ADORAN. Uno te regala una bolsita que tenía escondida en el pesebre. «¿Eres {un encantador|una encantadora|unx encantadorx} de caballos?», balbucea el dueño. 100 monedas y un amuleto que encontró en el estómago de un caballo.",
               "effects": {
                 "stats": {
                   "sexi": 15,
@@ -945,7 +945,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "¡Qué escandaloso! {El héroe elegido|La heroína elegida|Le heroe elegide} recurriendo al hurto. Me encanta este giro argumental."
+            "¡Qué escandaloso! {El héroe elegido|La heroína elegida|Lx herox elegidx} recurriendo al hurto. Me encanta este giro argumental."
           ]
         },
         {
@@ -981,12 +981,12 @@
               "text": "¡Lo conseguiste! Una bolsa con 50 monedas. El crimen paga, aparentemente. Tu conciencia no opina; está durmiendo."
             },
             "failure": {
-              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de {ladrón|ladrona|ladrone}."
+              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de {ladrón|ladrona|ladronx}."
             }
           },
           "tiers": [
             {
-              "text": "¡MAGNÍFICO! El noble es el Jefe de la Guardia disfrazado. «¡Te tengo, {ratero|ratera|ratere}! Justo buscaba a alguien para una misión suicida. O vienes al Abismo o te pudres en las mazmorras.» Felicidades: ahora eres {héroe obligado|heroína obligada|heroe obligade}. Por ley.",
+              "text": "¡MAGNÍFICO! El noble es el Jefe de la Guardia disfrazado. «¡Te tengo, {ratero|ratera|raterx}! Justo buscaba a alguien para una misión suicida. O vienes al Abismo o te pudres en las mazmorras.» Felicidades: ahora eres {héroe obligado|heroína obligada|herox obligadx}. Por ley.",
               "effects": {
                 "stats": {
                   "sexi": -30,
@@ -1029,7 +1029,7 @@
               "sfx": "huida"
             },
             {
-              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de {ladrón|ladrona|ladrone}.",
+              "text": "Tus dedos se acercan al bolsillo... y te acobardas. Nadie nota tu patético intento. Ni siquiera sirves de {ladrón|ladrona|ladronx}.",
               "effects": {
                 "stats": {
                   "ganas_de_vivir": -5
@@ -1102,7 +1102,7 @@
           "type": "dialog",
           "character": "tendero",
           "lines": [
-            "¡Bienvenid{o|a|e} a mi humilde es... estab... tienda! ¿Qué te ofrezco para tu in-inevitable... digo, emocionante aventura? *hic*"
+            "¡Bienvenid{o|a|x} a mi humilde es... estab... tienda! ¿Qué te ofrezco para tu in-inevitable... digo, emocionante aventura? *hic*"
           ]
         },
         {
@@ -1510,7 +1510,7 @@
           "type": "dialog",
           "character": "bardo",
           "lines": [
-            "¡Eh, tú, {el de la cara de «soy el elegido»|la de la cara de «soy la elegida»|le de la cara de «soy le elegide»}! Aquí nadie bebe gratis sin ganarse el respeto.",
+            "¡Eh, tú, {el de la cara de «soy el elegido»|la de la cara de «soy la elegida»|lx de la cara de «soy lx elegidx»}! Aquí nadie bebe gratis sin ganarse el respeto.",
             "Guerra de rap. Tú contra mí. Si ganas, la casa invita y te llevas el bote. Si pierdes... te bañamos en cerveza tibia."
           ]
         },
@@ -1568,7 +1568,7 @@
           "maxTurns": 3,
           "intro": [
             "(El público golpea las mesas. Alguien vomita al ritmo.)",
-            "Yo empiezo, {novato: «Llegó el elegido|novata: «Llegó la elegida|novate: «Llegó le elegide}, qué miedo me da / tiene menos flow que una babosa en la sal»."
+            "Yo empiezo, {novato: «Llegó el elegido|novata: «Llegó la elegida|novatx: «Llegó lx elegidx}, qué miedo me da / tiene menos flow que una babosa en la sal»."
           ],
           "vars": {
             "rival_nombre": "Bardo Babosa",
@@ -1694,7 +1694,7 @@
             },
             {
               "weight": 1,
-              "text": "Terminas cantando a dúo con un borracho. Resulta que eres {bueno|buena|buene}. Te dan propina. El Bardo te mira con odio.",
+              "text": "Terminas cantando a dúo con un borracho. Resulta que eres {bueno|buena|buenx}. Te dan propina. El Bardo te mira con odio.",
               "effects": {
                 "stats": {
                   "dinero": 8,
@@ -1908,7 +1908,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "¡Hola! ¿Eres {el nuevo héroe|la nueva heroína|le nueve heroe}?"
+            "¡Hola! ¿Eres {el nuevo héroe|la nueva heroína|lx nuevx herox}?"
           ]
         },
         {
@@ -2001,7 +2001,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "Porque la alternativa es entrar {solo|sola|sole} al Abismo. Y tú, con todo respeto, tienes cara de morir en el primer pasillo."
+            "Porque la alternativa es entrar {solo|sola|solx} al Abismo. Y tú, con todo respeto, tienes cara de morir en el primer pasillo."
           ]
         },
         {
@@ -2132,7 +2132,7 @@
           "description": "Guardar la sal con cuidado delante de Nerly",
           "results": {
             "success": {
-              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser {cuidadoso|cuidadosa|cuidadose}. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»"
+              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser {cuidadoso|cuidadosa|cuidadosx}. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»"
             },
             "failure": {
               "text": "Guardas la sal, pero Nerly mantiene una distancia prudente. «Avísame antes de usarla, ¿sí? Para ponerme a cubierto.»"
@@ -2164,7 +2164,7 @@
               "sfx": "acido"
             },
             {
-              "text": "Divides la sal en bolsitas etiquetadas con un cuidado casi ceremonial. Nerly te mira emocionada: «Nunca {un humano fue tan considerado|una humana fue tan considerada|une humane fue tan considerade}. Te enseñaré a hacer un ungüento anti-sal para que luchemos juntos.»",
+              "text": "Divides la sal en bolsitas etiquetadas con un cuidado casi ceremonial. Nerly te mira emocionada: «Nunca {un humano fue tan considerado|una humana fue tan considerada|unx humanx fue tan consideradx}. Te enseñaré a hacer un ungüento anti-sal para que luchemos juntos.»",
               "effects": {
                 "stats": {
                   "sexi": 20
@@ -2207,7 +2207,7 @@
               "max": 10
             },
             {
-              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser {cuidadoso|cuidadosa|cuidadose}. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»",
+              "text": "Guardas la sal en un compartimento aparte. «Gracias por ser {cuidadoso|cuidadosa|cuidadosx}. Esa sal podría servirnos contra babosas hostiles. Yo te diré cuáles.»",
               "effects": {
                 "stats": {
                   "sexi": 10
@@ -2272,7 +2272,7 @@
           "type": "dialog",
           "character": "jefe_guardia",
           "lines": [
-            "Ah, mi {reclutado favorito|reclutada favorita|reclutade favorite}. Tus papeles están en orden porque yo los firmé. Adelante, a morir por el reino."
+            "Ah, mi {reclutado favorito|reclutada favorita|reclutadx favoritx}. Tus papeles están en orden porque yo los firmé. Adelante, a morir por el reino."
           ],
           "condition": {
             "flags": {
@@ -2322,7 +2322,7 @@
           "type": "dialog",
           "character": "guardias",
           "lines": [
-            "¿El Abismo? {¿Estás loco?|¿Estás loca?|¿Perdiste la cabeza?} Nadie va allí voluntariamente. Necesitas un Permiso de Salida Suicida firmado por el administrador de misiones heroicas."
+            "¿El Abismo? ¿Estás {loco|loca|locx}? Nadie va allí voluntariamente. Necesitas un Permiso de Salida Suicida firmado por el administrador de misiones heroicas."
           ]
         },
         {
@@ -2350,7 +2350,7 @@
               ]
             },
             {
-              "text": "«Soy {el héroe elegido|la heroína elegida|le heroe elegide}. Déjenme pasar.»",
+              "text": "«Soy {el héroe elegido|la heroína elegida|lx herox elegidx}. Déjenme pasar.»",
               "goto": "acto1_intimidar",
               "tags": [
                 "valiente"
@@ -2445,7 +2445,7 @@
           "description": "Intimidar a los guardias",
           "results": {
             "critical_success": {
-              "text": "Tu mirada es tan intensa que un guardia se pone a llorar y el otro te abre la puerta. «Perdón, {señor elegido|señora elegida|señore elegide}.»",
+              "text": "Tu mirada es tan intensa que un guardia se pone a llorar y el otro te abre la puerta. «Perdón, {señor elegido|señora elegida|señorx elegidx}.»",
               "effects": {
                 "stats": {
                   "sexi": 15
@@ -2473,7 +2473,7 @@
               "goto": "acto1_mago"
             },
             "critical_failure": {
-              "text": "Te pones de puntillas para parecer más {alto|alta|alte}. Se te escapa un gallo. Los guardias te hacen una foto mental para siempre.",
+              "text": "Te pones de puntillas para parecer más {alto|alta|altx}. Se te escapa un gallo. Los guardias te hacen una foto mental para siempre.",
               "effects": {
                 "stats": {
                   "sexi": -15,
@@ -2512,7 +2512,7 @@
           "type": "dialog",
           "character": "mago",
           "lines": [
-            "¡Vaya, vaya! ¿Qué tenemos aquí? {Un aspirante a héroe|Una aspirante a heroína|Une aspirante a heroe} y su... mascota viscosa."
+            "¡Vaya, vaya! ¿Qué tenemos aquí? {Un aspirante a héroe|Una aspirante a heroína|Unx aspirante a herox} y su... mascota viscosa."
           ]
         },
         {
@@ -2811,14 +2811,14 @@
           "character": "guardias",
           "lines": [
             "¿Deberíamos advertirle sobre lo que hay allá afuera?",
-            "Nah. Que lo descubra {solo|sola|sole}."
+            "Nah. Que lo descubra {solo|sola|solx}."
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Y así, {nuestro valiente o increíblemente estúpido protagonista|nuestra valiente o increíblemente estúpida protagonista|nuestre valiente o increíblemente estúpide protagonista} dio sus primeros pasos hacia el Abismo de las Babosas.",
+            "Y así, {nuestro valiente o increíblemente estúpido protagonista|nuestra valiente o increíblemente estúpida protagonista|nuestrx valiente o increíblemente estúpidx protagonista} dio sus primeros pasos hacia el Abismo de las Babosas.",
             "Sin saber que el verdadero peligro no eran los monstruos... bueno, sí eran los monstruos. Pero yo también soy un peligro, a mi manera."
           ]
         },
@@ -2912,7 +2912,7 @@
           "type": "choice",
           "options": [
             {
-              "text": "Caminar hacia el Abismo, {resignado|resignada|resignade}",
+              "text": "Caminar hacia el Abismo, {resignado|resignada|resignadx}",
               "goto": "acto2_camino"
             }
           ]

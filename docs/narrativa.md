@@ -18,12 +18,13 @@ Las variables desconocidas se dejan tal cual.
 
 ## Género del protagonista
 
-El jugador elige el género al empezar (stat `genero`). Los textos se escriben con las formas separadas por `|`:
+El jugador elige el género al empezar (stat `genero`). Los textos se escriben con las formas separadas por `|`
+(masculino, femenino y neutro; en este juego el neutro usa **x**: andrógino y misterioso):
 
 ```jsonc
-"Bienvenid{o|a|e} a la vida adulta."
-"¿Eres {el nuevo héroe|la nueva heroína|le nueve heroe}?"
-"{¿Estás loco?|¿Estás loca?|¿Perdiste la cabeza?}"   // cada forma puede ser una frase distinta
+"Bienvenid{o|a|x} a la vida adulta."
+"¿Eres {el nuevo héroe|la nueva heroína|lx nuevx herox}?"
+"{Te nombramos Protector|Te nombramos Protectora|Te nombramos Protectorx}"   // cada forma puede ser una frase distinta
 ```
 
 ```jsonc

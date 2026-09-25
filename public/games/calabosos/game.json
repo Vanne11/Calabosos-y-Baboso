@@ -485,8 +485,8 @@
     "ai": {
       "masculino": "BOB es hombre: refiérete a BOB en masculino (el elegido, héroe, cansado).",
       "femenino": "BOB es mujer: refiérete a BOB en femenino (la elegida, heroína, cansada). Nunca en masculino.",
-      "no_binario": "BOB es no binario: usa lenguaje neutro con -e para BOB (le elegide, heroe, cansade) o frases sin género. Nunca en masculino ni femenino.",
-      "misterioso": "BOB esconde quién es bajo una capucha: usa lenguaje neutro con -e o frases sin género para BOB (le elegide, heroe), y si viene al caso búrlate de tanto misterio."
+      "no_binario": "BOB es no binario: usa lenguaje neutro con x para BOB (lx elegidx, herox, cansadx) o frases sin género. Nunca en masculino ni femenino.",
+      "misterioso": "BOB esconde quién es bajo una capucha: usa lenguaje neutro con x o frases sin género para BOB (lx elegidx, herox), y si viene al caso búrlate de tanto misterio."
     }
   },
   "initialFlags": {},
@@ -647,7 +647,7 @@
     ],
     "critico": [
       "¿Un veinte? ¿Tú? Debe haber un error. Voy a revisar el dado.",
-      "Vaya. Por un segundo pareciste {un héroe|una heroína|une heroe} de verdad. No te acostumbres.",
+      "Vaya. Por un segundo pareciste {un héroe|una heroína|unx herox} de verdad. No te acostumbres.",
       "Incluso un reloj roto acierta dos veces al día.",
       "Anotaré esto. Será lo único en la columna de 'logros'.",
       "El dado te sonríe. El dado no tiene criterio.",
@@ -699,7 +699,7 @@
         }
       },
       {
-        "text": "Tu primera muerte. Qué emoción. Te haría un pastel, pero estás {muerto|muerta|muerte}.",
+        "text": "Tu primera muerte. Qué emoción. Te haría un pastel, pero estás {muerto|muerta|muertx}.",
         "condition": {
           "meta": {
             "muertes": "<=1"
@@ -771,7 +771,7 @@
         "text": "¿Otra vez tú? Pensé que habías conseguido un pasatiempo más sano. Como coleccionar piedras. O morir menos."
       },
       {
-        "text": "Bienvenid{o|a|e} de nuevo. Te guardé tu lugar. Nadie más quería este trabajo, así que fue fácil."
+        "text": "Bienvenid{o|a|x} de nuevo. Te guardé tu lugar. Nadie más quería este trabajo, así que fue fácil."
       }
     ],
     "bolsillos_rotos": [
@@ -782,11 +782,11 @@
     "camino_montaje": [
       "Pasan las horas. Te duelen los pies. Nerly se desliza a tu lado sin esfuerzo, como burlándose de tus piernas.",
       "Un pájaro te caga en el hombro. En Viscaria eso trae buena suerte. Bueno, no. Pero es gracioso.",
-      "Caminas tanto que empiezas a hablar {solo|sola|sole}. Nerly finge no escucharte. Yo sí te escucho. Siempre."
+      "Caminas tanto que empiezas a hablar {solo|sola|solx}. Nerly finge no escucharte. Yo sí te escucho. Siempre."
     ],
     "recap_final": [
       {
-        "text": "Resumen de tu aventura: fuiste {un cobarde|una cobarde|une cobarde} con estilo. Huiste tanto que el Abismo te dio un premio a la mejor espalda.",
+        "text": "Resumen de tu aventura: fuiste {un cobarde|una cobarde|unx cobarde} con estilo. Huiste tanto que el Abismo te dio un premio a la mejor espalda.",
         "condition": {
           "profile": {
             "cobarde": ">=3"
@@ -794,7 +794,7 @@
         }
       },
       {
-        "text": "Resumen de tu aventura: hablaste más de lo que peleaste. Convenciste a guardias, taberneros y reyes. Si el mundo se salva con palabras, tú eres su {héroe|heroína|heroe}. Si no, eres {un charlatán|una charlatana|une charlatane}.",
+        "text": "Resumen de tu aventura: hablaste más de lo que peleaste. Convenciste a guardias, taberneros y reyes. Si el mundo se salva con palabras, tú eres su {héroe|heroína|herox}. Si no, eres {un charlatán|una charlatana|unx charlatanx}.",
         "condition": {
           "profile": {
             "charlatan": ">=2"
@@ -826,7 +826,7 @@
         }
       },
       {
-        "text": "Resumen de tu aventura: llegaste, viste, te measte un poco, y venciste. En ese orden. Veredicto final: {héroe aceptable|heroína aceptable|heroe aceptable}. Solo aceptable."
+        "text": "Resumen de tu aventura: llegaste, viste, te measte un poco, y venciste. En ese orden. Veredicto final: {héroe aceptable|heroína aceptable|herox aceptable}. Solo aceptable."
       }
     ],
     "epitafio": [
@@ -834,7 +834,7 @@
       "{nombre_jugador}. Nació, se equivocó, murió. En ese orden, al menos.",
       "Aquí descansa {nombre_jugador}. Por fin algo que le sale bien.",
       "Muerte n.º {meta.muertes}. La lápida ya viene con descuento de cliente frecuente.",
-      "Aquí yace {nombre_jugador}, que tenía un plan. El plan no {lo tenía a él|la tenía a ella|le tenía a elle}.",
+      "Aquí yace {nombre_jugador}, que tenía un plan. El plan no {lo tenía a él|la tenía a ella|lx tenía a elx}.",
       "Aquí yace {nombre_jugador}. Se fue sin pagar la cuenta de la taberna."
     ]
   },

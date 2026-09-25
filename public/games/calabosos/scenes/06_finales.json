@@ -104,14 +104,14 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "De «BOB {el|la|le} incompetente» a {salvador|salvadora|salvadore} del reino. Vaya ascenso."
+            "De «BOB {el|la|lx} incompetente» a {salvador|salvadora|salvadorx} del reino. Vaya ascenso."
           ]
         },
         {
           "type": "dialog",
           "character": "alcalde",
           "lines": [
-            "Te nombramos {Protector Oficial|Protectora Oficial|Protectore Oficial} de Viscaria, con todos los privilegios y responsabilidades."
+            "Te nombramos {Protector Oficial|Protectora Oficial|Protectorx Oficial} de Viscaria, con todos los privilegios y responsabilidades."
           ]
         },
         {
@@ -172,7 +172,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "(Nerly sube al escenario con una corona de flores.) ¡Les voy a cantar algo! «Por un sendero de baba brillante / iba {un héroe torpe|una heroína torpe|une heroe torpe} pero valiente...»"
+            "(Nerly sube al escenario con una corona de flores.) ¡Les voy a cantar algo! «Por un sendero de baba brillante / iba {un héroe torpe|una heroína torpe|unx herox torpe} pero valiente...»"
           ],
           "condition": {
             "textMatches": {
@@ -334,7 +334,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Y así, el dúo improbable de {humano|humana|humane} y babosa parlante pone rumbo a nuevas aventuras. Si sobreviven o no... esa es otra historia. Literalmente. Se vende por separado."
+            "Y así, el dúo improbable de {humano|humana|humanx} y babosa parlante pone rumbo a nuevas aventuras. Si sobreviven o no... esa es otra historia. Literalmente. Se vende por separado."
           ]
         },
         {
@@ -421,14 +421,14 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "{Un aventurero retirado|Una aventurera retirada|Une aventurere retirade} y una babosa filosófica cultivando verduras. No era el final épico que tenía en mente."
+            "{Un aventurero retirado|Una aventurera retirada|Unx aventurerx retiradx} y una babosa filosófica cultivando verduras. No era el final épico que tenía en mente."
           ]
         },
         {
           "type": "dialog",
           "character": "tendero",
           "lines": [
-            "¡Saludos, {héroe|heroína|heroe}! ¿O debería decir {granjero|granjera|granjere}? Abrí una sucursal en el pueblo: «Artículos para Granjeros Extremos». Y... (se endereza) llevo tres meses sobrio."
+            "¡Saludos, {héroe|heroína|herox}! ¿O debería decir {granjero|granjera|granjerx}? Abrí una sucursal en el pueblo: «Artículos para Granjeros Extremos». Y... (se endereza) llevo tres meses sobrio."
           ]
         },
         {
@@ -460,7 +460,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "¿La próxima vez? Pensé que estabas {retirado|retirada|retirade}. Con esa ambigüedad perfectamente diseñada para una secuela, termina nuestra historia."
+            "¿La próxima vez? Pensé que estabas {retirado|retirada|retiradx}. Con esa ambigüedad perfectamente diseñada para una secuela, termina nuestra historia."
           ]
         },
         {
@@ -562,7 +562,7 @@
           "character": "narrator",
           "lines": [
             "Soy el Verdadero Rey Baboso. O lo era, antes de que «él» usurpara mi trono y corrompiera la historia misma del Abismo.",
-            "Necesitaba {un héroe|una heroína|une heroe} que pudiera pensar por sí {mismo|misma|misme}. Que cuestionara la narrativa. Tú elegiste tu camino a cada paso, aunque yo intentara empujarte. Eso te hace {único|única|irrepetible}."
+            "Necesitaba {un héroe|una heroína|unx herox} que pudiera pensar por sí {mismo|misma|mismx}. Que cuestionara la narrativa. Tú elegiste tu camino a cada paso, aunque yo intentara empujarte. Eso te hace {único|única|únicx}."
           ]
         },
         {

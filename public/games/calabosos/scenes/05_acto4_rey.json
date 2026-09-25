@@ -613,7 +613,7 @@
           },
           "tiers": [
             {
-              "text": "A mitad del túnel, tu vejiga toma una decisión ejecutiva. El olor alerta a las Babosas Sensoriales, que te rocían ácido paralizante. Sales {humillado y rígido|humillada y rígida|humillade y rígide}.",
+              "text": "A mitad del túnel, tu vejiga toma una decisión ejecutiva. El olor alerta a las Babosas Sensoriales, que te rocían ácido paralizante. Sales {humillado y rígido|humillada y rígida|humilladx y rígidx}.",
               "effects": {
                 "stats": {
                   "sexi": -30,
@@ -643,7 +643,7 @@
               "natural": 20
             },
             {
-              "text": "Quedas {atascado|atascada|atascade}. No avanzas ni retrocedes. Una hora después, Nerly vuelve con Babosas Lubricantes. Otra vez. Ya te conocen.",
+              "text": "Quedas {atascado|atascada|atascadx}. No avanzas ni retrocedes. Una hora después, Nerly vuelve con Babosas Lubricantes. Otra vez. Ya te conocen.",
               "effects": {
                 "stats": {
                   "miedo": 15,
@@ -951,7 +951,7 @@
               "goto": "acto4_fase1"
             },
             "failure": {
-              "text": "«Suficiente.» El Rey ruge, ofendido. Su baba hierve de furia. Lo hiciste enojar. Bravo, {diplomático|diplomática|genio de la diplomacia}.",
+              "text": "«Suficiente.» El Rey ruge, ofendido. Su baba hierve de furia. Lo hiciste enojar. Bravo, {diplomático|diplomática|diplomáticx}.",
               "effects": {
                 "stats": {
                   "ventaja_rey": -1
@@ -1342,7 +1342,7 @@
           },
           "tiers": [
             {
-              "text": "El miedo te paraliza. Un tentáculo te agarra de la pierna y te acerca a la boca real. En el último segundo, Nerly muerde el tentáculo y caes al suelo, {herido pero vivo|herida pero viva|heride pero vive}.",
+              "text": "El miedo te paraliza. Un tentáculo te agarra de la pierna y te acerca a la boca real. En el último segundo, Nerly muerde el tentáculo y caes al suelo, {herido pero vivo|herida pero viva|heridx pero vivx}.",
               "effects": {
                 "stats": {
                   "ganas_de_vivir": -30,
@@ -1373,7 +1373,7 @@
               "sfx": "cristal"
             },
             {
-              "text": "Un tentáculo te golpea en el pecho y te lanza contra un pilar de cristal. «¿{Este es el gran héroe|Esta es la gran heroína|Esto es le gran heroe}? Patético.»",
+              "text": "Un tentáculo te golpea en el pecho y te lanza contra un pilar de cristal. «¿{Este es el gran héroe|Esta es la gran heroína|Esto es lx gran herox}? Patético.»",
               "effects": {
                 "stats": {
                   "ganas_de_vivir": -20,
@@ -2049,7 +2049,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Así termina la gran aventura de BOB, {el héroe improbable|la heroína improbable|le heroe improbable} que, contra todo pronóstico y todo sentido común, derrotó al Rey Baboso."
+            "Así termina la gran aventura de BOB, {el héroe improbable|la heroína improbable|lx herox improbable} que, contra todo pronóstico y todo sentido común, derrotó al Rey Baboso."
           ]
         },
         {
@@ -2088,7 +2088,7 @@
           "type": "choice",
           "options": [
             {
-              "text": "Regresar a la ciudad como {héroe|heroína|heroe}",
+              "text": "Regresar a la ciudad como {héroe|heroína|herox}",
               "goto": "final_heroico",
               "tags": [
                 "vanidoso"

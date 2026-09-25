@@ -318,7 +318,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Anotado: el arma definitiva contra el mal supremo es cantar mal. Por fin algo en lo que eres {experto|experta|experte}."
+            "Anotado: el arma definitiva contra el mal supremo es cantar mal. Por fin algo en lo que eres {experto|experta|expertx}."
           ]
         },
         {
@@ -1100,7 +1100,7 @@
           "type": "dialog",
           "character": "takashi",
           "lines": [
-            "¡¿EN SERIO?! ¡POR FIN! ¡Gracias, {extraño|extraña|extrañe}!"
+            "¡¿EN SERIO?! ¡POR FIN! ¡Gracias, {extraño|extraña|extrañx}!"
           ]
         },
         {
@@ -1118,7 +1118,7 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Me encanta. Anota eso en tu perfil: «{mentiroso|mentirosa|mentirose} con consecuencias narrativas». Tal vez lo volvamos a ver. En partes."
+            "Me encanta. Anota eso en tu perfil: «{mentiroso|mentirosa|mentirosx} con consecuencias narrativas». Tal vez lo volvamos a ver. En partes."
           ]
         },
         {
@@ -1363,7 +1363,7 @@
           "type": "dialog",
           "character": "nerly",
           "lines": [
-            "Es una Baboba Guardiana. Mitad planta, mitad espíritu. No se puede pelear con ella: solo convencerla de que eres {sincero|sincera|sincere}."
+            "Es una Baboba Guardiana. Mitad planta, mitad espíritu. No se puede pelear con ella: solo convencerla de que eres {sincero|sincera|sincerx}."
           ]
         },
         {
@@ -1561,7 +1561,7 @@
           "maxTurns": 4,
           "saveAs": "cancion_nerly",
           "intro": [
-            "¡Yo empiezo! «Por un sendero de baba brillante / va {un héroe torpe|una heroína torpe|une heroe torpe} pero valiente...» ¡Ahora tú!"
+            "¡Yo empiezo! «Por un sendero de baba brillante / va {un héroe torpe|una heroína torpe|unx herox torpe} pero valiente...» ¡Ahora tú!"
           ],
           "vars": {
             "tema": "el viaje de BOB y Nerly hacia el Abismo de las Babosas, el miedo, la amistad y la baba"
@@ -1612,7 +1612,7 @@
           "gestures": {
             "abrazo": {
               "hint": "abrazas a BOB con toda tu baba (si su verso fue tierno)",
-              "text": "Nerly te abraza. Quedas {pegajoso|pegajosa|pegajose} y un poco más feliz.",
+              "text": "Nerly te abraza. Quedas {pegajoso|pegajosa|pegajosx} y un poco más feliz.",
               "effects": {
                 "affinity": {
                   "nerly": 5
@@ -1664,7 +1664,7 @@
             },
             {
               "weight": 1,
-              "text": "Sueñas con tu abuela y su cuchara de madera. Te dice «vendiste mi relicario, {desgraciado|desgraciada|desgraciade}». Despiertas con culpa.",
+              "text": "Sueñas con tu abuela y su cuchara de madera. Te dice «vendiste mi relicario, {desgraciado|desgraciada|desgraciadx}». Despiertas con culpa.",
               "effects": {
                 "stats": {
                   "ganas_de_vivir": -5
@@ -1768,7 +1768,7 @@
           "type": "dialog",
           "character": "anciano",
           "lines": [
-            "*cof cof* Así que {otro aspirante a héroe|otra aspirante a heroína|otre aspirante a heroe}, ¿eh? Déjame adivinar... ¿el Narrador te trajo?"
+            "*cof cof* Así que {otro aspirante a héroe|otra aspirante a heroína|otrx aspirante a herox}, ¿eh? Déjame adivinar... ¿el Narrador te trajo?"
           ]
         },
         {
@@ -1803,7 +1803,7 @@
           "type": "dialog",
           "character": "anciano",
           "lines": [
-            "Ah, eres TÚ. {El|La|Le} que ya murió {meta.muertes} veces. Los patrones, {muchacho|muchacha|muchache}. Veo los patrones."
+            "Ah, eres TÚ. {El|La|Lx} que ya murió {meta.muertes} veces. Los patrones, {muchacho|muchacha|muchachx}. Veo los patrones."
           ],
           "condition": {
             "meta": {
