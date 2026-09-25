@@ -11,7 +11,9 @@ export const MEMO_FOR_AI = 10;
 export const DECISIONES_MAX = 12;
 export const DECISIONES_FOR_AI = 6;
 /** Campos del estado que forman la memoria de la IA: sobreviven a volver al checkpoint */
-export const AI_MEMORY_FIELDS = ['memoria', 'decisiones', 'citas', 'iaDijo', 'habla'] as const;
+export const AI_MEMORY_FIELDS = ['memoria', 'decisiones', 'citas', 'iaDijo', 'habla', 'npcMemoria'] as const;
+/** Recuerdos por personaje (y cuántos viajan a sus chats) */
+export const NPC_MEMO_MAX = 6;
 /** Citas guardadas en la partida y cuántas viajan a la IA */
 export const CITAS_MAX = 8;
 export const CITAS_FOR_AI = 3;
@@ -39,6 +41,17 @@ export function contextVars(state: PlayerState): Record<string, string> {
     como_escribe: list(state.habla, HABLA_MAX),
     animo: typeof animo === 'string' ? animo : '',
   };
+}
+
+/** Lo que un personaje recuerda de BOB, como lista para el prompt */
+export function npcHistory(state: PlayerState, npc: string): string {
+  return (state.npcMemoria?.[npc] ?? []).map((i) => `- ${i}`).join('\n');
+}
+
+/** Suma un recuerdo a un personaje (sin repetir el último, acotado) */
+export function addNpcMemo(state: PlayerState, npc: string, memo: string): PlayerState {
+  const list = pushRecent(state.npcMemoria?.[npc], memo, NPC_MEMO_MAX);
+  return { ...state, npcMemoria: { ...(state.npcMemoria ?? {}), [npc]: list } };
 }
 
 /** Ficha de personaje en texto para el prompt ('' si el personaje no tiene ficha) */

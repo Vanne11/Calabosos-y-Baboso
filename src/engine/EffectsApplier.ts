@@ -3,6 +3,7 @@
 
 import type { Effects } from '../types/game';
 import type { PlayerState } from '../types/engine';
+import { addNpcMemo } from './AiContext';
 
 /** Hechos que se guardan en la memoria de la partida (los más viejos se descartan) */
 export const MEMO_MAX = 30;
@@ -148,5 +149,9 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.characters = chars;
   }
 
-  return addMemo(newState, effects.memo);
+  let withMemo = addMemo(newState, effects.memo);
+  for (const [npc, memo] of Object.entries(effects.npcMemo ?? {})) {
+    if (memo?.trim()) withMemo = addNpcMemo(withMemo, npc, memo);
+  }
+  return withMemo;
 }

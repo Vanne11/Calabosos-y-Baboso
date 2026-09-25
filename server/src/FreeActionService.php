@@ -39,7 +39,7 @@ final class FreeActionService
      * @param mixed $rawVars
      * @param mixed $rawOptions lista de textos de las opciones visibles
      * @param mixed $rawConsequences objeto id → descripción
-     * @return array{text: string, tone: ?string, option: ?int, consequence: ?string}
+     * @return array<string, mixed> text, tone, option, consequence, lineId
      */
     public function interpret(string $sessionId, string $name, $rawVars, string $action, $rawOptions, $rawConsequences): array
     {
@@ -96,6 +96,7 @@ final class FreeActionService
             throw new ApiException(502, 'ai_unavailable', 'La IA no respondió');
         }
         $this->guard->recordUsage($sessionId, 'libre', $key, $result);
+        $parsed['lineId'] = AiLines::record($this->db, $sessionId, 'libre', $key, (int) $prompt['version'], $parsed['text']);
         return $parsed;
     }
 

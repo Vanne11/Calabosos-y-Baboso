@@ -16,7 +16,7 @@ import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
 import { saveGame, loadSave, listSlots } from '../utils/storage';
 import type { SaveData } from '../utils/storage';
-import { getAiClient } from '../ai/session';
+import { getAiClient, getLastAiLine } from '../ai/session';
 import { setAiPreference, getAiPreference } from '../ai/AiClient';
 
 export function useTerminalCommands() {
@@ -57,6 +57,7 @@ export function useTerminalCommands() {
 [yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
 [yellow][bold]/ia[/bold][/yellow] [dim][on|off][/dim] - Estado del narrador con IA, o encenderlo/apagarlo.
 [yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
+[yellow][bold]/bien[/bold][/yellow] o [yellow][bold]/mal[/bold][/yellow] - Califica la última línea del narrador con IA. Le importa. Mucho. No se lo digas.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
 
 [dim]Usa siempre el prefijo "/" para comandos durante la partida.[/dim]`,
@@ -115,6 +116,32 @@ export function useTerminalCommands() {
     addEntry({
       type: 'system',
       content: `${line}\nTu preferencia: ${getAiPreference() ? '[green]activada[/green]' : '[yellow]apagada[/yellow]'} [dim](/ia on · /ia off)[/dim]`,
+    });
+  };
+
+  /** /bien y /mal: califica la última línea generada por la IA */
+  const rateAiLine = async (rating: 1 | -1) => {
+    const client = getAiClient();
+    const line = getLastAiLine();
+    if (!client || !line) {
+      addEntry({ type: 'system', content: '[dim]No hay ninguna línea de la IA que calificar. Todo lo que leíste lo escribió un humano. Uno triste.[/dim]' });
+      return;
+    }
+    if (line.rated === rating) {
+      addEntry({ type: 'system', content: '[dim]Ya lo anoté. No insistas, que se me sube a la cabeza.[/dim]' });
+      return;
+    }
+    const ok = await client.rate(line.id, rating);
+    if (!ok) {
+      addEntry({ type: 'system', content: '[yellow]No se pudo guardar la calificación (sin conexión con el servidor).[/yellow]' });
+      return;
+    }
+    line.rated = rating;
+    addEntry({
+      type: 'system',
+      content: rating === 1
+        ? '[green]👍 Anotado.[/green] [dim]El narrador finge que no le importa. Le importa.[/dim]'
+        : '[red]👎 Anotado.[/red] [dim]El narrador se lo toma con madurez. Mentira: está llorando.[/dim]',
     });
   };
 
@@ -296,6 +323,12 @@ ${lines.join('\n')}
         return true;
       case 'ia':
         gameAi(args);
+        return true;
+      case 'bien':
+        void rateAiLine(1);
+        return true;
+      case 'mal':
+        void rateAiLine(-1);
         return true;
       case 'rendirse':
         addEntry({ type: 'system', content: '[dim]Solo puedes rendirte en medio de una conversación. Aquí no hay a quién rendirse.[/dim]' });

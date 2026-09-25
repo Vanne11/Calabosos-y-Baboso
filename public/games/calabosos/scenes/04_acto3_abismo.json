@@ -80,7 +80,12 @@
               "goto": "acto3_guardia",
               "tags": [
                 "temerario"
-              ]
+              ],
+              "effects": {
+                "npcMemo": {
+                  "guardia": "BOB llegó a la entrada gritando «¡a la carga!»"
+                }
+              }
             },
             {
               "text": "«Primero lanzaré algo para ver si es seguro.»",
@@ -251,6 +256,35 @@
                 }
               },
               "goto": "acto3_tunel_sigilo"
+            }
+          },
+          "gestures": {
+            "canta": {
+              "hint": "te pones a cantar a todo pulmón (si BOB tocó tu sueño de ser cantante)",
+              "text": "El Guardia canta un aria. Desafina. Llora. Tú también, un poco.",
+              "effects": {
+                "stats": {
+                  "miedo": -10
+                }
+              }
+            },
+            "chisme": {
+              "hint": "le cuentas a BOB en voz baja un chisme del Rey (si ya confías en él)",
+              "text": "El Guardia susurra: «El Rey odia la música mala. Y el cristal de la frente... no te dije nada.»",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 1
+                }
+              }
+            },
+            "lanza": {
+              "hint": "le pinchas el trasero a BOB con la lanza (si te insultó)",
+              "text": "La lanza del Guardia encuentra tu trasero. Con precisión profesional.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -10
+                }
+              }
             }
           }
         }
@@ -1320,6 +1354,10 @@
                 ],
                 "affinity": {
                   "nerly": -5
+                },
+                "npcMemo": {
+                  "rey_baboso": "BOB robó un huevo real de las Cavernas de Cría",
+                  "nerly": "BOB robó un huevo de babosa aunque ella le rogó que no"
                 }
               },
               "tags": [

@@ -29,7 +29,7 @@ final class NarrateService
 
     /**
      * @param mixed $rawVars
-     * @return array{text: string, tone: ?string}
+     * @return array<string, mixed> text, tone, lineId
      */
     public function narrate(string $sessionId, string $name, $rawVars): array
     {
@@ -77,7 +77,9 @@ final class NarrateService
         }
         $this->guard->recordUsage($sessionId, 'narrate', $key, $result);
 
-        return self::parseLine($result->content, $maxChars);
+        $line = self::parseLine($result->content, $maxChars);
+        $line['lineId'] = AiLines::record($this->db, $sessionId, 'narrate', $key, (int) $prompt['version'], $line['text']);
+        return $line;
     }
 
     /**

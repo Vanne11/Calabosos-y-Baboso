@@ -13,11 +13,14 @@ import { saveGame } from '../utils/storage';
 import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
 import { AiClient } from '../ai/AiClient';
-import { setAiClient } from '../ai/session';
+import { setAiClient, noteAiLine } from '../ai/session';
 
 /** Servidor de IA por defecto: la carpeta api/ dentro del juego (/cyb/api/ con base /cyb/) */
 const DEFAULT_AI_ENDPOINT = `${import.meta.env.BASE_URL}api/`;
 import type { PlayerAction, StepResult } from '../types/engine';
+
+/** Pista (una vez por sesión) de que las líneas de la IA se pueden calificar */
+const RATE_HINT = '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal — así el narrador aprende (o finge que aprende).[/dim italic]';
 
 export function useGameLoop() {
   const engine = useAppStore((s) => s.engine);
@@ -300,6 +303,9 @@ export function useGameLoop() {
           lastToneRef.current = null;
           playTone(result.tone, 500);
         }
+        if (noteAiLine(result.aiLineId, result.lines.join(' '))) {
+          addEntry({ type: 'system', content: RATE_HINT });
+        }
 
         // Wait for user to press Enter between dialogs
         setShowEnterPrompt(true);
@@ -474,6 +480,7 @@ export function useGameLoop() {
           { type: 'dialogHeader', content: result.characterName, image: result.characterImage, firstAppearance: isFirstTime && !!result.characterImage },
           { type: 'dialog', content: result.text },
           { type: 'system', content: meterLine(result.meterLabel, result.score) + deltaText + (result.turnsLeft > 0 ? ` [dim]· quedan ${result.turnsLeft}[/dim]` : '') },
+          ...(noteAiLine(result.aiLineId, result.text) ? [{ type: 'system' as const, content: RATE_HINT }] : []),
           { type: 'system', content: '' },
         ]);
         break;

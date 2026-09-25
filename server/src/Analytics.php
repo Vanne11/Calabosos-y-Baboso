@@ -174,6 +174,7 @@ final class Analytics
     public function purge(int $olderThanDays): int
     {
         $cutoff = gmdate('c', time() - max(1, $olderThanDays) * 86400);
+        AiLines::purge($this->db, $olderThanDays);
         return $this->db->run('DELETE FROM events WHERE created_at < ?', [$cutoff])->rowCount();
     }
 }

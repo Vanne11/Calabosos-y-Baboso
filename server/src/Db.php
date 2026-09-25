@@ -117,6 +117,9 @@ final class Db
             if ($target === 4) {
                 Seed::upgrade($this, 'Actualización: acción libre en las decisiones');
             }
+            if ($target === 5) {
+                Seed::upgrade($this, 'Actualización: epitafio al morir');
+            }
         }
     }
 
@@ -234,6 +237,30 @@ CREATE INDEX IF NOT EXISTS idx_chats_session ON chats(session_id, npc, created_a
 SQL,
             4 => <<<'SQL'
 CREATE INDEX IF NOT EXISTS idx_ai_log_kind ON ai_log(kind, created_at);
+SQL,
+            5 => <<<'SQL'
+ALTER TABLE chats ADD COLUMN gestures TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE chats ADD COLUMN gestures_used TEXT NOT NULL DEFAULT '[]';
+CREATE TABLE ai_lines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    prompt_key TEXT NOT NULL,
+    prompt_version INTEGER NOT NULL DEFAULT 0,
+    text TEXT NOT NULL,
+    rating INTEGER,
+    created_at TEXT NOT NULL,
+    rated_at TEXT
+);
+CREATE INDEX idx_ai_lines_rating ON ai_lines(rating, prompt_key, rated_at);
+CREATE INDEX idx_ai_lines_created ON ai_lines(created_at);
+CREATE TABLE prompt_examples (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompt_key TEXT NOT NULL,
+    text TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+CREATE INDEX idx_prompt_examples_key ON prompt_examples(prompt_key);
 SQL,
         ];
     }

@@ -14,7 +14,7 @@ final class PromptRenderer
      * demás (límite max_context_chars) y, si el prompt no las usa con {{variable}}, el servidor las agrega
      * solas en un bloque de contexto: así funcionan también con prompts editados antes de existir.
      */
-    const CONTEXT_VARS = ['memoria', 'decisiones', 'citas', 'ya_dijiste', 'como_escribe', 'animo', 'npc_ficha', 'ficha_narrador'];
+    const CONTEXT_VARS = ['memoria', 'decisiones', 'historial_npc', 'citas', 'ya_dijiste', 'como_escribe', 'animo', 'npc_ficha', 'ficha_narrador'];
 
     /** @var PromptRepository */
     private $prompts;
@@ -77,9 +77,12 @@ final class PromptRenderer
         return rtrim(mb_substr($text, 0, $maxChars, 'UTF-8')) . '…';
     }
 
+    /** Ejemplos (líneas que gustaron) que se agregan a cada prompt */
+    const EXAMPLES_PER_PROMPT = 4;
+
     /**
-     * Prompt de sistema completo: hoja del narrador (si corresponde) + prompt + contrato de salida.
-     * @param array{kind: string, body: string, params: array<string, mixed>} $prompt
+     * Prompt de sistema completo: hoja del narrador (si corresponde) + prompt + ejemplos + contexto + contrato.
+     * @param array{kind: string, body: string, params: array<string, mixed>, key?: string} $prompt
      * @param array<string, string> $vars
      */
     public function system(array $prompt, array $vars, string $contract = ''): string
@@ -95,6 +98,11 @@ final class PromptRenderer
             }
         }
         $parts[] = self::fill($prompt['body'], $vars);
+        $examples = isset($prompt['key']) ? $this->prompts->examples((string) $prompt['key'], self::EXAMPLES_PER_PROMPT) : [];
+        if ($examples) {
+            $parts[] = "EJEMPLOS DE RESPUESTAS QUE A LOS JUGADORES LES ENCANTARON (imita el nivel y el tono; no las copies ni repitas sus chistes):\n- "
+                . implode("\n- ", $examples);
+        }
         $context = self::contextBlock($vars, $used);
         if ($context !== '') {
             $parts[] = $context;
@@ -115,6 +123,7 @@ final class PromptRenderer
             'animo' => 'Tu ánimo en este momento (que se note sin decirlo): %s',
             'memoria' => "Lo que ha pasado en la partida, del más viejo al más reciente:\n%s",
             'decisiones' => "Sus decisiones recientes (lo que eligió, tal cual):\n%s",
+            'historial_npc' => "Lo que ya pasó antes entre tú y BOB (acuérdate y sácalo si viene al caso):\n%s",
             'citas' => "Frases textuales que dijo BOB (puedes citarlas para burlarte o recordárselas):\n%s",
             'como_escribe' => "Así escribe BOB de verdad (tal cual, con sus modismos y faltas). Contéstale en su mismo registro:\n%s",
             'ya_dijiste' => "Líneas que YA dijiste hace poco: no las repitas, ni su chiste ni su estructura:\n%s",
@@ -160,12 +169,28 @@ final class PromptRenderer
             . 'drama = momento dramático o amenazante; usa "neutral" si ninguno encaja)';
     }
 
-    /** Contrato JSON de los modos chat (lo agrega el servidor: no se puede editar desde el admin) */
-    public static function chatContract(int $maxReplyChars): string
+    /**
+     * Contrato JSON de los modos chat (lo agrega el servidor: no se puede editar desde el admin).
+     * @param array<string, string> $gestures gestos disponibles (id → cuándo usarlo)
+     */
+    public static function chatContract(int $maxReplyChars, array $gestures = []): string
     {
-        return 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
+        $contract = 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
             . '{"reply": "lo que dices, máximo ' . $maxReplyChars . ' caracteres", "score": número entero de 0 a 100, "done": true o false, '
-            . '"tono": "..."}. ' . self::toneGuide() . '.';
+            . '"tono": "...", "gesto": "..." , "recuerdo": "..."}. ' . self::toneGuide() . '. '
+            . '"recuerdo": si "done" es true o es el último turno, UNA frase corta en tercera persona y en pasado sobre lo que pasó entre tú y BOB, '
+            . 'con un detalle concreto de lo que dijo (ej: "BOB le rapeó que su laúd tenía más cuerdas que neuronas y el público lo abucheó"); si no, "".';
+        if ($gestures) {
+            $list = [];
+            foreach ($gestures as $id => $hint) {
+                $list[] = '- ' . $id . ': ' . $hint;
+            }
+            $contract .= "\n\"gesto\": un gesto que haces con tu cuerpo en este turno, solo si encaja de verdad con lo que pasa (como mucho uno por turno; si ninguno encaja, \"\"). Gestos disponibles:\n"
+                . implode("\n", $list);
+        } else {
+            $contract .= ' "gesto": siempre "".';
+        }
+        return $contract;
     }
 
     /** Contrato JSON de la acción libre (el servidor valida option y consequence) */

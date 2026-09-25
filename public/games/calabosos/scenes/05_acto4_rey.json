@@ -962,6 +962,37 @@
               },
               "goto": "acto4_fase1"
             }
+          },
+          "gestures": {
+            "duda": {
+              "hint": "te quedas en silencio y el cristal de tu frente parpadea (si BOB tocó tu punto débil)",
+              "text": "El cristal de la frente del Rey parpadea. Por un segundo, parece una babosa normal.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 1
+                }
+              }
+            },
+            "lenguetazo": {
+              "hint": "le das un lengüetazo de baba a BOB para saborearlo",
+              "text": "El Rey te da un lengüetazo. Ahora sabes cómo se siente un helado.",
+              "effects": {
+                "stats": {
+                  "sexi": -5,
+                  "miedo": 10
+                }
+              }
+            },
+            "rugido": {
+              "hint": "ruges tan fuerte que tiembla la sala (si BOB te ofendió)",
+              "text": "El rugido del Rey hace temblar la sala. Algo cálido baja por tu pierna.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "pis": 15
+                }
+              }
+            }
           }
         }
       ]

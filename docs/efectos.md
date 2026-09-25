@@ -35,6 +35,7 @@ interface Effects {
 
   // --- IA ---
   memo?: string | string[];                     // Hecho para la memoria de la IA: "se meó frente al rey" (admite {stat})
+  npcMemo?: Record<string, string>;             // Lo recuerda un personaje en sus chats: { "nerly": "BOB le echó sal" }
 }
 ```
 

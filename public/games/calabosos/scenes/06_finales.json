@@ -37,6 +37,19 @@
           }
         },
         {
+          "type": "dialog",
+          "character": "lapida",
+          "lines": [],
+          "pool": "epitafio",
+          "ai": {
+            "prompt": "epitafio",
+            "vars": {
+              "causa": "{causa_muerte}"
+            },
+            "remember": "su lápida decía"
+          }
+        },
+        {
           "type": "notify",
           "style": "warning",
           "title": "Has muerto",
@@ -596,6 +609,12 @@
                   "final_secreto": 1
                 }
               }
+            }
+          },
+          "gestures": {
+            "lagrima": {
+              "hint": "se te escapa una lágrima (si BOB dijo algo sincero)",
+              "text": "Al Narrador se le quiebra la voz. Dice que es alergia."
             }
           }
         },

@@ -354,3 +354,75 @@ describe('narración: reacción a decisiones y pedido adelantado', () => {
     expect((ai.calls[0][2] as Record<string, string>).memoria).toBe('- murió');
   });
 });
+
+describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', () => {
+  const m = baseManifest({
+    characters: { narrator: { name: 'N', description: '', role: 'narrator' }, bardo: { name: 'Bardo', description: 'rapero' } },
+    initialStats: { sexi: 50, nombre_jugador: 'BOB', causa_muerte: 'un tomate' },
+    linePools: { epi: ['Aquí yace BOB.'] },
+  });
+  const rap = {
+    type: 'ai_chat' as const, mode: 'rap' as const, npc: 'bardo',
+    gestures: { cerveza: { hint: 'le tira la cerveza encima a BOB', text: 'Te tiran cerveza.', effects: { stats: { sexi: -5 } } } },
+    fallback: { stat: 'sexi', difficulty: 1 },
+    outcomes: { success: { goto: 'fin' }, failure: { goto: 'fin' } },
+  };
+  const sc = {
+    antes: { sequence: [{ type: 'effects' as const, effects: { npcMemo: { bardo: '{nombre_jugador} le robó el público' } } }] },
+    rap: { scenario: { name: 'Taberna' }, sequence: [rap] },
+    lapida: { sequence: [{ type: 'dialog' as const, character: 'narrator', lines: [], pool: 'epi', ai: { prompt: 'epitafio', vars: { causa: '{causa_muerte}' }, remember: 'su lápida decía' } }] },
+    fin: { sequence: [] },
+  };
+  function chatAi(): AiProvider & { calls: Call[] } {
+    const calls: Call[] = [];
+    let turn = 0;
+    return {
+      calls,
+      available: () => true,
+      narrate: async (p, v) => { calls.push(['narrate', p, v]); return { text: 'Aquí yace BOB, que rimó «pan» con «pan».', lineId: 7 }; },
+      freeAction: async () => null,
+      chatStart: async (mode, npc, vars, max, gestures) => { calls.push(['start', vars, gestures]); return { chatId: 'c', maxTurns: 2, score: 50, maxInputChars: 100 }; },
+      chatSay: async () => {
+        turn++;
+        return turn === 1
+          ? { reply: 'Toma', score: 40, done: false, verdict: null, turnsLeft: 1, gesture: 'cerveza', lineId: 11 }
+          : { reply: 'Fin', score: 30, done: true, verdict: 'failure', turnsLeft: 0, gesture: 'inventado', memory: 'BOB rimó «pan» con «pan» y lo abuchearon', lineId: 12 };
+      },
+      chatGiveUp: async () => {},
+    };
+  }
+
+  it('manda gestos e historial con el NPC; aplica el gesto y guarda el recuerdo', async () => {
+    const engine = makeEngine(m, sc);
+    const ai = chatAi();
+    engine.setAiProvider(ai);
+    await drive(engine, 'antes', []);
+    const out = await drive(engine, 'rap', [{ type: 'chat_message', text: 'pan pan' }, { type: 'chat_message', text: 'pan' }]);
+    const [, vars, gestures] = ai.calls[0] as [string, Record<string, string>, Record<string, string>];
+    expect(vars.historial_npc).toBe('- BOB le robó el público');
+    expect(gestures).toEqual({ cerveza: 'le tira la cerveza encima a BOB' });
+    expect(out.find((r) => r.type === 'notify')).toMatchObject({ title: 'Bardo', text: 'Te tiran cerveza.' });
+    expect(engine.state.stats.sexi).toBe(45);
+    // El gesto inventado por la IA se ignora; el recuerdo va a la memoria general y a la del Bardo
+    expect(out.filter((r) => r.type === 'notify')).toHaveLength(1);
+    expect(engine.state.memoria).toEqual(['se batió a rap contra Bardo y perdió: BOB rimó «pan» con «pan» y lo abuchearon (en Taberna)']);
+    expect(engine.state.npcMemoria?.bardo).toEqual([
+      'BOB le robó el público',
+      'le tira la cerveza encima a BOB',
+      'BOB rimó «pan» con «pan» y lo abuchearon (se batió a rap contra Bardo y perdió)',
+    ]);
+    expect(out.filter((r) => r.type === 'chat_reply').map((r) => (r as { aiLineId?: number }).aiLineId)).toEqual([11, 12]);
+  });
+
+  it('la lápida recibe la última decisión y frase, y se recuerda', async () => {
+    const engine = makeEngine(m, sc);
+    const ai = chatAi();
+    engine.setAiProvider(ai);
+    await drive(engine, 'rap', [{ type: 'chat_message', text: 'pan pan' }, { type: 'chat_message', text: 'ke onda' }]);
+    const out = await drive(engine, 'lapida', []);
+    const vars = ai.calls.find((c) => c[0] === 'narrate')![2] as Record<string, string>;
+    expect(vars).toMatchObject({ causa: 'un tomate', ultima_frase: 'ke onda' });
+    expect(out[0]).toMatchObject({ type: 'dialog', aiLineId: 7 });
+    expect(engine.state.memoria?.at(-1)).toBe('su lápida decía «Aquí yace BOB, que rimó «pan» con «pan».»');
+  });
+});

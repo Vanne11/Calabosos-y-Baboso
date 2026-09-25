@@ -28,11 +28,15 @@ final class ChatService
         $this->ai = $ai;
     }
 
+    /** Largo máximo del recuerdo que devuelve la IA al terminar */
+    const MEMORY_CHARS = 200;
+
     /**
      * @param mixed $rawVars
+     * @param mixed $rawGestures gestos que el NPC puede hacer: id → cuándo (el juego define sus efectos)
      * @return array<string, mixed>
      */
-    public function start(string $sessionId, string $game, string $mode, string $npc, $rawVars, int $requestedTurns): array
+    public function start(string $sessionId, string $game, string $mode, string $npc, $rawVars, int $requestedTurns, $rawGestures = []): array
     {
         if (!in_array($mode, Settings::MODES, true)) {
             throw new ApiException(400, 'bad_mode', 'Modo desconocido');
@@ -57,14 +61,16 @@ final class ChatService
             $this->settings->limit('max_context_chars')
         );
 
+        $gestures = FreeActionService::sanitizeConsequences($rawGestures);
+
         $id = bin2hex(random_bytes(16));
         $now = gmdate('c');
         $this->db->run(
-            'INSERT INTO chats (id, session_id, game, mode, npc, prompt_key, prompt_version, vars, max_turns, score, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO chats (id, session_id, game, mode, npc, prompt_key, prompt_version, vars, gestures, max_turns, score, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 $id, $sessionId, $game, $mode, mb_substr($npc, 0, 40, 'UTF-8'), $prompt['key'], $prompt['version'],
-                json_encode((object) $vars, JSON_UNESCAPED_UNICODE), $turns,
+                json_encode((object) $vars, JSON_UNESCAPED_UNICODE), json_encode((object) $gestures, JSON_UNESCAPED_UNICODE), $turns,
                 self::clampScore((int) ($params['initial_score'] ?? 0)), $now, $now,
             ]
         );
@@ -102,7 +108,7 @@ final class ChatService
         }
         $params = json_decode((string) $version['params'], true);
         $params = is_array($params) ? $params : [];
-        $prompt = ['kind' => (string) $meta['kind'], 'body' => (string) $version['body'], 'params' => $params];
+        $prompt = ['key' => (string) $chat['prompt_key'], 'kind' => (string) $meta['kind'], 'body' => (string) $version['body'], 'params' => $params];
 
         $turn = (int) $chat['turn'] + 1;
         $maxTurns = (int) $chat['max_turns'];
@@ -116,7 +122,14 @@ final class ChatService
         $vars['score'] = (string) $prevScore;
         $vars['npc'] = (string) $chat['npc'];
 
-        $system = (new PromptRenderer($repo))->system($prompt, $vars, PromptRenderer::chatContract($maxReply));
+        // Gestos que quedan: cada uno se puede hacer una sola vez por conversación
+        $gestures = json_decode((string) ($chat['gestures'] ?? '{}'), true);
+        $gestures = is_array($gestures) ? $gestures : [];
+        $used = json_decode((string) ($chat['gestures_used'] ?? '[]'), true);
+        $used = is_array($used) ? $used : [];
+        $available = array_diff_key($gestures, array_flip($used));
+
+        $system = (new PromptRenderer($repo))->system($prompt, $vars, PromptRenderer::chatContract($maxReply, $available));
         $messages = [['role' => 'system', 'content' => $system]];
         $history = json_decode((string) $chat['history'], true);
         $history = is_array($history) ? $history : [];
@@ -163,11 +176,17 @@ final class ChatService
             $verdict = $score >= $successAt ? 'success' : ($score >= $partialAt ? 'partial' : 'failure');
         }
 
+        $gesture = $parsed['gesture'] !== null && isset($available[$parsed['gesture']]) ? $parsed['gesture'] : null;
+        if ($gesture !== null) {
+            $used[] = $gesture;
+        }
+        $memory = $done && $parsed['memory'] !== '' ? PromptRenderer::truncate($parsed['memory'], self::MEMORY_CHARS) : null;
+
         $history[] = ['role' => 'player', 'text' => $message];
-        $history[] = ['role' => 'npc', 'text' => $reply];
+        $history[] = ['role' => 'npc', 'text' => $reply] + ($gesture !== null ? ['gesture' => $gesture] : []);
         $this->db->run(
-            'UPDATE chats SET turn = ?, score = ?, done = ?, verdict = ?, history = ?, updated_at = ? WHERE id = ?',
-            [$turn, $score, $done ? 1 : 0, $verdict, json_encode($history, JSON_UNESCAPED_UNICODE), gmdate('c'), $chatId]
+            'UPDATE chats SET turn = ?, score = ?, done = ?, verdict = ?, history = ?, gestures_used = ?, updated_at = ? WHERE id = ?',
+            [$turn, $score, $done ? 1 : 0, $verdict, json_encode($history, JSON_UNESCAPED_UNICODE), json_encode($used), gmdate('c'), $chatId]
         );
 
         return [
@@ -178,6 +197,9 @@ final class ChatService
             'turn' => $turn,
             'turnsLeft' => max(0, $maxTurns - $turn),
             'tone' => $parsed['tone'],
+            'gesture' => $gesture,
+            'memory' => $memory,
+            'lineId' => AiLines::record($this->db, $sessionId, 'chat', (string) $chat['prompt_key'], (int) $chat['prompt_version'], $reply),
         ];
     }
 
@@ -223,7 +245,7 @@ final class ChatService
 
     /**
      * Interpreta la respuesta JSON del modelo (tolera texto o bloques ``` alrededor).
-     * @return array{reply: string, score: int, done: bool, tone: ?string}
+     * @return array{reply: string, score: int, done: bool, tone: ?string, gesture: ?string, memory: string}
      */
     public static function parseReply(string $content): array
     {
@@ -240,6 +262,8 @@ final class ChatService
             'score' => is_numeric($score) ? (int) round((float) $score) : 0,
             'done' => !empty($data['done']),
             'tone' => PromptRenderer::normalizeTone($data['tono'] ?? ($data['tone'] ?? null)),
+            'gesture' => isset($data['gesto']) && is_string($data['gesto']) && trim($data['gesto']) !== '' ? strtolower(trim($data['gesto'])) : null,
+            'memory' => isset($data['recuerdo']) && is_string($data['recuerdo']) ? trim($data['recuerdo']) : '',
         ];
     }
 }

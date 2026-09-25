@@ -11,7 +11,7 @@ $vars = json_decode((string) $chat['vars'], true) ?: [];
 </p>
 <section class="card transcript">
   <?php foreach ($history as $h): ?>
-    <p class="<?= $h['role'] === 'player' ? 'player' : 'npc' ?>"><strong><?= $h['role'] === 'player' ? 'Jugador' : e($chat['npc'] ?: 'NPC') ?>:</strong> <?= nl2br(e($h['text'])) ?></p>
+    <p class="<?= $h['role'] === 'player' ? 'player' : 'npc' ?>"><strong><?= $h['role'] === 'player' ? 'Jugador' : e($chat['npc'] ?: 'NPC') ?>:</strong> <?= nl2br(e($h['text'])) ?><?php if (!empty($h['gesture'])): ?> <span class="muted small">[gesto: <?= e($h['gesture']) ?>]</span><?php endif; ?></p>
   <?php endforeach; ?>
   <?php if (!$history): ?><p class="muted">Sin mensajes.</p><?php endif; ?>
 </section>

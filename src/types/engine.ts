@@ -52,6 +52,8 @@ export interface PlayerState {
   iaDijo?: string[];
   /** Últimos mensajes del jugador tal cual los escribió (modismos, faltas): la IA imita y se burla */
   habla?: string[];
+  /** Lo que cada personaje recuerda de BOB (chats anteriores, effects.npcMemo, gestos) */
+  npcMemoria?: Record<string, string[]>;
   /** Entradas del códice desbloqueadas (en orden) */
   codex?: string[];
   /** Último punto de control: escena y copia del estado en ese momento */
@@ -131,6 +133,8 @@ export interface ChatReplyResult {
   turnsLeft: number;
   /** Tono de la respuesta, marcado por la IA */
   tone?: Tone;
+  /** Id de la línea en el servidor (para calificarla con /bien, /mal) */
+  aiLineId?: number;
 }
 
 export interface ChatEndResult {
@@ -161,6 +165,8 @@ export interface DialogResult {
   lines: string[];
   /** Tono marcado por la IA (solo en líneas generadas) */
   tone?: Tone;
+  /** Id de la línea generada en el servidor (para calificarla con /bien, /mal) */
+  aiLineId?: number;
 }
 
 export interface ChoicePrompt {

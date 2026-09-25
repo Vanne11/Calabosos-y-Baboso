@@ -158,7 +158,18 @@ export interface AiChatStep {
   outcomes: Partial<Record<'success' | 'partial' | 'failure' | 'done', ChatOutcome>>;
   /** Tirada que decide si no hay IA (éxito → success, fallo → failure) */
   fallback: { stat: string; difficulty: number; faces?: number; description?: string };
+  /** Gestos que el NPC puede hacer a mitad de la conversación (la IA elige; cada uno una vez) */
+  gestures?: Record<string, ChatGesture>;
   condition?: StepCondition;
+}
+
+/** Gesto de un NPC en un chat: la IA decide cuándo, el juego define qué pasa */
+export interface ChatGesture {
+  /** Cuándo hacerlo (lo lee la IA, desde el NPC): "le tira la cerveza encima a BOB" */
+  hint: string;
+  /** Aviso en pantalla (default: el hint) */
+  text?: string;
+  effects?: Effects;
 }
 
 /** Configuración de IA del juego */
@@ -426,6 +437,8 @@ export interface DialogStep {
 /** Narración con IA: nombre del prompt en el servidor (narrate.<prompt>) y variables */
 export interface DialogAi {
   prompt: string;
+  /** Guarda la línea generada en la memoria de la IA con este prefijo: "su lápida decía" */
+  remember?: string;
   /** Variables para el prompt. Admiten {stat} y {meta.clave} */
   vars?: Record<string, string>;
 }
@@ -915,6 +928,8 @@ export interface Effects {
   checkpoint?: boolean;
   /** Hecho para la memoria de la IA ("se meó frente al rey"). Admite {variables} */
   memo?: string | string[];
+  /** Hecho para la memoria de un personaje (lo recuerda en sus chats): { "nerly": "BOB le echó sal" } */
+  npcMemo?: Record<string, string>;
 }
 
 // --- Conditions file ---

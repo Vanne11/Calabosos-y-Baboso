@@ -260,6 +260,9 @@
               "effects": {
                 "affinity": {
                   "nerly": 5
+                },
+                "npcMemo": {
+                  "nerly": "BOB le dijo «lo siento» cuando le contó su historia"
                 }
               },
               "goto": "acto2_camino_menu",
@@ -273,7 +276,12 @@
               "tags": [
                 "inmaduro"
               ],
-              "sfx": "grillo"
+              "sfx": "grillo",
+              "effects": {
+                "npcMemo": {
+                  "nerly": "BOB hizo un chiste («¿con la lengua?») cuando le contó su historia triste"
+                }
+              }
             }
           ]
         }
@@ -790,6 +798,36 @@
               },
               "goto": "acto2_viaje2"
             }
+          },
+          "gestures": {
+            "golpe": {
+              "hint": "pierdes la paciencia y le das un golpe a BOB (si te habló de tu ojo o de tu madre)",
+              "text": "El Bandido Tuerto te da un puñetazo. Con el ojo bueno cerrado, para más drama.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -10,
+                  "miedo": 10
+                }
+              }
+            },
+            "diente": {
+              "hint": "te ríes tanto con un insulto de BOB que se te cae un diente",
+              "text": "Al Bandido se le cae un diente de la risa. Le quedan tres.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              }
+            },
+            "banda_se_rie": {
+              "hint": "tu banda se ríe de BOB a carcajadas",
+              "text": "Los bandidos se ríen de ti. Uno se cae del árbol.",
+              "effects": {
+                "stats": {
+                  "sexi": -5
+                }
+              }
+            }
           }
         }
       ]
@@ -844,6 +882,9 @@
               "effects": {
                 "affinity": {
                   "nerly": -10
+                },
+                "npcMemo": {
+                  "nerly": "BOB huyó de los bandidos y la dejó atrás"
                 }
               },
               "goto": "acto2_viaje2",
@@ -1086,7 +1127,10 @@
             "flags": {
               "takashi_en_abismo": true
             },
-            "memo": "mandó a Takashi, un chico inocente con un bate, a morir al Abismo con una mentira"
+            "memo": "mandó a Takashi, un chico inocente con un bate, a morir al Abismo con una mentira",
+            "npcMemo": {
+              "nerly": "BOB mandó a Takashi a morir al Abismo con una mentira"
+            }
           }
         },
         {
@@ -1195,7 +1239,10 @@
                 },
                 "unlockCodex": [
                   "babosita"
-                ]
+                ],
+                "npcMemo": {
+                  "nerly": "BOB ayudó a una babosita perdida a volver a su tronco"
+                }
               },
               "goto": "acto2_fogata",
               "tags": [
@@ -1278,7 +1325,10 @@
               "sexi": -10,
               "ganas_de_vivir": -10
             },
-            "memo": "le echó sal a una babosita perdida del bosque, delante de Nerly"
+            "memo": "le echó sal a una babosita perdida del bosque, delante de Nerly",
+            "npcMemo": {
+              "nerly": "BOB le echó sal a una babosita perdida delante de ella"
+            }
           }
         },
         {
@@ -1359,6 +1409,26 @@
                 ]
               },
               "goto": "acto2_fogata"
+            }
+          },
+          "gestures": {
+            "fruto": {
+              "hint": "dejas caer un fruto de savia brillante a los pies de BOB (si fue sincero de verdad)",
+              "text": "Del árbol cae un fruto tibio y brillante. Sabe a verdad. Y a savia.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": 10
+                }
+              }
+            },
+            "rama": {
+              "hint": "le das un golpecito en la cabeza con una rama (si mintió o se burló)",
+              "text": "Una rama te da un golpecito en la cabeza. Paternal. Doloroso.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              }
             }
           }
         }
@@ -1537,6 +1607,29 @@
                 }
               },
               "goto": "acto2_dormir"
+            }
+          },
+          "gestures": {
+            "abrazo": {
+              "hint": "abrazas a BOB con toda tu baba (si su verso fue tierno)",
+              "text": "Nerly te abraza. Quedas pegajoso y un poco más feliz.",
+              "effects": {
+                "affinity": {
+                  "nerly": 5
+                },
+                "stats": {
+                  "ganas_de_vivir": 5
+                }
+              }
+            },
+            "sonrojo": {
+              "hint": "te pones azul oscuro de vergüenza (si BOB fue grosero)",
+              "text": "Nerly se pone azul oscuro y mira el fuego. Muy fijo.",
+              "effects": {
+                "affinity": {
+                  "nerly": -3
+                }
+              }
             }
           }
         }

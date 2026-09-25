@@ -121,6 +121,37 @@ final class PromptRepository
         return true;
     }
 
+    /**
+     * Ejemplos de un prompt (líneas que gustaron), al azar
+     * @return array<int, string>
+     */
+    public function examples(string $key, int $limit): array
+    {
+        $rows = $this->db->all('SELECT text FROM prompt_examples WHERE prompt_key = ? ORDER BY RANDOM() LIMIT ' . max(1, $limit), [$key]);
+        return array_map(static function (array $r): string {
+            return (string) $r['text'];
+        }, $rows);
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    public function allExamples(): array
+    {
+        return $this->db->all('SELECT * FROM prompt_examples ORDER BY prompt_key, id DESC');
+    }
+
+    public function addExample(string $key, string $text): void
+    {
+        $exists = (int) $this->db->value('SELECT COUNT(*) FROM prompt_examples WHERE prompt_key = ? AND text = ?', [$key, $text]);
+        if ($exists === 0) {
+            $this->db->run('INSERT INTO prompt_examples (prompt_key, text, created_at) VALUES (?, ?, ?)', [$key, $text, gmdate('c')]);
+        }
+    }
+
+    public function deleteExample(int $id): void
+    {
+        $this->db->run('DELETE FROM prompt_examples WHERE id = ?', [$id]);
+    }
+
     public function updateMeta(string $key, string $title, string $description): void
     {
         $this->db->run(

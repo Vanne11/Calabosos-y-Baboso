@@ -140,6 +140,18 @@ Usa al menos dos hechos concretos de la memoria de la partida y, si hay, cita te
 Termina con un veredicto cruel pero cariñoso. Solo el texto.
 TXT,
             ],
+            'narrate.epitafio' => [
+                'kind' => 'narrate',
+                'title' => 'Epitafio',
+                'description' => 'Texto de la lápida al morir. Vars: causa, ultima_decision, ultima_frase, muertes.',
+                'params' => ['temperature' => 1.2, 'max_tokens' => 80, 'max_chars' => 160],
+                'body' => <<<'TXT'
+BOB acaba de morir. Causa: {{causa}}. Es su muerte número {{muertes}}.
+Lo último que decidió: {{ultima_decision}}
+Lo último que escribió (tal cual, con sus faltas): {{ultima_frase}}
+Escribe el texto de su LÁPIDA: una sola línea corta, como las inscripciones de verdad ("Aquí yace...", "Murió como vivió...", una fecha absurda, un verso malo), pero que se burle de su última decisión o cite su última frase tal cual. Solo el texto de la lápida, sin comillas.
+TXT,
+            ],
             'libre.accion' => [
                 'kind' => 'libre',
                 'title' => 'Acción libre en una decisión',

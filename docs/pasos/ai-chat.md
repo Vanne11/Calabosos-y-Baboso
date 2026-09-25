@@ -51,3 +51,29 @@ Siempre se agregan: `npc_nombre`, `npc_descripcion`, `perfil`, `nombre_jugador`,
 **Respaldo:** si no hay IA (o falla a mitad), se muestra la `intro` y se tira `fallback` (éxito o crítico → `success`, fallo → `failure`).
 
 Suma al perfil `chat_<modo>` (y `se_rinde` si abandona) y emite el evento `chat`.
+
+## Gestos (`gestures`)
+
+El NPC puede **hacer algo** a mitad de la conversación. La IA decide cuándo; el juego define qué pasa:
+
+```jsonc
+"gestures": {
+  "cerveza": {
+    "hint": "le tiras tu cerveza encima a BOB (si te humilló o te ofendió)",  // lo lee la IA, desde el NPC
+    "text": "El Bardo te tira la cerveza encima. El público aplaude. A él.",  // aviso en pantalla (default: hint)
+    "effects": { "stats": { "sexi": -5 } }
+  }
+}
+```
+
+- Cada gesto se usa **una sola vez** por conversación; el servidor descarta los que no están en la lista.
+- Se muestra el aviso, se aplican los efectos y el NPC lo recuerda (`npcMemoria`).
+- Ids: `a-z`, `0-9`, `_` (máximo 10 gestos por paso; el validador lo revisa).
+
+## Recuerdo y memoria por personaje
+
+Al terminar, la IA escribe un **recuerdo**: una frase de lo que pasó, con un detalle concreto ("BOB le rapeó que su
+laúd tenía más cuerdas que neuronas y el público lo abucheó"). Va a la memoria general y a la del NPC.
+
+Cada personaje guarda lo que recuerda de BOB en `npcMemoria` (conversaciones, gestos y `effects.npcMemo`), y en sus
+chats lo recibe como `{{historial_npc}}`: el Bardo sabe que le robaste el público y Nerly, que le echaste sal.

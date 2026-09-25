@@ -87,6 +87,8 @@ con `_checkpoint`** (el narrador recuerda tus muertes).
 | `citas` | la frase del jugador que más subió el medidor en cada chat, tal cual | últimas 3 de 8 |
 | `como_escribe` | los últimos mensajes del jugador en los chats, **sin corregir** (modismos, faltas) | 4 |
 | `ya_dijiste` | las últimas líneas del narrador con IA, para que no se repita | 5 |
+| `historial_npc` | solo en chats: lo que ese personaje recuerda de BOB (`npcMemoria`: recuerdos de chats, gestos, `effects.npcMemo`) | 6 |
+| `ultima_decision` · `ultima_frase` | la última decisión y lo último que escribió (para el epitafio) | 1 |
 | `animo` | la stat `animo_narrador` (texto; el juego la cambia con `setStats` al empezar cada acto) | — |
 
 El servidor agrega esas variables solo, en un bloque "CONTEXTO DE LA PARTIDA" entre el prompt y el contrato de
@@ -98,6 +100,23 @@ con prompts editados en el admin. Tienen su propio límite de largo: Ajustes →
 Los jugadores escriben como hablan y con faltas. No se corrige nada: `como_escribe` y `citas` van tal cual, y la
 hoja del narrador pide contestar en el mismo registro, usar sus modismos, burlarse a veces de **una** falta concreta
 (nunca corregir como profesor) y no bajar el puntaje por ortografía.
+
+## Epitafio y `dialog.ai.remember`
+
+Al morir, la **Lápida** (personaje `lapida`) muestra un epitafio generado con la causa, la última decisión y la
+última frase del jugador (prompt `narrate.epitafio`; sin IA, el pool `epitafio`). Con `"remember": "su lápida decía"`
+la línea generada se guarda en la memoria: el narrador puede citarla después.
+
+## Calificaciones y ejemplos (`/bien`, `/mal`)
+
+- Cada línea de la IA (narración, acción libre, respuestas de los chats) se guarda en el servidor (`ai_lines`) con
+  un id; el jugador califica la última con `/bien` o `/mal` (una pista lo avisa la primera vez).
+- Admin → **Calificaciones**: 👍/👎 por prompt y **por versión** (sirve para comparar versiones), líneas calificadas
+  y botón «Usar como ejemplo».
+- Los ejemplos (`prompt_examples`) se agregan solos, hasta 4 al azar, a cada pedido de ese prompt
+  ("EJEMPLOS DE RESPUESTAS QUE A LOS JUGADORES LES ENCANTARON").
+- «Exportar 👍 para los pools»: JSON con las mejores líneas por prompt, para copiarlas a `linePools` (respaldo sin IA).
+- Las líneas sin calificar se borran junto con los eventos viejos (Analítica → borrar).
 
 ## Fichas de personaje
 

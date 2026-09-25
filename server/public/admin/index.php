@@ -31,6 +31,7 @@ try {
 use Cyb\AdminAuth;
 use Cyb\Analytics;
 use Cyb\AiException;
+use Cyb\AiLines;
 use Cyb\App;
 use Cyb\ChatService;
 use Cyb\ConfigWriter;
@@ -380,6 +381,38 @@ if ($page === 'analytics') {
     exit;
 }
 
+// --- Calificaciones de los jugadores (/bien, /mal) y ejemplos de los prompts ---
+if ($page === 'ratings') {
+    $rating = (int) ($_GET['r'] ?? 1) === -1 ? -1 : 1;
+    $key = (string) ($_GET['key'] ?? '');
+    $action = (string) ($_POST['action'] ?? '');
+    if ($isPost && $action === 'add_example') {
+        $line = $db->one('SELECT * FROM ai_lines WHERE id = ?', [(int) ($_POST['line'] ?? 0)]);
+        if ($line !== null) {
+            $prompts->addExample((string) $line['prompt_key'], (string) $line['text']);
+        }
+        redirect('ratings', ['r' => $rating, 'key' => $key], $line !== null ? 'Ejemplo agregado.' : 'Línea no encontrada.');
+    }
+    if ($isPost && $action === 'delete_example') {
+        $prompts->deleteExample((int) ($_POST['example'] ?? 0));
+        redirect('ratings', ['r' => $rating, 'key' => $key], 'Ejemplo quitado.');
+    }
+    $export = [];
+    foreach (AiLines::rated($db, 1, '', 500) as $l) {
+        $export[(string) $l['prompt_key']][] = (string) $l['text'];
+    }
+    View::render('ratings', $common + [
+        'summary' => AiLines::summary($db),
+        'lines' => AiLines::rated($db, $rating, $key),
+        'rating' => $rating,
+        'key' => $key,
+        'examples' => $prompts->allExamples(),
+        'examplesPerPrompt' => PromptRenderer::EXAMPLES_PER_PROMPT,
+        'export' => json_encode($export, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?: '{}',
+    ]);
+    exit;
+}
+
 // --- Registro de llamadas a la IA ---
 if ($page === 'logs') {
     $onlyErrors = !empty($_GET['errors']);
@@ -418,7 +451,7 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
     if ($isChat) {
         $vars += ['turn' => '1', 'max_turns' => (string) ($params['max_turns'] ?? 6), 'score' => (string) ($params['initial_score'] ?? 0)];
     }
-    $prompt = ['kind' => $kind, 'body' => (string) ($_POST['body'] ?? ''), 'params' => $params];
+    $prompt = ['key' => (string) $meta['key'], 'kind' => $kind, 'body' => (string) ($_POST['body'] ?? ''), 'params' => $params];
     $renderer = new PromptRenderer($prompts);
     $contract = $isChat
         ? PromptRenderer::chatContract((int) ($params['max_reply_chars'] ?? 400))

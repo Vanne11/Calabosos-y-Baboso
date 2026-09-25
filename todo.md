@@ -39,11 +39,12 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 - [ ] Probar con DeepSeek real ("Probar ahora" del admin) y jugar los chats escribiendo con faltas y modismos.
 - [ ] Ajustar fichas/ánimos según cómo suenen.
 
-## 3. Conversaciones con consecuencias — PENDIENTE
+## 3. Conversaciones con consecuencias — HECHO
 
-- [ ] Campo `"gesto"` en el contrato del chat, validado contra una lista del paso (`regala`, `revela`, `se_ofende`).
-- [ ] Campo `"recuerdo"`: resumen de una línea de la conversación → memoria.
-- [ ] Historial por NPC (`{{historial_npc}}`): los personajes recuerdan encuentros anteriores.
+- [x] `gestures` en `ai_chat`: la IA elige de una lista cerrada (cada gesto una vez); el juego muestra el aviso y aplica efectos.
+- [x] `"recuerdo"` al terminar el chat → memoria general y del NPC.
+- [x] `npcMemoria` + `effects.npcMemo` → `{{historial_npc}}` en los chats: los personajes recuerdan a BOB.
+- [x] Contenido: gestos en los 9 chats; 18 recuerdos por personaje (Nerly, tendero, bardo, guardia, rey).
 
 ## 4. Elecciones con texto libre — HECHO
 
@@ -66,11 +67,14 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 
 - [ ] Hablarle al narrador en cualquier momento, con límite por acto, sabiendo escena y memoria.
 
-## 7. Muertes y recap personales — PENDIENTE (en parte cubierto por 1)
+## 7. Muertes y recap personales — HECHO
 
-- [ ] Epitafio al morir basado en la última decisión.
+- [x] Epitafio en la lápida al morir (`narrate.epitafio`: causa + última decisión + última frase tal cual); sin IA, pool `epitafio`.
+- [x] `dialog.ai.remember`: la lápida queda en la memoria y el narrador puede citarla.
 
-## 8. Mejora continua — PENDIENTE
+## 8. Mejora continua — HECHO
 
-- [ ] `/bien` y `/mal` para calificar líneas; el admin convierte las mejores en ejemplos few-shot.
-- [ ] Las mejores líneas pasan a los pools de respaldo sin IA.
+- [x] `/bien` y `/mal` califican la última línea de la IA (todas se guardan en `ai_lines` con prompt y versión).
+- [x] Admin → Calificaciones: 👍/👎 por prompt y versión, «Usar como ejemplo» (hasta 4 al azar en cada pedido) y
+      exportar las 👍 como JSON para `linePools`.
+- [ ] Revisar calificaciones reales cada tanto y elegir ejemplos.

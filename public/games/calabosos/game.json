@@ -407,6 +407,11 @@
       "image": "images/dialogs/alcalde.png",
       "role": "npc"
     },
+    "lapida": {
+      "name": "🪦 Lápida",
+      "description": "Lo último que dirán de ti. Corto, porque la piedra es cara.",
+      "role": "npc"
+    },
     "sistema": {
       "name": "SISTEMA",
       "description": "Notificaciones del sistema de juego.",
@@ -803,6 +808,14 @@
       {
         "text": "Resumen de tu aventura: llegaste, viste, te measte un poco, y venciste. En ese orden. Veredicto final: héroe aceptable. Solo aceptable."
       }
+    ],
+    "epitafio": [
+      "Aquí yace {nombre_jugador}. Murió como vivió: {causa_muerte}.",
+      "{nombre_jugador}. Nació, se equivocó, murió. En ese orden, al menos.",
+      "Aquí descansa {nombre_jugador}. Por fin algo que le sale bien.",
+      "Muerte n.º {meta.muertes}. La lápida ya viene con descuento de cliente frecuente.",
+      "Aquí yace {nombre_jugador}, que tenía un plan. El plan no lo tenía a él.",
+      "Aquí yace {nombre_jugador}. Se fue sin pagar la cuenta de la taberna."
     ]
   },
   "items": {

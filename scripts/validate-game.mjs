@@ -106,12 +106,12 @@ function validateGame(gameName) {
   checkSfx(audio.itemSfx, 'audio.itemSfx');
   checkSfx(audio.removeItemSfx, 'audio.removeItemSfx');
 
-  // --- Acción libre: consecuencias (el servidor descarta ids inválidos y se queda con las primeras 10) ---
-  function checkConsequences(consequences, ctx) {
+  // --- Consecuencias de la acción libre y gestos de los chats (el servidor descarta ids inválidos y se queda con 10) ---
+  function checkConsequences(consequences, ctx, inherited = 0) {
     if (!consequences) return;
     const entries = Object.entries(consequences);
-    const total = entries.length + (ctx === 'ai.freeText' ? 0 : Object.keys(manifest.ai?.freeText?.consequences ?? {}).length);
-    if (total > 10) warnings.push(`${ctx}: ${total} consecuencias en total; la IA solo recibe las primeras 10`);
+    const total = entries.length + inherited;
+    if (total > 10) warnings.push(`${ctx}: ${total} en total; la IA solo recibe las primeras 10`);
     for (const [cid, c] of entries) {
       if (!/^[a-z0-9_]{1,30}$/.test(cid)) errors.push(`${ctx}: id de consecuencia "${cid}" inválido (a-z, 0-9, _)`);
       if (!c?.hint) errors.push(`${ctx}.${cid}: falta "hint" (la IA lo usa para elegirla)`);
@@ -196,6 +196,7 @@ function validateGame(gameName) {
       if (!outcomes.length) errors.push(`${ctx}: sin "outcomes"`);
       if (step.mode !== 'confesion' && !step.outcomes?.success) warnings.push(`${ctx}: sin outcome "success"`);
       if (step.mode !== 'confesion' && !step.outcomes?.failure) warnings.push(`${ctx}: sin outcome "failure"`);
+      checkConsequences(step.gestures, `${ctx} gestures`);
     }
 
     // Acción libre y reacciones del narrador
@@ -204,7 +205,9 @@ function validateGame(gameName) {
       const ctx = `${where(id)} paso ${i + 1} (choice)`;
       if (step.freeText) {
         if (!manifest.ai) warnings.push(`${ctx}: "freeText" sin "ai" en game.json: nunca se ofrece`);
-        if (typeof step.freeText === 'object') checkConsequences(step.freeText.consequences, `${ctx} freeText`);
+        if (typeof step.freeText === 'object') {
+          checkConsequences(step.freeText.consequences, `${ctx} freeText`, Object.keys(manifest.ai?.freeText?.consequences ?? {}).length);
+        }
       }
       for (const [j, value] of [step.aiReact, ...(step.options ?? []).map((o) => o.aiReact)].entries()) {
         if (value !== undefined && (typeof value !== 'number' || value < 0 || value > 1)) {

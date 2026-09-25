@@ -1,7 +1,9 @@
 <?php
 // POST acciones del modo chat:
-//   { action: "start", sessionId, game, mode, npc, vars: {...}, maxTurns? } → { chatId, maxTurns, turnsLeft, score, maxInputChars }
-//   { action: "say", sessionId, chatId, message }                          → { reply, score, done, verdict, turn, turnsLeft, tone }
+//   { action: "start", sessionId, game, mode, npc, vars: {...}, maxTurns?, gestures?: {id: "cuándo"} }
+//        → { chatId, maxTurns, turnsLeft, score, maxInputChars }
+//   { action: "say", sessionId, chatId, message }
+//        → { reply, score, done, verdict, turn, turnsLeft, tone, gesture, memory (al terminar), lineId }
 //   { action: "giveup", sessionId, chatId }                                → { done, verdict, score }
 
 declare(strict_types=1);
@@ -30,7 +32,8 @@ Api::handle('POST', static function (): array {
             (string) ($body['mode'] ?? ''),
             (string) ($body['npc'] ?? ''),
             $body['vars'] ?? [],
-            (int) ($body['maxTurns'] ?? 0)
+            (int) ($body['maxTurns'] ?? 0),
+            $body['gestures'] ?? []
         );
     }
     if ($action === 'say') {

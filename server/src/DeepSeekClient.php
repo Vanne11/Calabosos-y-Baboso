@@ -127,11 +127,15 @@ final class DeepSeekClient
         } elseif ($json) {
             // Puntaje determinista según el largo del mensaje (para pruebas)
             $score = min(100, $len * 2);
+            // Primer gesto disponible cuando el mensaje es largo (para probar los gestos sin gastar tokens)
+            preg_match('/Gestos disponibles:\n- ([a-z0-9_]+):/', $system, $g);
             $content = json_encode([
                 'reply' => '[mock] Escuché: "' . mb_substr($said, 0, 60, 'UTF-8') . '". No me convences del todo.',
                 'score' => $score,
                 'done' => false,
                 'tono' => $tone,
+                'gesto' => $len > 20 ? ($g[1] ?? '') : '',
+                'recuerdo' => '[mock] BOB dijo "' . mb_substr($said, 0, 40, 'UTF-8') . '" y nadie aplaudió.',
             ], JSON_UNESCAPED_UNICODE);
         } else {
             $content = '[mock] El narrador suspira: qué forma tan original de fracasar.';

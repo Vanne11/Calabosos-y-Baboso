@@ -29,7 +29,7 @@ type TimedEvent = GameEvent & { t: number };
 
 const SESSION_KEY = 'cyb_ai_session';
 const PREF_KEY = 'cyb_ai_pref';
-const TIMEOUT = { config: 4000, narrate: 8000, freeAction: 12000, chatStart: 8000, chatSay: 30000, giveup: 5000, events: 5000 };
+const TIMEOUT = { config: 4000, narrate: 8000, freeAction: 12000, rate: 5000, chatStart: 8000, chatSay: 30000, giveup: 5000, events: 5000 };
 const EVENTS_FLUSH_MS = 15000;
 const EVENTS_MAX_BATCH = 20;
 
@@ -61,6 +61,11 @@ export function getAiPreference(): boolean {
 
 export function setAiPreference(enabled: boolean): void {
   safeStorageSet(PREF_KEY, enabled ? 'on' : 'off');
+}
+
+/** Id de línea válido que devolvió el servidor, o undefined */
+function lineId(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : undefined;
 }
 
 export class AiClient implements AiProvider {
@@ -123,13 +128,13 @@ export class AiClient implements AiProvider {
   }
 
   async narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null> {
-    const res = await this.post<{ text?: string; tone?: unknown }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
+    const res = await this.post<{ text?: string; tone?: unknown; lineId?: unknown }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
     if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
-    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null };
+    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null, lineId: lineId(res.lineId) };
   }
 
   async freeAction(prompt: string, request: FreeActionRequest): Promise<FreeActionReply | null> {
-    const res = await this.post<{ text?: string; tone?: unknown; option?: unknown; consequence?: unknown }>(
+    const res = await this.post<{ text?: string; tone?: unknown; option?: unknown; consequence?: unknown; lineId?: unknown }>(
       'api/libre.php',
       { prompt, ...request },
       TIMEOUT.freeAction
@@ -137,21 +142,40 @@ export class AiClient implements AiProvider {
     if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
     const option = typeof res.option === 'number' && Number.isInteger(res.option) && res.option >= 0 && res.option < request.options.length ? res.option : null;
     const consequence = typeof res.consequence === 'string' && res.consequence in request.consequences ? res.consequence : null;
-    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null, option, consequence };
+    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null, option, consequence, lineId: lineId(res.lineId) };
   }
 
-  async chatStart(mode: ChatMode, npc: string, vars: Record<string, string>, maxTurns?: number): Promise<ChatStartInfo | null> {
-    const res = await this.post<ChatStartInfo>('api/chat.php', { action: 'start', mode, npc, vars, maxTurns }, TIMEOUT.chatStart);
+  async chatStart(
+    mode: ChatMode,
+    npc: string,
+    vars: Record<string, string>,
+    maxTurns?: number,
+    gestures?: Record<string, string>
+  ): Promise<ChatStartInfo | null> {
+    const res = await this.post<ChatStartInfo>('api/chat.php', { action: 'start', mode, npc, vars, maxTurns, gestures }, TIMEOUT.chatStart);
     return res && typeof res.chatId === 'string' ? res : null;
   }
 
   async chatSay(chatId: string, message: string): Promise<ChatSayInfo | null> {
     const res = await this.post<ChatSayInfo>('api/chat.php', { action: 'say', chatId, message }, TIMEOUT.chatSay);
-    return res && typeof res.reply === 'string' ? { ...res, tone: isTone(res.tone) ? res.tone : null } : null;
+    if (!res || typeof res.reply !== 'string') return null;
+    return {
+      ...res,
+      tone: isTone(res.tone) ? res.tone : null,
+      gesture: typeof res.gesture === 'string' ? res.gesture : null,
+      memory: typeof res.memory === 'string' && res.memory.trim() ? res.memory.trim() : null,
+      lineId: lineId(res.lineId),
+    };
   }
 
   async chatGiveUp(chatId: string): Promise<void> {
     await this.post('api/chat.php', { action: 'giveup', chatId }, TIMEOUT.giveup);
+  }
+
+  /** Califica una línea de la IA (/bien = 1, /mal = -1). Devuelve si el servidor la anotó */
+  async rate(id: number, rating: 1 | -1): Promise<boolean> {
+    const res = await this.post<{ ok?: boolean }>('api/rate.php', { lineId: id, rating }, TIMEOUT.rate);
+    return !!res?.ok;
   }
 
   /** Registra un evento de juego (se envían en lotes) */

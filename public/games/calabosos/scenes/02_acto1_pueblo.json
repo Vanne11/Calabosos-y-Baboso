@@ -148,6 +148,26 @@
               },
               "goto": "acto1_decision"
             }
+          },
+          "gestures": {
+            "propina": {
+              "hint": "te apiadas y le tiras unas monedas a BOB desde el cielo (solo si te hizo reír de verdad)",
+              "text": "Caen unas monedas del cielo. Con desprecio, pero caen.",
+              "effects": {
+                "stats": {
+                  "dinero": 5
+                }
+              }
+            },
+            "piedra": {
+              "hint": "haces aparecer una piedra para que BOB se tropiece, por insolente",
+              "text": "Aparece una piedra de la nada. Tropiezas con ella.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              }
+            }
           }
         }
       ]
@@ -1120,13 +1140,21 @@
               "goto": "acto1_regateo",
               "tags": [
                 "honesto"
-              ]
+              ],
+              "effects": {
+                "npcMemo": {
+                  "tendero": "BOB le dijo la verdad sobre cuánto dinero tenía"
+                }
+              }
             },
             {
               "text": "«Tengo... la mitad de eso.» (mentir para regatear)",
               "effects": {
                 "flags": {
                   "mintio_tendero": true
+                },
+                "npcMemo": {
+                  "tendero": "BOB le mintió diciendo que tenía la mitad de su dinero"
                 }
               },
               "goto": "acto1_regateo",
@@ -1139,7 +1167,12 @@
               "goto": "acto1_regateo",
               "tags": [
                 "regateador"
-              ]
+              ],
+              "effects": {
+                "npcMemo": {
+                  "tendero": "BOB le ofreció un trueque en vez de dinero"
+                }
+              }
             }
           ],
           "freeText": {
@@ -1212,6 +1245,36 @@
                 }
               },
               "goto": "acto1_tienda_compra"
+            }
+          },
+          "gestures": {
+            "regala_panal": {
+              "hint": "le regalas a BOB un pañal de aventurero, emocionado o llorando",
+              "text": "El Tendero te mete un pañal en el bolsillo. «Para el camino, *hic*.»",
+              "effects": {
+                "inventory": [
+                  "panal"
+                ]
+              }
+            },
+            "trago": {
+              "hint": "le ofreces a BOB un trago de tu botella",
+              "text": "Bebes de la botella del Tendero. Quema. Te sientes valiente y con ganas de mear.",
+              "effects": {
+                "stats": {
+                  "miedo": -10,
+                  "pis": 15
+                }
+              }
+            },
+            "llora": {
+              "hint": "te pones a llorar abrazado a BOB hablando de tu hermano",
+              "text": "El Tendero llora en tu hombro. Huele a ron. Te sientes extrañamente bien.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": 5
+                }
+              }
             }
           }
         }
@@ -1552,6 +1615,35 @@
               },
               "goto": "acto1_taberna_salida"
             }
+          },
+          "gestures": {
+            "cerveza": {
+              "hint": "le tiras tu cerveza encima a BOB (si te humilló o te ofendió)",
+              "text": "El Bardo te tira la cerveza encima. El público aplaude. A él.",
+              "effects": {
+                "stats": {
+                  "sexi": -5
+                }
+              }
+            },
+            "respeto": {
+              "hint": "chocas la aleta con BOB en señal de respeto (si su barra fue muy buena)",
+              "text": "El Bardo te choca la aleta a regañadientes. La taberna enloquece.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                }
+              }
+            },
+            "tomatazo": {
+              "hint": "el público le tira comida a BOB (si su barra fue malísima)",
+              "text": "Un tomate te da en la cara. Alguien grita «¡FUERA!».",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -5
+                }
+              }
+            }
           }
         }
       ]
@@ -1593,7 +1685,10 @@
                   "dinero": -5,
                   "sexi": -5
                 },
-                "memo": "se durmió borracho en la taberna y le dibujaron un bigote"
+                "memo": "se durmió borracho en la taberna y le dibujaron un bigote",
+                "npcMemo": {
+                  "bardo": "BOB se durmió borracho en su taberna y le dibujaron un bigote"
+                }
               },
               "sfx": "ronquido"
             },
@@ -1605,7 +1700,10 @@
                   "dinero": 8,
                   "sexi": 5
                 },
-                "memo": "cantó a dúo con un borracho en la taberna y lo hizo bien; el Bardo lo odia"
+                "memo": "cantó a dúo con un borracho en la taberna y lo hizo bien; el Bardo lo odia",
+                "npcMemo": {
+                  "bardo": "BOB cantó a dúo con un borracho en su taberna y le robó el público"
+                }
               },
               "sfx": "aplauso"
             }
@@ -1849,13 +1947,21 @@
               "goto": "acto1_nerly_explica",
               "tags": [
                 "desconfiado"
-              ]
+              ],
+              "effects": {
+                "npcMemo": {
+                  "nerly": "BOB desconfió de ella por ser babosa"
+                }
+              }
             },
             {
               "text": "«Gracias. Me vendría bien la ayuda.»",
               "effects": {
                 "affinity": {
                   "nerly": 10
+                },
+                "npcMemo": {
+                  "nerly": "BOB le agradeció la ayuda apenas la conoció"
                 }
               },
               "goto": "acto1_nerly_se_une",
@@ -1868,7 +1974,12 @@
               "goto": "acto1_nerly_motivo",
               "tags": [
                 "codicioso"
-              ]
+              ],
+              "effects": {
+                "npcMemo": {
+                  "nerly": "BOB le preguntó qué ganaba ella ayudándolo"
+                }
+              }
             }
           ],
           "freeText": {
@@ -2044,7 +2155,10 @@
                 "flags": {
                   "nerly_derretida": true
                 },
-                "memo": "le tiró la sal encima a Nerly y la derritió (se regeneró, pero le guarda rencor)"
+                "memo": "le tiró la sal encima a Nerly y la derritió (se regeneró, pero le guarda rencor)",
+                "npcMemo": {
+                  "nerly": "BOB le tiró la sal encima y la derritió (se regeneró, pero le guarda rencor)"
+                }
               },
               "natural": 1,
               "sfx": "acido"
@@ -2074,7 +2188,10 @@
                 "affinity": {
                   "nerly": -15
                 },
-                "memo": "le dejó una ampolla de sal a Nerly"
+                "memo": "le dejó una ampolla de sal a Nerly",
+                "npcMemo": {
+                  "nerly": "BOB le dejó una ampolla de sal"
+                }
               },
               "max": 5,
               "sfx": "acido"
