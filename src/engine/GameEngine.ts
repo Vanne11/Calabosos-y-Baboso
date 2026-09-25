@@ -1128,6 +1128,14 @@ export class GameEngine {
     }
     const currency = step.currency;
     const sellRatio = step.sellRatio ?? 0.5;
+    /** Precio que paga esta tienda por un objeto: precio fijo propio, o (precio de la tienda | value del objeto) × sellRatio */
+    const sellPriceOf = (id: string) =>
+      step.sellPrices?.[id] ??
+      Math.max(1, Math.floor((step.items.find((si) => si.id === id)?.price ?? this.manifest.items?.[id]?.value ?? 2) * sellRatio));
+    const sellableInventory = () =>
+      this.stackInventory()
+        .filter((inv) => !this.manifest.items?.[inv.id]?.keep)
+        .map((inv) => ({ ...inv, sellPrice: sellPriceOf(inv.id) }));
     const hagbledPrices: Record<number, number> = {};
     const haggledItems = new Set<number>();
 
@@ -1198,7 +1206,7 @@ export class GameEngine {
           };
         }),
         sellable: step.sellable ?? false,
-        playerInventory: this.stackInventory(),
+        playerInventory: sellableInventory(),
         sellRatio,
         canHaggle: !!step.haggle && (haggleLeft === undefined || haggleLeft > 0),
         canSteal: !!step.steal && (stealLeft === undefined || stealLeft > 0),
@@ -1233,13 +1241,12 @@ export class GameEngine {
 
       } else if (action.type === 'shop_sell' && step.sellable) {
         const shopItem = step.items.find((si) => si.id === action.itemId);
-        const sellPrice = shopItem ? Math.floor(shopItem.price * sellRatio) : 1;
-        if (this._state.inventory.includes(action.itemId)) {
-          this.applyState({
-            stats: { [currency]: sellPrice },
-            removeInventory: [action.itemId],
-          });
-          yield { type: 'effects', stats: { [currency]: sellPrice }, removeInventory: [action.itemId] };
+        const sellPrice = sellPriceOf(action.itemId);
+        if (this._state.inventory.includes(action.itemId) && !this.manifest.items?.[action.itemId]?.keep) {
+          // Se vende una unidad (removeInventory quitaría todas las copias)
+          this.removeOne(action.itemId);
+          this.applyState({ stats: { [currency]: sellPrice } });
+          yield { type: 'effects', stats: { [currency]: sellPrice } };
           lastMessage = `Has vendido ${shopItem?.name || action.itemId} por ${sellPrice} ${currency}.`;
           const soldName = shopItem?.name || this.items[action.itemId]?.name || action.itemId;
           ledger.sold.set(soldName, (ledger.sold.get(soldName) ?? 0) + 1);
@@ -1376,11 +1383,11 @@ export class GameEngine {
 
       } else if (action.type === 'shop_deceive' && step.deceive && step.sellable) {
         const itemId = action.itemId;
-        if (!this._state.inventory.includes(itemId)) continue;
+        if (!this._state.inventory.includes(itemId) || this.manifest.items?.[itemId]?.keep) continue;
         if (deceiveLeft !== undefined && deceiveLeft <= 0) continue;
 
         const shopItem = step.items.find((si) => si.id === itemId);
-        const basePrice = shopItem ? shopItem.price : 5;
+        const basePrice = shopItem ? shopItem.price : this.manifest.items?.[itemId]?.value ?? 5;
         const dc = getCurrentDifficulty('deceive');
 
         yield {
@@ -1404,10 +1411,8 @@ export class GameEngine {
           const inflated = result.outcome === 'critical_success'
             ? Math.floor(basePrice * 1.5)
             : basePrice;
-          this.applyState({
-            stats: { [currency]: inflated },
-            removeInventory: [itemId],
-          });
+          this.removeOne(itemId);
+          this.applyState({ stats: { [currency]: inflated } });
           const deceiveSuccessText = step.deceive.successText || `¡Le has colado el ${shopItem?.name || itemId} a precio completo! +${inflated} ${currency}`;
           lastMessage = deceiveSuccessText;
           ledger.events.push(`le coló ${shopItem?.name || itemId} a sobreprecio`);

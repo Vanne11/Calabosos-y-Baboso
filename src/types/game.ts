@@ -265,8 +265,10 @@ export interface ItemDef {
   image?: string;
   /** Protección pasiva en combate por llevarlo encima: resta este daño a cada golpe enemigo (mínimo 1) */
   armor?: number;
-  /** No se puede lanzar ni tirar (hace falta para avanzar: la llave del prólogo, la mochila...) */
+  /** No se puede lanzar, tirar ni vender (hace falta para avanzar: la llave del prólogo, la mochila...) */
   keep?: boolean;
+  /** Precio base al venderlo en una tienda (se paga según sellRatio; default 2) */
+  value?: number;
   /** Al lanzarlo en combate (cualquier objeto se puede lanzar): daño (default 4) y texto */
   throw?: { damage?: number; text?: string };
 }
@@ -623,6 +625,8 @@ export interface ShopStep {
   items: ShopItem[];
   sellable?: boolean;
   sellRatio?: number; // 0-1, porcentaje del precio al vender
+  /** Precios fijos que paga esta tienda por ciertos objetos (ej. Ian paga bien los ingredientes exóticos) */
+  sellPrices?: Record<string, number>;
   haggle?: ShopDiceAction;    // regatear precios
   steal?: ShopDiceAction;     // intentar robar
   deceive?: ShopDiceAction;   // engañar al vender (precio inflado)

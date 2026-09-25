@@ -1848,6 +1848,10 @@
           "type": "choice",
           "options": [
             {
+              "text": "Venderle «ingredientes exóticos» a Ian",
+              "goto": "acto3_ian_compra"
+            },
+            {
               "text": "Seguir por el pasaje orgánico",
               "goto": "acto3_masa"
             }
@@ -3652,6 +3656,59 @@
               "goto": "acto3_explosiva"
             }
           ]
+        }
+      ]
+    },
+    "acto3_ian_compra": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Antes de que se esfume, le chistas a Ian. Se da vuelta con una sonrisa de oreja a oreja. Demasiada sonrisa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "ian",
+          "lines": [
+            "¿Ingredientes? ¡Me encantan los ingredientes! Baba, residuos, cosas que brillan... Pago bien. Casi siempre."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(susurrando) No le vendas nada que necesitemos contra el Rey. Ni nada que haya sido parte de una babosa. Bueno, eso último sí."
+          ]
+        },
+        {
+          "type": "shop",
+          "title": "Ian: «Ingredientes exóticos, pago al contado»",
+          "npc": "ian",
+          "currency": "dinero",
+          "items": [
+            {
+              "id": "mapa_dudoso",
+              "name": "Mapa dudoso de Ian",
+              "price": 10,
+              "description": "«Dibujado por él.» Seguro lleva a una trampa."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.3,
+          "sellPrices": {
+            "baba_caballo": 15,
+            "residuo_acido": 18,
+            "baba_maternal": 25,
+            "monedas_dobladas": 4,
+            "cobre_verde": 30,
+            "fragmentos_lagrima": 35,
+            "huevo_runico": 30,
+            "corazon_cristalino": 28,
+            "pocion_ian": 12
+          },
+          "goto": "acto3_masa"
         }
       ]
     }

@@ -55,6 +55,10 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 - [x] **Lanzar cualquier objeto** en combate («🗑️ Lanzar un objeto…», con textos propios) y `/tirar IN3` fuera de
       combate. No se pueden tirar los que hacen falta (`keep`): llave y lámpara del prólogo, mochila, bolso,
       permiso de salida, huevo real.
+- [x] **Vender de verdad**: cada objeto tiene valor (`items.value`); las tiendas pagan valor × su porcentaje, y ya no
+      muestran «?». Nuevos compradores: la **casa de empeños** (Acto I; compra lo que sea y se le puede colar basura)
+      e **Ian** en el Abismo, que paga bien los «ingredientes exóticos» (baba, residuo, cobre verde... y cosas que te
+      harían falta contra el Rey). Lo que no se puede tirar tampoco se vende.
 - [x] Medido con el bot (`npm run playtest` ahora informa el dinero por acto; 500 partidas): mediana ~15 al empezar
       los actos II y III, ~1 al llegar al IV (el guardia y el prestamista te dejan en cero); máximo ~60-70 por el tope
       sin bolso. Sobra dinero solo con críticos en el Acto I + el bolso. Los gastos nuevos quedan como premio al ahorro.
@@ -101,7 +105,7 @@ el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 
 - [ ] `acto1_plaza`: "Está bien, acepto la misión. ¿Cuál es el plan?" · "Ni hablar. Buscaré una taberna y me emborracharé." · "¿Y qué gano yo con todo esto?" + ✍️ acción libre
 - [ ] `acto1_negociar_narrador` [chat IA]
-- [ ] `acto1_decision`: Buscar un trabajo rápido (tablón de anuncios) · Buscar algo de valor que vender · Abrir la bolsa misteriosa que te regaló el caballo 🎒 · Tomar prestado algo de dinero... sin permiso · Pedir un préstamo en la casa de empeños · Ir a la tienda del Tendero 🪙 · Ir a la tienda con los bolsillos vacíos (a ver qué pasa) 🪙 + ✍️ acción libre
+- [ ] `acto1_decision`: Buscar un trabajo rápido (tablón de anuncios) · Buscar algo de valor que vender · Abrir la bolsa misteriosa que te regaló el caballo 🎒 · Tomar prestado algo de dinero... sin permiso · Empeñar cosas en la casa de empeños · Pedir un préstamo en la casa de empeños · Ir a la tienda del Tendero 🪙 · Ir a la tienda con los bolsillos vacíos (a ver qué pasa) 🪙 + ✍️ acción libre
 - [ ] `acto1_tablon`: Limpiar establos (suena lo menos peligroso) · Probar pociones (al menos será interesante) · Ayudar al verdugo (debe pagar bien)
 - [ ] `acto1_verdugo`: Volver al tablón
 - [ ] `acto1_establos` [dados]: Volver a la plaza
@@ -136,6 +140,7 @@ el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 - [ ] `acto1_bolsa` [azar]: Volver a la plaza
 - [ ] `acto1_soborno`: Salir de la ciudad
 - [ ] `acto1_ronda`: Aceptar la guerra de rap (con el público a tu favor) · Salir de la taberna mientras te quieren
+- [ ] `acto1_empenar` [tienda]
 
 ### Acto II — El camino
 
@@ -181,7 +186,7 @@ el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 - [ ] `acto3_cria` [decisión con tiempo]: Tirarte al suelo entre los huevos · Correr hacia la oscuridad · Quedarte quieto como una estatua · Seguir el atajo del mapa parcial 🎒
 - [ ] `acto3_cria_madres` [combate]
 - [ ] `acto3_cria_huevos`: Robar el huevo dorado · Dejar los huevos en paz · Volver a la Sala de Entrada
-- [ ] `acto3_profundo` [dados]: Seguir por el pasaje orgánico
+- [ ] `acto3_profundo` [dados]: Venderle "ingredientes exóticos" a Ian · Seguir por el pasaje orgánico
 - [ ] `acto3_masa` [acertijo]: Resolver el acertijo 🪙 · Pagarle a la masa con monedas (20): dicen que le encanta el sabor a metal 🪙
 - [ ] `acto3_explosiva`: Pasar de puntillas sin mirarla · Atacarla antes de que despierte · Untarte la baba maternal para que te confunda con una cría 🎒
 - [ ] `acto3_explosiva_sigilo` [dados]
@@ -203,6 +208,7 @@ el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 - [ ] `acto3_regalos` [tienda]
 - [ ] `acto3_soborno_guardia`: Entrar al Abismo
 - [ ] `acto3_masa_pago`: Seguir por el pasaje
+- [ ] `acto3_ian_compra` [tienda]
 
 ### Acto IV — El Rey
 

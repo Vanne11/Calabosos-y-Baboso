@@ -247,7 +247,8 @@ export interface ShopPrompt {
   currentMoney: number;
   items: { id: string; name: string; price: number; description?: string; canAfford: boolean; haggled?: boolean }[];
   sellable: boolean;
-  playerInventory: { id: string; name: string; count: number }[];
+  /** Lo que el jugador puede vender aquí, con el precio que le pagan (sin los objetos keep) */
+  playerInventory: { id: string; name: string; count: number; sellPrice?: number }[];
   sellRatio: number;
   canHaggle: boolean;
   canSteal: boolean;

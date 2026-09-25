@@ -292,6 +292,10 @@
               ]
             },
             {
+              "text": "Empeñar cosas en la casa de empeños",
+              "goto": "acto1_empenar"
+            },
+            {
               "text": "Pedir un préstamo en la casa de empeños",
               "goto": "acto1_prestamo",
               "condition": {
@@ -3116,6 +3120,60 @@
               "goto": "acto1_taberna_salida"
             }
           ]
+        }
+      ]
+    },
+    "acto1_empenar": {
+      "scenario": {
+        "name": "Casa de Empeños",
+        "image": "images/scenarios/casa_empenos.png",
+        "description": "Un edificio decrépito que huele a desesperación ajena."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "¿Vienes a vender? Todo tiene un precio. Tu dignidad, por ejemplo: cero. Pero lo demás... enséñame."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El prestamista compra cualquier cosa. A un precio que ofende. Pero compra."
+          ]
+        },
+        {
+          "type": "shop",
+          "title": "Casa de Empeños",
+          "npc": "prestamista",
+          "currency": "dinero",
+          "items": [
+            {
+              "id": "amuleto_proteccion",
+              "name": "Amuleto de protección menor",
+              "price": 30,
+              "description": "Nadie lo quiso comprar. Amortigua los golpes."
+            },
+            {
+              "id": "panal",
+              "name": "Pañal de aventurero",
+              "price": 8,
+              "description": "Usado no. Creo."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.5,
+          "deceive": {
+            "stat": "sexi",
+            "difficulty": 14,
+            "maxAttempts": 2,
+            "difficultyIncrease": 2,
+            "successText": "El prestamista mira tu basura con lupa, la lame y asiente: «Antigüedad auténtica». Te paga como si lo fuera.",
+            "failText": "El prestamista lame el objeto. «Esto es basura.» Lo sabe. Siempre lo sabe."
+          },
+          "goto": "acto1_decision"
         }
       ]
     }

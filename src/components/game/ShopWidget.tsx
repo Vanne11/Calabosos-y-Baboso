@@ -16,7 +16,7 @@ interface ShopWidgetProps {
   currentMoney: number;
   items: { id: string; name: string; price: number; description?: string; canAfford: boolean; haggled?: boolean }[];
   sellable: boolean;
-  playerInventory: { id: string; name: string; count: number }[];
+  playerInventory: { id: string; name: string; count: number; sellPrice?: number }[];
   sellRatio: number;
   canHaggle: boolean;
   canSteal: boolean;
@@ -168,7 +168,6 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
               num++;
               const n = num;
               const isSelected = sel?.mode === 'sell' && sel.itemId === inv.id;
-              const shopItem = items.find(si => si.id === inv.id);
               return (
                 <Slot
                   key={inv.id}
@@ -184,7 +183,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
                   />
                   <SlotName>{inv.name}</SlotName>
                   <SlotPrice>
-                    {shopItem ? Math.floor(shopItem.price * sellRatio) : '?'}
+                    {inv.sellPrice ?? '?'}
                   </SlotPrice>
                 </Slot>
               );
@@ -206,10 +205,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
                     {selectedSellItem.count > 1 ? ` (x${selectedSellItem.count})` : ''}
                   </DetailName>
                   <DetailPrice>
-                    Venta: {(() => {
-                      const si = items.find(s => s.id === selectedSellItem.id);
-                      return si ? Math.floor(si.price * sellRatio) : '?';
-                    })()} {currency}
+                    Venta: {selectedSellItem.sellPrice ?? '?'} {currency}
                   </DetailPrice>
                 </DetailInfo>
               </DetailHeader>

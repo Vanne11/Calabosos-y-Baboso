@@ -218,3 +218,25 @@ describe('lanzar objetos y tirarlos', () => {
     expect(engine.state.inventory).toEqual(['piedra', 'llave']);
   });
 });
+
+describe('vender: valor de los objetos y precios propios de cada tienda', () => {
+  it('paga value × sellRatio (o el precio fijo de la tienda), vende una unidad y no ofrece lo keep', async () => {
+    const m = baseManifest({
+      initialStats: { dinero: 0 },
+      items: {
+        amuleto: { name: 'Amuleto', description: '', value: 30 },
+        baba: { name: 'Baba', description: '', value: 4 },
+        llave: { name: 'Llave', description: '', keep: true, value: 99 },
+      },
+    });
+    const engine = makeEngine(m, {
+      start: { sequence: [{ type: 'shop' as const, title: 'Ian', currency: 'dinero', items: [], sellable: true, sellRatio: 0.5, sellPrices: { baba: 15 } }] },
+    });
+    internals(engine)._state.inventory = ['amuleto', 'baba', 'baba', 'llave'];
+    const out = await drive(engine, 'start', [{ type: 'shop_sell', itemId: 'baba' }, { type: 'shop_sell', itemId: 'amuleto' }, { type: 'shop_sell', itemId: 'llave' }, { type: 'shop_exit' }]);
+    const prompt = out.find((r): r is Extract<StepResult, { type: 'shop_prompt' }> => r.type === 'shop_prompt')!;
+    expect(prompt.playerInventory.map((i) => [i.id, i.sellPrice])).toEqual([['amuleto', 15], ['baba', 15]]);
+    expect(engine.state.stats.dinero).toBe(30);
+    expect(engine.state.inventory).toEqual(['baba', 'llave']);
+  });
+});

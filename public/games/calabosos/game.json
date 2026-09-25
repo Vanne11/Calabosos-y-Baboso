@@ -872,7 +872,8 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas la carta. Planea con elegancia y cae al suelo. Burocracia contra babosas: cero a uno."
-      }
+      },
+      "value": 1
     },
     "relicario": {
       "name": "Relicario familiar",
@@ -881,12 +882,14 @@
       "throw": {
         "damage": 3,
         "text": "Le lanzas el relicario de tu abuela. Desde el más allá se oye un «¿EN SERIO?»."
-      }
+      },
+      "value": 60
     },
     "baba_caballo": {
       "name": "Baba de caballo",
       "description": "Verde, tibia y con opiniones propias. Arrojada, ofende a cualquier babosa: es competencia.",
-      "image": "images/items/baba_caballo.png"
+      "image": "images/items/baba_caballo.png",
+      "value": 4
     },
     "silbato_caballos": {
       "name": "Silbato para caballos",
@@ -895,12 +898,14 @@
       "throw": {
         "damage": 2,
         "text": "Le lanzas el silbato. A lo lejos, un caballo mutante se pregunta por qué ya nadie lo llama."
-      }
+      },
+      "value": 20
     },
     "bolsa_misteriosa": {
       "name": "Bolsa misteriosa",
       "description": "Un caballo te la regaló. Nadie sabe qué hay dentro. Tintinea.",
-      "image": "images/items/bolsa_monedas.png"
+      "image": "images/items/bolsa_monedas.png",
+      "value": 10
     },
     "amuleto_equino": {
       "name": "Amuleto equino",
@@ -910,7 +915,8 @@
       "throw": {
         "damage": 4,
         "text": "Le lanzas el amuleto equino. Huele a caballo. La babosa, ofendida, retrocede."
-      }
+      },
+      "value": 14
     },
     "mapa_sospechoso": {
       "name": "Mapa sospechoso del Abismo",
@@ -919,7 +925,8 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas el mapa del cadáver. Por fin lleva a alguien a algún lado."
-      }
+      },
+      "value": 8
     },
     "amuleto_proteccion": {
       "name": "Amuleto de protección menor",
@@ -929,7 +936,8 @@
       "throw": {
         "damage": 4,
         "text": "Le lanzas el amuleto de protección. Te protegía a ti. Ya no."
-      }
+      },
+      "value": 30
     },
     "mapa_detallado": {
       "name": "Mapa detallado del Abismo",
@@ -938,12 +946,14 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas un mapa. Se pierde. Irónico."
-      }
+      },
+      "value": 30
     },
     "daga_ceremonial": {
       "name": "Daga ceremonial",
       "description": "Más bonita que filosa. Como tu plan.",
-      "image": "images/items/daga_ceremonial.png"
+      "image": "images/items/daga_ceremonial.png",
+      "value": 30
     },
     "amuleto_extrano": {
       "name": "Amuleto extraño",
@@ -953,7 +963,8 @@
       "throw": {
         "damage": 4,
         "text": "Le lanzas el amuleto extraño. Brilla, zumba y rebota. Seguimos sin saber qué era."
-      }
+      },
+      "value": 16
     },
     "llave_misteriosa": {
       "name": "Llave misteriosa",
@@ -962,7 +973,8 @@
       "throw": {
         "damage": 3,
         "text": "Le lanzas la llave misteriosa. Abre algo: la herida de la babosa. Poco."
-      }
+      },
+      "value": 12
     },
     "mapa_parcial": {
       "name": "Mapa parcial del Abismo",
@@ -971,7 +983,8 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas medio mapa. Llega medio golpe."
-      }
+      },
+      "value": 12
     },
     "escroto_elefante": {
       "name": "Bolso de escroto de elefante",
@@ -982,17 +995,20 @@
     "espada_oxidada": {
       "name": "Espada oxidada",
       "description": "La mejor espada de Viscaria, según un borracho.",
-      "image": "images/items/espada_oxidada.png"
+      "image": "images/items/espada_oxidada.png",
+      "value": 25
     },
     "sal": {
       "name": "Saco de sal",
       "description": "Mata babosas. Mantener lejos de Nerly.",
-      "image": "images/items/sal_anti_babosas.png"
+      "image": "images/items/sal_anti_babosas.png",
+      "value": 12
     },
     "pocion_sospechosa": {
       "name": "Poción sospechosa",
       "description": "Recupera ganas de vivir. O da hipo.",
-      "image": "images/items/pocion_sospechosa.png"
+      "image": "images/items/pocion_sospechosa.png",
+      "value": 10
     },
     "panal": {
       "name": "Pañal de aventurero",
@@ -1001,7 +1017,8 @@
       "throw": {
         "damage": 4,
         "text": "Le lanzas un pañal. Limpio, por suerte. La babosa no lo sabe y retrocede asqueada."
-      }
+      },
+      "value": 6
     },
     "boton_luminiscente": {
       "name": "Botón luminiscente",
@@ -1010,7 +1027,8 @@
       "throw": {
         "damage": 2,
         "text": "Le lanzas el botón luminiscente. Brilla en la oscuridad mientras rebota. Precioso. Inútil."
-      }
+      },
+      "value": 6
     },
     "huevo_runico": {
       "name": "Huevo rúnico",
@@ -1019,12 +1037,14 @@
       "throw": {
         "damage": 8,
         "text": "Le lanzas el huevo rúnico. Estalla en chispas de runas. Nunca sabrás qué había dentro. Ni el Mago."
-      }
+      },
+      "value": 30
     },
     "cristal_vision": {
       "name": "Cristal de visión",
       "description": "Proyecta lo que imaginas: ilusiones muy convincentes. El Mago se asustó.",
-      "image": "images/items/cristal_vision.png"
+      "image": "images/items/cristal_vision.png",
+      "value": 40
     },
     "permiso_salida": {
       "name": "Permiso de Salida Suicida",
@@ -1035,7 +1055,8 @@
     "bate_beisbol": {
       "name": "Bate de béisbol",
       "description": "Regalo de Takashi. Contra babosas no sirve de mucho, pero da seguridad.",
-      "image": "images/items/bate_beisbol.png"
+      "image": "images/items/bate_beisbol.png",
+      "value": 10
     },
     "camiseta_sobrevivi": {
       "name": "Camiseta «Sobreviví (casi) al Abismo»",
@@ -1045,22 +1066,26 @@
       "throw": {
         "damage": 1,
         "text": "Le tiras la camiseta. Queda colgando de una antena: «Sobreviví (casi)». Qué ironía."
-      }
+      },
+      "value": 6
     },
     "corazon_cristalino": {
       "name": "Corazón de Babosa Cristalina",
       "description": "Un cristal con luz líquida dentro. Cura heridas graves.",
-      "image": "images/items/corazon_cristalino.png"
+      "image": "images/items/corazon_cristalino.png",
+      "value": 30
     },
     "residuo_acido": {
       "name": "Residuo ácido",
       "description": "Lo que quedó de una Babosa Ácida. Burbujea en el frasco. Arrojado, le come un buen pedazo a cualquier babosa.",
-      "image": "images/items/residuo_acido.png"
+      "image": "images/items/residuo_acido.png",
+      "value": 8
     },
     "baba_maternal": {
       "name": "Baba maternal",
       "description": "Regalo de la mamá de la babosita. Con esto encima, las babosas te toman por una cría.",
-      "image": "images/items/baba_maternal.png"
+      "image": "images/items/baba_maternal.png",
+      "value": 10
     },
     "huevo_babosa": {
       "name": "Huevo dorado de babosa",
@@ -1071,7 +1096,8 @@
     "pocion_ian": {
       "name": "Poción sospechosa de Ian",
       "description": "Violeta y burbujeante. Nerly quiere olerla antes. En combate, quién sabe.",
-      "image": "images/items/pocion_ian.png"
+      "image": "images/items/pocion_ian.png",
+      "value": 20
     },
     "mapa_dudoso": {
       "name": "Mapa dudoso de Ian",
@@ -1080,47 +1106,56 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas el mapa de Ian. Es la primera vez que ese mapa hace algo útil."
-      }
+      },
+      "value": 2
     },
     "antidoto_real": {
       "name": "Antídoto real",
       "description": "Ian te lo dio para que lo dejaras en paz. Parece genuino.",
-      "image": "images/items/antidoto_real.png"
+      "image": "images/items/antidoto_real.png",
+      "value": 20
     },
     "repelente_genuino": {
       "name": "Repelente de babosas genuino",
       "description": "Este sí funciona. Ian lo juró por su jefe.",
-      "image": "images/items/repelente_genuino.png"
+      "image": "images/items/repelente_genuino.png",
+      "value": 20
     },
     "mapa_secreto_mago": {
       "name": "Mapa secreto del Mago",
       "description": "Muestra un pasaje secreto hasta la cámara del Rey.",
-      "image": "images/items/mapa_secreto_mago.png"
+      "image": "images/items/mapa_secreto_mago.png",
+      "value": 25
     },
     "fragmentos_lagrima": {
       "name": "Fragmentos de la Lágrima de Cristal",
       "description": "Con sal, forman un proyectil que atraviesa las defensas del Rey.",
-      "image": "images/items/fragmentos_lagrima.png"
+      "image": "images/items/fragmentos_lagrima.png",
+      "value": 30
     },
     "antorcha": {
       "name": "Antorcha",
       "description": "Revela babosas fantasma y chamusca antenas.",
-      "image": "images/items/antorcha.png"
+      "image": "images/items/antorcha.png",
+      "value": 10
     },
     "cristal_ocultamiento": {
       "name": "Cristal de Ocultamiento",
       "description": "Confunde los sentidos de las babosas: por un momento dejas de existir para ellas. Brilla azul.",
-      "image": "images/items/cristal_ocultamiento.png"
+      "image": "images/items/cristal_ocultamiento.png",
+      "value": 35
     },
     "daga_rompecristal": {
       "name": "Daga rompe-cristal",
       "description": "Hecha para cortar cristal vivo. Con runas. De otro aventurero que no volvió.",
-      "image": "images/items/daga_rompecristal.png"
+      "image": "images/items/daga_rompecristal.png",
+      "value": 40
     },
     "esencia_plateada": {
       "name": "Esencia de Babosa Plateada",
       "description": "Rarísima y letal para el Rey. Donde toca, la baba se vuelve piedra.",
-      "image": "images/items/esencia_plateada.png"
+      "image": "images/items/esencia_plateada.png",
+      "value": 40
     },
     "cuchara_abuela": {
       "name": "Cuchara de madera de la abuela",
@@ -1129,12 +1164,14 @@
       "throw": {
         "damage": 7,
         "text": "Le lanzas la cuchara de la abuela. Por un segundo ves a un dragón huir con el rabo entre las piernas."
-      }
+      },
+      "value": 5
     },
     "cobre_verde": {
       "name": "Cobre verde",
       "description": "Monedas de cobre disueltas en residuo ácido: una pasta verde que es veneno puro para las babosas.",
-      "image": "images/items/cobre_verde.png"
+      "image": "images/items/cobre_verde.png",
+      "value": 20
     },
     "paraguas_baba": {
       "name": "Paraguas anti-baba",
@@ -1144,12 +1181,14 @@
       "throw": {
         "damage": 5,
         "text": "Le lanzas el paraguas anti-baba. Se abre en el aire. Es lo más elegante que ha pasado en este combate."
-      }
+      },
+      "value": 35
     },
     "casco_linterna": {
       "name": "Casco con linterna",
       "description": "De la tienda de regalos. Ilumina lo que tengas delante, fantasmas incluidos.",
-      "image": "images/items/casco_linterna.png"
+      "image": "images/items/casco_linterna.png",
+      "value": 30
     },
     "llavero_babosa": {
       "name": "Llavero de babosa",
@@ -1158,7 +1197,8 @@
       "throw": {
         "damage": 2,
         "text": "Le lanzas el llavero de babosa azul. Nerly aplaude en silencio. Muy en silencio."
-      }
+      },
+      "value": 8
     },
     "postal_abismo": {
       "name": "Postal «Te extraño desde el Abismo»",
@@ -1167,12 +1207,14 @@
       "throw": {
         "damage": 1,
         "text": "Le lanzas la postal. Llega tarde, como todas las postales."
-      }
+      },
+      "value": 5
     },
     "tonico_plateado": {
       "name": "Tónico de baba plateada",
       "description": "De la tienda de regalos. Sabe a metal y a esperanza. Cura bastante.",
-      "image": "images/items/tonico_plateado.png"
+      "image": "images/items/tonico_plateado.png",
+      "value": 25
     },
     "monedas_dobladas": {
       "name": "Monedas dobladas",
@@ -1181,7 +1223,8 @@
       "throw": {
         "damage": 6,
         "text": "Le lanzas las monedas dobladas. Silban en el aire como shurikens de pobre."
-      }
+      },
+      "value": 3
     }
   },
   "traits": {

@@ -143,6 +143,8 @@ function answer(r: StepResult, examined: Set<string>): PlayerAction | null {
       if (affordable.length && rand() < 0.6) return { type: 'shop_buy', itemIndex: pick(affordable).i };
       if (r.canHaggle && r.items.length && rand() < 0.2) return { type: 'shop_haggle', itemIndex: Math.floor(rand() * r.items.length) };
       if (r.canSteal && r.items.length && rand() < 0.05) return { type: 'shop_steal', itemIndex: Math.floor(rand() * r.items.length) };
+      // A veces vende algo (como un jugador que necesita monedas)
+      if (r.sellable && r.playerInventory.length && rand() < 0.25) return { type: 'shop_sell', itemId: pick(r.playerInventory).id };
       return { type: 'shop_exit' };
     }
     case 'combat_prompt': {
