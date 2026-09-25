@@ -9,12 +9,14 @@ import { parseCommand } from '../engine/CommandParser';
 import { loadGame, listGames } from '../engine/GameLoader';
 import { rebaseFeedback } from '../audio/gameFeedback';
 import { sfx } from '../audio/SfxPlayer';
+import { audioManager } from '../engine/AudioManager';
 import { SFX } from '../audio/sfxCatalog';
 import { AMBIENCES } from '../audio/ambience';
 import { GameEngine } from '../engine/GameEngine';
 import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
-import { saveGame, loadSave, listSlots } from '../utils/storage';
+import { saveGame, loadSave, listSlots, deleteAllSaves } from '../utils/storage';
+import { removeMeta, META_COUNTERS_KEY } from '../utils/metaStorage';
 import type { SaveData } from '../utils/storage';
 import { getAiClient, getLastAiLine, noteAiLine } from '../ai/session';
 import { toneSfx } from '../audio/tones';
@@ -60,6 +62,7 @@ export function useTerminalCommands() {
 [yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
 [yellow][bold]/narrador[/bold][/yellow] [dim]<texto>[/dim] - Háblale al narrador cuando quieras (con IA).
 [dim]O escribe sin "/" y te contesta quien esté: el personaje de enfrente, Nerly o el narrador. Empieza con un nombre para elegir ("Nerly, ¿tienes miedo?"). No avanza la historia.[/dim]
+[yellow][bold]/reiniciar[/bold][/yellow] - Borra tu avance en este juego (partidas guardadas, autoguardado, contadores de muertes). Pide confirmación.
 [yellow][bold]/tirar[/bold][/yellow] [dim]IN3[/dim] - Tira un objeto que no quieres (basura, monedas dobladas...). Lo importante no se deja.
 [yellow][bold]/bien[/bold][/yellow] o [yellow][bold]/mal[/bold][/yellow] - Califica la última línea del narrador con IA. Le importa. Mucho. No se lo digas.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
@@ -173,6 +176,31 @@ export function useTerminalCommands() {
     const tone = toneSfx(res.tone ?? undefined, engine.audioConfig?.toneSfx);
     if (tone) setTimeout(() => sfx.play(tone), 450);
     state.setPlayerState(engine.state);
+  };
+
+  /** /reiniciar: borra el avance de este juego (pide escribir "/reiniciar confirmar") */
+  const resetProgress = async (arg: string) => {
+    const state = useAppStore.getState();
+    const gameName = state.gameBasePath.split('/').pop() ?? '';
+    if (!gameName) return;
+    if (arg.toLowerCase() !== 'confirmar') {
+      addEntry({
+        type: 'warning',
+        content: '[bold red]Esto borra tu avance en este juego:[/bold red] partidas guardadas, autoguardado y contadores (muertes, partidas). No se puede deshacer.\n[yellow]Para hacerlo, escribe [bold]/reiniciar confirmar[/bold].[/yellow]',
+      });
+      return;
+    }
+    await deleteAllSaves(gameName, Math.min(Math.max(state.gameManifest?.saveSystem?.slots ?? 3, 1), 10));
+    await removeMeta(gameName, META_COUNTERS_KEY);
+    state.engine?.loadMeta({});
+    audioManager.stop();
+    sfx.stopAll();
+    state.resetGame();
+    state.setCurrentImage(null);
+    addEntry({
+      type: 'system',
+      content: `[green]Avance borrado.[/green] Escribe [bold]run ${gameName}[/bold] para empezar desde cero. [dim]El narrador fingirá que no te conoce. Lo hace bien.[/dim]`,
+    });
   };
 
   /** /tirar IN3: tirar una unidad de un objeto (IN[n] como en el panel de inventario) */
@@ -409,6 +437,9 @@ ${lines.join('\n')}
         return true;
       case 'tirar':
         discardItem(args[0] ?? '');
+        return true;
+      case 'reiniciar':
+        await resetProgress(args[0] ?? '');
         return true;
       case 'bien':
         void rateAiLine(1);

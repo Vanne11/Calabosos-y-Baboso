@@ -9,7 +9,7 @@ import { audioManager } from '../engine/AudioManager';
 import { sfx } from '../audio/SfxPlayer';
 import { observeState, rebaseFeedback, screenFx, playSfx } from '../audio/gameFeedback';
 import { toneSfx, CHAT_START_SFX } from '../audio/tones';
-import { saveGame } from '../utils/storage';
+import { saveGame, saveAuto, loadAuto } from '../utils/storage';
 import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
 import { AiClient } from '../ai/AiClient';
@@ -58,10 +58,23 @@ export function useGameLoop() {
       setCurrentScene(sceneId);
       if (debugActive) debugLog(`Entrando a escena: ${sceneId}`, 'ROUTE');
 
-      // Checkpoint autosave
+      // Autoguardado en cada escena (espacio aparte): "Continuar" al volver a abrir el juego
       const state = useAppStore.getState();
       const manifest = state.gameManifest;
       const saveConfig = manifest?.saveSystem;
+      const gate = engine.contentRating?.gateScene ?? AGE_GATE_SCENE;
+      if (saveConfig?.autosave && sceneId !== gate && !sceneId.startsWith('_') && !saveConfig.autosaveSkip?.includes(sceneId)) {
+        const gameName = state.gameBasePath.split('/').pop() ?? 'unknown';
+        void saveAuto(gameName, {
+          playerState: structuredClone(engine.state),
+          currentScene: sceneId,
+          gameName,
+          timestamp: Date.now(),
+          sceneName: engine.getScenarioName(sceneId) ?? sceneId,
+        }).catch(() => {});
+      }
+
+      // Checkpoint autosave
       if (saveConfig?.mode === 'checkpoint' && saveConfig.checkpointScenes?.includes(sceneId)) {
         const totalSlots = Math.min(Math.max(saveConfig.slots ?? 3, 1), 10);
         checkpointSlotRef.current = (checkpointSlotRef.current % totalSlots) + 1;
@@ -129,8 +142,40 @@ export function useGameLoop() {
         return;
       }
     }
+    // Partida a medias: se ofrece continuar (App.tsx responde a [1] / [2])
+    if (useAppStore.getState().gameManifest?.saveSystem?.autosave) {
+      const save = await loadAuto(gameName).catch(() => null);
+      if (save && save.currentScene !== 'start' && engine.hasScene(save.currentScene)) {
+        useAppStore.getState().setResumeOffer(save);
+        const ago = Math.max(1, Math.round((Date.now() - save.timestamp) / 60000));
+        const when = ago < 60 ? `hace ${ago} min` : ago < 1440 ? `hace ${Math.round(ago / 60)} h` : `hace ${Math.round(ago / 1440)} días`;
+        useAppStore.getState().addEntries([
+          { type: 'system', content: `[yellow]Tienes una partida a medias:[/yellow] [cyan]${save.sceneName ?? save.currentScene}[/cyan] [dim](${when})[/dim]` },
+          { type: 'system', content: '[dim]El narrador te guardó el lugar. No por cariño: por pereza de volver a contarlo todo.[/dim]' },
+        ]);
+        return;
+      }
+    }
     await startScene('start');
   }, [engine, startScene, debugActive]);
+
+  /** Respuesta a la partida a medias: continuar desde el autoguardado o empezar de cero */
+  const resolveResume = useCallback(
+    async (resume: boolean) => {
+      const save = useAppStore.getState().resumeOffer;
+      useAppStore.getState().setResumeOffer(null);
+      if (!engine) return;
+      if (resume && save) {
+        engine.restoreState(save.playerState);
+        setPlayerState({ ...engine.state });
+        rebaseFeedback(engine.state);
+        await startScene(save.currentScene);
+      } else {
+        await startScene('start');
+      }
+    },
+    [engine, startScene]
+  );
 
   const consumeResults = async (iterator: AsyncGenerator<StepResult>) => {
     const ownerEngine = useAppStore.getState().engine;
@@ -772,7 +817,7 @@ export function useGameLoop() {
     [engine]
   );
 
-  return { startScene, startGame, sendAction };
+  return { startScene, startGame, sendAction, resolveResume };
 }
 
 /** Acciones cuyo sonido lo pone su propio widget (o que no suenan) */

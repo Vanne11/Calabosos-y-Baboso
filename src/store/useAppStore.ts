@@ -2,6 +2,7 @@
 // Store principal con Zustand - reemplaza todos los useState dispersos
 
 import { create } from 'zustand';
+import type { SaveData } from '../utils/storage';
 import type { TerminalEntry } from '../types/terminal';
 import type { PlayerState, StepResult } from '../types/engine';
 import type { GameEngine } from '../engine/GameEngine';
@@ -64,6 +65,10 @@ interface AppStore {
   // Bestiario (códice) abierto: un número abre esa entrada, 0 lo cierra
   codexMenu: boolean;
   setCodexMenu: (open: boolean) => void;
+
+  // Partida a medias (autoguardado) ofrecida al abrir el juego: [1] continuar, [2] empezar de nuevo
+  resumeOffer: SaveData | null;
+  setResumeOffer: (save: SaveData | null) => void;
 
   // Image panel
   currentImage: string | null;
@@ -231,6 +236,9 @@ export const useAppStore = create<AppStore>((set) => ({
   codexMenu: false,
   setCodexMenu: (codexMenu) => set({ codexMenu }),
 
+  resumeOffer: null,
+  setResumeOffer: (resumeOffer) => set({ resumeOffer }),
+
   // Image
   currentImage: null,
   setCurrentImage: (currentImage) => set({ currentImage }),
@@ -303,6 +311,7 @@ export const useAppStore = create<AppStore>((set) => ({
       pendingResult: null,
       usingItem: null,
       codexMenu: false,
+      resumeOffer: null,
       pendingSlotAction: null,
       inventoryExpanded: false,
       widgetDimmed: false,

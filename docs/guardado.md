@@ -129,3 +129,12 @@ Selecciona slot [1-2] (0 para cancelar):
 
 Partida cargada. Volviendo a "Bosque Oscuro"...
 ```
+
+## Autoguardado y «Continuar»
+
+Con `saveSystem.autosave: true` (Calabosos lo tiene), el juego guarda solo en un espacio aparte cada vez que se
+entra a una escena (salvo el control de edad, las especiales como `_checkpoint` y las de `autosaveSkip`, como la
+pantalla de muerte). Al abrir el juego con `run`, si hay una partida a medias ofrece **[1] Continuar · [2] Empezar de
+nuevo**. Los slots de `/save` no se tocan.
+
+`/reiniciar` (pide `/reiniciar confirmar`) borra el autoguardado, los slots y los contadores meta del juego.

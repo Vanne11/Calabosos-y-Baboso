@@ -48,6 +48,7 @@ const App: React.FC = () => {
   const playerState = useAppStore((s) => s.playerState);
   const usingItem = useAppStore((s) => s.usingItem);
   const codexMenu = useAppStore((s) => s.codexMenu);
+  const resumeOffer = useAppStore((s) => s.resumeOffer);
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
@@ -59,7 +60,7 @@ const App: React.FC = () => {
 
   const { isLogin, loginStep, handleLoginInput, initLogin } = useLoginFlow();
   const { processCommand, handleSlotInput } = useTerminalCommands();
-  const { startScene, startGame, sendAction } = useGameLoop();
+  const { startScene, startGame, sendAction, resolveResume } = useGameLoop();
   const { handleKeyDown, resetHistoryIndex } = useKeyboardInput();
 
   // Show welcome messages when session is restored (skip boot/login)
@@ -155,6 +156,17 @@ const App: React.FC = () => {
         }, 3000);
       }
       await processCommand(trimmed);
+      return;
+    }
+
+    // Partida a medias: [1] continuar, [2] empezar de nuevo
+    if (phase === 'game' && useAppStore.getState().resumeOffer && !trimmed.startsWith('/')) {
+      if (trimmed === '1' || trimmed === '2') {
+        addEntry({ type: 'option', content: trimmed === '1' ? '> Continuar' : '> Empezar de nuevo' });
+        await resolveResume(trimmed === '1');
+      } else if (trimmed) {
+        addEntry({ type: 'system', content: '[dim][1] Continuar · [2] Empezar de nuevo[/dim]' });
+      }
       return;
     }
 
@@ -574,7 +586,7 @@ const App: React.FC = () => {
     addEntry({ type: 'command', content: trimmed });
     addCommandToHistory(trimmed);
     await processCommand(trimmed);
-  }, [inputValue, isLogin, phase, pendingResult, pendingSlotAction, handleLoginInput, processCommand, handleSlotInput, sendAction, startScene]);
+  }, [inputValue, isLogin, phase, pendingResult, pendingSlotAction, handleLoginInput, processCommand, handleSlotInput, sendAction, startScene, resolveResume]);
 
   // Key down handler
   const onKeyDown = useCallback(
@@ -697,7 +709,9 @@ const App: React.FC = () => {
 
   // Determine placeholder
   let placeholder = '';
-  if (codexMenu && phase === 'game') {
+  if (resumeOffer && phase === 'game') {
+    placeholder = '[1] Continuar · [2] Empezar de nuevo';
+  } else if (codexMenu && phase === 'game') {
     placeholder = 'Número de la entrada del bestiario · [0] cerrar';
   } else if (pendingSlotAction) {
     placeholder = `Selecciona slot [1-${pendingSlotAction.slots}] o [0] cancelar`;
@@ -756,6 +770,20 @@ const App: React.FC = () => {
 
   // Render widgets inside the terminal
   const renderWidget = () => {
+    if (resumeOffer && phase === 'game') {
+      return (
+        <ChoiceWidget
+          options={[
+            { text: `Continuar (${resumeOffer.sceneName ?? resumeOffer.currentScene})`, index: 0 },
+            { text: 'Empezar de nuevo', index: 1 },
+          ]}
+          onSelect={(i) => {
+            addEntry({ type: 'option', content: i === 0 ? '> Continuar' : '> Empezar de nuevo' });
+            void resolveResume(i === 0);
+          }}
+        />
+      );
+    }
     if (!pendingResult) return null;
 
     switch (pendingResult.type) {

@@ -49,6 +49,21 @@ export async function listSlots(gameName: string, totalSlots: number): Promise<(
   return results;
 }
 
+/** Autoguardado (espacio aparte de los slots): la última escena a la que se entró */
+export async function saveAuto(gameName: string, data: SaveData): Promise<void> {
+  await store.setItem(`${gameName}:auto`, data);
+}
+
+export async function loadAuto(gameName: string): Promise<SaveData | null> {
+  return store.getItem<SaveData>(`${gameName}:auto`);
+}
+
+/** Borra el autoguardado y todos los slots de un juego (/reiniciar) */
+export async function deleteAllSaves(gameName: string, totalSlots: number): Promise<void> {
+  await store.removeItem(`${gameName}:auto`);
+  for (let i = 1; i <= totalSlots; i++) await store.removeItem(slotKey(gameName, i));
+}
+
 /** Lista todas las claves guardadas (para migración/debug) */
 export async function listAllKeys(): Promise<string[]> {
   return store.keys();

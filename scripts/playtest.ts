@@ -40,6 +40,9 @@ Math.random = rand; // dados, pools y eventos aleatorios del motor usan la misma
 const pick = <T>(arr: T[]): T => arr[Math.floor(rand() * arr.length)];
 
 // --- Carga del juego desde disco (igual que GameLoader, sin fetch) ---
+/** Archivo de escenas de cada escena (para medir el dinero al empezar cada acto) */
+const sceneFile = new Map<string, string>();
+
 function loadFromDisk(game: string): { manifest: GameManifest; scenes: ScenesFile } {
   const base = resolve(process.cwd(), 'public', 'games', game);
   if (!existsSync(join(base, 'game.json'))) throw new Error(`No existe public/games/${game}/game.json`);
@@ -49,6 +52,7 @@ function loadFromDisk(game: string): { manifest: GameManifest; scenes: ScenesFil
   for (const f of files) {
     const part = JSON.parse(readFileSync(join(base, f), 'utf8')) as ScenesFile;
     Object.assign(scenes.scenes, part.scenes);
+    for (const id of Object.keys(part.scenes)) sceneFile.set(id, f.replace(/^.*\//, '').replace(/\.json$/, ''));
   }
   return { manifest, scenes };
 }
@@ -94,6 +98,9 @@ if (!game) {
   process.exit(1);
 }
 const { manifest, scenes } = loadFromDisk(game);
+/** Stat de moneda (la misma heurística que el panel de inventario) y dinero medido por acto */
+const MONEY_STAT = ['dinero', 'gold', 'money', 'coins', 'oro'].find((k) => typeof manifest.initialStats?.[k] === 'number');
+const moneyAt = new Map<string, number[]>();
 const allScenes = Object.keys(scenes.scenes);
 const coverage = new Map<string, number>();
 const leaks = new Map<string, string>(); // texto con {variable} sin resolver → escena
@@ -181,8 +188,17 @@ async function playOnce(): Promise<RunResult & { events: (GameEvent & { t: numbe
   let retries = 0;
   const examined = new Set<string>();
 
+  const seenFiles = new Set<string>();
   while (entries++ < MAX_SCENE_ENTRIES) {
     result.scenes.push(scene);
+    // Economía: dinero al entrar por primera vez a cada archivo de escenas (un acto) y al llegar a un final
+    // (la pantalla de muerte no cuenta; los finales se miden juntos como "final")
+    const file = scene.startsWith('final_') ? 'final' : scene === 'muerte' ? undefined : sceneFile.get(scene);
+    const money = MONEY_STAT ? engine.state.stats[MONEY_STAT] : undefined;
+    if (file && typeof money === 'number' && !seenFiles.has(file)) {
+      seenFiles.add(file);
+      moneyAt.set(file, [...(moneyAt.get(file) ?? []), money]);
+    }
     if (scene === 'muerte') {
       result.deaths++;
       const cause = String(engine.state.stats.causa_muerte ?? '?') + ` (desde ${result.scenes[result.scenes.length - 2] ?? '?'})`;
@@ -286,6 +302,14 @@ if (deathCauses.size) {
 }
 
 const never = allScenes.filter((s) => !coverage.has(s) && !s.startsWith('edad'));
+if (moneyAt.size) {
+  console.log(`\nDinero (${MONEY_STAT}) al empezar cada archivo de escenas:  mín · mediana · máx  (partidas)`);
+  const q = (arr: number[], p: number) => [...arr].sort((a, b) => a - b)[Math.min(arr.length - 1, Math.floor(p * arr.length))];
+  for (const [file, vals] of moneyAt) {
+    console.log(`   ${file.padEnd(22)} ${String(Math.min(...vals)).padStart(4)} · ${String(q(vals, 0.5)).padStart(4)} · ${String(Math.max(...vals)).padStart(4)}   (${vals.length})`);
+  }
+}
+
 console.log(`\nCobertura: ${allScenes.length - never.length}/${allScenes.length} escenas visitadas al menos una vez`);
 if (never.length) console.log(`   Nunca visitadas: ${never.join(', ')}`);
 

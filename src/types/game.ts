@@ -253,6 +253,10 @@ export interface SaveSystemConfig {
   allowOverwrite?: boolean;
   /** Escenas donde se autoguarda (solo en modo checkpoint) */
   checkpointScenes?: string[];
+  /** Autoguardado en cada escena (espacio aparte) y "Continuar" al volver a abrir el juego */
+  autosave?: boolean;
+  /** Escenas donde no se autoguarda (ej. la pantalla de muerte). El control de edad nunca se guarda */
+  autosaveSkip?: string[];
 }
 
 export interface ItemDef {

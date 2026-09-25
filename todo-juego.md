@@ -55,7 +55,9 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 - [x] **Lanzar cualquier objeto** en combate («🗑️ Lanzar un objeto…», con textos propios) y `/tirar IN3` fuera de
       combate. No se pueden tirar los que hacen falta (`keep`): llave y lámpara del prólogo, mochila, bolso,
       permiso de salida, huevo real.
-- [ ] Revisar jugando si ahora falta dinero en algún tramo (el Acto I da mucho; el III y el IV ahora cobran).
+- [x] Medido con el bot (`npm run playtest` ahora informa el dinero por acto; 500 partidas): mediana ~15 al empezar
+      los actos II y III, ~1 al llegar al IV (el guardia y el prestamista te dejan en cero); máximo ~60-70 por el tope
+      sin bolso. Sobra dinero solo con críticos en el Acto I + el bolso. Los gastos nuevos quedan como premio al ahorro.
 
 ## 4. Probar con DeepSeek real (en el hosting)
 
@@ -68,18 +70,19 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 - [ ] Textos en femenino y con x (elegir Femenino y Andrógino al empezar).
 - [ ] Revisar Admin → Calificaciones después de unas partidas y elegir ejemplos.
 
-## 5. Arte provisorio (64 imágenes, fichas en `public/games/calabosos/IMAGENES.md`)
+## 5. Arte provisorio (72 imágenes, fichas en `public/games/calabosos/IMAGENES.md`)
 
-- [ ] Objetos: 36
+- [ ] Objetos: 44 (incluye los nuevos: cuchara, cobre verde, regalos, monedas dobladas)
 - [ ] Escenarios: 15
 - [ ] Personajes: 13
 
 ## 6. Mejoras pendientes de decidir
 
-- [ ] Autoguardado por escena + "Continuar" al hacer `run calabosos` (hoy solo `/save` manual; cerrar la pestaña pierde la partida).
-- [ ] Comando `/reiniciar` (borrar partidas guardadas y contadores de este juego, con confirmación).
+- [x] Autoguardado por escena + «[1] Continuar · [2] Empezar de nuevo» al hacer `run calabosos` (no se guarda en la pantalla de muerte).
+- [x] `/reiniciar` → pide `/reiniciar confirmar`; borra autoguardado, slots y contadores (conserva el control de edad).
 - [ ] Borrar `release/calabosos-v1.0.0/` (versión vieja con BOB) para no confundirla.
-- [ ] Push de los commits locales y PR `cyb-web` → `main`.
+- [x] Push de los commits locales.
+- [ ] PR `cyb-web` → `main` (o que Vanne11 cambie la rama por defecto: tu cuenta tiene WRITE, no admin).
 
 ## 7. Rutas para probar a mano
 
