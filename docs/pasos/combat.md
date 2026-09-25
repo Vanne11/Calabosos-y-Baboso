@@ -98,3 +98,9 @@ Los textos de resultado (`victory`/`defeat`/`flee`) admiten variables. El botón
 Un objeto con `"armor": N` en `game.json → items` protege por llevarlo encima: cada golpe enemigo hace N menos de
 daño (mínimo 1; cada objeto cuenta una vez aunque tengas varios). Al empezar el combate se avisa qué te protege.
 En Calabosos: amuletos y la camiseta del Abismo.
+
+## Acciones pagadas con stats (`combatItems[].cost`)
+
+Un objeto de combate con `"cost": { "dinero": 10 }` no pide tener un objeto: se ofrece si alcanzan las stats y al
+usarlo las cobra. En Calabosos: lanzar monedas (10), barrera de cobre (15, las Gemelas no se dividen) y darle de
+comer monedas al Rey (30).

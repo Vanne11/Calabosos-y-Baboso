@@ -154,3 +154,23 @@ describe('protección de objetos (items.armor)', () => {
     expect(engine.state.stats.vida).toBe(99);
   });
 });
+
+describe('acciones de combate que cuestan monedas (combatItems.cost)', () => {
+  it('se ofrecen solo si alcanza, se cobran y no piden objeto', async () => {
+    const m = baseManifest({ statDefs: { vida: { label: 'Vida', min: 0, max: 100 } }, initialStats: { vida: 100, fuerza: 50, dinero: 15 } });
+    const engine = makeEngine(m, {
+      start: { sequence: [{
+        type: 'combat', enemy: { name: 'X', hp: 100, attack: 1, defense: 0 }, playerStat: 'vida', attackStat: 'fuerza',
+        actions: ['attack', 'defend', 'use_item'],
+        combatItems: [{ itemId: 'lanzar_monedas', name: 'Lanzar monedas (10)', text: 'plin', damage: 7, cost: { dinero: 10 } }],
+        results: { victory: { text: 'gana' }, defeat: { text: 'pierde' } },
+      }] },
+    });
+    const out = await drive(engine, 'start', [{ type: 'combat_action', action: 'use_item:lanzar_monedas' }, { type: 'combat_action', action: 'defend' }]);
+    const prompts = out.filter((r): r is Extract<StepResult, { type: 'combat_prompt' }> => r.type === 'combat_prompt');
+    expect(prompts[0].usableItems).toEqual([{ itemId: 'lanzar_monedas', name: 'Lanzar monedas (10)' }]);
+    expect(engine.state.stats.dinero).toBe(5);
+    // Con 5 monedas ya no alcanza
+    expect(prompts[1].usableItems).toBeUndefined();
+  });
+});

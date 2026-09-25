@@ -225,6 +225,23 @@
           }
         },
         {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Hablar con el guardia"
+            },
+            {
+              "text": "Sobornar al guardia (40 monedas)",
+              "goto": "acto3_soborno_guardia"
+            }
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=40"
+            }
+          }
+        },
+        {
           "type": "ai_chat",
           "mode": "persuadir",
           "npc": "guardia",
@@ -647,6 +664,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -836,6 +893,42 @@
               "tags": [
                 "valiente"
               ]
+            },
+            {
+              "text": "Mezclar monedas de cobre con el residuo ácido (10 monedas)",
+              "condition": {
+                "inventory": [
+                  "residuo_acido"
+                ],
+                "stats": {
+                  "dinero": ">=10"
+                }
+              },
+              "goto": "acto3_cobre_verde"
+            },
+            {
+              "text": "Forzar el cofre oxidado de la pared haciendo palanca con monedas",
+              "condition": {
+                "notInventory": [
+                  "llave_misteriosa"
+                ],
+                "flags": {
+                  "cofre_abierto": false
+                },
+                "stats": {
+                  "dinero": ">=5"
+                }
+              },
+              "goto": "acto3_cofre_palanca"
+            },
+            {
+              "text": "Buscar la tienda de regalos del Abismo (el anciano juraba que existía)",
+              "condition": {
+                "stats": {
+                  "zonas_completadas": ">=1"
+                }
+              },
+              "goto": "acto3_regalos"
             }
           ]
         }
@@ -1367,6 +1460,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -1750,6 +1883,23 @@
           ]
         },
         {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Resolver el acertijo"
+            },
+            {
+              "text": "Pagarle a la masa con monedas (20): dicen que le encanta el sabor a metal",
+              "goto": "acto3_masa_pago"
+            }
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=20"
+            }
+          }
+        },
+        {
           "type": "puzzle",
           "puzzleType": "riddle",
           "description": "La masa gelatinosa burbujea y pregunta con voz de gárgaras:",
@@ -2025,6 +2175,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -2202,6 +2392,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -2465,6 +2695,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -3097,6 +3367,286 @@
             {
               "text": "Seguir de puntillas",
               "goto": "acto3_gemelas"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_cobre_verde": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Echas diez monedas en el frasco de residuo ácido. Burbujea, humea y se pone de un verde que ningún ser vivo debería mirar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Cobre disuelto! Eso es... veneno puro para las babosas. Aléjalo de mí. Lejos. Más lejos."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_joined": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Química aplicada al genocidio gastropódico. Tu profesor de ciencias estaría orgulloso. O preso."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": -10
+            },
+            "removeInventory": [
+              "residuo_acido"
+            ],
+            "inventory": [
+              "cobre_verde"
+            ],
+            "memo": "hizo cobre verde (veneno de babosa) con monedas y residuo ácido"
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la Sala de Entrada",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_cofre_palanca": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En la pared hay un cofre oxidado, medio tragado por la baba. Sin llave, pero con una rendija. Apilas monedas y haces palanca."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 14,
+          "faces": 20,
+          "description": "Hacer palanca con monedas",
+          "results": {
+            "success": {
+              "text": "¡Crac! La tapa cede. Adentro: 25 monedas (recuperas tu inversión), una antorcha y un Corazón de Babosa Cristalina.",
+              "effects": {
+                "flags": {
+                  "cofre_abierto": true
+                },
+                "inventory": [
+                  "corazon_cristalino",
+                  "antorcha"
+                ],
+                "stats": {
+                  "dinero": 25
+                },
+                "memo": "forzó un cofre del Abismo haciendo palanca con monedas"
+              }
+            },
+            "failure": {
+              "text": "Las monedas se doblan como tu dignidad. Pierdes cinco. El cofre sigue cerrado, burlándose en silencio.",
+              "effects": {
+                "stats": {
+                  "dinero": -5
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la Sala de Entrada",
+              "goto": "acto3_hub"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_regalos": {
+      "scenario": {
+        "name": "Tienda de regalos del Abismo",
+        "description": "Un mostrador tallado en la roca, lleno de recuerdos del Abismo. Nadie atiende. Hay una caja de honestidad."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Detrás de una cortina de baba seca aparece un mostrador tallado en la roca. Llaveros, postales, paraguas. Un cartel: «TIENDA DE REGALOS DEL ABISMO. Paga en la caja. Te estamos viendo»."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nadie atiende. Nadie sabe quién atiende. El anciano tenía razón. Esto me preocupa más que el Rey."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¿Eso es un llavero con MI cara? No me parece gracioso. Me parece un poco gracioso."
+          ],
+          "condition": {
+            "flags": {
+              "nerly_joined": true
+            }
+          }
+        },
+        {
+          "type": "shop",
+          "title": "Tienda de regalos del Abismo (caja de honestidad)",
+          "npc": "narrator",
+          "currency": "dinero",
+          "items": [
+            {
+              "id": "paraguas_baba",
+              "name": "Paraguas anti-baba",
+              "price": 35,
+              "description": "Protege de la baba del techo y un poco de los golpes."
+            },
+            {
+              "id": "casco_linterna",
+              "name": "Casco con linterna",
+              "price": 30,
+              "description": "Ilumina fantasmas. En combate, los deja al descubierto."
+            },
+            {
+              "id": "tonico_plateado",
+              "name": "Tónico de baba plateada",
+              "price": 25,
+              "description": "Cura bastante en combate."
+            },
+            {
+              "id": "cobre_verde",
+              "name": "Frasco de cobre verde «artesanal»",
+              "price": 40,
+              "description": "Veneno de babosa. Qué hace esto en una tienda de regalos. No preguntes."
+            },
+            {
+              "id": "llavero_babosa",
+              "name": "Llavero de babosa azul",
+              "price": 8,
+              "description": "Se parece a Nerly. No se lo digas."
+            },
+            {
+              "id": "postal_abismo",
+              "name": "Postal «Te extraño desde el Abismo»",
+              "price": 5,
+              "description": "Para mandarle a alguien que te quiera. Si existe."
+            }
+          ],
+          "sellable": true,
+          "sellRatio": 0.4,
+          "steal": {
+            "stat": "sexi",
+            "difficulty": 16,
+            "maxAttempts": 1,
+            "successText": "Te llevas el recuerdo sin pagar. La caja de honestidad no dice nada. Las cajas no hablan. Todavía.",
+            "failText": "Estiras la mano y una voz desde ninguna parte dice: «Te vi». Era yo. El narrador. Pagas o te humillo.",
+            "bustGoto": "acto3_hub",
+            "bustText": "«¡Fuera de mi tienda!», dice una voz. Nadie sabe de quién. Te echan sin que nadie te toque.",
+            "bustEffects": {
+              "stats": {
+                "sexi": -10
+              }
+            }
+          },
+          "goto": "acto3_hub"
+        }
+      ]
+    },
+    "acto3_soborno_guardia": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Le enseñas cuarenta monedas al guardia. Mira las monedas. Mira a los lados. Tararea bajito."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "guardia",
+          "lines": [
+            "*bostezo* Mire, joven... yo no vi nada. Con esto me pago clases de canto. No es un soborno, es una beca."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": -40
+            },
+            "flags": {
+              "guardia_sobornado": true
+            },
+            "memo": "sobornó al guardia del Abismo con 40 monedas",
+            "npcMemo": {
+              "guardia": "Alex le pagó 40 monedas para pasar (dice que es una beca de canto)"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Entrar al Abismo",
+              "goto": "acto3_sala_entrada"
+            }
+          ]
+        }
+      ]
+    },
+    "acto3_masa_pago": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Le tiras veinte monedas a la masa gelatinosa. Las absorbe con un «glup» satisfecho. Se le ven flotando por dentro, como fruta en gelatina."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "«Aceptable. Pasa, criatura adinerada.» Ni el acertijo te dejó responder. Qué triste. Lo tenía preparado desde hace siglos."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": -20
+            },
+            "memo": "le pagó 20 monedas a la masa gelatinosa para no resolver su acertijo"
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir por el pasaje",
+              "goto": "acto3_explosiva"
             }
           ]
         }

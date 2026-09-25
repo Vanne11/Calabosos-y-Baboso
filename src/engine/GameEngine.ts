@@ -1469,6 +1469,11 @@ export class GameEngine {
     const hurtPlayer = (amount: number) => {
       if (amount > 0) this.applyState({ stats: { [step.playerStat]: -amount } });
     };
+    /** Un objeto de combate se puede usar si se tiene, o si alcanzan las stats de su costo (monedas) */
+    const canUseCombatItem = (ci: CombatItemDef) =>
+      ci.cost
+        ? Object.entries(ci.cost).every(([k, v]) => typeof this._state.stats[k] === 'number' && (this._state.stats[k] as number) >= v)
+        : this._state.inventory.includes(ci.itemId);
     /** Protección de los objetos que lleva encima (items[id].armor, cada objeto cuenta una vez) */
     const armor = () =>
       [...new Set(this._state.inventory)].reduce((sum, id) => sum + (this.manifest.items?.[id]?.armor ?? 0), 0);
@@ -1537,7 +1542,7 @@ export class GameEngine {
 
       // Build list of usable items for this combat
       const usableItems = (step.combatItems || [])
-        .filter((ci) => this._state.inventory.includes(ci.itemId))
+        .filter((ci) => canUseCombatItem(ci))
         .map((ci) => ({ itemId: ci.itemId, name: ci.name }));
 
       // Prompt player action
@@ -1579,14 +1584,18 @@ export class GameEngine {
         const itemId = action.action.slice(9);
         const combatItem = (step.combatItems || []).find((ci) => ci.itemId === itemId);
 
-        if (combatItem && this._state.inventory.includes(itemId)) {
+        if (combatItem && canUseCombatItem(combatItem)) {
+          // Acciones que se pagan con stats (monedas): se cobran y no gastan objeto
+          if (combatItem.cost) {
+            this.applyState({ stats: Object.fromEntries(Object.entries(combatItem.cost).map(([k, v]) => [k, -v])) });
+          }
           if (combatItem.damage) {
             playerDamage = combatItem.damage;
             enemyHp = Math.max(0, enemyHp - playerDamage);
             if (enemyHp <= 0) killedByItem = combatItem;
           }
           if (combatItem.heal) this.applyState({ stats: { [step.playerStat]: combatItem.heal } });
-          if (combatItem.consume !== false) this.applyState({ removeInventory: [itemId] });
+          if (!combatItem.cost && combatItem.consume !== false) this.applyState({ removeInventory: [itemId] });
           if (combatItem.effects) this.applyState(combatItem.effects);
           if (combatItem.reveal) revealed = true;
           parts.push(this.text(combatItem.text));

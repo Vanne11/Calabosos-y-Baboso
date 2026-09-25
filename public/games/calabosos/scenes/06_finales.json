@@ -438,6 +438,54 @@
         {
           "type": "dialog",
           "character": "narrator",
+          "lines": [
+            "Con {dinero} monedas en el bolsillo compraste «La Babosa Ebria». El Bardo ahora trabaja para ti. Rima peor por el mismo sueldo."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=150"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Terminaste con {dinero} monedas. Salvaste el reino y no te alcanza ni para una cerveza. Clásico."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": "<=10"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mandaste la postal del Abismo. Llegó. Nadie sabe cómo. Nadie sabe a quién. Alguien la tiene pegada en la nevera."
+          ],
+          "condition": {
+            "inventory": [
+              "postal_abismo"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo usó tu soborno en clases de canto. Ahora desafina con técnica."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_sobornado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
           "lines": [],
           "pool": "recap_final",
           "ai": {
@@ -800,6 +848,54 @@
         {
           "type": "dialog",
           "character": "narrator",
+          "lines": [
+            "Con {dinero} monedas en el bolsillo compraste «La Babosa Ebria». El Bardo ahora trabaja para ti. Rima peor por el mismo sueldo."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=150"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Terminaste con {dinero} monedas. Salvaste el reino y no te alcanza ni para una cerveza. Clásico."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": "<=10"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mandaste la postal del Abismo. Llegó. Nadie sabe cómo. Nadie sabe a quién. Alguien la tiene pegada en la nevera."
+          ],
+          "condition": {
+            "inventory": [
+              "postal_abismo"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo usó tu soborno en clases de canto. Ahora desafina con técnica."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_sobornado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
           "lines": [],
           "pool": "recap_final",
           "ai": {
@@ -1150,6 +1246,54 @@
           "condition": {
             "flags": {
               "ian_sospechoso": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Con {dinero} monedas en el bolsillo compraste «La Babosa Ebria». El Bardo ahora trabaja para ti. Rima peor por el mismo sueldo."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": ">=150"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Terminaste con {dinero} monedas. Salvaste el reino y no te alcanza ni para una cerveza. Clásico."
+          ],
+          "condition": {
+            "stats": {
+              "dinero": "<=10"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mandaste la postal del Abismo. Llegó. Nadie sabe cómo. Nadie sabe a quién. Alguien la tiene pegada en la nevera."
+          ],
+          "condition": {
+            "inventory": [
+              "postal_abismo"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo usó tu soborno en clases de canto. Ahora desafina con técnica."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_sobornado": true
             }
           }
         },

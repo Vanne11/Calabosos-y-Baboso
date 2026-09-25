@@ -1549,6 +1549,18 @@
               ]
             },
             {
+              "text": "Invitar una ronda a toda la taberna (20 monedas)",
+              "condition": {
+                "stats": {
+                  "dinero": ">=20"
+                },
+                "flags": {
+                  "invito_ronda": false
+                }
+              },
+              "goto": "acto1_ronda"
+            },
+            {
               "text": "Irse con la cola entre las piernas",
               "goto": "acto1_taberna_salida",
               "tags": [
@@ -2365,6 +2377,15 @@
               "tags": [
                 "valiente"
               ]
+            },
+            {
+              "text": "Sobornar a los guardias (30 monedas)",
+              "condition": {
+                "stats": {
+                  "dinero": ">=30"
+                }
+              },
+              "goto": "acto1_soborno"
             }
           ],
           "freeText": {
@@ -2989,6 +3010,110 @@
             {
               "text": "Volver a la plaza",
               "goto": "acto1_decision"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_soborno": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Dejas caer treinta monedas en la mano del guardia. Hacen un ruidito muy convincente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "guardias",
+          "lines": [
+            "¿Esto es lo que creo que es? ...Nunca te vimos. Nunca nos viste. Nunca existimos."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La burocracia de Viscaria: impenetrable para los honestos, de mantequilla para los que pagan."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": -30
+            },
+            "flags": {
+              "soborno_puerta": true
+            },
+            "memo": "sobornó a los guardias de la puerta de la ciudad con 30 monedas",
+            "npcMemo": {
+              "guardias": "Alex los sobornó con 30 monedas para salir"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Salir de la ciudad",
+              "goto": "acto1_salida"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_ronda": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Golpeas la barra: «¡Ronda para todos!». Por un segundo, la taberna entera te quiere. Es un segundo muy caro."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "bardo",
+          "lines": [
+            "¡Invita {este|esta|estx} de acá, yeah, qué detalle, qué clase! / ¡Hoy te perdono la vida, pero el rap no te lo pase!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": -20,
+              "sexi": 10,
+              "pis": 20
+            },
+            "flags": {
+              "invito_ronda": true
+            },
+            "memo": "invitó una ronda a toda la taberna",
+            "npcMemo": {
+              "bardo": "Alex invitó una ronda a toda la taberna"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Cuarenta babosas brindan a tu salud. Tu vejiga ya está pensando en las consecuencias."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Aceptar la guerra de rap (con el público a tu favor)",
+              "goto": "acto1_rap"
+            },
+            {
+              "text": "Salir de la taberna mientras te quieren",
+              "goto": "acto1_taberna_salida"
             }
           ]
         }

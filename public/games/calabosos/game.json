@@ -1055,6 +1055,37 @@
       "name": "Cuchara de madera de la abuela",
       "description": "Con esta tu abuela mató a un dragón (según ella). Es de madera: el ácido no se la come.",
       "image": "images/items/cuchara_abuela.png"
+    },
+    "cobre_verde": {
+      "name": "Cobre verde",
+      "description": "Monedas de cobre disueltas en residuo ácido: una pasta verde que es veneno puro para las babosas.",
+      "image": "images/items/cobre_verde.png"
+    },
+    "paraguas_baba": {
+      "name": "Paraguas anti-baba",
+      "description": "De la tienda de regalos del Abismo. Protege de la baba que cae del techo. Y un poco de los golpes.",
+      "image": "images/items/paraguas_baba.png",
+      "armor": 2
+    },
+    "casco_linterna": {
+      "name": "Casco con linterna",
+      "description": "De la tienda de regalos. Ilumina lo que tengas delante, fantasmas incluidos.",
+      "image": "images/items/casco_linterna.png"
+    },
+    "llavero_babosa": {
+      "name": "Llavero de babosa",
+      "description": "Una babosa de goma azul. Nerly jura que no se parece a ella. Se parece.",
+      "image": "images/items/llavero_babosa.png"
+    },
+    "postal_abismo": {
+      "name": "Postal «Te extraño desde el Abismo»",
+      "description": "Una postal con una babosa guiñando un ojo. ¿A quién se la vas a mandar?",
+      "image": "images/items/postal_abismo.png"
+    },
+    "tonico_plateado": {
+      "name": "Tónico de baba plateada",
+      "description": "De la tienda de regalos. Sabe a metal y a esperanza. Cura bastante.",
+      "image": "images/items/tonico_plateado.png"
     }
   },
   "traits": {

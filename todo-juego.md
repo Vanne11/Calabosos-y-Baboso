@@ -40,6 +40,19 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 
 - [x] Pista: el anciano da un «cuarto consejo» (Lágrima + puerta de atrás + ganarse a Nerly) y el narrador se pone nervioso.
 
+## 1b. Economía: el dinero sobraba — HECHO (2026-09-25)
+
+- [x] Monedas como **arma**: lanzar un puñado (10) en cualquier combate; darle de comer monedas al Rey (30).
+- [x] Monedas como **química**: Nerly cuenta que el cobre quema a las babosas. Barrera de cobre en combate (15; las
+      Gemelas no se dividen) y cobre verde (monedas + residuo ácido): veneno fuerte.
+- [x] Monedas como **herramienta**: forzar el cofre del Abismo haciendo palanca (dados; si falla, se doblan 5).
+- [x] **Sobornos**: guardias de la puerta (30, sin permiso), guardia del Abismo (40), la masa gelatinosa (20, sin acertijo).
+- [x] **Invitar una ronda** en la taberna (20): el público te quiere en el rap.
+- [x] **Misión secundaria: tienda de regalos del Abismo** (caja de honestidad, se puede robar): paraguas anti-baba
+      (protección), casco con linterna (revela fantasmas), tónico, cobre verde, llavero y postal.
+- [x] **Finales** según el dinero (compras la taberna / no te alcanza ni para una cerveza), la postal y el soborno.
+- [ ] Revisar jugando si ahora falta dinero en algún tramo (el Acto I da mucho; el III y el IV ahora cobran).
+
 ## 4. Probar con DeepSeek real (en el hosting)
 
 - [ ] Subir `release/calabosos-v1.1.0/cyb/` encima (la base se migra sola a la versión 9) y recargar con Ctrl+Shift+R.
@@ -66,8 +79,8 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 
 ## 7. Rutas para probar a mano
 
-Cada escena con decisiones o mecánicas (entre corchetes: dados, combate, chat IA, tienda...). Las opciones con 🎒
-solo aparecen si llevas el objeto. Marcar al probar.
+Cada escena con decisiones o mecánicas (entre corchetes: dados, combate, chat IA, tienda...). 🎒 = solo si llevas
+el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 
 ### Prólogo
 
@@ -81,7 +94,7 @@ solo aparecen si llevas el objeto. Marcar al probar.
 
 - [ ] `acto1_plaza`: "Está bien, acepto la misión. ¿Cuál es el plan?" · "Ni hablar. Buscaré una taberna y me emborracharé." · "¿Y qué gano yo con todo esto?" + ✍️ acción libre
 - [ ] `acto1_negociar_narrador` [chat IA]
-- [ ] `acto1_decision`: Buscar un trabajo rápido (tablón de anuncios) · Buscar algo de valor que vender · Abrir la bolsa misteriosa que te regaló el caballo 🎒 · Tomar prestado algo de dinero... sin permiso · Pedir un préstamo en la casa de empeños · Ir a la tienda del Tendero · Ir a la tienda con los bolsillos vacíos (a ver qué pasa) + ✍️ acción libre
+- [ ] `acto1_decision`: Buscar un trabajo rápido (tablón de anuncios) · Buscar algo de valor que vender · Abrir la bolsa misteriosa que te regaló el caballo 🎒 · Tomar prestado algo de dinero... sin permiso · Pedir un préstamo en la casa de empeños · Ir a la tienda del Tendero 🪙 · Ir a la tienda con los bolsillos vacíos (a ver qué pasa) 🪙 + ✍️ acción libre
 - [ ] `acto1_tablon`: Limpiar establos (suena lo menos peligroso) · Probar pociones (al menos será interesante) · Ayudar al verdugo (debe pagar bien)
 - [ ] `acto1_verdugo`: Volver al tablón
 - [ ] `acto1_establos` [dados]: Volver a la plaza
@@ -96,7 +109,7 @@ solo aparecen si llevas el objeto. Marcar al probar.
 - [ ] `acto1_tienda_compra` [tienda]
 - [ ] `acto1_expulsado`: Levantarte con la dignidad que te queda
 - [ ] `acto1_tienda_salida`: Ir hacia la puerta de la ciudad · Tomar un descanso en la taberna
-- [ ] `acto1_taberna`: Aceptar la guerra de rap · Solo pedir una cerveza · Irse con la cola entre las piernas + ✍️ acción libre
+- [ ] `acto1_taberna`: Aceptar la guerra de rap · Solo pedir una cerveza · Invitar una ronda a toda la taberna (20 monedas) 🪙 · Irse con la cola entre las piernas + ✍️ acción libre
 - [ ] `acto1_rap` [chat IA]
 - [ ] `acto1_cerveza` [azar]: Salir de la taberna
 - [ ] `acto1_callejon`: Investigar el sonido · Ignorarlo y seguir adelante
@@ -105,15 +118,17 @@ solo aparecen si llevas el objeto. Marcar al probar.
 - [ ] `acto1_nerly_explica`: "Vale. Vienes conmigo."
 - [ ] `acto1_nerly_motivo`: "Está bien. Vamos juntos."
 - [ ] `acto1_nerly_se_une` [dados]: Ir a la puerta de la ciudad
-- [ ] `acto1_puerta`: Buscar ese permiso · "¿No hay otra forma de salir?" (saltar el muro) · "Soy el héroe elegido. Déjenme pasar." + ✍️ acción libre
+- [ ] `acto1_puerta`: Buscar ese permiso · "¿No hay otra forma de salir?" (saltar el muro) · "Soy el héroe elegido. Déjenme pasar." · Sobornar a los guardias (30 monedas) 🪙 + ✍️ acción libre
 - [ ] `acto1_muro` [dados]
 - [ ] `acto1_intimidar` [dados]
-- [ ] `acto1_mago`: "Aquí tienes 50 monedas." · "¿Para qué quieres mi pelo y mi sangre?" · "No tengo 50 monedas." (mirar al suelo)
+- [ ] `acto1_mago`: "Aquí tienes 50 monedas." 🪙 · "¿Para qué quieres mi pelo y mi sangre?" · "No tengo 50 monedas." (mirar al suelo) 🪙
 - [ ] `acto1_mago_truco` [dados]: "¿Y mi permiso?"
 - [ ] `acto1_permiso`: Volver a la puerta con el permiso
 - [ ] `acto1_salida`: Ir directo al Abismo · Buscar un arbusto primero · "¿Seguro que quiero hacer esto?"
 - [ ] `acto1_duda`: Caminar hacia el Abismo, resignado
 - [ ] `acto1_bolsa` [azar]: Volver a la plaza
+- [ ] `acto1_soborno`: Salir de la ciudad
+- [ ] `acto1_ronda`: Aceptar la guerra de rap (con el público a tu favor) · Salir de la taberna mientras te quieren
 
 ### Acto II — El camino
 
@@ -126,7 +141,7 @@ solo aparecen si llevas el objeto. Marcar al probar.
 - [ ] `acto2_nerly_motivo`: "Lo derrotaremos juntos." · "Vaya. Bueno. ¿Seguimos?"
 - [ ] `acto2_camino_menu`: Preguntar por el Rey Baboso · Preguntar por los tipos de babosas · Ponerse en marcha
 - [ ] `acto2_viaje` [azar]
-- [ ] `acto2_bandidos`: Retarlo a un duelo de insultos · Pagar el "peaje" (15 monedas) · Huir gritando entre los árboles · Tocar el silbato para caballos 🎒 + ✍️ acción libre
+- [ ] `acto2_bandidos`: Retarlo a un duelo de insultos · Pagar el "peaje" (15 monedas) 🪙 · Huir gritando entre los árboles · Tocar el silbato para caballos 🎒 + ✍️ acción libre
 - [ ] `acto2_insultos` [chat IA]
 - [ ] `acto2_huida_bandidos`: Volver por Nerly (y fingir que era una estrategia) · Seguir corriendo (Nerly ya te alcanzará)
 - [ ] `acto2_takashi`: "No, amigo. Aquí solo hay babosas. Vete a casa." · "¡Únete a nosotros! Nos vendría bien alguien con un bate." · "Sí. Los zombis están en el Abismo. Corre, ve primero."
@@ -150,17 +165,17 @@ solo aparecen si llevas el objeto. Marcar al probar.
 
 - [ ] `acto3_abismo`: "Entraré sigilosamente." (túnel lateral) · "¡A la carga!" (entrada principal) · "Primero lanzaré algo para ver si es seguro." · Seguir el mapa detallado: marca una grieta sin guardias 🎒 · Seguir el mapa sospechoso del cadáver 🎒 + ✍️ acción libre
 - [ ] `acto3_prueba`: Entrar por el túnel lateral · Entrar por la puerta principal
-- [ ] `acto3_guardia` [chat IA]
+- [ ] `acto3_guardia` [chat IA]: Hablar con el guardia 🪙 · Sobornar al guardia (40 monedas) 🪙
 - [ ] `acto3_tunel_sigilo` [dados]: Salir del túnel
 - [ ] `acto3_sala_entrada` [combate]
-- [ ] `acto3_hub`: Izquierda: Cavernas de Cría · Centro: Abismo Profundo · Derecha: Grutas de Cristal · Abrir el cofre oxidado de la pared con la llave misteriosa 🎒 · Pedirle a Nerly que huela la poción de Ian 🎒 · Visitar la "Sucursal Subterránea" del Tendero · Descansar un momento contra la pared · Avanzar hacia el trono del Rey Baboso
+- [ ] `acto3_hub`: Izquierda: Cavernas de Cría · Centro: Abismo Profundo · Derecha: Grutas de Cristal · Abrir el cofre oxidado de la pared con la llave misteriosa 🎒 · Pedirle a Nerly que huela la poción de Ian 🎒 · Visitar la "Sucursal Subterránea" del Tendero · Descansar un momento contra la pared · Avanzar hacia el trono del Rey Baboso · Mezclar monedas de cobre con el residuo ácido (10 monedas) 🎒 🪙 · Forzar el cofre oxidado de la pared haciendo palanca con monedas 🪙 · Buscar la tienda de regalos del Abismo (el anciano juraba que existía)
 - [ ] `acto3_descanso`: Levantarse
 - [ ] `acto3_tienda` [tienda]
 - [ ] `acto3_cria` [decisión con tiempo]: Tirarte al suelo entre los huevos · Correr hacia la oscuridad · Quedarte quieto como una estatua · Seguir el atajo del mapa parcial 🎒
 - [ ] `acto3_cria_madres` [combate]
 - [ ] `acto3_cria_huevos`: Robar el huevo dorado · Dejar los huevos en paz · Volver a la Sala de Entrada
 - [ ] `acto3_profundo` [dados]: Seguir por el pasaje orgánico
-- [ ] `acto3_masa` [acertijo]
+- [ ] `acto3_masa` [acertijo]: Resolver el acertijo 🪙 · Pagarle a la masa con monedas (20): dicen que le encanta el sabor a metal 🪙
 - [ ] `acto3_explosiva`: Pasar de puntillas sin mirarla · Atacarla antes de que despierte · Untarte la baba maternal para que te confunda con una cría 🎒
 - [ ] `acto3_explosiva_sigilo` [dados]
 - [ ] `acto3_explosiva_pelea` [combate]
@@ -176,6 +191,11 @@ solo aparecen si llevas el objeto. Marcar al probar.
 - [ ] `acto3_cofre`: Volver a la Sala de Entrada
 - [ ] `acto3_pocion_ian`: Volver a la Sala de Entrada
 - [ ] `acto3_explosiva_baba`: Seguir de puntillas
+- [ ] `acto3_cobre_verde`: Volver a la Sala de Entrada
+- [ ] `acto3_cofre_palanca` [dados]: Volver a la Sala de Entrada
+- [ ] `acto3_regalos` [tienda]
+- [ ] `acto3_soborno_guardia`: Entrar al Abismo
+- [ ] `acto3_masa_pago`: Seguir por el pasaje
 
 ### Acto IV — El Rey
 

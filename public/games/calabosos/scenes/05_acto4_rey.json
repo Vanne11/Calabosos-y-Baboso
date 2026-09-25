@@ -280,6 +280,46 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
             }
           ],
           "results": {
@@ -1197,6 +1237,55 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
+            },
+            {
+              "itemId": "monedas_rey",
+              "name": "Darle de comer tus monedas al Rey (30)",
+              "text": "El Rey se traga las monedas por reflejo. Su baba disuelve metal... pero el cobre le cae fatal. Eructa verde y se retuerce.",
+              "damage": 16,
+              "cost": {
+                "dinero": 30
+              }
             }
           ],
           "music": "audio/rpgchip14_battle_2.ogg",
@@ -1800,6 +1889,55 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
+            },
+            {
+              "itemId": "monedas_rey",
+              "name": "Darle de comer tus monedas al Rey (30)",
+              "text": "El Rey se traga las monedas por reflejo. Su baba disuelve metal... pero el cobre le cae fatal. Eructa verde y se retuerce.",
+              "damage": 16,
+              "cost": {
+                "dinero": 30
+              }
             }
           ],
           "music": "audio/cyb_jefe.ogg",
@@ -1964,6 +2102,55 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
+            },
+            {
+              "itemId": "monedas_rey",
+              "name": "Darle de comer tus monedas al Rey (30)",
+              "text": "El Rey se traga las monedas por reflejo. Su baba disuelve metal... pero el cobre le cae fatal. Eructa verde y se retuerce.",
+              "damage": 16,
+              "cost": {
+                "dinero": 30
+              }
             }
           ],
           "music": "audio/cyb_jefe.ogg",
@@ -2137,6 +2324,55 @@
               "name": "Arrojar la baba de caballo",
               "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
               "damage": 8
+            },
+            {
+              "itemId": "lanzar_monedas",
+              "name": "Lanzar un puñado de monedas (10)",
+              "text": "Le tiras un puñado de monedas a la cara. Duele. A ti más: eran tuyas.",
+              "damage": 7,
+              "cost": {
+                "dinero": 10
+              }
+            },
+            {
+              "itemId": "barrera_cobre",
+              "name": "Tender una barrera de monedas de cobre (15)",
+              "text": "Tiendes una línea de monedas de cobre. La babosa la toca y se retuerce: el cobre las quema. Así no se divide.",
+              "damage": 10,
+              "preventSplit": true,
+              "cost": {
+                "dinero": 15
+              }
+            },
+            {
+              "itemId": "cobre_verde",
+              "name": "Arrojar el cobre verde",
+              "text": "Le lanzas la pasta de cobre verde. Chisporrotea como tocino. Veneno de babosa puro.",
+              "damage": 22,
+              "preventSplit": true
+            },
+            {
+              "itemId": "casco_linterna",
+              "name": "Encender el casco con linterna",
+              "text": "Enciendes la linterna del casco. La luz deja a la babosa al descubierto.",
+              "damage": 3,
+              "reveal": true,
+              "consume": false
+            },
+            {
+              "itemId": "tonico_plateado",
+              "name": "Beber el tónico de baba plateada",
+              "text": "Te bebes el tónico. Sabe a metal y a esperanza. Te sientes mejor.",
+              "heal": 40
+            },
+            {
+              "itemId": "monedas_rey",
+              "name": "Darle de comer tus monedas al Rey (30)",
+              "text": "El Rey se traga las monedas por reflejo. Su baba disuelve metal... pero el cobre le cae fatal. Eructa verde y se retuerce.",
+              "damage": 16,
+              "cost": {
+                "dinero": 30
+              }
             }
           ],
           "music": "audio/cyb_jefe.ogg",

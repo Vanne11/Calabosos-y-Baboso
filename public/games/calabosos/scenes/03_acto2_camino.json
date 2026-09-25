@@ -488,6 +488,22 @@
           }
         },
         {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Y un secreto que no le cuento a nadie: el cobre nos quema. Tus monedas son de cobre. No las tires cerca de mí, ¿sí? A las otras babosas... bueno, ahí haz lo que quieras."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "sabe_cobre": true
+            },
+            "memo": "Nerly le contó que el cobre de las monedas quema a las babosas"
+          }
+        },
+        {
           "type": "choice",
           "options": [
             {

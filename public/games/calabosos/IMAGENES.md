@@ -220,6 +220,12 @@ Retratos de babosa, 256×256, pixel art 16 bits, fondo oscuro de caverna. Cada u
 
 | Archivo | Objeto | Descripción para el prompt |
 |---|---|---|
+| `cobre_verde.png` | Cobre verde | Frasco de vidrio con una pasta verde brillante y monedas de cobre medio disueltas flotando; humo verdoso |
+| `paraguas_baba.png` | Paraguas anti-baba | Paraguas cerrado de tela amarilla chillona con gotas de baba resbalando; mango de madera |
+| `casco_linterna.png` | Casco con linterna | Casco de minero abollado con una linterna encendida al frente, rayo de luz amarillo |
+| `tonico_plateado.png` | Tónico de baba plateada | Frasquito con líquido plateado y brillante, etiqueta con una babosa sonriente (sin texto legible) |
+| `llavero_babosa.png` | Llavero de babosa azul | Llavero con una babosa de goma azul brillante y cara simpática, argolla metálica |
+| `postal_abismo.png` | Postal del Abismo | Postal con una babosa guiñando un ojo sobre un fondo de cueva verde (sin texto legible) |
 | `corazon_cristalino.png` | Corazón de Babosa Cristalina | Cristal con forma de corazón que contiene luz líquida azul |
 | `residuo_acido.png` | Residuo ácido | Frasco con líquido verde que burbujea y humea |
 | `baba_maternal.png` | Baba maternal | Frasco con baba verde clara brillante y un lazo |

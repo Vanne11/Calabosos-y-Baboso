@@ -700,7 +700,8 @@ export interface CombatWeapon {
 
 /** Item usable en combate: requiere tenerlo en inventario */
 export interface CombatItemDef {
-  itemId: string;     // ID del item en inventario
+  /** ID del item en inventario (con `cost`, solo un identificador de la acción) */
+  itemId: string;
   name: string;       // Nombre a mostrar
   text: string;       // Texto al usarlo ("Lanzas sal al Rey Baboso!")
   damage?: number;    // Daño directo al enemigo
@@ -711,6 +712,8 @@ export interface CombatItemDef {
   reveal?: boolean;
   /** Si mata al enemigo con este item, no se divide (sal contra gemelas) */
   preventSplit?: boolean;
+  /** Se paga con stats en vez de gastar un objeto: { "dinero": 10 } (lanzar un puñado de monedas) */
+  cost?: Record<string, number>;
 }
 
 export interface CombatResults {
