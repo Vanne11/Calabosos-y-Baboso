@@ -19,6 +19,7 @@ Disponibles cuando no hay juego en ejecución. Funcionan con o sin prefijo `/`.
 | `editor [juego]` | Abre el editor visual (opcionalmente carga un juego) |
 | `create` | Alias de `editor` |
 | `debug [on\|off\|status\|history\|clear\|report]` | Sistema de depuración |
+| `sudo run <juego>` | Abre el juego en modo superpoderes (pide contraseña; ver abajo) |
 | `quit` / `exit` | Cierra sesión |
 
 ## Comandos In-Game (fase `game`)
@@ -44,6 +45,27 @@ Disponibles durante la partida. **Requieren prefijo `/`** para distinguirlos del
 | `/bien` · `/mal` | Califica la última línea de la IA (se ve en el admin → Calificaciones) |
 | `/inventario` | Abre/cierra el overlay expandido del inventario (aliases: `/inv`, `/inventory`) |
 | `/quit` / `/exit` | Sale de la partida y vuelve a la shell (no cierra sesión) |
+
+| `/sudo` · `/sudo salir` | Activa (con contraseña) o apaga el modo superpoderes |
+
+### Modo superpoderes (sudo)
+
+Para probar rutas sin rejugar todo. Se entra con `sudo run calabosos` (o `/sudo` en partida) y la contraseña
+de pruebas (el código solo guarda su hash SHA-256 en `src/utils/sudo.ts`; no es seguridad real, el juego corre en
+el navegador). La contraseña no se muestra al escribirla; con 3 errores se cancela. La primera vez en el navegador
+hay una entrada épica (se recuerda en `localStorage → cyb_sudo_intro_visto`); después, una línea corta. El prompt
+cambia a `[root@cyb] #` y cada poder suelta un comentario del narrador al azar (`SUDO_QUIPS`).
+
+| Poder | Qué hace |
+|---|---|
+| `/atras [n]` | Vuelve n escenas atrás (default 1) con el estado que tenías al entrar a esa escena (máx. 60 guardadas) |
+| `/ir <escena>` · `/escenas [filtro]` | Salta a cualquier escena · lista los ids |
+| `/dar <objeto> [n]` · `/quitar <objeto>` | Objetos por id o parte del nombre (`/dar sal 2`) |
+| `/dinero <n>` · `/stat <nombre> <valor>` · `/flag <nombre> on\|off` · `/curar` | Toca el estado (las `statRules` del juego siguen aplicando: sin bolsa el dinero se topa en 60) |
+| `/estado` | Escena, stats, flags e inventario |
+| `/poderes` | La lista de arriba |
+
+Sin sudo, estos comandos responden «Permiso denegado». Los cambios pasan por `engine.cheat()` (= `applyState`).
 
 **Comandos bloqueados durante la partida:** `run`, `list`, `editor`, `create` — muestran aviso de que hay una partida activa.
 

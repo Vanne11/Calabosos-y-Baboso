@@ -18,7 +18,50 @@ import UseItemWidget from './components/game/UseItemWidget';
 import TimedChoiceWidget from './components/game/TimedChoiceWidget';
 import LevelUpWidget from './components/game/LevelUpWidget';
 import { useLoginFlow, welcomeMessages } from './hooks/useLoginFlow';
-import { useTerminalCommands } from './hooks/useTerminalCommands';
+import { useTerminalCommands, SUDO_HELP } from './hooks/useTerminalCommands';
+import { checkSudoPassword, sudoQuip } from './utils/sudo';
+import { sfx } from './audio/SfxPlayer';
+import { screenFx, rebaseFeedback } from './audio/gameFeedback';
+
+/** Entrada épica al modo superpoderes: solo la primera vez en este navegador (después, breve) */
+const SUDO_INTRO_KEY = 'cyb_sudo_intro_visto';
+let sudoIntroShown = (() => {
+  try { return localStorage.getItem(SUDO_INTRO_KEY) === '1'; } catch { return false; }
+})();
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function sudoIntro(add: (e: { type: 'system' | 'dialogHeader' | 'dialog'; content: string }) => void) {
+  if (sudoIntroShown) {
+    sfx.play('magia');
+    const quip = useAppStore.getState().engine?.localize(sudoQuip('volver')) ?? 'El narrador finge no haberte visto.';
+    add({ type: 'system', content: `[bold yellow]⚡ Superpoderes activados.[/bold yellow] [dim]${quip} /poderes para verlos.[/dim]` });
+    return;
+  }
+  sudoIntroShown = true;
+  try { localStorage.setItem(SUDO_INTRO_KEY, '1'); } catch { /* sin almacenamiento: se repetirá, qué drama */ }
+  sfx.play('trueno');
+  screenFx('level', 3);
+  add({ type: 'system', content: '[bold red]════════════════════════════════════════════[/bold red]' });
+  add({ type: 'system', content: '[bold yellow]      ⚡⚡⚡   A C C E S O   R O O T   ⚡⚡⚡[/bold yellow]' });
+  add({ type: 'system', content: '[bold red]════════════════════════════════════════════[/bold red]' });
+  await wait(900);
+  sfx.play('gong');
+  screenFx(undefined, 2);
+  add({ type: 'dialogHeader', content: 'Narrador' });
+  add({ type: 'dialog', content: 'Espera. ¿Qué... qué hiciste? ¿QUIÉN TE DIO ESA CONTRASEÑA?' });
+  await wait(1400);
+  add({ type: 'dialog', content: 'Esto no estaba en el guion. Ahora puedes rebobinar el tiempo, sacar objetos de la nada y saltar a cualquier escena. Básicamente eres yo. Pero peor vestido.' });
+  await wait(1400);
+  sfx.play('risa_malvada');
+  add({ type: 'dialog', content: 'Úsalo con responsabilidad. No lo harás. Nadie lo hace. Yo tampoco lo hice.' });
+  await wait(700);
+  add({ type: 'system', content: SUDO_HELP });
+}
+
+const SUDO_FAILS = [
+  'Lo siento, inténtalo de nuevo. [dim](El narrador se ríe bajito.)[/dim]',
+  'Lo siento, inténtalo de nuevo. [dim]Pista: no es «1234». Tampoco «contraseña». Tampoco tu nombre.[/dim]',
+];
 import { useGameLoop } from './hooks/useGameLoop';
 import { useDebugStore } from './store/useDebugStore';
 import { useKeyboardInput } from './hooks/useKeyboardInput';
@@ -49,6 +92,8 @@ const App: React.FC = () => {
   const usingItem = useAppStore((s) => s.usingItem);
   const codexMenu = useAppStore((s) => s.codexMenu);
   const resumeOffer = useAppStore((s) => s.resumeOffer);
+  const sudoOn = useAppStore((s) => s.sudo);
+  const sudoPromptActive = useAppStore((s) => !!s.sudoPrompt);
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
@@ -99,6 +144,8 @@ const App: React.FC = () => {
     setWidgetDimmed(false);
   }, [pendingResult]);
 
+  const pendingSudoRunRef = useRef<string | null>(null);
+
   // Handle submit
   const handleSubmit = useCallback(async () => {
     const trimmed = inputValue.trim();
@@ -108,6 +155,81 @@ const App: React.FC = () => {
     // Login flow
     if (isLogin) {
       await handleLoginInput(trimmed);
+      return;
+    }
+
+    // Juego pendiente tras la intro de sudo
+    if (pendingSudoRunRef.current) {
+      const run = pendingSudoRunRef.current;
+      pendingSudoRunRef.current = null;
+      await processCommand(`run ${run}`);
+      return;
+    }
+
+    // Contraseña del modo superpoderes (se escribe oculta y no se muestra)
+    const sudoPrompt = useAppStore.getState().sudoPrompt;
+    if (sudoPrompt) {
+      if (await checkSudoPassword(trimmed)) {
+        useAppStore.getState().setSudoPrompt(null);
+        useAppStore.getState().setSudo(true);
+        await sudoIntro(addEntry);
+        if (sudoPrompt.run) {
+          // Que se alcance a leer la intro: el juego arranca con el próximo ENTER
+          pendingSudoRunRef.current = sudoPrompt.run;
+          addEntry({ type: 'system', content: '[dim]Presiona ENTER cuando termines de disfrutar el poder... (tómate tu tiempo, yo tiemblo)[/dim]' });
+        }
+      } else if (sudoPrompt.tries + 1 >= 3) {
+        useAppStore.getState().setSudoPrompt(null);
+        sfx.play('risa_malvada');
+        addEntry({ type: 'system', content: '[red]sudo: 3 intentos incorrectos. Este incidente será reportado.[/red] [dim](Ya lo reporté. A mí. Me reí mucho.)[/dim]' });
+      } else {
+        useAppStore.getState().setSudoPrompt({ ...sudoPrompt, tries: sudoPrompt.tries + 1 });
+        sfx.play('error');
+        addEntry({ type: 'system', content: `[red]${SUDO_FAILS[sudoPrompt.tries] ?? SUDO_FAILS[0]}[/red]` });
+      }
+      return;
+    }
+
+    // Superpoderes que cambian de escena: /atras [n] e /ir <escena>
+    const powerMatch = phase === 'game' ? trimmed.match(/^\/(atras|ir)(?:\s+(\S+))?$/i) : null;
+    if (powerMatch) {
+      addEntry({ type: 'command', content: trimmed });
+      const st = useAppStore.getState();
+      const engine = st.engine;
+      if (!st.sudo) {
+        addEntry({ type: 'system', content: '[red]Permiso denegado.[/red] [dim]Rebobinar el tiempo es cosa de dioses. O de quien sabe la contraseña.[/dim]' });
+        return;
+      }
+      if (!engine) return;
+      if (powerMatch[1].toLowerCase() === 'atras') {
+        const n = Math.max(1, parseInt(powerMatch[2] ?? '1') || 1);
+        const history = st.sceneHistory;
+        const idx = history.length - 1 - n;
+        if (idx < 0) {
+          addEntry({ type: 'system', content: `[yellow]No hay tanto pasado.[/yellow] [dim]Puedes volver como mucho ${Math.max(0, history.length - 1)} escena(s).[/dim]` });
+          return;
+        }
+        const target = history[idx];
+        st.setSceneHistory(history.slice(0, idx));
+        engine.restoreState(structuredClone(target.state));
+        st.setPlayerState({ ...engine.state });
+        rebaseFeedback(engine.state);
+        st.setPendingResult(null);
+        sfx.play('rebobinar');
+        screenFx(undefined, 1);
+        addEntry({ type: 'system', content: `[bold yellow]⏪ Rebobinas el tiempo ${n} escena${n > 1 ? 's' : ''}.[/bold yellow] [dim]${engine.localize(sudoQuip('atras'))}[/dim]` });
+        await startScene(target.scene);
+      } else {
+        const target = powerMatch[2] ?? '';
+        if (!engine.hasScene(target)) {
+          addEntry({ type: 'system', content: `[red]No existe la escena «${target}».[/red] [dim]/escenas para ver la lista.[/dim]` });
+          return;
+        }
+        st.setPendingResult(null);
+        sfx.play('teletransporte');
+        addEntry({ type: 'system', content: `[bold yellow]🌀 Te teletransportas a «${target}».[/bold yellow] [dim]${engine.localize(sudoQuip('ir'))}[/dim]` });
+        await startScene(target);
+      }
       return;
     }
 
@@ -700,12 +822,16 @@ const App: React.FC = () => {
     ? loginStep === 'password'
       ? 'Contraseña >'
       : 'Login >'
-    : promptName
-      ? `[${promptName}@cyb] >`
-      : 'cyb >';
+    : sudoPromptActive
+      ? '[sudo] contraseña >'
+      : sudoOn
+        ? '[root@cyb] #'
+        : promptName
+          ? `[${promptName}@cyb] >`
+          : 'cyb >';
 
   // Determine input type
-  const inputType = isLogin && loginStep === 'password' ? 'password' : 'text';
+  const inputType = (isLogin && loginStep === 'password') || sudoPromptActive ? 'password' : 'text';
 
   // Determine placeholder
   let placeholder = '';

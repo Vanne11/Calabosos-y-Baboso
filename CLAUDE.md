@@ -46,6 +46,7 @@ npm test                                # Vitest: motor, IA, combate, datos real
 npx tsc --noEmit -p .                   # debe quedar sin errores
 ```
 
+- Probar rutas: `sudo run calabosos` (contraseña de pruebas) da superpoderes: `/atras [n]`, `/ir <escena>`, `/dar`, `/dinero`, `/stat`, `/flag`, `/curar`, `/estado` (detalle en `docs/comandos.md`).
 - Dentro del juego: `/debug on` y `/debug goto <escena>` para saltar a cualquier escena; `/debug sfx [nombre]` y `/debug ambiente [nombre]` para oír el catálogo.
 - Sonido (detalle en `docs/audio.md`): `sfx` en pasos sound, `scenario.sfx/ambience`, opciones, examine, use_item, dados, random, notify y `enemy.sfx`; stats/objetos suenan solos según `game.json → audio`. La IA devuelve un `tono` (lista cerrada, `PromptRenderer::TONES` = `TONES` en AiProvider.ts) que suena como reacción (`src/audio/tones.ts`, `audio.toneSfx`).
 - **Los JSON de `public/games/calabosos/scenes/` son la fuente de verdad** (se editan a mano o con el editor).

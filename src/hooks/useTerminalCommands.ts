@@ -21,6 +21,18 @@ import type { SaveData } from '../utils/storage';
 import { getAiClient, getLastAiLine, noteAiLine } from '../ai/session';
 import { toneSfx } from '../audio/tones';
 import { setAiPreference, getAiPreference } from '../ai/AiClient';
+import { sudoQuip } from '../utils/sudo';
+
+/** Superpoderes del modo sudo (los que no cambian de escena; /atras e /ir viven en App.tsx) */
+const SUDO_POWERS = new Set(['poderes', 'escenas', 'estado', 'dar', 'quitar', 'dinero', 'stat', 'flag', 'curar']);
+
+export const SUDO_HELP = `[bold yellow]⚡ Superpoderes[/bold yellow]
+[yellow]/atras[/yellow] [dim][n][/dim] - Vuelve n escenas atrás (default 1), con el estado que tenías ahí
+[yellow]/ir[/yellow] [dim]<escena>[/dim] - Salta a cualquier escena · [yellow]/escenas[/yellow] [dim][filtro][/dim] - Lista las escenas
+[yellow]/dar[/yellow] [dim]<objeto> [n][/dim] · [yellow]/quitar[/yellow] [dim]<objeto>[/dim] - Objetos (por id o nombre: /dar sal 2)
+[yellow]/dinero[/yellow] [dim]<n>[/dim] · [yellow]/stat[/yellow] [dim]<nombre> <valor>[/dim] · [yellow]/flag[/yellow] [dim]<nombre> on|off[/dim] · [yellow]/curar[/yellow]
+[yellow]/estado[/yellow] - Stats, flags, inventario y escena actual
+[yellow]/sudo salir[/yellow] - Volver a ser mortal`;
 
 export function useTerminalCommands() {
   const addEntry = useAppStore((s) => s.addEntry);
@@ -201,6 +213,92 @@ export function useTerminalCommands() {
       type: 'system',
       content: `[green]Avance borrado.[/green] Escribe [bold]run ${gameName}[/bold] para empezar desde cero. [dim]El narrador fingirá que no te conoce. Lo hace bien.[/dim]`,
     });
+  };
+
+  /** Superpoderes (modo sudo) que no cambian de escena. /atras e /ir están en App.tsx (necesitan startScene) */
+  const sudoPower = (name: string, args: string[]) => {
+    const state = useAppStore.getState();
+    const engine = state.engine;
+    if (!engine) {
+      addEntry({ type: 'system', content: '[dim]Primero abre un juego: sudo run calabosos[/dim]' });
+      return;
+    }
+    const items = engine.items ?? {};
+    const findItem = (q: string) => {
+      const low = q.toLowerCase();
+      return Object.keys(items).find((id) => id === low) ?? Object.keys(items).find((id) => id.includes(low) || items[id].name.toLowerCase().includes(low));
+    };
+    const money = ['dinero', 'gold', 'money', 'coins', 'oro'].find((k) => typeof engine.state.stats[k] === 'number');
+    const done = (msg: string, kind: Parameters<typeof sudoQuip>[0], sound: string) => {
+      sfx.play(sound);
+      addEntry({ type: 'system', content: `[bold yellow]⚡ ${msg}[/bold yellow] [dim]${engine.localize(sudoQuip(kind))}[/dim]` });
+      state.setPlayerState({ ...engine.state });
+    };
+    switch (name) {
+      case 'poderes':
+        addEntry({ type: 'system', content: SUDO_HELP });
+        return;
+      case 'escenas': {
+        const filter = (args[0] ?? '').toLowerCase();
+        const ids = engine.sceneIds.filter((id) => id.includes(filter));
+        addEntry({ type: 'system', content: `[cyan]Escenas${filter ? ` con «${filter}»` : ''} (${ids.length}):[/cyan]\n[dim]${ids.join(' · ')}[/dim]` });
+        return;
+      }
+      case 'estado': {
+        const s = engine.state;
+        const stats = Object.entries(s.stats).filter(([k]) => !k.startsWith('_')).map(([k, v]) => `${k}=${typeof v === 'string' && v.length > 30 ? `${v.slice(0, 30)}…` : v}`).join(' · ');
+        const flags = Object.entries(s.flags).filter(([, v]) => v).map(([k]) => k).join(', ') || 'ninguno';
+        const inv = s.inventory.map((id) => items[id]?.name ?? id).join(', ') || 'nada';
+        addEntry({ type: 'system', content: `[cyan]Escena:[/cyan] ${state.currentScene}\n[cyan]Stats:[/cyan] ${stats}\n[cyan]Flags:[/cyan] ${flags}\n[cyan]Inventario:[/cyan] ${inv}` });
+        return;
+      }
+      case 'dar': {
+        const id = findItem(args[0] ?? '');
+        const n = Math.max(1, Math.min(20, parseInt(args[1] ?? '1') || 1));
+        if (!id) { addEntry({ type: 'system', content: '[yellow]No existe ese objeto.[/yellow] [dim]Ej: /dar sal 2 · /dar cuchara[/dim]' }); return; }
+        engine.cheat({ inventory: Array(n).fill(id) });
+        done(`Te das ${items[id].name}${n > 1 ? ` ×${n}` : ''}.`, 'dar', 'objeto');
+        return;
+      }
+      case 'quitar': {
+        const id = findItem(args[0] ?? '');
+        if (!id || !engine.state.inventory.includes(id)) { addEntry({ type: 'system', content: '[yellow]No llevas eso.[/yellow]' }); return; }
+        engine.cheat({ removeInventory: [id] });
+        done(`Te quitas ${items[id].name}.`, 'quitar', 'desinfle');
+        return;
+      }
+      case 'dinero': {
+        const n = parseInt(args[0] ?? '');
+        if (!money || isNaN(n)) { addEntry({ type: 'system', content: '[yellow]Uso: /dinero 100[/yellow]' }); return; }
+        engine.cheat({ setStats: { [money]: n } });
+        done(`Ahora tienes ${n} monedas.`, 'dinero', 'monedas');
+        return;
+      }
+      case 'stat': {
+        const [key, raw] = args;
+        if (!key || raw === undefined) { addEntry({ type: 'system', content: '[yellow]Uso: /stat miedo 0 · /stat sexi 100[/yellow]' }); return; }
+        const value = isNaN(Number(raw)) ? raw : Number(raw);
+        engine.cheat({ setStats: { [key]: value } });
+        done(`${key} = ${value}.`, 'stat', 'magia');
+        return;
+      }
+      case 'flag': {
+        const [key, raw] = args;
+        if (!key) { addEntry({ type: 'system', content: '[yellow]Uso: /flag nerly_joined on[/yellow]' }); return; }
+        const on = !['off', 'no', 'false', '0'].includes((raw ?? 'on').toLowerCase());
+        engine.cheat({ flags: { [key]: on } });
+        done(`Flag ${key} ${on ? 'activado' : 'desactivado'}.`, 'flag', 'magia');
+        return;
+      }
+      case 'curar': {
+        const stats: Record<string, number> = {};
+        for (const k of ['ganas_de_vivir', 'vida', 'hp', 'salud']) if (typeof engine.state.stats[k] === 'number') stats[k] = 100;
+        for (const k of ['miedo', 'pis']) if (typeof engine.state.stats[k] === 'number') stats[k] = 0;
+        engine.cheat({ setStats: stats });
+        done('Curación completa.', 'curar', 'curar');
+        return;
+      }
+    }
   };
 
   /** /tirar IN3: tirar una unidad de un objeto (IN[n] como en el panel de inventario) */
@@ -400,7 +498,29 @@ ${lines.join('\n')}
   };
 
   const processGameCommand = async (name: string, args: string[], input: string): Promise<boolean> => {
+    // Superpoderes: solo en modo sudo
+    if (SUDO_POWERS.has(name)) {
+      if (!useAppStore.getState().sudo) {
+        addEntry({ type: 'system', content: '[red]Permiso denegado.[/red] [dim]¿Quién te crees? Esto es solo para quien sabe la contraseña.[/dim]' });
+        return true;
+      }
+      sudoPower(name, args);
+      return true;
+    }
     switch (name) {
+      case 'sudo': {
+        const st = useAppStore.getState();
+        if ((args[0] ?? '').toLowerCase() === 'salir') {
+          st.setSudo(false);
+          addEntry({ type: 'system', content: '[dim]Superpoderes desactivados. Vuelves a ser un mortal cualquiera.[/dim]' });
+        } else if (st.sudo) {
+          addEntry({ type: 'system', content: '[dim]Ya tienes superpoderes. /poderes para verlos · /sudo salir para dejarlos.[/dim]' });
+        } else {
+          st.setSudoPrompt({ tries: 0 });
+          addEntry({ type: 'system', content: `[dim][sudo] contraseña para ${useAppStore.getState().username || 'ti'}:[/dim]` });
+        }
+        return true;
+      }
       case 'help':
         gameHelp();
         return true;
@@ -525,6 +645,16 @@ ${lines.join('\n')}
 
       // Shell commands
       switch (name) {
+        case 'sudo': {
+          if (useAppStore.getState().sudo) {
+            if ((args[0] ?? '').toLowerCase() === 'run' && args[1]) await handleRun(args[1]);
+            else addEntry({ type: 'system', content: '[dim]Ya tienes superpoderes. Prueba: sudo run calabosos[/dim]' });
+            break;
+          }
+          useAppStore.getState().setSudoPrompt({ tries: 0, run: (args[0] ?? '').toLowerCase() === 'run' ? args[1] : undefined });
+          addEntry({ type: 'system', content: `[dim][sudo] contraseña para ${useAppStore.getState().username || 'ti'}:[/dim]` });
+          break;
+        }
         case 'help':
           addEntry({
             type: 'system',

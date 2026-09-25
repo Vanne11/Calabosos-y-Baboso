@@ -70,6 +70,14 @@ interface AppStore {
   resumeOffer: SaveData | null;
   setResumeOffer: (save: SaveData | null) => void;
 
+  // Modo superpoderes (sudo): activo, contraseña pendiente (y juego a abrir después) e historial para /atras
+  sudo: boolean;
+  setSudo: (on: boolean) => void;
+  sudoPrompt: { run?: string; tries: number } | null;
+  setSudoPrompt: (p: { run?: string; tries: number } | null) => void;
+  sceneHistory: { scene: string; state: PlayerState }[];
+  setSceneHistory: (h: { scene: string; state: PlayerState }[]) => void;
+
   // Image panel
   currentImage: string | null;
   setCurrentImage: (image: string | null) => void;
@@ -239,6 +247,13 @@ export const useAppStore = create<AppStore>((set) => ({
   resumeOffer: null,
   setResumeOffer: (resumeOffer) => set({ resumeOffer }),
 
+  sudo: false,
+  setSudo: (sudo) => set({ sudo }),
+  sudoPrompt: null,
+  setSudoPrompt: (sudoPrompt) => set({ sudoPrompt }),
+  sceneHistory: [],
+  setSceneHistory: (sceneHistory) => set({ sceneHistory }),
+
   // Image
   currentImage: null,
   setCurrentImage: (currentImage) => set({ currentImage }),
@@ -312,6 +327,7 @@ export const useAppStore = create<AppStore>((set) => ({
       usingItem: null,
       codexMenu: false,
       resumeOffer: null,
+      sceneHistory: [],
       pendingSlotAction: null,
       inventoryExpanded: false,
       widgetDimmed: false,

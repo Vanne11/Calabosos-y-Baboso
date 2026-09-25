@@ -47,6 +47,14 @@ const AUDIO = [
   'audio/rpgchip12_the_evil_one.ogg',
 ];
 
+/** Tope por archivo: el navegador puede no disparar nunca canplaythrough (pestaña en segundo plano,
+ * política de autoplay) y el arranque quedaba colgado. Pasado el tope se sigue igual. */
+const ASSET_TIMEOUT_MS = 4000;
+
+function withTimeout(p: Promise<void>): Promise<void> {
+  return Promise.race([p, new Promise<void>((resolve) => setTimeout(resolve, ASSET_TIMEOUT_MS))]);
+}
+
 function preloadImage(src: string): Promise<void> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -79,7 +87,7 @@ export function preloadDemoAssets(
 
   return Promise.all(
     allAssets.map((load) =>
-      load().then(() => {
+      withTimeout(load()).then(() => {
         loaded++;
         onProgress?.(loaded, total);
       })

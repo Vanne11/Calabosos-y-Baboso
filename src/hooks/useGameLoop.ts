@@ -19,6 +19,9 @@ import { setAiClient, noteAiLine } from '../ai/session';
 const DEFAULT_AI_ENDPOINT = `${import.meta.env.BASE_URL}api/`;
 import type { PlayerAction, StepResult } from '../types/engine';
 
+/** Escenas que recuerda /atras */
+const SCENE_HISTORY_MAX = 60;
+
 /** Pista (una vez por sesión) de que las líneas de la IA se pueden calificar */
 const RATE_HINT =
   '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal — así el narrador aprende (o finge que aprende). ¿Quieres decirle algo? /narrador <texto>[/dim italic]';
@@ -57,6 +60,10 @@ export function useGameLoop() {
 
       setCurrentScene(sceneId);
       if (debugActive) debugLog(`Entrando a escena: ${sceneId}`, 'ROUTE');
+
+      // Historial para /atras (modo superpoderes): escena y estado al entrar
+      const history = useAppStore.getState().sceneHistory;
+      useAppStore.getState().setSceneHistory([...history, { scene: sceneId, state: structuredClone(engine.state) }].slice(-SCENE_HISTORY_MAX));
 
       // Autoguardado en cada escena (espacio aparte): "Continuar" al volver a abrir el juego
       const state = useAppStore.getState();

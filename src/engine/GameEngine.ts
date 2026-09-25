@@ -169,6 +169,11 @@ export class GameEngine {
     return this.manifest.items || {};
   }
 
+  /** Ids de todas las escenas (modo superpoderes: /escenas, /ir) */
+  get sceneIds(): string[] {
+    return Object.keys(this.scenes.scenes);
+  }
+
   private stackInventory(): { id: string; name: string; count: number }[] {
     const items = this.manifest.items || {};
     const map = new Map<string, number>();
@@ -550,7 +555,7 @@ export class GameEngine {
   }
 
   /** Resuelve variables y género en todos los textos de un resultado (los ids y rutas no llevan llaves) */
-  private localize<T>(value: T): T {
+  localize<T>(value: T): T {
     if (typeof value === 'string') return (value.includes('{') ? interpolate(value, this._state, this.manifest.gender) : value) as T;
     if (Array.isArray(value)) return value.map((v) => this.localize(v)) as T;
     if (value && typeof value === 'object') {
@@ -2191,6 +2196,11 @@ export class GameEngine {
     if (i < 0) return;
     inventory.splice(i, 1);
     this._state = { ...this._state, inventory };
+  }
+
+  /** Modo superpoderes (sudo): aplica efectos directamente (dar objetos, cambiar stats y flags...) */
+  cheat(effects: Effects): void {
+    this.applyState(effects);
   }
 
   /** /tirar: deshacerse de una unidad de un objeto fuera de combate. No se pueden tirar los que se guardan (keep) */

@@ -93,6 +93,9 @@ Cada objeto tiene ahora un uso (las opciones solo aparecen si lo llevas):
 Cada escena con decisiones o mecánicas (entre corchetes: dados, combate, chat IA, tienda...). 🎒 = solo si llevas
 el objeto · 🪙 = solo si tienes las monedas. Marcar al probar.
 
+Atajo: `sudo run calabosos` → `/atras` para volver a la decisión anterior, `/ir <escena>` para saltar,
+`/dar <objeto>` y `/dinero <n>` para las ramas 🎒 y 🪙 (ver `docs/comandos.md`).
+
 ### Prólogo
 
 - [ ] `start`: Masculino · Femenino · Andrógino · Misterioso (con capucha, para ocultar la vergüenza)
