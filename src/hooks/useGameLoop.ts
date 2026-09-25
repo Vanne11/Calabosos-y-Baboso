@@ -148,13 +148,13 @@ export function useGameLoop() {
       prefetched = null;
       if (done || !value || stale()) break;
 
-      // Mientras se muestra este resultado se pide el siguiente: si es un turno del jugador (decisión, chat,
-      // escribir...), el "Presiona ENTER" de este se salta solo. Nunca se pide por adelantado detrás de un
-      // turno del jugador: el motor está esperando su acción y ese resultado se perdería.
+      // Mientras se muestra este resultado se pide el siguiente: si es algo que se responde escribiendo
+      // (decisión, chat, nombre, revisar), el "Presiona ENTER" de este se salta solo. Nunca se pide por
+      // adelantado detrás de un turno del jugador: el motor está esperando su acción y ese resultado se perdería.
       if (!PLAYER_TURNS.has(value.type)) {
         const next = iterator.next();
         prefetched = next;
-        upcomingTurn = next.then((r) => !r.done && !!r.value && PLAYER_TURNS.has(r.value.type)).catch(() => false);
+        upcomingTurn = next.then((r) => !r.done && !!r.value && TYPED_TURNS.has(r.value.type)).catch(() => false);
       } else {
         upcomingTurn = null;
       }
@@ -836,7 +836,14 @@ const PLAYER_TURNS = new Set<StepResult['type']>([
   'puzzle_prompt', 'examine_prompt', 'use_item_prompt', 'timed_choice_prompt', 'level_up_prompt', 'chat_prompt',
 ]);
 
-/** Si lo que viene después del resultado actual es un turno del jugador (entonces no hace falta Enter) */
+/**
+ * Turnos que se responden escribiendo en la entrada: antes de ellos el Enter sobra. Los demás (tienda, combate,
+ * crafteo, dados, acertijo, decisión con tiempo, usar objeto...) ocupan la pantalla o corren un reloj:
+ * ahí el Enter se mantiene para que el jugador termine de leer.
+ */
+const TYPED_TURNS = new Set<StepResult['type']>(['choice_prompt', 'chat_prompt', 'input_prompt', 'examine_prompt']);
+
+/** Si lo que viene después del resultado actual se responde escribiendo (entonces no hace falta Enter) */
 let upcomingTurn: Promise<boolean> | null = null;
 
 function waitForEnterKey(): Promise<void> {
