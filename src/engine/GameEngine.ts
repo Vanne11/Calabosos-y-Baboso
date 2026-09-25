@@ -67,6 +67,15 @@ const FREE_TEXT_LABEL = '✍️ Hacer otra cosa…';
 const FREE_TEXT_PROMPT = '¿Qué haces? Escríbelo con tus palabras.';
 const FREE_TEXT_USES = 2;
 
+/** /narrador: valores por defecto */
+const NARRATOR_CHAT_USES = 10;
+const NARRATOR_CHAT_COOLDOWN = 2;
+
+/** Resultado de hablarle al narrador con /narrador */
+export type NarratorTalk =
+  | { ok: true; text: string; tone?: NarrateReply['tone']; lineId?: number }
+  | { ok: false; reason: 'no_ai' | 'limit' | 'cooldown' | 'failed'; scenesLeft?: number };
+
 /** Pasos que no cambian el estado: se puede pedir por adelantado la narración con IA que viene después */
 const PASSIVE_STEPS = new Set(['dialog', 'sound', 'notify', 'wait']);
 
@@ -167,6 +176,12 @@ export class GameEngine {
   }
 
   /** Configuración de audio del juego (música de situaciones, efectos automáticos) */
+  /** Nombre e imagen del narrador (para mostrar sus respuestas fuera de la secuencia, ej. /narrador) */
+  get narrator(): { id: string; name: string; image?: string } {
+    const id = this.getNarratorId();
+    return { id, name: this.getCharacterName(id), image: this.manifest.characters[id]?.image };
+  }
+
   get audioConfig() {
     return this.manifest.audio;
   }
@@ -2006,13 +2021,48 @@ export class GameEngine {
     }
   }
 
+  /** Situación actual para la IA: nombre y descripción del escenario */
+  private sceneSituation(): string {
+    const scene = this.scenes.scenes[this._currentScene];
+    return [scene?.scenario?.name, scene?.scenario ? this.getScenarioDescription(scene) : ''].filter(Boolean).join(': ');
+  }
+
+  /**
+   * /narrador: el jugador le habla al narrador fuera de la historia. Limitado por partida y con espera entre
+   * charlas (en escenas). No cambia la historia: solo memoria (lo que escribió, lo que el narrador dijo).
+   */
+  async talkToNarrator(message: string): Promise<NarratorTalk> {
+    const config = this.manifest.ai?.narratorChat;
+    const text = message.trim().slice(0, 400);
+    if (!this.manifest.ai || config === false || !this._ai?.available('narrate') || !text) return { ok: false, reason: 'no_ai' };
+    const maxUses = config?.maxUses ?? NARRATOR_CHAT_USES;
+    const cooldown = config?.cooldownScenes ?? NARRATOR_CHAT_COOLDOWN;
+    const used = this._state.narrador;
+    if (used && used.usos >= maxUses) return { ok: false, reason: 'limit' };
+    const since = (this._state.sceneCount ?? 0) - (used?.ultima ?? -Infinity);
+    if (used && since < cooldown) return { ok: false, reason: 'cooldown', scenesLeft: cooldown - since };
+
+    this._state = { ...this._state, habla: pushRecent(this._state.habla, text, HABLA_MAX) };
+    const reply = await this._ai.narrate(config?.prompt ?? 'charla', this.aiVars({ situacion: this.sceneSituation() }), text);
+    if (!reply) return { ok: false, reason: 'failed' };
+    const line = sanitizeAiText(reply.text);
+    const narrator = this.getNarratorId();
+    this._state = {
+      ...this._state,
+      iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX),
+      narrador: { usos: (used?.usos ?? 0) + 1, ultima: this._state.sceneCount ?? 0 },
+    };
+    // El narrador se acuerda de lo que le dijiste (sale en sus chats, como el final secreto)
+    this.applyState({ npcMemo: { [narrator]: `BOB lo interrumpió para decirle «${text.length > 100 ? `${text.slice(0, 99)}…` : text}»` } });
+    this.emit('narrator_chat', { uses: this._state.narrador!.usos });
+    return { ok: true, text: line, tone: reply.tone, lineId: reply.lineId };
+  }
+
   /** Configuración efectiva de la acción libre: la del paso sobre la del juego */
   private freeTextConfig(step: ChoiceStep) {
     const base = this.manifest.ai?.freeText ?? {};
     const own = typeof step.freeText === 'object' ? step.freeText : {};
-    const scenario = this.scenes.scenes[this._currentScene]?.scenario;
-    const situation =
-      own.situation ?? base.situation ?? [scenario?.name, scenario ? this.getScenarioDescription(this.scenes.scenes[this._currentScene]) : ''].filter(Boolean).join(': ');
+    const situation = own.situation ?? base.situation ?? this.sceneSituation();
     return {
       label: own.label ?? base.label ?? FREE_TEXT_LABEL,
       prompt: own.prompt ?? base.prompt ?? FREE_TEXT_PROMPT,

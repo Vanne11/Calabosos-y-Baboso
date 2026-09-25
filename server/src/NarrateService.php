@@ -31,7 +31,7 @@ final class NarrateService
      * @param mixed $rawVars
      * @return array<string, mixed> text, tone, lineId
      */
-    public function narrate(string $sessionId, string $name, $rawVars): array
+    public function narrate(string $sessionId, string $name, $rawVars, string $message = ''): array
     {
         if (!$this->settings->get('narrate_enabled')) {
             throw new ApiException(503, 'mode_disabled', 'Narración con IA desactivada');
@@ -58,13 +58,23 @@ final class NarrateService
         $params = $prompt['params'];
         $maxChars = (int) ($params['max_chars'] ?? 400);
         $system = (new PromptRenderer($repo))->system($prompt, $vars, PromptRenderer::narrateContract($maxChars));
+        // Solo los prompts con player_message (ej. narrate.charla) reciben lo que escribió el jugador, como mensaje aparte
+        $message = trim(str_replace(["\r\n", "\r"], "\n", $message));
+        if (!empty($params['player_message'])) {
+            if ($message === '') {
+                throw new ApiException(400, 'empty_message', 'Mensaje vacío');
+            }
+            $userMessage = PromptRenderer::truncate($message, $this->settings->limit('max_input_chars'));
+        } else {
+            $userMessage = 'Escribe la línea ahora.';
+        }
 
         try {
             $result = $this->ai->chat(
                 (string) $this->settings->get('model'),
                 [
                     ['role' => 'system', 'content' => $system],
-                    ['role' => 'user', 'content' => 'Escribe la línea ahora.'],
+                    ['role' => 'user', 'content' => $userMessage],
                 ],
                 (float) ($params['temperature'] ?? 1.0),
                 // Margen para el envoltorio json ({"line": ..., "tono": ...})

@@ -20,7 +20,8 @@ const DEFAULT_AI_ENDPOINT = `${import.meta.env.BASE_URL}api/`;
 import type { PlayerAction, StepResult } from '../types/engine';
 
 /** Pista (una vez por sesión) de que las líneas de la IA se pueden calificar */
-const RATE_HINT = '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal — así el narrador aprende (o finge que aprende).[/dim italic]';
+const RATE_HINT =
+  '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal — así el narrador aprende (o finge que aprende). ¿Quieres decirle algo? /narrador <texto>[/dim italic]';
 
 export function useGameLoop() {
   const engine = useAppStore((s) => s.engine);

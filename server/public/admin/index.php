@@ -459,7 +459,8 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
             ? PromptRenderer::freeActionContract((int) ($params['max_chars'] ?? 400))
             : ($kind === 'narrate' ? PromptRenderer::narrateContract((int) ($params['max_chars'] ?? 400)) : ''));
     $system = $renderer->system($prompt, $vars, $contract);
-    $userMessage = $isChat || $isFree ? trim((string) ($_POST['test_message'] ?? '')) : 'Escribe la línea ahora.';
+    $withMessage = $isChat || $isFree || !empty($params['player_message']);
+    $userMessage = $withMessage ? trim((string) ($_POST['test_message'] ?? '')) : 'Escribe la línea ahora.';
 
     $guard = new Guard(App::db(), $settings);
     try {

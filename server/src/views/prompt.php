@@ -44,7 +44,7 @@ $paramsValue = (string) ($_POST['params'] ?? json_encode((object) ($params ?: []
       <label>Variables de prueba (JSON)
         <textarea name="test_vars" rows="5" class="mono"><?= e($testVars) ?></textarea>
       </label>
-      <?php if ($meta['kind'] === 'chat' || $meta['kind'] === 'libre'): ?>
+      <?php if ($meta['kind'] === 'chat' || $meta['kind'] === 'libre' || !empty($active['params']['player_message'])): ?>
       <label>Mensaje del jugador <input name="test_message" value="<?= e($testMessage) ?>"></label>
       <?php endif; ?>
       <div class="actions">

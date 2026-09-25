@@ -180,6 +180,17 @@ export interface AiConfig {
   freeText?: FreeTextDef;
   /** Probabilidad (0-1) de que el narrador comente una decisión con tags (default: 0) */
   reactChance?: number;
+  /** /narrador: hablarle al narrador en cualquier momento (false = desactivado) */
+  narratorChat?: false | NarratorChatDef;
+}
+
+export interface NarratorChatDef {
+  /** Veces por partida (default: 10) */
+  maxUses?: number;
+  /** Escenas que hay que avanzar entre una charla y otra (default: 2) */
+  cooldownScenes?: number;
+  /** Prompt del servidor (narrate.<prompt>, default: "charla") */
+  prompt?: string;
 }
 
 /** Acción libre en una decisión: la IA lleva lo escrito a una opción o a una consecuencia de la lista */

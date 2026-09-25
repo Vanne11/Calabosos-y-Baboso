@@ -127,8 +127,12 @@ export class AiClient implements AiProvider {
     return !!c.modes[feature];
   }
 
-  async narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null> {
-    const res = await this.post<{ text?: string; tone?: unknown; lineId?: unknown }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
+  async narrate(prompt: string, vars: Record<string, string>, message?: string): Promise<NarrateReply | null> {
+    const res = await this.post<{ text?: string; tone?: unknown; lineId?: unknown }>(
+      'api/narrate.php',
+      { prompt, vars, ...(message ? { message } : {}) },
+      TIMEOUT.narrate
+    );
     if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
     return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null, lineId: lineId(res.lineId) };
   }

@@ -68,7 +68,8 @@ export interface NarrateReply {
 export interface AiProvider {
   /** Si una función de IA está disponible ahora (config del servidor + preferencia del jugador) */
   available(feature: AiFeature): boolean;
-  narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null>;
+  /** message: lo que escribió el jugador (solo prompts con player_message en el servidor, ej. "charla") */
+  narrate(prompt: string, vars: Record<string, string>, message?: string): Promise<NarrateReply | null>;
   /** Interpreta lo que el jugador escribió en una decisión (prompt libre.<prompt> del servidor) */
   freeAction(prompt: string, request: FreeActionRequest): Promise<FreeActionReply | null>;
   chatStart(

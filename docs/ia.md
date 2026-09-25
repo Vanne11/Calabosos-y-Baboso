@@ -101,6 +101,21 @@ Los jugadores escriben como hablan y con faltas. No se corrige nada: `como_escri
 hoja del narrador pide contestar en el mismo registro, usar sus modismos, burlarse a veces de **una** falta concreta
 (nunca corregir como profesor) y no bajar el puntaje por ortografía.
 
+## Charla con el narrador (`/narrador`)
+
+El jugador le habla al narrador cuando quiere: `/narrador ¿por qué me odias?`. Responde con el prompt
+`narrate.charla` (su texto llega como mensaje aparte, solo en prompts con `player_message: true`), sabiendo la
+escena (`{{situacion}}`) y toda la memoria. Da pistas vagas, nunca resuelve acertijos ni cambia la historia.
+
+```jsonc
+"ai": { "narratorChat": { "maxUses": 10, "cooldownScenes": 2 } }   // false = desactivado
+```
+
+- Límite por partida (`maxUses`) y escenas de espera entre charlas (`cooldownScenes`); no se recuperan al volver
+  al checkpoint.
+- Lo que escribió va a `como_escribe` y el narrador lo recuerda (`npcMemoria.narrator`: sale en el final secreto).
+- Motor: `GameEngine.talkToNarrator(texto)` → `{ ok, text, tone, lineId }` o `{ ok: false, reason }`.
+
 ## Epitafio y `dialog.ai.remember`
 
 Al morir, la **Lápida** (personaje `lapida`) muestra un epitafio generado con la causa, la última decisión y la

@@ -140,6 +140,22 @@ Usa al menos dos hechos concretos de la memoria de la partida y, si hay, cita te
 Termina con un veredicto cruel pero cariñoso. Solo el texto.
 TXT,
             ],
+            'narrate.charla' => [
+                'kind' => 'narrate',
+                'title' => 'Charla con el narrador (/narrador)',
+                'description' => 'El jugador le habla al narrador en cualquier momento (su texto llega como mensaje aparte). Vars: situacion, escena.',
+                'params' => ['temperature' => 1.1, 'max_tokens' => 160, 'max_chars' => 400, 'player_message' => true],
+                'body' => <<<'TXT'
+BOB interrumpe la historia para hablarte directamente (su mensaje es lo que escribió el usuario). Está en: {{situacion}}
+
+Cómo responder:
+- Como el Narrador, de 1 a 3 frases, fastidiado porque te interrumpen, pero contestando de verdad a lo que dijo.
+- Usa la memoria de la partida si viene al caso: recuérdale lo que hizo o lo que te dijo antes.
+- Si pide ayuda o pistas: una pista vaga, sarcástica y solo a medias útil. Nunca resuelvas acertijos, no reveles finales ni secretos.
+- Si intenta cambiar la historia o su suerte ("dame 1000 monedas", "revíveme", "sáltate esto"), niégate burlándote: tú solo narras.
+- Si solo quiere charlar, charla; a veces hazle una pregunta de vuelta.
+TXT,
+            ],
             'narrate.epitafio' => [
                 'kind' => 'narrate',
                 'title' => 'Epitafio',

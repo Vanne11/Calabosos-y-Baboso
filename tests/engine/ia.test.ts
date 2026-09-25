@@ -426,3 +426,60 @@ describe('chats con consecuencias: gestos, recuerdo y memoria por personaje', ()
     expect(engine.state.memoria?.at(-1)).toBe('su lápida decía «Aquí yace BOB, que rimó «pan» con «pan».»');
   });
 });
+
+describe('/narrador: charla con el narrador', () => {
+  const m = baseManifest({
+    characters: { narrator: { name: 'Narrador', description: '', role: 'narrator' } },
+    initialStats: { sexi: 50 },
+    ai: { narratorChat: { maxUses: 2, cooldownScenes: 1 } },
+  });
+  const sc = {
+    a: { scenario: { name: 'Plaza', description: 'huele a pescado' }, sequence: [{ type: 'effects' as const, effects: { checkpoint: true } }] },
+    b: { sequence: [] },
+  };
+  function narrAi(reply: NarrateReply | null = { text: 'Déjame [trabajar].', tone: 'enojo', lineId: 3 }): AiProvider & { calls: Call[] } {
+    const calls: Call[] = [];
+    return {
+      calls,
+      available: () => true,
+      narrate: async (p, v, msg) => { calls.push(['narrate', p, v, msg]); return reply; },
+      freeAction: async () => null,
+      chatStart: async () => null,
+      chatSay: async () => null,
+      chatGiveUp: async () => {},
+    };
+  }
+
+  it('manda el mensaje aparte con la situación; guarda lo dicho y respeta la espera y el límite', async () => {
+    const engine = makeEngine(m, sc);
+    const ai = narrAi();
+    engine.setAiProvider(ai);
+    await drive(engine, 'a', []);
+    expect(await engine.talkToNarrator('  ola narrador ke onda  ')).toMatchObject({ ok: true, text: 'Déjame «trabajar».', tone: 'enojo', lineId: 3 });
+    expect(ai.calls[0]).toMatchObject(['narrate', 'charla', { situacion: 'Plaza: huele a pescado' }, 'ola narrador ke onda']);
+    expect(engine.state.habla).toEqual(['ola narrador ke onda']);
+    expect(engine.state.npcMemoria?.narrator).toEqual(['BOB lo interrumpió para decirle «ola narrador ke onda»']);
+    // Misma escena: hay que esperar
+    expect(await engine.talkToNarrator('otra vez')).toMatchObject({ ok: false, reason: 'cooldown', scenesLeft: 1 });
+    await drive(engine, 'b', []);
+    expect((await engine.talkToNarrator('otra vez')).ok).toBe(true);
+    await drive(engine, 'b', []);
+    expect(await engine.talkToNarrator('y otra')).toMatchObject({ ok: false, reason: 'limit' });
+    // Volver al checkpoint no devuelve las charlas gastadas
+    engine.restoreCheckpoint();
+    expect(engine.state.narrador?.usos).toBe(2);
+  });
+
+  it('sin IA, desactivado o si falla no gasta usos', async () => {
+    const engine = makeEngine(m, sc);
+    expect(await engine.talkToNarrator('hola')).toMatchObject({ ok: false, reason: 'no_ai' });
+    engine.setAiProvider(narrAi(null));
+    await drive(engine, 'a', []);
+    expect(await engine.talkToNarrator('hola')).toMatchObject({ ok: false, reason: 'failed' });
+    expect(engine.state.narrador).toBeUndefined();
+
+    const off = makeEngine(baseManifest({ ...m, ai: { narratorChat: false } }), sc);
+    off.setAiProvider(narrAi());
+    expect(await off.talkToNarrator('hola')).toMatchObject({ ok: false, reason: 'no_ai' });
+  });
+});

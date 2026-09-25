@@ -16,7 +16,8 @@ import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
 import { saveGame, loadSave, listSlots } from '../utils/storage';
 import type { SaveData } from '../utils/storage';
-import { getAiClient, getLastAiLine } from '../ai/session';
+import { getAiClient, getLastAiLine, noteAiLine } from '../ai/session';
+import { toneSfx } from '../audio/tones';
 import { setAiPreference, getAiPreference } from '../ai/AiClient';
 
 export function useTerminalCommands() {
@@ -57,6 +58,7 @@ export function useTerminalCommands() {
 [yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
 [yellow][bold]/ia[/bold][/yellow] [dim][on|off][/dim] - Estado del narrador con IA, o encenderlo/apagarlo.
 [yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
+[yellow][bold]/narrador[/bold][/yellow] [dim]<texto>[/dim] - Háblale al narrador cuando quieras (con IA). Pocas veces por partida: tiene sindicato.
 [yellow][bold]/bien[/bold][/yellow] o [yellow][bold]/mal[/bold][/yellow] - Califica la última línea del narrador con IA. Le importa. Mucho. No se lo digas.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
 
@@ -117,6 +119,48 @@ export function useTerminalCommands() {
       type: 'system',
       content: `${line}\nTu preferencia: ${getAiPreference() ? '[green]activada[/green]' : '[yellow]apagada[/yellow]'} [dim](/ia on · /ia off)[/dim]`,
     });
+  };
+
+  /** /narrador <texto>: el jugador le habla al narrador fuera de la historia */
+  const talkToNarrator = async (message: string) => {
+    const state = useAppStore.getState();
+    const engine = state.engine;
+    if (!engine) {
+      addEntry({ type: 'system', content: '[dim]No hay partida en curso. El narrador está de vacaciones.[/dim]' });
+      return;
+    }
+    if (state.pendingResult?.type === 'chat_prompt') {
+      addEntry({ type: 'system', content: '[dim]Estás en medio de una conversación. El narrador espera su turno (y lo cobra).[/dim]' });
+      return;
+    }
+    if (!message.trim()) {
+      addEntry({ type: 'system', content: '[dim]Uso: /narrador <lo que quieras decirle>. Ejemplo: /narrador ¿por qué me odias?[/dim]' });
+      return;
+    }
+    addEntry({ type: 'system', content: `[cyan]> (al narrador) ${message.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
+    addEntry({ type: 'system', content: '[dim italic]El narrador deja lo que estaba haciendo. Suspira…[/dim italic]' });
+    const res = await engine.talkToNarrator(message);
+    if (!res.ok) {
+      const why: Record<typeof res.reason, string> = {
+        no_ai: '[dim]El narrador no está disponible para charlas (sin IA). Solo narra, y a regañadientes.[/dim]',
+        limit: '[yellow]Ya gastaste tus charlas con el narrador en esta partida.[/yellow] [dim]Tiene sindicato.[/dim]',
+        cooldown: `[yellow]El narrador está ocupado narrando.[/yellow] [dim]Vuelve a intentarlo en ${res.scenesLeft ?? 1} ${res.scenesLeft === 1 ? 'escena' : 'escenas'}.[/dim]`,
+        failed: '[yellow]El narrador se hizo el sordo[/yellow] [dim](sin respuesta del servidor).[/dim]',
+      };
+      addEntry({ type: 'system', content: why[res.reason] });
+      return;
+    }
+    const narrator = engine.narrator;
+    state.addEntries([
+      { type: 'dialogHeader', content: narrator.name, image: narrator.image },
+      { type: 'dialog', content: res.text },
+      ...(noteAiLine(res.lineId, res.text)
+        ? [{ type: 'system' as const, content: '[dim italic]¿Te hizo reír? /bien · ¿Fue un asco? /mal[/dim italic]' }]
+        : []),
+    ]);
+    const tone = toneSfx(res.tone ?? undefined, engine.audioConfig?.toneSfx);
+    if (tone) setTimeout(() => sfx.play(tone), 450);
+    state.setPlayerState(engine.state);
   };
 
   /** /bien y /mal: califica la última línea generada por la IA */
@@ -323,6 +367,10 @@ ${lines.join('\n')}
         return true;
       case 'ia':
         gameAi(args);
+        return true;
+      case 'narrador':
+      case 'hablar':
+        void talkToNarrator(args.join(' '));
         return true;
       case 'bien':
         void rateAiLine(1);

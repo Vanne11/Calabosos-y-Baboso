@@ -120,6 +120,9 @@ final class Db
             if ($target === 5) {
                 Seed::upgrade($this, 'Actualización: epitafio al morir');
             }
+            if ($target === 6) {
+                Seed::upgrade($this, 'Actualización: charla con el narrador (/narrador)');
+            }
         }
     }
 
@@ -261,6 +264,9 @@ CREATE TABLE prompt_examples (
     created_at TEXT NOT NULL
 );
 CREATE INDEX idx_prompt_examples_key ON prompt_examples(prompt_key);
+SQL,
+            6 => <<<'SQL'
+CREATE INDEX IF NOT EXISTS idx_ai_lines_session ON ai_lines(session_id, id);
 SQL,
         ];
     }

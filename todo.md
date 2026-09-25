@@ -63,9 +63,12 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 - [x] Pedido adelantado de `dialog.ai` mientras se leen los pasos pasivos anteriores.
 - [x] `aiReact` / `ai.reactChance` (0.2 en opciones con tags): el narrador a veces comenta la decisión.
 
-## 6. Comando `/narrador <texto>` — PENDIENTE
+## 6. Comando `/narrador <texto>` — HECHO
 
-- [ ] Hablarle al narrador en cualquier momento, con límite por acto, sabiendo escena y memoria.
+- [x] `/narrador` (o `/hablar`): el narrador responde con la escena y la memoria (prompt `narrate.charla`, mensaje aparte).
+- [x] Límite por partida (10) y espera entre charlas (2 escenas) en `ai.narratorChat`; no se recupera con el checkpoint.
+- [x] El narrador recuerda lo que le dijiste (`npcMemoria.narrator`) y lo escrito va a `como_escribe`.
+- [x] Servidor: `player_message` en prompts de narración, migración 6, prueba con mensaje en el admin.
 
 ## 7. Muertes y recap personales — HECHO
 
