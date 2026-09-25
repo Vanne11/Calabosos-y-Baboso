@@ -836,7 +836,10 @@
                 "charlatan"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En la sala del trono, frente al Rey Baboso: colosal, pegajoso y con un cristal en la frente."
+          }
         }
       ]
     },

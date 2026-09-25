@@ -22,6 +22,8 @@ import type {
   DEFAULT_RELATIONSHIP_TIERS,
   Effects,
   DialogStep,
+  ChoiceStep,
+  FreeTextConsequence,
   AiChatStep,
   ChatOutcome,
   ChatMode,
@@ -32,7 +34,7 @@ import { evaluateCondition } from './ConditionEvaluator';
 import { applyEffects } from './EffectsApplier';
 import { resolveRoll } from './DiceRoller';
 import { interpolate, pickFromPool, sanitizeAiText } from './NarrativeText';
-import type { AiProvider, GameEventSink, GameEvent } from './AiProvider';
+import type { AiProvider, GameEventSink, GameEvent, NarrateReply } from './AiProvider';
 import {
   contextVars,
   characterSheet,
@@ -59,6 +61,14 @@ const DEFAULT_METER: Record<ChatMode, string> = {
 /** Etiquetas de perfil que se muestran en el resumen para la IA (las más altas primero) */
 const PROFILE_SUMMARY_SIZE = 6;
 
+/** Acción libre: valores por defecto */
+const FREE_TEXT_LABEL = '✍️ Hacer otra cosa…';
+const FREE_TEXT_PROMPT = '¿Qué haces? Escríbelo con tus palabras.';
+const FREE_TEXT_USES = 2;
+
+/** Pasos que no cambian el estado: se puede pedir por adelantado la narración con IA que viene después */
+const PASSIVE_STEPS = new Set(['dialog', 'sound', 'notify', 'wait']);
+
 /** Máximo de reglas encadenadas tras un paso (evita bucles entre reglas) */
 const MAX_RULE_CHAIN = 5;
 
@@ -80,6 +90,8 @@ export class GameEngine {
   private _actionResolver: ((action: PlayerAction) => void) | null = null;
   private _metaListener: ((meta: Record<string, number>) => void) | null = null;
   private _ai: AiProvider | null = null;
+  /** Narraciones con IA pedidas por adelantado (se esperan al llegar al paso) */
+  private _prefetched = new Map<DialogStep, Promise<NarrateReply | null>>();
   private _eventSink: GameEventSink | null = null;
 
   constructor(manifest: GameManifest, scenes: ScenesFile, basePath: string = '') {
@@ -490,6 +502,10 @@ export class GameEngine {
     // Expire temporary traits
     this.expireTraits();
 
+    // La narración con IA del principio de la escena se pide mientras se muestra el escenario
+    this._prefetched.clear();
+    this.prefetchNarration(scene.sequence, -1);
+
     // Yield scenario if present
     if (scene.scenario) {
       const description = this.getScenarioDescription(scene);
@@ -505,11 +521,12 @@ export class GameEngine {
     }
 
     // Process sequence steps
-    for (const step of scene.sequence) {
+    for (const [index, step] of scene.sequence.entries()) {
       // Check condition
       if (step.condition && !evaluateCondition(step.condition, this._state)) {
         continue;
       }
+      if (PASSIVE_STEPS.has(step.type)) this.prefetchNarration(scene.sequence, index);
 
       const result = yield* this.processStep(step);
 
@@ -547,8 +564,10 @@ export class GameEngine {
     switch (step.type) {
       case 'dialog': {
         const dialogStep = step as DialogStep;
+        const prefetched = this._prefetched.get(dialogStep);
+        this._prefetched.delete(dialogStep);
         if (dialogStep.ai && this._ai?.available('narrate')) {
-          const ai = await this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars));
+          const ai = await (prefetched ?? this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars)));
           if (ai) {
             this._state = { ...this._state, iaDijo: pushRecent(this._state.iaDijo, sanitizeAiText(ai.text), IA_DIJO_MAX) };
             yield {
@@ -567,30 +586,8 @@ export class GameEngine {
         break;
       }
 
-      case 'choice': {
-        // Filter visible options
-        const visibleOptions = step.options.filter(
-          (opt) => !opt.condition || evaluateCondition(opt.condition, this._state)
-        );
-
-        yield {
-          type: 'choice_prompt',
-          options: visibleOptions.map((opt, i) => ({
-            text: this.text(opt.text),
-            index: i,
-          })),
-        };
-
-        // Wait for player choice
-        const action = await this.waitForAction();
-        if (action.type === 'choose') {
-          const chosen = visibleOptions[action.index];
-          if (chosen) {
-            return yield* this.handleChoiceResult(chosen);
-          }
-        }
-        break;
-      }
+      case 'choice':
+        return yield* this.processChoice(step);
 
       case 'dice': {
         yield {
@@ -1925,21 +1922,164 @@ export class GameEngine {
     }
   }
 
+  /** Decisión para la memoria de la IA, con la escena */
+  private addDecision(text: string): void {
+    this._state = { ...this._state, decisiones: pushRecent(this._state.decisiones, this.memoHere(text), DECISIONES_MAX) };
+  }
+
+  /** Pide por adelantado la próxima narración con IA si entre medio solo hay pasos que no cambian el estado */
+  private prefetchNarration(sequence: SequenceStep[], from: number): void {
+    const ai = this._ai;
+    if (!ai?.available('narrate')) return;
+    for (let i = from + 1; i < sequence.length; i++) {
+      const step = sequence[i];
+      if (step.condition && !evaluateCondition(step.condition, this._state)) continue;
+      if (step.type === 'dialog' && step.ai) {
+        if (!this._prefetched.has(step)) this._prefetched.set(step, ai.narrate(step.ai.prompt, this.aiVars(step.ai.vars)));
+        return;
+      }
+      if (!PASSIVE_STEPS.has(step.type)) return;
+    }
+  }
+
+  /** Decisión con opciones y, si hay IA, acción libre ("Hacer otra cosa…") */
+  private async *processChoice(step: ChoiceStep): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    const free = step.freeText ? this.freeTextConfig(step) : null;
+    let uses = 0;
+    for (;;) {
+      const visibleOptions = step.options.filter((opt) => !opt.condition || evaluateCondition(opt.condition, this._state));
+      const canFree = !!free && uses < free.maxUses && !!this._ai?.available('libre');
+      const options = visibleOptions.map((opt, i) => ({ text: this.text(opt.text), index: i }));
+      if (canFree) options.push({ text: free.label, index: visibleOptions.length });
+      yield { type: 'choice_prompt', options, ...(canFree ? { freeIndex: visibleOptions.length } : {}) };
+
+      const action = await this.waitForAction();
+      let text = '';
+      if (canFree && action.type === 'choice_free') {
+        text = action.text;
+      } else if (canFree && action.type === 'choose' && action.index === visibleOptions.length) {
+        yield { type: 'input_prompt', prompt: free.prompt, thinking: 'El narrador está pensando…' };
+        const input = await this.waitForAction();
+        if (input.type === 'submit_input') text = input.value;
+      } else if (action.type === 'choose') {
+        const chosen = visibleOptions[action.index];
+        return chosen ? yield* this.handleChoiceResult(chosen, { step }) : undefined;
+      } else {
+        return;
+      }
+      text = text.trim().slice(0, 400);
+      if (!text) continue;
+      uses++;
+
+      const result = yield* this.freeAction(free!, visibleOptions, text);
+      if (result === 'failed') uses = Infinity;
+      if (typeof result === 'number') {
+        return yield* this.handleChoiceResult(visibleOptions[result], { step, playerText: text });
+      }
+      // Consecuencia (o nada): puede disparar reglas (mearse, morir...) y después se vuelve a decidir
+      const ruleNav = yield* this.runStatRules();
+      if (ruleNav) return ruleNav;
+    }
+  }
+
+  /** Configuración efectiva de la acción libre: la del paso sobre la del juego */
+  private freeTextConfig(step: ChoiceStep) {
+    const base = this.manifest.ai?.freeText ?? {};
+    const own = typeof step.freeText === 'object' ? step.freeText : {};
+    const scenario = this.scenes.scenes[this._currentScene]?.scenario;
+    const situation =
+      own.situation ?? base.situation ?? [scenario?.name, scenario ? this.getScenarioDescription(this.scenes.scenes[this._currentScene]) : ''].filter(Boolean).join(': ');
+    return {
+      label: own.label ?? base.label ?? FREE_TEXT_LABEL,
+      prompt: own.prompt ?? base.prompt ?? FREE_TEXT_PROMPT,
+      situation,
+      consequences: { ...(base.consequences ?? {}), ...(own.consequences ?? {}) } as Record<string, FreeTextConsequence>,
+      maxUses: own.maxUses ?? base.maxUses ?? FREE_TEXT_USES,
+      aiPrompt: own.aiPrompt ?? base.aiPrompt ?? 'accion',
+    };
+  }
+
+  /**
+   * La IA interpreta la acción escrita: índice de la opción que corresponde, 'consequence' si aplicó
+   * una consecuencia (o ninguna) o 'failed' si la IA no respondió.
+   */
+  private async *freeAction(
+    free: ReturnType<GameEngine['freeTextConfig']>,
+    options: ChoiceOption[],
+    text: string
+  ): AsyncGenerator<StepResult, number | 'consequence' | 'failed'> {
+    const ai = this._ai!;
+    this._state = { ...this._state, habla: pushRecent(this._state.habla, text, HABLA_MAX) };
+    const reply = await ai.freeAction(free.aiPrompt, {
+      vars: this.aiVars({ situacion: free.situation }),
+      action: text,
+      options: options.map((o) => this.text(o.text)),
+      consequences: Object.fromEntries(Object.entries(free.consequences).map(([id, c]) => [id, c.hint])),
+    });
+    if (!reply) {
+      yield { type: 'notify', style: 'warning', title: 'El narrador se hizo el sordo', text: 'Mejor elige una de las opciones.', icon: '🙉' };
+      return 'failed';
+    }
+    const line = sanitizeAiText(reply.text);
+    this._state = { ...this._state, iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX) };
+    yield* this.narratorLine(line, reply.tone);
+    this.emit('free_action', { option: reply.option, consequence: reply.consequence });
+    if (reply.option !== null && options[reply.option]) return reply.option;
+
+    const consequence = reply.consequence ? free.consequences[reply.consequence] : undefined;
+    this.addDecision(consequence ? `«${text}» (${consequence.hint})` : `«${text}»`);
+    if (consequence?.effects) {
+      this.applyState(consequence.effects);
+      yield { type: 'effects', ...consequence.effects };
+    }
+    return 'consequence';
+  }
+
+  /** Línea del narrador generada por IA (ya saneada) */
+  private *narratorLine(line: string, tone: NarrateReply['tone']): Generator<StepResult> {
+    const narrator = this.getNarratorId();
+    yield {
+      type: 'dialog',
+      character: narrator,
+      characterName: this.getCharacterName(narrator),
+      characterImage: this.manifest.characters[narrator]?.image,
+      lines: [line],
+      tone: tone ?? undefined,
+    };
+  }
+
+  /** A veces el narrador con IA comenta la decisión (aiReact de la opción o del paso, o ai.reactChance si tiene tags) */
+  private async *reactToChoice(chosen: ChoiceOption, optionText: string, step?: ChoiceStep): AsyncGenerator<StepResult> {
+    const chance = chosen.aiReact ?? step?.aiReact ?? (chosen.tags?.length ? this.manifest.ai?.reactChance ?? 0 : 0);
+    if (chance <= 0 || !this._ai?.available('narrate') || Math.random() >= chance) return;
+    const reply = await this._ai.narrate('reaccion', this.aiVars({ decision: optionText }));
+    if (!reply) return;
+    const line = sanitizeAiText(reply.text);
+    this._state = { ...this._state, iaDijo: pushRecent(this._state.iaDijo, line, IA_DIJO_MAX) };
+    yield* this.narratorLine(line, reply.tone);
+  }
+
   private async *handleChoiceResult(
-    chosen: ChoiceOption
+    chosen: ChoiceOption,
+    opts: { step?: ChoiceStep; playerText?: string } = {}
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     this.addProfileTags(chosen.tags);
-    // Las opciones con tags son decisiones con significado: la IA las recuerda tal cual
-    if (chosen.tags?.length && !chosen.effects?.memo) {
-      const decision = this.memoHere(this.text(chosen.text));
-      this._state = { ...this._state, decisiones: pushRecent(this._state.decisiones, decision, DECISIONES_MAX) };
+    const optionText = this.text(chosen.text);
+    if (opts.playerText) {
+      // Acción libre que la IA llevó a esta opción: se recuerda con las palabras del jugador
+      this.addDecision(`«${opts.playerText}» (= ${optionText})`);
+    } else if (chosen.tags?.length && !chosen.effects?.memo) {
+      // Las opciones con tags son decisiones con significado: la IA las recuerda tal cual
+      this.addDecision(optionText);
     }
-    this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags });
+    this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags, ...(opts.playerText ? { free: true } : {}) });
     if (chosen.sfx) yield { type: 'sound', sfx: chosen.sfx, volume: 1, wait: false };
     if (chosen.effects) {
       this.applyState(chosen.effects);
       yield { type: 'effects', ...chosen.effects };
     }
+    // Comentario del narrador sobre la decisión (a veces). Con acción libre ya comentó la IA
+    if (!opts.playerText) yield* this.reactToChoice(chosen, optionText, opts.step);
     if (chosen.goto) {
       return { type: 'navigate' as const, scene: chosen.goto };
     }

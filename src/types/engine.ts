@@ -166,6 +166,8 @@ export interface DialogResult {
 export interface ChoicePrompt {
   type: 'choice_prompt';
   options: { text: string; index: number }[];
+  /** Índice de la opción "Hacer otra cosa…" (acción libre). Si está, también se puede escribir texto directo */
+  freeIndex?: number;
 }
 
 export interface DicePrompt {
@@ -190,6 +192,8 @@ export interface DiceResult {
 export interface InputPrompt {
   type: 'input_prompt';
   prompt: string;
+  /** Aviso mientras la IA procesa lo escrito ("El narrador está pensando...") */
+  thinking?: string;
 }
 
 export interface EffectsResult {
@@ -472,6 +476,8 @@ export type PlayerAction =
   | { type: 'choose'; index: number }
   | { type: 'roll_dice' }
   | { type: 'submit_input'; value: string }
+  /** Acción libre escrita directamente en una decisión con freeIndex */
+  | { type: 'choice_free'; text: string }
   | { type: 'continue' }
   | { type: 'shop_buy'; itemIndex: number }
   | { type: 'shop_sell'; itemId: string }

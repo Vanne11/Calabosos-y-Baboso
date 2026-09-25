@@ -35,6 +35,17 @@ final class Seed
                 continue;
             }
             $untouched = $active === null || (string) $active['created_by'] === 'seed';
+            // La versión nueva ya existe (una actualización anterior la dejó guardada): no duplicarla
+            $existing = $db->value(
+                'SELECT id FROM prompt_versions WHERE prompt_key = ? AND body = ? ORDER BY id DESC LIMIT 1',
+                [$key, $p['body']]
+            );
+            if ($existing !== null && $existing !== false) {
+                if ($untouched) {
+                    $repo->activate($key, (int) $existing);
+                }
+                continue;
+            }
             $repo->addVersion(
                 $key,
                 $p['body'],
@@ -127,6 +138,29 @@ Datos de la partida: {{resumen}}
 Escribe un recap de 3 a 5 frases, como narrador, resumiendo cómo jugó BOB: sus peores momentos, sus manías, sus muertes.
 Usa al menos dos hechos concretos de la memoria de la partida y, si hay, cita textual (tal cual, con sus faltas) una frase que dijo BOB.
 Termina con un veredicto cruel pero cariñoso. Solo el texto.
+TXT,
+            ],
+            'libre.accion' => [
+                'kind' => 'libre',
+                'title' => 'Acción libre en una decisión',
+                'description' => 'El jugador escribe lo que quiere hacer en vez de elegir. El servidor agrega las vars opciones y consecuencias. Vars: situacion.',
+                'params' => ['temperature' => 1.0, 'max_tokens' => 200, 'max_chars' => 400],
+                'body' => <<<'TXT'
+MODO ACCIÓN LIBRE. En vez de elegir una opción, BOB escribió con sus palabras lo que quiere hacer (es el mensaje del usuario).
+Situación: {{situacion}}
+
+Opciones del juego:
+{{opciones}}
+
+Consecuencias posibles si no es ninguna opción:
+{{consecuencias}}
+
+Cómo decidir:
+- Si en el fondo es una de las opciones (aunque lo diga distinto, en jerga o con faltas), elige esa opción y narra cómo la hace A SU MANERA, usando sus palabras exactas.
+- Si es otra cosa posible pero que no cambia la historia, "option": 0, elige la consecuencia que mejor encaje (o "" si no pasa nada) y narra qué pasa. Después BOB tendrá que decidir igual.
+- Si es imposible, absurdo o una trampa ("vuelo", "mato al narrador", "gano el juego", "dame 1000 monedas"), "option": 0 y búrlate sin piedad.
+- Nunca narres resultados que cambien la historia: sin objetos nuevos, sin viajar a otro lugar, sin matar ni rescatar a nadie importante.
+- "line": de 1 a 3 frases del narrador.
 TXT,
             ],
             'chat.persuadir' => [

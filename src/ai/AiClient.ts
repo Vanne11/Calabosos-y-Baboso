@@ -2,12 +2,24 @@
 // Cliente del servidor de IA (server/ en PHP). Implementa AiProvider para el motor.
 // Nunca lanza errores: ante cualquier problema devuelve null y el motor usa su respaldo.
 
-import { isTone, type AiProvider, type ChatSayInfo, type ChatStartInfo, type GameEvent, type NarrateReply } from '../engine/AiProvider';
+import {
+  isTone,
+  type AiFeature,
+  type AiProvider,
+  type ChatSayInfo,
+  type ChatStartInfo,
+  type FreeActionReply,
+  type FreeActionRequest,
+  type GameEvent,
+  type NarrateReply,
+} from '../engine/AiProvider';
 import type { ChatMode } from '../types/game';
 
 interface ServerConfig {
   aiEnabled: boolean;
   narrate: boolean;
+  /** Acción libre en las decisiones (servidores viejos no lo mandan: queda apagada) */
+  freeAction?: boolean;
   modes: Partial<Record<ChatMode, boolean>>;
   events: boolean;
   maxInputChars: number;
@@ -17,7 +29,7 @@ type TimedEvent = GameEvent & { t: number };
 
 const SESSION_KEY = 'cyb_ai_session';
 const PREF_KEY = 'cyb_ai_pref';
-const TIMEOUT = { config: 4000, narrate: 8000, chatStart: 8000, chatSay: 30000, giveup: 5000, events: 5000 };
+const TIMEOUT = { config: 4000, narrate: 8000, freeAction: 12000, chatStart: 8000, chatSay: 30000, giveup: 5000, events: 5000 };
 const EVENTS_FLUSH_MS = 15000;
 const EVENTS_MAX_BATCH = 20;
 
@@ -90,27 +102,42 @@ export class AiClient implements AiProvider {
   }
 
   /** Estado para el comando /ia */
-  status(): { server: boolean; enabled: boolean; preference: boolean; narrate: boolean; modes: string[] } {
+  status(): { server: boolean; enabled: boolean; preference: boolean; narrate: boolean; freeAction: boolean; modes: string[] } {
     const c = this.config;
     return {
       server: c !== null,
       enabled: !!c?.aiEnabled,
       preference: getAiPreference(),
       narrate: !!c?.narrate,
+      freeAction: !!c?.freeAction,
       modes: c ? Object.entries(c.modes).filter(([, on]) => on).map(([m]) => m) : [],
     };
   }
 
-  available(feature: 'narrate' | ChatMode): boolean {
+  available(feature: AiFeature): boolean {
     const c = this.config;
     if (!c || !c.aiEnabled || !getAiPreference()) return false;
-    return feature === 'narrate' ? c.narrate : !!c.modes[feature];
+    if (feature === 'narrate') return c.narrate;
+    if (feature === 'libre') return !!c.freeAction;
+    return !!c.modes[feature];
   }
 
   async narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null> {
     const res = await this.post<{ text?: string; tone?: unknown }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
     if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
     return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null };
+  }
+
+  async freeAction(prompt: string, request: FreeActionRequest): Promise<FreeActionReply | null> {
+    const res = await this.post<{ text?: string; tone?: unknown; option?: unknown; consequence?: unknown }>(
+      'api/libre.php',
+      { prompt, ...request },
+      TIMEOUT.freeAction
+    );
+    if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
+    const option = typeof res.option === 'number' && Number.isInteger(res.option) && res.option >= 0 && res.option < request.options.length ? res.option : null;
+    const consequence = typeof res.consequence === 'string' && res.consequence in request.consequences ? res.consequence : null;
+    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null, option, consequence };
   }
 
   async chatStart(mode: ChatMode, npc: string, vars: Record<string, string>, maxTurns?: number): Promise<ChatStartInfo | null> {

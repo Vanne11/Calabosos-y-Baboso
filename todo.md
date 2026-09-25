@@ -45,15 +45,22 @@ y el recap final recibe solo números. Resultado: humor genérico, sin callbacks
 - [ ] Campo `"recuerdo"`: resumen de una línea de la conversación → memoria.
 - [ ] Historial por NPC (`{{historial_npc}}`): los personajes recuerdan encuentros anteriores.
 
-## 4. Elecciones con texto libre — PENDIENTE
+## 4. Elecciones con texto libre — HECHO
 
-- [ ] `choice.freeText`: el jugador escribe lo que quiere hacer y la IA lo mapea a una opción y narra el resultado.
-- [ ] Respaldo: sin IA o sin coincidencia, se muestran las opciones normales. Usar en 5-10 momentos clave.
+- [x] `choice.freeText`: opción «✍️ Hacer otra cosa…» o texto directo; la IA lo lleva a una opción (con las
+      palabras del jugador) o a una consecuencia cerrada y se vuelve a decidir. El servidor valida ambas.
+- [x] Consecuencias por defecto en `game.json → ai.freeText` (ridículo, lucirse, susto, golpe, vejiga, ánimo, monedas).
+- [x] `maxUses` por decisión (2); si la IA falla, desaparece la opción extra. Reglas automáticas tras cada consecuencia.
+- [x] Servidor: `api/libre.php`, `FreeActionService`, prompt `libre.accion`, ajuste «Acción libre», prueba en el admin,
+      migración 4. Editor: casilla «Acción libre» + situación. Validador: consecuencias y `aiReact`.
+- [x] Contenido: 11 decisiones clave (plaza, dinero, tienda, taberna, Nerly, puerta, bandidos, babosita, fogata,
+      entrada al Abismo, trono).
+- [ ] Probar con DeepSeek real si elige bien opción vs. consecuencia; ajustar el prompt `libre.accion`.
 
-## 5. Más narrador, sin esperas — PENDIENTE
+## 5. Más narrador, sin esperas — HECHO
 
-- [ ] Pedido adelantado: la narración sale al entrar a la escena y se espera recién al llegar al paso.
-- [ ] `option.aiReact: 0.3`: probabilidad de que el narrador comente la decisión.
+- [x] Pedido adelantado de `dialog.ai` mientras se leen los pasos pasivos anteriores.
+- [x] `aiReact` / `ai.reactChance` (0.2 en opciones con tags): el narrador a veces comenta la decisión.
 
 ## 6. Comando `/narrador <texto>` — PENDIENTE
 

@@ -1,7 +1,7 @@
 // IA en el motor: modos chat (ai_chat), narración con IA, respaldo por dados, perfil y eventos.
 
 import { describe, it, expect } from 'vitest';
-import type { AiProvider } from '../../src/engine/AiProvider';
+import type { AiProvider, FreeActionReply, NarrateReply } from '../../src/engine/AiProvider';
 import type { GameEvent } from '../../src/engine/AiProvider';
 import type { StepResult } from '../../src/types/engine';
 import { baseManifest, makeEngine, drive, dialogLines } from '../helpers';
@@ -41,6 +41,7 @@ function fakeAi(opts: { available?: boolean; failSayAt?: number; scores?: number
       return { reply: `r${turn}`, score, done: score >= 70, verdict: score >= 70 ? 'success' : null, turnsLeft: 3 - turn, tone: turn === 1 ? 'incomodo' : null };
     },
     chatGiveUp: async (id) => { calls.push(['giveup', id]); },
+    freeAction: async (p, req) => { calls.push(['free', p, req]); return null; },
   };
 }
 const types = (out: StepResult[]) => out.map((r) => r.type);
@@ -196,5 +197,160 @@ describe('memoria de la partida para la IA', () => {
     expect(engine.restoreCheckpoint()).toBe('hecho');
     expect(engine.state.stats.sexi).toBe(50);
     expect(engine.state.memoria).toContain('se asustó (en Pantano)');
+  });
+});
+
+describe('acción libre en decisiones (choice.freeText)', () => {
+  const freeManifest = baseManifest({
+    characters: { narrator: { name: 'N', description: '', role: 'narrator' } },
+    initialStats: { sexi: 50, pis: 90, dinero: 0 },
+    ai: { freeText: { consequences: { ridiculo: { hint: 'hace el ridículo', effects: { stats: { sexi: -5 } } } } } },
+    statRules: [{ id: 'meada', condition: { stats: { pis: '>=100' } }, goto: 'mojado' }],
+  });
+  const freeScenes = {
+    decide: {
+      scenario: { name: 'Plaza', description: 'huele a pescado' },
+      sequence: [{
+        type: 'choice' as const,
+        freeText: { consequences: { vejiga: { hint: 'le dan ganas', effects: { stats: { pis: 20 } } } }, maxUses: 2 },
+        options: [{ text: 'Aceptar', goto: 'si' }, { text: 'Huir', tags: ['cobarde'], goto: 'no' }],
+      }],
+    },
+    si: { sequence: [] }, no: { sequence: [] }, mojado: { sequence: [] },
+  };
+  type Reply = FreeActionReply | null;
+  function freeAi(replies: Reply[], opts: { libre?: boolean } = {}): AiProvider & { calls: Call[] } {
+    const calls: Call[] = [];
+    return {
+      calls,
+      available: (f) => (f === 'libre' ? opts.libre ?? true : true),
+      narrate: async () => null,
+      freeAction: async (p, req) => { calls.push(['free', p, req]); return replies.shift() ?? null; },
+      chatStart: async () => null,
+      chatSay: async () => null,
+      chatGiveUp: async () => {},
+    };
+  }
+  const prompts = (out: StepResult[]) => out.filter((r) => r.type === 'choice_prompt');
+
+  it('ofrece "Hacer otra cosa…" y lleva lo escrito a una opción, con las palabras del jugador', async () => {
+    const engine = makeEngine(freeManifest, freeScenes);
+    const ai = freeAi([{ text: 'Sales corriendo, [cobarde].', tone: 'burla', option: 1, consequence: null }]);
+    engine.setAiProvider(ai);
+    const out = await drive(engine, 'decide', [{ type: 'choice_free', text: 'me voi corriendo' }]);
+    expect(prompts(out)[0]).toMatchObject({ freeIndex: 2, options: [{ index: 0 }, { index: 1 }, { text: '✍️ Hacer otra cosa…', index: 2 }] });
+    const req = ai.calls[0][2] as { action: string; options: string[]; consequences: Record<string, string>; vars: Record<string, string> };
+    expect(req).toMatchObject({ action: 'me voi corriendo', options: ['Aceptar', 'Huir'], consequences: { ridiculo: 'hace el ridículo', vejiga: 'le dan ganas' } });
+    expect(req.vars.situacion).toBe('Plaza: huele a pescado');
+    expect(dialogLines(out)).toEqual(['Sales corriendo, «cobarde».']);
+    expect(last(out)).toMatchObject({ type: 'navigate', scene: 'no' });
+    expect(engine.state.profile?.cobarde).toBe(1);
+    expect(engine.state.decisiones).toEqual(['«me voi corriendo» (= Huir) (en Plaza)']);
+    expect(engine.state.habla).toEqual(['me voi corriendo']);
+  });
+
+  it('elegir la opción extra pide el texto; una consecuencia aplica efectos y vuelve a preguntar', async () => {
+    const engine = makeEngine(freeManifest, freeScenes);
+    engine.setAiProvider(freeAi([{ text: 'Bailas. Nadie aplaude.', option: null, consequence: 'ridiculo' }]));
+    const out = await drive(engine, 'decide', [
+      { type: 'choose', index: 2 },
+      { type: 'submit_input', value: 'bailo' },
+      { type: 'choose', index: 0 },
+    ]);
+    expect(types(out)).toEqual(['scenario', 'choice_prompt', 'input_prompt', 'dialog', 'effects', 'choice_prompt', 'navigate']);
+    expect(engine.state.stats.sexi).toBe(45);
+    expect(engine.state.decisiones?.[0]).toBe('«bailo» (hace el ridículo) (en Plaza)');
+  });
+
+  it('las reglas se disparan tras una consecuencia; tras maxUses la opción extra desaparece', async () => {
+    const engine = makeEngine(freeManifest, freeScenes);
+    engine.setAiProvider(freeAi([{ text: 'Glu glu.', option: null, consequence: 'vejiga' }]));
+    const out = await drive(engine, 'decide', [{ type: 'choice_free', text: 'me tomo el agua del pilón' }]);
+    expect(last(out)).toMatchObject({ type: 'navigate', scene: 'mojado' });
+
+    const engine2 = makeEngine(freeManifest, freeScenes);
+    engine2.setAiProvider(freeAi([{ text: 'a', option: null, consequence: null }, { text: 'b', option: null, consequence: null }]));
+    const out2 = await drive(engine2, 'decide', [
+      { type: 'choice_free', text: 'uno' }, { type: 'choice_free', text: 'dos' }, { type: 'choose', index: 0 },
+    ]);
+    const shown = prompts(out2) as { freeIndex?: number; options: unknown[] }[];
+    expect(shown.map((p) => p.options.length)).toEqual([3, 3, 2]);
+    expect(shown[2].freeIndex).toBeUndefined();
+  });
+
+  it('si la IA falla avisa y no vuelve a ofrecerla; sin la función activa no aparece', async () => {
+    const engine = makeEngine(freeManifest, freeScenes);
+    engine.setAiProvider(freeAi([null]));
+    const out = await drive(engine, 'decide', [{ type: 'choice_free', text: 'algo' }, { type: 'choose', index: 0 }]);
+    expect(types(out)).toContain('notify');
+    expect((prompts(out)[1] as { options: unknown[] }).options).toHaveLength(2);
+
+    const off = makeEngine(freeManifest, freeScenes);
+    off.setAiProvider(freeAi([], { libre: false }));
+    const out2 = await drive(off, 'decide', [{ type: 'choose', index: 0 }]);
+    expect(prompts(out2)[0]).not.toHaveProperty('freeIndex');
+  });
+});
+
+describe('narración: reacción a decisiones y pedido adelantado', () => {
+  const m = baseManifest({
+    characters: { narrator: { name: 'N', description: '', role: 'narrator' } },
+    initialStats: { sexi: 50 },
+    ai: { reactChance: 1 },
+  });
+  function narrAi(): AiProvider & { calls: Call[]; resolveAll: () => void } {
+    const calls: Call[] = [];
+    const pending: ((r: NarrateReply) => void)[] = [];
+    return {
+      calls,
+      resolveAll: () => pending.splice(0).forEach((r, i) => r({ text: `línea ${i}` })),
+      available: () => true,
+      narrate: (p, v) => { calls.push(['narrate', p, v]); return Promise.resolve({ text: `sobre ${v.decision ?? p}` }); },
+      freeAction: async () => null,
+      chatStart: async () => null,
+      chatSay: async () => null,
+      chatGiveUp: async () => {},
+    };
+  }
+
+  it('comenta decisiones con tags según ai.reactChance; aiReact: 0 lo apaga', async () => {
+    const engine = makeEngine(m, {
+      a: { sequence: [{ type: 'choice' as const, options: [{ text: 'Robar', tags: ['ladron'], goto: 'b' }] }] },
+      b: { sequence: [{ type: 'choice' as const, options: [{ text: 'Huir', tags: ['cobarde'], aiReact: 0, goto: 'a' }, { text: 'Mirar', goto: 'a' }] }] },
+    });
+    const ai = narrAi();
+    engine.setAiProvider(ai);
+    expect(dialogLines(await drive(engine, 'a', [{ type: 'choose', index: 0 }]))).toEqual(['sobre Robar']);
+    expect(dialogLines(await drive(engine, 'b', [{ type: 'choose', index: 0 }]))).toEqual([]);
+    expect(dialogLines(await drive(engine, 'b', [{ type: 'choose', index: 1 }]))).toEqual([]);
+    expect(ai.calls.map((c) => c[1])).toEqual(['reaccion']);
+  });
+
+  it('pide la narración antes de llegar al paso, pero no si antes hay un paso que cambia el estado', async () => {
+    const engine = makeEngine(m, {
+      pasiva: { sequence: [
+        { type: 'dialog' as const, character: 'narrator', lines: ['hola'] },
+        { type: 'dialog' as const, character: 'narrator', lines: ['x'], ai: { prompt: 'muerte' } },
+      ] },
+      activa: { sequence: [
+        { type: 'effects' as const, effects: { memo: 'murió' } },
+        { type: 'dialog' as const, character: 'narrator', lines: ['x'], ai: { prompt: 'muerte' } },
+      ] },
+    });
+    const ai = narrAi();
+    engine.setAiProvider(ai);
+    const gen = engine.enterScene('pasiva');
+    await gen.next();
+    // Mientras se muestra la primera línea ya se pidió la narración
+    expect(ai.calls).toHaveLength(1);
+    const rest: StepResult[] = [];
+    for (let r = await gen.next(); !r.done; r = await gen.next()) rest.push(r.value);
+    expect(dialogLines(rest)).toEqual(['sobre muerte']);
+    expect(ai.calls).toHaveLength(1);
+
+    ai.calls.length = 0;
+    await drive(engine, 'activa', []);
+    // Se pidió después del efecto: la IA ya conoce el memo
+    expect((ai.calls[0][2] as Record<string, string>).memoria).toBe('- murió');
   });
 });

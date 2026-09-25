@@ -60,6 +60,20 @@ los efectos fijos. Tabla por defecto: `src/audio/tones.ts`.
 
 Ver [`ai_chat`](pasos/ai-chat.md).
 
+## Acción libre y reacciones en las decisiones
+
+- `choice.freeText`: el jugador escribe lo que quiere hacer; la IA lo lleva a una opción o a una consecuencia
+  cerrada (`game.json → ai.freeText.consequences`). Endpoint `api/libre.php`, prompt `libre.accion`.
+- `ai.reactChance` / `aiReact`: a veces el narrador comenta la decisión elegida.
+- Detalle y formato: [`choice`](pasos/choice.md#acción-libre-con-ia-freetext).
+
+## Pedido adelantado de la narración
+
+Un `dialog.ai` se pide al servidor **antes** de llegar a él si entre medio solo hay pasos que no cambian el estado
+(`dialog`, `sound`, `notify`, `wait`): mientras el jugador lee las líneas anteriores (o el escenario), la IA ya está
+escribiendo. Si antes hay un paso que cambia el estado (effects, choice, dados...), se pide al llegar, para que la
+IA vea el estado correcto (`GameEngine.prefetchNarration`).
+
 ## Memoria de la partida
 
 Cada llamada a la IA lleva lo que pasó en la partida, para que haga callbacks concretos en vez de burlas genéricas

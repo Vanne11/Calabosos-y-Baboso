@@ -84,7 +84,10 @@
                 "codicioso"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En la plaza de Viscaria, el Narrador acaba de encargarle a BOB salvar el reino del Rey Baboso. BOB no quiere."
+          }
         }
       ]
     },
@@ -292,7 +295,10 @@
                 }
               }
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "BOB necesita dinero para equiparse antes de salir de la ciudad. Está en la plaza, sin un peso."
+          }
         }
       ]
     },
@@ -1135,7 +1141,10 @@
                 "regateador"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En la tienda del Tendero borracho. BOB quiere el kit del aventurero, pero no le alcanza el dinero."
+          }
         }
       ]
     },
@@ -1473,7 +1482,10 @@
                 "cobarde"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En la taberna «La Babosa Ebria». El Bardo Babosa desafía a BOB a una guerra de rap delante de todos."
+          }
         }
       ]
     },
@@ -1858,7 +1870,10 @@
                 "codicioso"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En un callejón, una babosa azul que habla (Nerly) le ofrece ayuda a BOB para llegar al Abismo."
+          }
         }
       ]
     },
@@ -2224,7 +2239,10 @@
                 "valiente"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "Los guardias de la puerta de la ciudad no dejan salir a nadie sin permiso. Nerly está con BOB."
+          }
         }
       ]
     },

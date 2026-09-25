@@ -1,7 +1,7 @@
 <h1>Prompts</h1>
 <p class="muted">Cada edición crea una versión nueva. El juego usa siempre la versión activa. La <strong>hoja del narrador</strong> se antepone a todos los demás.</p>
 <?php
-$kinds = ['base' => 'Base', 'narrate' => 'Narración', 'chat' => 'Modos chat'];
+$kinds = ['base' => 'Base', 'narrate' => 'Narración', 'libre' => 'Acción libre', 'chat' => 'Modos chat'];
 foreach ($kinds as $kind => $label):
     $group = array_filter($prompts, static function ($p) use ($kind) { return $p['kind'] === $kind; });
     if (!$group) { continue; }

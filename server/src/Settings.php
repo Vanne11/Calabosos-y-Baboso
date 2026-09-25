@@ -37,6 +37,7 @@ final class Settings
                 ['scene' => 'acto4_desenlace', 'label' => 'Derrota al Rey'],
             ],
             'narrate_enabled' => true,
+            'free_action_enabled' => true,
             'modes_enabled' => array_fill_keys(self::MODES, true),
             'limits' => [
                 'ip_per_minute' => 20,

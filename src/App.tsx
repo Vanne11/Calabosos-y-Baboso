@@ -190,7 +190,9 @@ const App: React.FC = () => {
     // Game input widget
     if (phase === 'game' && pendingResult?.type === 'input_prompt') {
       if (trimmed) {
-        addEntry({ type: 'system', content: `[cyan]> ${trimmed}[/cyan]` });
+        const thinking = (pendingResult as InputPrompt).thinking;
+        addEntry({ type: 'system', content: `[cyan]> ${trimmed.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
+        if (thinking) addEntry({ type: 'system', content: `[dim italic]${thinking}[/dim italic]` });
         sendAction({ type: 'submit_input', value: trimmed });
       }
       return;
@@ -351,6 +353,13 @@ const App: React.FC = () => {
       if (!isNaN(num) && num >= 1 && num <= options.length) {
         addEntry({ type: 'option', content: `> ${options[num - 1].text}` });
         sendAction({ type: 'choose', index: num - 1 });
+        return;
+      }
+      // Acción libre: si la decisión la permite, se puede escribir directamente lo que quieres hacer
+      if (isNaN(num) && (pendingResult as ChoicePrompt).freeIndex !== undefined) {
+        addEntry({ type: 'system', content: `[cyan]> ${trimmed.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
+        addEntry({ type: 'system', content: '[dim italic]El narrador está pensando…[/dim italic]' });
+        sendAction({ type: 'choice_free', text: trimmed });
         return;
       }
     }
@@ -629,8 +638,10 @@ const App: React.FC = () => {
   if (pendingSlotAction) {
     placeholder = `Selecciona slot [1-${pendingSlotAction.slots}] o [0] cancelar`;
   } else if (pendingResult?.type === 'choice_prompt') {
-    const opts = (pendingResult as ChoicePrompt).options;
-    placeholder = `Escribe el número de la opción [1-${opts.length}]`;
+    const cp = pendingResult as ChoicePrompt;
+    placeholder = cp.freeIndex !== undefined
+      ? `Número de la opción [1-${cp.options.length}] o escribe lo que quieras hacer`
+      : `Escribe el número de la opción [1-${cp.options.length}]`;
   } else if (pendingResult?.type === 'timed_choice_prompt') {
     const opts = (pendingResult as TimedChoicePrompt).options;
     placeholder = `Escribe el número de la opción [1-${opts.length}]`;

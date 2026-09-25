@@ -723,7 +723,10 @@
               ],
               "sfx": "grito"
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En el bosque, una banda de bandidos incompetentes (jefe tuerto) embosca a BOB y Nerly y les exige peaje."
+          }
         }
       ]
     },
@@ -1223,7 +1226,10 @@
                 "frio"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "En el camino hay una cría de babosa perdida que llora buscando a su mamá. Nerly mira a BOB."
+          }
         }
       ]
     },
@@ -1462,7 +1468,10 @@
                 "aguafiestas"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "De noche, junto a la fogata con Nerly, la última noche antes de llegar al Abismo."
+          }
         }
       ]
     },

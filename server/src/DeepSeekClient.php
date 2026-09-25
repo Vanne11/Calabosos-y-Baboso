@@ -110,7 +110,16 @@ final class DeepSeekClient
         $system = is_array($messages[0] ?? null) ? (string) $messages[0]['content'] : '';
         // Tono de prueba rotativo, para oír los sonidos sin gastar tokens
         $tone = PromptRenderer::TONES[$len % count(PromptRenderer::TONES)];
-        if ($json && strpos($system, '"line"') !== false) {
+        if ($json && strpos($system, '"option"') !== false) {
+            // Acción libre: cada tanto elige la opción 1; si no, la primera consecuencia de la lista
+            preg_match('/^- ([a-z0-9_]+):/m', $system, $m);
+            $content = json_encode([
+                'option' => $len % 3 === 0 ? 1 : 0,
+                'consequence' => $m[1] ?? '',
+                'line' => '[mock] ¿«' . mb_substr($said, 0, 40, 'UTF-8') . '»? Qué idea tan tuya.',
+                'tono' => $tone,
+            ], JSON_UNESCAPED_UNICODE);
+        } elseif ($json && strpos($system, '"line"') !== false) {
             $content = json_encode([
                 'line' => '[mock] El narrador suspira: qué forma tan original de fracasar.',
                 'tono' => $tone,

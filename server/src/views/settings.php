@@ -5,6 +5,7 @@
     <h2>General</h2>
     <label class="check"><input type="checkbox" name="ai_enabled" value="1" <?= $s['ai_enabled'] ? 'checked' : '' ?>> IA activa (interruptor general)</label>
     <label class="check"><input type="checkbox" name="narrate_enabled" value="1" <?= $s['narrate_enabled'] ? 'checked' : '' ?>> Narración con IA (burlas, reacciones, recap)</label>
+    <label class="check"><input type="checkbox" name="free_action_enabled" value="1" <?= $s['free_action_enabled'] ? 'checked' : '' ?>> Acción libre en las decisiones (el jugador escribe lo que quiere hacer)</label>
     <label class="check"><input type="checkbox" name="events_enabled" value="1" <?= $s['events_enabled'] ? 'checked' : '' ?>> Guardar eventos de juego (analítica)</label>
     <label>Modelo <input name="model" value="<?= e($s['model']) ?>"></label>
   </section>

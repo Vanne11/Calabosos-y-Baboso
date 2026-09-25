@@ -165,6 +165,32 @@ export interface AiChatStep {
 export interface AiConfig {
   /** URL base del servidor de IA (default: la carpeta api/ dentro del juego, ej. "/cyb/api/") */
   endpoint?: string;
+  /** Valores por defecto de la acción libre (cada choice.freeText puede cambiarlos) */
+  freeText?: FreeTextDef;
+  /** Probabilidad (0-1) de que el narrador comente una decisión con tags (default: 0) */
+  reactChance?: number;
+}
+
+/** Acción libre en una decisión: la IA lleva lo escrito a una opción o a una consecuencia de la lista */
+export interface FreeTextDef {
+  /** Texto de la opción extra (default: "✍️ Hacer otra cosa…") */
+  label?: string;
+  /** Pregunta al pedir el texto (default: "¿Qué haces? Escríbelo con tus palabras.") */
+  prompt?: string;
+  /** Situación para la IA. Admite {variables}. Default: nombre y descripción del escenario */
+  situation?: string;
+  /** Consecuencias que puede elegir la IA si no es ninguna opción (se suman a las de ai.freeText) */
+  consequences?: Record<string, FreeTextConsequence>;
+  /** Cuántas acciones libres se permiten en esta decisión (default: 2) */
+  maxUses?: number;
+  /** Prompt del servidor (libre.<prompt>, default: "accion") */
+  aiPrompt?: string;
+}
+
+export interface FreeTextConsequence {
+  /** Cuándo aplica (lo lee la IA): "hace el ridículo delante de todos" */
+  hint: string;
+  effects?: Effects;
 }
 
 export interface ContentRating {
@@ -406,6 +432,8 @@ export interface DialogAi {
 
 export interface ChoiceOption {
   text: string;
+  /** Probabilidad (0-1) de que el narrador con IA comente esta decisión (pisa a la del paso y a ai.reactChance) */
+  aiReact?: number;
   effects?: Effects;
   goto?: string;
   condition?: StepCondition;
@@ -418,6 +446,10 @@ export interface ChoiceOption {
 export interface ChoiceStep {
   type: 'choice';
   options: ChoiceOption[];
+  /** Acción libre: además de las opciones, el jugador puede escribir lo que quiere hacer (con IA) */
+  freeText?: boolean | FreeTextDef;
+  /** Probabilidad (0-1) de que el narrador comente la decisión elegida (pisa a ai.reactChance) */
+  aiReact?: number;
   condition?: StepCondition;
 }
 

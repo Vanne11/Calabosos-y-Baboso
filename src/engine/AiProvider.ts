@@ -29,6 +29,28 @@ export interface ChatSayInfo {
   tone?: Tone | null;
 }
 
+/** Pedido de acción libre: lo que escribió el jugador, las opciones visibles y las consecuencias permitidas */
+export interface FreeActionRequest {
+  vars: Record<string, string>;
+  action: string;
+  options: string[];
+  /** id → descripción para la IA */
+  consequences: Record<string, string>;
+}
+
+/** Interpretación de la acción libre (el servidor valida option y consequence) */
+export interface FreeActionReply {
+  text: string;
+  tone?: Tone | null;
+  /** Índice (desde 0) de la opción elegida, o null */
+  option: number | null;
+  /** Consecuencia elegida (id de la lista), o null */
+  consequence: string | null;
+}
+
+/** Función de IA que se puede consultar con available() */
+export type AiFeature = 'narrate' | 'libre' | ChatMode;
+
 /** Línea generada por el narrador */
 export interface NarrateReply {
   text: string;
@@ -37,8 +59,10 @@ export interface NarrateReply {
 
 export interface AiProvider {
   /** Si una función de IA está disponible ahora (config del servidor + preferencia del jugador) */
-  available(feature: 'narrate' | ChatMode): boolean;
+  available(feature: AiFeature): boolean;
   narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null>;
+  /** Interpreta lo que el jugador escribió en una decisión (prompt libre.<prompt> del servidor) */
+  freeAction(prompt: string, request: FreeActionRequest): Promise<FreeActionReply | null>;
   chatStart(mode: ChatMode, npc: string, vars: Record<string, string>, maxTurns?: number): Promise<ChatStartInfo | null>;
   chatSay(chatId: string, message: string): Promise<ChatSayInfo | null>;
   chatGiveUp(chatId: string): Promise<void>;

@@ -44,7 +44,7 @@ $paramsValue = (string) ($_POST['params'] ?? json_encode((object) ($params ?: []
       <label>Variables de prueba (JSON)
         <textarea name="test_vars" rows="5" class="mono"><?= e($testVars) ?></textarea>
       </label>
-      <?php if ($meta['kind'] === 'chat'): ?>
+      <?php if ($meta['kind'] === 'chat' || $meta['kind'] === 'libre'): ?>
       <label>Mensaje del jugador <input name="test_message" value="<?= e($testMessage) ?>"></label>
       <?php endif; ?>
       <div class="actions">
@@ -61,6 +61,7 @@ $paramsValue = (string) ($_POST['params'] ?? json_encode((object) ($params ?: []
       <?php elseif (isset($test['text'])): ?>
         <p class="reply"><?= e($test['text']) ?></p>
         <?php if (array_key_exists('tone', $test)): ?><p class="small">Tono: <strong><?= e($test['tone'] ?? '—') ?></strong></p><?php endif; ?>
+        <?php if (isset($test['free'])): ?><p class="small">Opción: <strong><?= $test['free']['option'] === null ? 'ninguna' : (int) $test['free']['option'] + 1 ?></strong> · Consecuencia: <strong><?= e($test['free']['consequence'] ?? '—') ?></strong> <span class="muted">(prueba con las opciones «Aceptar la misión» / «Ir a la taberna» y consecuencias ridiculo / susto)</span></p><?php endif; ?>
       <?php endif; ?>
       <?php if (isset($test['tokens'])): ?><p class="muted small"><?= num($test['tokens']) ?> tokens · <?= num($test['latency']) ?> ms</p><?php endif; ?>
       <?php if (isset($test['raw'])): ?><details><summary>Respuesta cruda</summary><pre><?= e($test['raw']) ?></pre></details><?php endif; ?>

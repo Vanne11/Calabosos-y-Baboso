@@ -94,7 +94,10 @@
                 "prudente"
               ]
             }
-          ]
+          ],
+          "freeText": {
+            "situation": "Frente a la entrada del Abismo de las Babosas: hay un túnel lateral y una entrada principal custodiada."
+          }
         }
       ]
     },

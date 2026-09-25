@@ -21,6 +21,7 @@ Api::handle('GET', static function (): array {
     return [
         'aiEnabled' => $enabled,
         'narrate' => $enabled && (bool) $settings->get('narrate_enabled'),
+        'freeAction' => $enabled && (bool) $settings->get('free_action_enabled'),
         'modes' => $modes,
         'events' => (bool) $settings->get('events_enabled'),
         'maxInputChars' => $settings->limit('max_input_chars'),

@@ -168,6 +168,15 @@ final class PromptRenderer
             . '"tono": "..."}. ' . self::toneGuide() . '.';
     }
 
+    /** Contrato JSON de la acción libre (el servidor valida option y consequence) */
+    public static function freeActionContract(int $maxChars): string
+    {
+        return 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
+            . '{"option": número de la opción elegida o 0 si no corresponde a ninguna, '
+            . '"consequence": "id de la consecuencia" o "" si no hay, '
+            . '"line": "lo que narras, máximo ' . $maxChars . ' caracteres", "tono": "..."}. ' . self::toneGuide() . '.';
+    }
+
     /** Contrato JSON de las líneas del narrador */
     public static function narrateContract(int $maxChars): string
     {

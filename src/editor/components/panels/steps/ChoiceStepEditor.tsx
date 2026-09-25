@@ -32,6 +32,13 @@ const ChoiceStepEditor: React.FC<ChoiceStepEditorProps> = ({ step, onChange }) =
     onChange({ ...step, options: step.options.filter((_, i) => i !== index) });
   };
 
+  // Acción libre: se conserva lo que no se edita aquí (consecuencias propias, maxUses...)
+  const free = typeof step.freeText === 'object' ? step.freeText : {};
+  const setSituation = (situation: string) => {
+    const { situation: _previous, ...rest } = free;
+    onChange({ ...step, freeText: situation ? { ...rest, situation } : Object.keys(rest).length ? rest : true });
+  };
+
   return (
     <Wrapper>
       <Header>
@@ -80,6 +87,22 @@ const ChoiceStepEditor: React.FC<ChoiceStepEditorProps> = ({ step, onChange }) =
         </OptionBlock>
       ))}
 
+      <Check>
+        <input
+          type="checkbox"
+          checked={!!step.freeText}
+          onChange={(e) => onChange({ ...step, freeText: e.target.checked ? true : undefined })}
+        />
+        Acción libre con IA («Hacer otra cosa…»)
+      </Check>
+      {step.freeText && (
+        <TerminalInput
+          label="Situación para la IA (vacío = nombre y descripción del escenario)"
+          value={free.situation ?? ''}
+          onChange={setSituation}
+        />
+      )}
+
       <ConditionEditor
         condition={step.condition}
         onChange={(condition) => onChange({ ...step, condition })}
@@ -122,6 +145,15 @@ const AddBtn = styled.button`
   &:hover {
     background: ${(p) => p.theme.terminal.dialogBackground};
   }
+`;
+
+const Check = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: ${(p) => p.theme.terminal.text};
 `;
 
 const OptionBlock = styled.div`

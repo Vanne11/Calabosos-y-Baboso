@@ -13,7 +13,78 @@
     ],
     "gateScene": "edad"
   },
-  "ai": {},
+  "ai": {
+    "reactChance": 0.2,
+    "freeText": {
+      "consequences": {
+        "ridiculo": {
+          "hint": "hace el ridículo delante de alguien",
+          "effects": {
+            "stats": {
+              "sexi": -5
+            }
+          }
+        },
+        "lucirse": {
+          "hint": "le sale sorprendentemente bien y queda como alguien atractivo o valiente",
+          "effects": {
+            "stats": {
+              "sexi": 5
+            }
+          }
+        },
+        "susto": {
+          "hint": "se asusta, algo le sale mal y le da miedo",
+          "effects": {
+            "stats": {
+              "miedo": 10
+            }
+          }
+        },
+        "golpe": {
+          "hint": "se hace daño: se cae, se golpea, lo muerden o lo empujan",
+          "effects": {
+            "stats": {
+              "ganas_de_vivir": -5
+            }
+          }
+        },
+        "vejiga": {
+          "hint": "algo le da muchas ganas de ir al baño (bebe, se ríe, se asusta mucho)",
+          "effects": {
+            "stats": {
+              "pis": 15
+            }
+          }
+        },
+        "animo": {
+          "hint": "se ríe, se relaja o se siente mejor consigo mismo",
+          "effects": {
+            "stats": {
+              "ganas_de_vivir": 5,
+              "miedo": -5
+            }
+          }
+        },
+        "monedas": {
+          "hint": "encuentra, gana o le dan unas pocas monedas",
+          "effects": {
+            "stats": {
+              "dinero": 3
+            }
+          }
+        },
+        "pierde_monedas": {
+          "hint": "pierde, gasta o le quitan unas monedas",
+          "effects": {
+            "stats": {
+              "dinero": -3
+            }
+          }
+        }
+      }
+    }
+  },
   "audio": {
     "combatMusic": "audio/rpgchip13_battle_1.ogg",
     "gameOverMusic": "audio/rpgchip15_game_over.ogg",

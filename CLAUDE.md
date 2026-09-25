@@ -56,7 +56,7 @@ npx tsc --noEmit -p .                   # debe quedar sin errores
 
 `game.json`: `characters`, `statDefs` (label/icon/min/max/hidden), `initialStats`, `items`, `traits`, `contentRating` (+18, `gateScene`), `sceneFiles`, `ai.endpoint`, `audio` (combatMusic, gameOverMusic, statSfx, itemSfx), `linePools`, `statRules`, `diceHooks`, `diceModifiers`, `codex` (bestiario), `saveSystem`.
 
-**20 tipos de paso:** dialog (con `pool`, `count`, `ai`), choice (con `tags` de perfil), dice (con `tiers` por tramos), input, effects, branch, random, check, shop (`priceMultipliers`, haggle/steal), combat (`weapons`, rasgos del enemigo: firstStrike, dodgeChance/reveal, damagePerTurn, corrodes, split/preventSplit, deathDamage), notify, wait, sound, craft, puzzle, examine, use_item, timed_choice, level_up, **ai_chat** (persuadir, negociar, cancion, rap, insultos, confesion; con `fallback` de dados).
+**20 tipos de paso:** dialog (con `pool`, `count`, `ai`), choice (con `tags` de perfil, `freeText` = acción libre con IA, `aiReact`), dice (con `tiers` por tramos), input, effects, branch, random, check, shop (`priceMultipliers`, haggle/steal), combat (`weapons`, rasgos del enemigo: firstStrike, dodgeChance/reveal, damagePerTurn, corrodes, split/preventSplit, deathDamage), notify, wait, sound, craft, puzzle, examine, use_item, timed_choice, level_up, **ai_chat** (persuadir, negociar, cancion, rap, insultos, confesion; con `fallback` de dados).
 
 **Condiciones:** stats, flags, inventory, notInventory, visited/unvisitedScenes, skillLevel, affinity, relationshipTier, hasTraits/notTraits, characterLevel, meta, textMatches, profile, codex.
 

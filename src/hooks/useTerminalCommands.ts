@@ -111,7 +111,7 @@ export function useTerminalCommands() {
     if (!client) line = '[dim]Este juego no usa IA.[/dim]';
     else if (!st?.server) line = '[yellow]No hay conexión con el servidor de IA. Se usan los textos fijos y los dados.[/yellow]';
     else if (!st.enabled) line = '[yellow]La IA está apagada en el servidor. Se usan los textos fijos y los dados.[/yellow]';
-    else line = `[green]Servidor de IA conectado.[/green] Narración: ${st.narrate ? 'sí' : 'no'} · Modos chat: ${st.modes.length ? st.modes.join(', ') : 'ninguno'}`;
+    else line = `[green]Servidor de IA conectado.[/green] Narración: ${st.narrate ? 'sí' : 'no'} · Acción libre: ${st.freeAction ? 'sí' : 'no'} · Modos chat: ${st.modes.length ? st.modes.join(', ') : 'ninguno'}`;
     addEntry({
       type: 'system',
       content: `${line}\nTu preferencia: ${getAiPreference() ? '[green]activada[/green]' : '[yellow]apagada[/yellow]'} [dim](/ia on · /ia off)[/dim]`,

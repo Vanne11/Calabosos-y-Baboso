@@ -106,6 +106,27 @@ function validateGame(gameName) {
   checkSfx(audio.itemSfx, 'audio.itemSfx');
   checkSfx(audio.removeItemSfx, 'audio.removeItemSfx');
 
+  // --- Acción libre: consecuencias (el servidor descarta ids inválidos y se queda con las primeras 10) ---
+  function checkConsequences(consequences, ctx) {
+    if (!consequences) return;
+    const entries = Object.entries(consequences);
+    const total = entries.length + (ctx === 'ai.freeText' ? 0 : Object.keys(manifest.ai?.freeText?.consequences ?? {}).length);
+    if (total > 10) warnings.push(`${ctx}: ${total} consecuencias en total; la IA solo recibe las primeras 10`);
+    for (const [cid, c] of entries) {
+      if (!/^[a-z0-9_]{1,30}$/.test(cid)) errors.push(`${ctx}: id de consecuencia "${cid}" inválido (a-z, 0-9, _)`);
+      if (!c?.hint) errors.push(`${ctx}.${cid}: falta "hint" (la IA lo usa para elegirla)`);
+      for (const stat of Object.keys({ ...(c?.effects?.stats ?? {}), ...(c?.effects?.setStats ?? {}) })) {
+        if (!(stat in (manifest.initialStats ?? {}))) warnings.push(`${ctx}.${cid}: el stat "${stat}" no está en initialStats`);
+      }
+      for (const item of [...(c?.effects?.inventory ?? []), ...(c?.effects?.removeInventory ?? [])]) checkItem(item, `${ctx}.${cid}`);
+    }
+  }
+  checkConsequences(manifest.ai?.freeText?.consequences, 'ai.freeText');
+  const reactChance = manifest.ai?.reactChance;
+  if (reactChance !== undefined && (typeof reactChance !== 'number' || reactChance < 0 || reactChance > 1)) {
+    errors.push('ai.reactChance debe ser un número entre 0 y 1');
+  }
+
   // --- Por escena ---
   const edges = {};
   for (const id of Object.keys(scenes)) {
@@ -175,6 +196,21 @@ function validateGame(gameName) {
       if (!outcomes.length) errors.push(`${ctx}: sin "outcomes"`);
       if (step.mode !== 'confesion' && !step.outcomes?.success) warnings.push(`${ctx}: sin outcome "success"`);
       if (step.mode !== 'confesion' && !step.outcomes?.failure) warnings.push(`${ctx}: sin outcome "failure"`);
+    }
+
+    // Acción libre y reacciones del narrador
+    for (const [i, step] of seq.entries()) {
+      if (step?.type !== 'choice') continue;
+      const ctx = `${where(id)} paso ${i + 1} (choice)`;
+      if (step.freeText) {
+        if (!manifest.ai) warnings.push(`${ctx}: "freeText" sin "ai" en game.json: nunca se ofrece`);
+        if (typeof step.freeText === 'object') checkConsequences(step.freeText.consequences, `${ctx} freeText`);
+      }
+      for (const [j, value] of [step.aiReact, ...(step.options ?? []).map((o) => o.aiReact)].entries()) {
+        if (value !== undefined && (typeof value !== 'number' || value < 0 || value > 1)) {
+          errors.push(`${ctx}: aiReact${j ? ` de la opción ${j}` : ''} debe ser un número entre 0 y 1`);
+        }
+      }
     }
 
     if (targets.size === 0) {

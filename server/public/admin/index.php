@@ -36,6 +36,7 @@ use Cyb\ChatService;
 use Cyb\ConfigWriter;
 use Cyb\DeepSeekClient;
 use Cyb\Diagnostics;
+use Cyb\FreeActionService;
 use Cyb\Guard;
 use Cyb\NarrateService;
 use Cyb\PromptRenderer;
@@ -264,6 +265,7 @@ if ($page === 'settings') {
     if ($isPost) {
         $settings->set('ai_enabled', !empty($_POST['ai_enabled']));
         $settings->set('narrate_enabled', !empty($_POST['narrate_enabled']));
+        $settings->set('free_action_enabled', !empty($_POST['free_action_enabled']));
         $settings->set('events_enabled', !empty($_POST['events_enabled']));
         $model = trim((string) ($_POST['model'] ?? ''));
         if (preg_match('/^[a-zA-Z0-9._-]{1,60}$/', $model)) {
@@ -406,6 +408,13 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
     $kind = (string) $meta['kind'];
     $vars = PromptRenderer::sanitizeVars($vars, 50, 1000);
     $isChat = $kind === 'chat';
+    $isFree = $kind === 'libre';
+    if ($isFree) {
+        $vars += [
+            'opciones' => FreeActionService::listOptions(['Aceptar la misión', 'Ir a la taberna']),
+            'consecuencias' => FreeActionService::listConsequences(['ridiculo' => 'hace el ridículo', 'susto' => 'se asusta']),
+        ];
+    }
     if ($isChat) {
         $vars += ['turn' => '1', 'max_turns' => (string) ($params['max_turns'] ?? 6), 'score' => (string) ($params['initial_score'] ?? 0)];
     }
@@ -413,9 +422,11 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
     $renderer = new PromptRenderer($prompts);
     $contract = $isChat
         ? PromptRenderer::chatContract((int) ($params['max_reply_chars'] ?? 400))
-        : ($kind === 'narrate' ? PromptRenderer::narrateContract((int) ($params['max_chars'] ?? 400)) : '');
+        : ($isFree
+            ? PromptRenderer::freeActionContract((int) ($params['max_chars'] ?? 400))
+            : ($kind === 'narrate' ? PromptRenderer::narrateContract((int) ($params['max_chars'] ?? 400)) : ''));
     $system = $renderer->system($prompt, $vars, $contract);
-    $userMessage = $isChat ? trim((string) ($_POST['test_message'] ?? '')) : 'Escribe la línea ahora.';
+    $userMessage = $isChat || $isFree ? trim((string) ($_POST['test_message'] ?? '')) : 'Escribe la línea ahora.';
 
     $guard = new Guard(App::db(), $settings);
     try {
@@ -436,6 +447,15 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
     if ($isChat) {
         try {
             $out['parsed'] = ChatService::parseReply($result->content);
+        } catch (AiException $e) {
+            $out['error'] = 'La respuesta no cumple el formato JSON: ' . $e->getMessage();
+        }
+    } elseif ($isFree) {
+        try {
+            $free = FreeActionService::parseReply($result->content, (int) ($params['max_chars'] ?? 400), 2, ['ridiculo', 'susto']);
+            $out['text'] = $free['text'];
+            $out['tone'] = $free['tone'];
+            $out['free'] = $free;
         } catch (AiException $e) {
             $out['error'] = 'La respuesta no cumple el formato JSON: ' . $e->getMessage();
         }
