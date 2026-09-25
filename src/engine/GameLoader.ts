@@ -9,7 +9,9 @@ export interface LoadedGame {
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  // Los datos del juego (game.json, escenas) no llevan hash en el nombre: sin esto, el navegador o el
+  // hosting pueden servir una versión vieja después de actualizar. "no-cache" revalida siempre (barato con ETag).
+  const res = await fetch(url, { cache: 'no-cache' });
   if (!res.ok) {
     throw new Error(`Error cargando ${url}: ${res.status} ${res.statusText}`);
   }

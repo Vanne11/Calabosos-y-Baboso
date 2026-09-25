@@ -157,7 +157,7 @@ interface AvSettings { volume: number; sfxVolume: number; voices: boolean; scree
 
 function loadSettings(): AvSettings {
   const reducedMotion = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const defaults: AvSettings = { volume: 50, sfxVolume: 70, voices: true, screenFx: !reducedMotion };
+  const defaults: AvSettings = { volume: 30, sfxVolume: 70, voices: true, screenFx: !reducedMotion };
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     return raw ? { ...defaults, ...JSON.parse(raw) } : defaults;

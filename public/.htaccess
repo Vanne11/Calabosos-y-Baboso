@@ -1,0 +1,8 @@
+# Calabosos: que el navegador no se quede con versiones viejas del juego después de actualizar.
+# index.html y los datos (game.json, escenas) no llevan hash en el nombre: se revalidan siempre
+# (con ETag es barato). Los .js/.css de assets/ sí llevan hash y se cachean normal.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

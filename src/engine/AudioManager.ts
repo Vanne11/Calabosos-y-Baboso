@@ -8,7 +8,7 @@ const FADE_STEPS = 30;
 export class AudioManager {
   private current: HTMLAudioElement | null = null;
   private currentTrack: string | null = null;
-  private _volume: number = 0.5;
+  private _volume: number = 0.3;
   private fading: boolean = false;
   private pendingTrack: string | null = null;
   private unlocked: boolean = false;
