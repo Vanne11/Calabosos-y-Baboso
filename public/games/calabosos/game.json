@@ -147,6 +147,12 @@
       "image": "images/dialogs/ian.png",
       "role": "npc"
     },
+    "alcalde": {
+      "name": "Alcalde de Viscaria",
+      "description": "Un político que no sabía tu nombre hasta que salvaste el reino. Sigue sin saberlo.",
+      "image": "images/dialogs/alcalde.png",
+      "role": "npc"
+    },
     "sistema": {
       "name": "SISTEMA",
       "description": "Notificaciones del sistema de juego.",
@@ -186,6 +192,10 @@
     "zonas_completadas": {
       "label": "Zonas completadas",
       "hidden": true
+    },
+    "ventaja_rey": {
+      "label": "Ventaja contra el Rey",
+      "hidden": true
     }
   },
   "initialStats": {
@@ -195,7 +205,9 @@
     "sexi": 50,
     "dinero": 0,
     "zonas_completadas": 0,
-    "causa_muerte": "sus ganas de vivir llegaron a cero"
+    "causa_muerte": "sus ganas de vivir llegaron a cero",
+    "ventaja_rey": 0,
+    "cancion_nerly": ""
   },
   "initialFlags": {},
   "initialInventory": [],
@@ -487,6 +499,51 @@
       "Pasan las horas. Te duelen los pies. Nerly se desliza a tu lado sin esfuerzo, como burlándose de tus piernas.",
       "Un pájaro te caga en el hombro. En Viscaria eso trae buena suerte. Bueno, no. Pero es gracioso.",
       "Caminas tanto que empiezas a hablar solo. Nerly finge no escucharte. Yo sí te escucho. Siempre."
+    ],
+    "recap_final": [
+      {
+        "text": "Resumen de tu aventura: fuiste un cobarde con estilo. Huiste tanto que el Abismo te dio un premio a la mejor espalda.",
+        "condition": {
+          "profile": {
+            "cobarde": ">=3"
+          }
+        }
+      },
+      {
+        "text": "Resumen de tu aventura: hablaste más de lo que peleaste. Convenciste a guardias, taberneros y reyes. Si el mundo se salva con palabras, tú eres su héroe. Si no, eres un charlatán.",
+        "condition": {
+          "profile": {
+            "charlatan": ">=2"
+          }
+        }
+      },
+      {
+        "text": "Resumen de tu aventura: robaste, mentiste y le echaste sal a quien no debías. Salvaste el reino, sí. Pero el reino no te lo va a agradecer tanto como crees.",
+        "condition": {
+          "profile": {
+            "cruel": ">=1"
+          }
+        }
+      },
+      {
+        "text": "Resumen de tu aventura: fuiste amable con una babosa perdida, con una babosa parlante y con un árbol. Nadie lo esperaba. Yo menos.",
+        "condition": {
+          "profile": {
+            "amable": ">=2"
+          }
+        }
+      },
+      {
+        "text": "Resumen de tu aventura: moriste {meta.muertes} veces y volviste cada vez. No sé si eso es valentía o incapacidad de aprender. Probablemente ambas.",
+        "condition": {
+          "meta": {
+            "muertes": ">=3"
+          }
+        }
+      },
+      {
+        "text": "Resumen de tu aventura: llegaste, viste, te measte un poco, y venciste. En ese orden. Veredicto final: héroe aceptable. Solo aceptable."
+      }
     ]
   },
   "items": {
@@ -679,6 +736,21 @@
       "name": "Antorcha",
       "description": "Revela babosas fantasma y chamusca antenas.",
       "image": "images/items/antorcha.png"
+    },
+    "cristal_ocultamiento": {
+      "name": "Cristal de Ocultamiento",
+      "description": "Confunde los sentidos de las babosas. Brilla azul.",
+      "image": "images/items/cristal_ocultamiento.png"
+    },
+    "daga_rompecristal": {
+      "name": "Daga rompe-cristal",
+      "description": "Hecha para cortar cristal vivo. Con runas. De otro aventurero que no volvió.",
+      "image": "images/items/daga_rompecristal.png"
+    },
+    "esencia_plateada": {
+      "name": "Esencia de Babosa Plateada",
+      "description": "Rarísima y letal para el Rey. Donde toca, la baba se vuelve piedra.",
+      "image": "images/items/esencia_plateada.png"
     }
   },
   "traits": {
@@ -831,6 +903,18 @@
         "icon": "🎯",
         "category": "Secretos",
         "text": "Un pequeño cristal incrustado en la frente del Rey controla toda su masa. Golpéalo ahí. Con sal, si puedes."
+      },
+      "babosas_guardianas": {
+        "title": "Babosas Guardianas",
+        "icon": "🛡️",
+        "category": "Especies",
+        "text": "Del tamaño de un buey, con protuberancias como armadura. Casi invulnerables de frente, leales al Rey. [dim]Odian la mala música, como su amo.[/dim]"
+      },
+      "verdadero_narrador": {
+        "title": "El Verdadero Narrador",
+        "icon": "🌀",
+        "category": "Secretos",
+        "text": "El Narrador era el Verdadero Rey Baboso, destronado por el impostor. Necesitaba un héroe que cuestionara la narrativa. Nerly te eligió por encargo suyo. Y eligió bien."
       }
     }
   }

@@ -233,6 +233,47 @@ Retratos de babosa, 256×256, pixel art 16 bits, fondo oscuro de caverna. Cada u
 
 ---
 
+### scenarios/corazon_abismo.png — El Corazón del Abismo
+**Escenas:** `acto4_trono`, `acto4_guardianas`, `acto4_distraer`, `acto4_pasaje*`
+
+16-bit pixel art. Corredor orgánico cuyas paredes laten como un corazón gigante, con venas de luz verde. Al fondo, una puerta enorme de cristal vivo que pulsa con luz interna, flanqueada por dos babosas colosales con protuberancias como armadura. En una pared, una grieta estrecha casi invisible. Paleta: verde tóxico, morado oscuro, destellos de cristal.
+
+---
+
+### scenarios/cabana.png — Final: Retiro Pacífico
+**Escenas:** `final_retiro`
+
+16-bit pixel art. Cabaña de madera acogedora a las afueras de un pueblo medieval, con un huerto de zanahorias y coles. Nerly (babosa azul brillante) se desliza feliz entre las plantas. BOB con sombrero de paja y una azada. A lo lejos, en la plaza del pueblo, una estatua de BOB con proporciones exageradas. Atardecer cálido y pacífico. Colores suaves, verdes y dorados.
+
+---
+
+### scenarios/narrador_revelado.png — Final Secreto: El Verdadero Narrador
+**Escenas:** `final_secreto`
+
+16-bit pixel art. Espacio etéreo y abstracto, entre planos: páginas de guion flotando, humo lila y estrellas. En el centro, una babosa enorme, antigua y majestuosa, con patrones iridiscentes que cambian de color, y la máscara de teatro del Narrador (mitad comedia, mitad tragedia) flotando frente a ella. Solemne, misterioso y un poco burlón. Paleta: lilas, dorados, iridiscencias.
+
+---
+
+### dialogs/ — Acto IV
+
+| Archivo | Personaje / enemigo | Descripción para el prompt |
+|---|---|---|
+| `babosas_guardianas.png` | Babosas Guardianas | Dos babosas colosales grises con protuberancias como placas de armadura, ojos rojos pequeños, postura de guardia leal |
+| `tentaculos_rey.png` | Tentáculos del Rey | Varios tentáculos gelatinosos verdes y morados emergiendo de una masa enorme, goteando baba, con ventosas |
+| `alcalde.png` | Alcalde de Viscaria | Político regordete con banda de alcalde, bigote enorme y un papel en la mano para leer tu nombre |
+
+---
+
+### items/ — Objetos del Acto IV (256×256, fondo transparente)
+
+| Archivo | Objeto | Descripción para el prompt |
+|---|---|---|
+| `cristal_ocultamiento.png` | Cristal de Ocultamiento | Fragmento de cristal azul que emite un halo difuso |
+| `daga_rompecristal.png` | Daga rompe-cristal | Daga de hoja translúcida con runas brillantes y empuñadura envuelta en tela encerada |
+| `esencia_plateada.png` | Esencia de Babosa Plateada | Frasco con líquido plateado brillante que se mueve solo |
+
+---
+
 ### items/ — Objetos del Prólogo y el Acto I (256×256, fondo transparente)
 
 Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para que se lea sobre fondos morados.
@@ -269,10 +310,3 @@ Mismo estilo pixel art 16 bits, objeto centrado, contorno oscuro marcado para qu
 **Retratos:** `narrator`, `protagonist_male`, `protagonist_female`, `protagonist_andro`, `nerly`, `tendero`, `noble`, `dueno_establos`, `prestamista`, `anciano`, `system`
 
 **Items:** `bolsa_monedas` (bolsa misteriosa), `espada_oxidada`, `relicario_familiar`, `relicario_familiar_2`, `sal_anti_babosas` (saco de sal), `zurron_espacioso` (bolso de escroto de elefante)
-
----
-
-## PRÓXIMAS (se agregan a medida que se escriben los actos)
-
-Se sumarán fichas a este documento en cada fase. Ya están previstas:
-- **Escenarios:** Corazón del Abismo, pasaje secreto, finales (retiro pacífico, nuevas aventuras, el verdadero narrador).

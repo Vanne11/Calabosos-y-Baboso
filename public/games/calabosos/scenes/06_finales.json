@@ -1,36 +1,5 @@
 {
   "scenes": {
-    "final_heroico": {
-      "scenario": {
-        "name": "Final: Celebración Heroica",
-        "image": "images/scenarios/final.png",
-        "music": "audio/rpgchip02_bittersweet_story.ogg"
-      },
-      "sequence": [
-        {
-          "type": "dialog",
-          "character": "narrator",
-          "lines": [
-            "Y así, contra toda estadística, lógica y buen gusto, ganaste.",
-            "No te acostumbres.",
-            "[dim](Finales en construcción: heroico, nuevas aventuras, retiro pacífico y el secreto.)[/dim]"
-          ]
-        },
-        {
-          "type": "choice",
-          "options": [
-            {
-              "text": "Jugar de nuevo",
-              "goto": "_restart"
-            },
-            {
-              "text": "Salir",
-              "goto": "_quit"
-            }
-          ]
-        }
-      ]
-    },
     "muerte": {
       "scenario": {
         "name": "Has muerto",
@@ -85,6 +54,544 @@
             },
             {
               "text": "Rendirse",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+    "final_heroico": {
+      "scenario": {
+        "name": "Final: Celebración Heroica",
+        "image": "images/scenarios/final.png",
+        "music": "audio/rpgchip02_bittersweet_story.ogg",
+        "description": "La plaza de Viscaria, decorada con guirnaldas y babosas de papel."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Una semana después, la plaza de Viscaria está llena de guirnaldas. Una multitud se reunió para celebrar tu hazaña."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "alcalde",
+          "lines": [
+            "¡Ciudadanos de Viscaria! ¡Hoy celebramos la derrota del terror que asoló nuestras tierras por generaciones! ¡El Rey Baboso ha caído gracias a... eh... (lee un papel) BOB!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "De «BOB el incompetente» a salvador del reino. Vaya ascenso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "alcalde",
+          "lines": [
+            "Te nombramos Protector Oficial de Viscaria, con todos los privilegios y responsabilidades."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Traducción: más trabajo, misma paga."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Entre la multitud: el Tendero, sospechosamente sobrio; Ian, vendiendo «Auténticos Recuerdos del Abismo» a turistas; y el Mago de las Calles, que te guiña un ojo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Tú sabes lo de su pacto con el Rey. Él sabe que sabes. Te guiña otra vez. Escalofríos. Esto no terminó."
+          ],
+          "condition": {
+            "flags": {
+              "pacto_mago_rey": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly sube al escenario con una pequeña corona de flores.) BOB... ¿te acuerdas de la canción de la fogata? Voy a cantarla. Para todos."
+          ],
+          "condition": {
+            "textMatches": {
+              "cancion_nerly": "\\S"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "{cancion_nerly}"
+          ],
+          "condition": {
+            "textMatches": {
+              "cancion_nerly": "\\S"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly sube al escenario con una corona de flores.) ¡Les voy a cantar algo! «Por un sendero de baba brillante / iba un héroe torpe pero valiente...»"
+          ],
+          "condition": {
+            "textMatches": {
+              "cancion_nerly": "^\\s*$"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La plaza entera canta. Desafinada. El Rey Baboso, esté donde esté, estaría sufriendo. Precioso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "(susurrando) No habría podido hacerlo sin ti."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Oh, por favor. No te pongas sentimental. Arruinarás mi reputación de narrador desalmado."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "recap_final",
+          "ai": {
+            "prompt": "recap",
+            "vars": {
+              "final": "Celebración Heroica",
+              "resumen": "muertes totales {meta.muertes}, partidas {meta.partidas}, monedas {dinero}, qué tan sexi {sexi}/100, miedo {miedo}/100, babosas vencidas en total {meta.babosas_vencidas}"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "meta": {
+              "final_heroico": 1
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Final: Celebración Heroica",
+          "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
+          "icon": "🏁"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "…¿Qué es esa presencia que se siente en el aire?",
+              "goto": "final_secreto",
+              "condition": {
+                "relationshipTier": {
+                  "nerly": "loyal"
+                },
+                "flags": {
+                  "toco_lagrima": true,
+                  "uso_pasaje_secreto": true
+                }
+              }
+            },
+            {
+              "text": "Jugar de nuevo (el narrador te espera)",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+    "final_nuevas_aventuras": {
+      "scenario": {
+        "name": "Final: Nuevas Aventuras",
+        "image": "images/scenarios/camino.png",
+        "music": "audio/rpgchip11_airship.ogg",
+        "description": "Una colina sobre Viscaria. El horizonte del norte está brumoso."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Semanas después. Una colina con vista a Viscaria. Nerly contempla el horizonte a tu lado."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Las Babosas Conscientes están formando su propia sociedad en lo que queda del Abismo. Una pacífica."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Un imperio de baba democrático. ¿Quién lo hubiera imaginado?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Podría quedarme con ellas, pero... ya probé la aventura. Y me gusta estar contigo, BOB."
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": ">=40"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Podría quedarme con ellas. Pero alguien tiene que cuidarte. Estadísticamente, sin mí morirías en una semana."
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": "<40"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Dicen que en el norte hay un Duque Hongo que convierte a sus súbditos en esporas andantes. ¿Vamos a ver?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Parece que mi contrato como narrador acaba de extenderse indefinidamente. Genial. Fantástico. Maravilloso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y así, el dúo improbable de humano y babosa parlante pone rumbo a nuevas aventuras. Si sobreviven o no... esa es otra historia. Literalmente. Se vende por separado."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "recap_final",
+          "ai": {
+            "prompt": "recap",
+            "vars": {
+              "final": "Nuevas Aventuras (Continuará...)",
+              "resumen": "muertes totales {meta.muertes}, partidas {meta.partidas}, monedas {dinero}, qué tan sexi {sexi}/100, miedo {miedo}/100, babosas vencidas en total {meta.babosas_vencidas}"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "meta": {
+              "final_aventuras": 1
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Final: Nuevas Aventuras (Continuará...)",
+          "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
+          "icon": "🏁"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "…¿Qué es esa presencia que se siente en el aire?",
+              "goto": "final_secreto",
+              "condition": {
+                "relationshipTier": {
+                  "nerly": "loyal"
+                },
+                "flags": {
+                  "toco_lagrima": true,
+                  "uso_pasaje_secreto": true
+                }
+              }
+            },
+            {
+              "text": "Jugar de nuevo (el narrador te espera)",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+    "final_retiro": {
+      "scenario": {
+        "name": "Final: Retiro Pacífico",
+        "image": "images/scenarios/cabana.png",
+        "music": "audio/rpgchip05_pavane.ogg",
+        "description": "Una cabaña a las afueras de Viscaria, con un huerto y una babosa feliz entre las zanahorias."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Contra todo pronóstico, decidiste que una aventura casi mortal era suficiente para toda una vida. Compraste una parcela y construiste una cabaña."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Nunca pensé que la vida tranquila pudiera ser tan satisfactoria. Las zanahorias son sorprendentemente interesantes desde la perspectiva de una babosa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Un aventurero retirado y una babosa filosófica cultivando verduras. No era el final épico que tenía en mente."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "¡Saludos, héroe! ¿O debería decir granjero? Abrí una sucursal en el pueblo: «Artículos para Granjeros Extremos». Y... (se endereza) llevo tres meses sobrio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "tendero",
+          "lines": [
+            "Ah, y la ciudad te hizo una estatua en la plaza. Creo que exageraron un poco tus... proporciones heroicas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Esa estatua debería haberme incluido a mí también."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "La próxima vez que salvemos el mundo, exigimos dos estatuas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿La próxima vez? Pensé que estabas retirado. Con esa ambigüedad perfectamente diseñada para una secuela, termina nuestra historia."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "recap_final",
+          "ai": {
+            "prompt": "recap",
+            "vars": {
+              "final": "Retiro Pacífico",
+              "resumen": "muertes totales {meta.muertes}, partidas {meta.partidas}, monedas {dinero}, qué tan sexi {sexi}/100, miedo {miedo}/100, babosas vencidas en total {meta.babosas_vencidas}"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "meta": {
+              "final_retiro": 1
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Final: Retiro Pacífico",
+          "text": "Muertes totales: {meta.muertes} · Partidas: {meta.partidas}",
+          "icon": "🏁"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "…¿Qué es esa presencia que se siente en el aire?",
+              "goto": "final_secreto",
+              "condition": {
+                "relationshipTier": {
+                  "nerly": "loyal"
+                },
+                "flags": {
+                  "toco_lagrima": true,
+                  "uso_pasaje_secreto": true
+                }
+              }
+            },
+            {
+              "text": "Jugar de nuevo (el narrador te espera)",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir",
+              "goto": "_quit"
+            }
+          ]
+        }
+      ]
+    },
+    "final_secreto": {
+      "scenario": {
+        "name": "Final Secreto: El Verdadero Narrador",
+        "image": "images/scenarios/narrador_revelado.png",
+        "music": "audio/rpgchip07_the_shrine_of_mysteries.ogg",
+        "description": "El aire se distorsiona. Algo que siempre estuvo ahí, por fin, se deja ver."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Así que... lo lograste. Superaste todas mis pruebas. Todas mis trampas narrativas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Quién eres realmente? Estuviste conmigo desde el principio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El aire frente a ti se distorsiona. Una figura se materializa: no es humana. Es una babosa enorme, antigua y majestuosa, con patrones iridiscentes que cambian sin parar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Soy el Verdadero Rey Baboso. O lo era, antes de que «él» usurpara mi trono y corrompiera la historia misma del Abismo.",
+            "Necesitaba un héroe que pudiera pensar por sí mismo. Que cuestionara la narrativa. Tú elegiste tu camino a cada paso, aunque yo intentara empujarte. Eso te hace único."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nerly lo sabía. ¿Por qué crees que te encontró en ese callejón?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly baja la mirada, sonriendo.) Perdón por no decírtelo. Él me pidió que te eligiera. Y te elegí bien."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "verdadero_narrador"
+            ]
+          }
+        },
+        {
+          "type": "ai_chat",
+          "mode": "confesion",
+          "npc": "narrator",
+          "maxTurns": 3,
+          "vars": {
+            "pregunta": "Ahora que sabes la verdad, BOB, dime: ¿por qué seguiste adelante, cuando todo te decía que te rindieras?",
+            "npc_descripcion": "El Narrador revelado como el Verdadero Rey Baboso: antiguo, sabio, todavía sarcástico, pero por una vez sincero y casi tierno."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 5,
+            "description": "Responderle al Narrador"
+          },
+          "outcomes": {
+            "done": {
+              "text": "El Narrador se ríe, una risa antigua y cálida. «Buena respuesta. Terrible, pero buena.» Comienza a desvanecerse.",
+              "effects": {
+                "meta": {
+                  "final_secreto": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Hasta la próxima historia, «BOB». Y recuerda: las babosas no siempre son lo que parecen. Los narradores, tampoco."
+          ]
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "Final Secreto: El Verdadero Narrador",
+          "text": "Encontraste la verdad detrás de la historia. Y detrás del narrador.",
+          "icon": "🌀"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Jugar de nuevo (ahora sabes quién te narra)",
+              "goto": "_restart"
+            },
+            {
+              "text": "Salir",
               "goto": "_quit"
             }
           ]

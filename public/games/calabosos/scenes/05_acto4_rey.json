@@ -2,9 +2,10 @@
   "scenes": {
     "acto4_trono": {
       "scenario": {
-        "name": "Acto IV: El Rey",
-        "image": "images/scenarios/trono_rey.png",
-        "music": "audio/rpgchip12_the_evil_one.ogg"
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
       },
       "sequence": [
         {
@@ -15,25 +16,1901 @@
         },
         {
           "type": "dialog",
-          "character": "rey_baboso",
+          "character": "nerly",
           "lines": [
-            "¿ESTO es lo que mandaron? ¿En serio?"
+            "Estamos entrando al Corazón del Abismo. Pocos llegan tan lejos."
           ]
         },
         {
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "Por una vez, el Rey Baboso y yo estamos de acuerdo.",
-            "[dim](Acto IV en construcción: la negociación, la batalla en tres fases y el prestamista.)[/dim]"
+            "Y aún menos regresan. Pero eso ya lo sabías."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Recuerdas la visión de la Lágrima: el cristal en la frente del Rey. Ahora sabes dónde golpear."
+          ],
+          "condition": {
+            "flags": {
+              "vision_debilidad": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La visión de la Lágrima sigue dándote vueltas: mil futuros donde el mundo se ahoga en baba. Qué motivador."
+          ],
+          "condition": {
+            "flags": {
+              "vision_mala": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Delante, una puerta enorme de cristal vivo late con luz propia. Dos babosas del tamaño de un buey, con protuberancias como armadura, la flanquean."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Babosas Guardianas. Casi invulnerables de frente y completamente leales al Rey."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "unlockCodex": [
+              "babosas_guardianas"
+            ]
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Enfrentarlas directamente",
+              "goto": "acto4_guardianas",
+              "tags": [
+                "temerario"
+              ]
+            },
+            {
+              "text": "Buscar un pasaje alternativo",
+              "goto": "acto4_pasaje",
+              "tags": [
+                "estratega"
+              ]
+            },
+            {
+              "text": "Intentar distraerlas",
+              "goto": "acto4_distraer",
+              "tags": [
+                "charlatan"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_guardianas": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Te lanzas contra dos babosas del tamaño de un buey. Admiro tu valentía. Bueno, no. Admiro tu falta de sentido común."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "entrada_frontal": true
+            },
+            "stats": {
+              "miedo": 10
+            }
+          }
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Babosas Guardianas",
+            "image": "images/dialogs/babosas_guardianas.png",
+            "hp": 26,
+            "attack": 6,
+            "defense": 0
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "daga_rompecristal",
+              "name": "la daga rompe-cristal",
+              "bonus": 8
+            },
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "fragmentos_lagrima",
+              "name": "Lanzar el proyectil de sal y Lágrima",
+              "damage": 25,
+              "text": "Mezclas sal con los fragmentos de la Lágrima y lanzas el proyectil. Atraviesa la baba como si no existiera."
+            },
+            {
+              "itemId": "esencia_plateada",
+              "name": "Arrojar la Esencia de Babosa Plateada",
+              "damage": 30,
+              "text": "La Esencia Plateada salpica al Rey. Donde toca, la baba se vuelve piedra. El Rey aúlla."
+            },
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un puñado de sal. Chisporrotea contra la baba real."
+            },
+            {
+              "itemId": "repelente_genuino",
+              "name": "Rociar el repelente genuino",
+              "damage": 10,
+              "text": "El repelente de Ian (el genuino) hace retroceder a los tentáculos entre chillidos."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón Cristalino te cura con una luz cálida."
+            },
+            {
+              "itemId": "antidoto_real",
+              "name": "Tomar el antídoto real",
+              "heal": 20,
+              "text": "El antídoto de Ian neutraliza el ácido de tus heridas. Ian no mintió. Por una vez."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "Las Guardianas se desploman como dos bolsas de gelatina cansada. La puerta de cristal se abre sola, como si el Rey quisiera verte de cerca.",
+              "effects": {
+                "stats": {
+                  "sexi": 10,
+                  "ganas_de_vivir": 10
+                },
+                "meta": {
+                  "babosas_vencidas": 2
+                }
+              },
+              "goto": "acto4_sala_trono"
+            },
+            "defeat": {
+              "text": "La baba real te envuelve. Todo es verde, tibio y definitivo.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "aplastado por dos Babosas Guardianas frente a la puerta del trono"
+                }
+              },
+              "goto": "muerte"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_distraer": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Distraerlas? ¿Cómo? ¿Con tu encanto? Ah, no. Espera."
+          ],
+          "condition": {
+            "flags": {
+              "pista_musica": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡BOB! ¡El Rey odia la mala música! ¡Y sus guardianas también! ¡Canta! ¡Canta horrible!"
+          ],
+          "condition": {
+            "flags": {
+              "pista_musica": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y cantas. Cantas tan mal que una estalactita se desprende del techo por vergüenza. Las Guardianas se tapan las antenas y se arrastran lejos, sollozando."
+          ],
+          "condition": {
+            "flags": {
+              "pista_musica": true
+            }
+          }
+        },
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "flags": {
+                  "pista_musica": true
+                }
+              },
+              "goto": "acto4_sala_trono"
+            }
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 14,
+          "faces": 20,
+          "description": "Distraer a las Guardianas",
+          "results": {
+            "critical_success": {
+              "text": "Haces una imitación perfecta del Rey llamándolas a cenar. Se van corriendo. Bueno, arrastrando rápido.",
+              "effects": {
+                "stats": {
+                  "sexi": 10
+                }
+              },
+              "goto": "acto4_sala_trono"
+            },
+            "success": {
+              "text": "Lanzas una piedra lejos. Las Guardianas van a investigar. Increíble. El truco más viejo del mundo funciona con babosas.",
+              "goto": "acto4_sala_trono"
+            },
+            "failure": {
+              "text": "Tu distracción consiste en agitar los brazos y gritar «¡miren allá!». No miran allá. Te miran a ti.",
+              "effects": {
+                "stats": {
+                  "miedo": 15
+                }
+              },
+              "goto": "acto4_guardianas"
+            },
+            "critical_failure": {
+              "text": "Te tropiezas en medio de las dos Guardianas. Es la peor distracción de la historia. Y la más corta.",
+              "effects": {
+                "stats": {
+                  "miedo": 20,
+                  "pis": 20
+                }
+              },
+              "goto": "acto4_guardianas"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_pasaje": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Debe haber otra forma. Incluso las babosas necesitan ventilación con tantos miles apiñados."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Ventilación? ¿En un abismo subterráneo? Claro. ¿Por qué no. También tendrán aire acondicionado."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "uso_pasaje_secreto": true
+            }
+          }
+        },
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "inventory": [
+                  "huevo_babosa"
+                ]
+              },
+              "goto": "acto4_pasaje_real"
+            },
+            {
+              "condition": {
+                "inventory": [
+                  "mapa_secreto_mago"
+                ]
+              },
+              "goto": "acto4_pasaje_mapa"
+            },
+            {
+              "goto": "acto4_pasaje_grieta"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_pasaje_real": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El huevo dorado de tu mochila empieza a latir con fuerza. Una sección de la pared responde con el mismo latido y se abre como una cortina húmeda."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Un pasaje real! Solo se abre para la familia del Rey. El huevo... ¡te reconoce como familia!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Felicidades. Legalmente, en el Abismo, ahora eres pariente del Rey Baboso. Tu árbol genealógico acaba de ponerse muy viscoso."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": -15,
+              "ventaja_rey": 1
+            },
+            "flags": {
+              "entrada_real": true,
+              "ventaja_sorpresa": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Entrar al trono por la puerta de la familia",
+              "goto": "acto4_sala_trono"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_pasaje_mapa": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sigues el mapa del Mago. El pasaje existe. Está limpio, iluminado... y tiene un felpudo que dice «BIENVENIDO» en babosa."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Esto no es un pasaje secreto. Es una entrada de servicio. Para los... proveedores del Rey."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Para el Mago. El Mago entraba por aquí. ¿A dejarle qué, exactamente, al Rey? No preguntes. Sí, pregunta. Después."
+          ],
+          "condition": {
+            "flags": {
+              "pacto_mago_rey": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": -10,
+              "ventaja_rey": 1
+            },
+            "flags": {
+              "ventaja_sorpresa": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir el pasaje hasta el trono",
+              "goto": "acto4_sala_trono"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_pasaje_grieta": {
+      "scenario": {
+        "name": "Acto IV: El Corazón del Abismo",
+        "image": "images/scenarios/corazon_abismo.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pasajes que laten como un corazón gigante. Al fondo, una puerta de cristal vivo."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Aquí! Esta grieta no es natural. Alguien la hizo a propósito."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Genial. Más arrastrarse por túneles estrechos. Porque salió tan bien la última vez. Y con la vejiga llena ({pis} de 100). Qué podría salir mal."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 17,
+          "faces": 20,
+          "description": "Arrastrarte por la grieta (con la vejiga como está)",
+          "results": {
+            "success": {
+              "text": "Te arrastras con determinación. El túnel termina en una abertura oculta tras unos cristales, a un costado del trono."
+            },
+            "failure": {
+              "text": "Tu mochila se engancha y haces un ruido que retumba por todo el Abismo. «¡Silencio!», susurra Nerly. Ya es tarde. El Rey sabe que vienes."
+            }
+          },
+          "tiers": [
+            {
+              "text": "A mitad del túnel, tu vejiga toma una decisión ejecutiva. El olor alerta a las Babosas Sensoriales, que te rocían ácido paralizante. Sales humillado y rígido.",
+              "effects": {
+                "stats": {
+                  "sexi": -30,
+                  "miedo": 20,
+                  "ganas_de_vivir": -15
+                },
+                "setStats": {
+                  "pis": 0
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "Descubres una cámara oculta de otro aventurero. Dejó un paquete: una daga rompe-cristal con runas y un frasco de Esencia de Babosa Plateada, letal para el Rey.",
+              "effects": {
+                "stats": {
+                  "miedo": -20,
+                  "sexi": 10,
+                  "ganas_de_vivir": 15
+                },
+                "inventory": [
+                  "daga_rompecristal",
+                  "esencia_plateada"
+                ]
+              },
+              "natural": 20
+            },
+            {
+              "text": "Quedas atascado. No avanzas ni retrocedes. Una hora después, Nerly vuelve con Babosas Lubricantes. Otra vez. Ya te conocen.",
+              "effects": {
+                "stats": {
+                  "miedo": 15,
+                  "ganas_de_vivir": -15,
+                  "pis": 10
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Tu mochila se engancha y haces un ruido que retumba por todo el Abismo. «¡Silencio!», susurra Nerly. Ya es tarde. El Rey sabe que vienes.",
+              "effects": {
+                "stats": {
+                  "miedo": 5,
+                  "ventaja_rey": -1
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Te arrastras con determinación. El túnel termina en una abertura oculta tras unos cristales, a un costado del trono.",
+              "effects": {
+                "stats": {
+                  "miedo": -5
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "En las paredes hay vetas de cristal que confunden los sentidos de las babosas. Arrancas un fragmento: un Cristal de Ocultamiento.",
+              "effects": {
+                "stats": {
+                  "miedo": -10,
+                  "sexi": 5,
+                  "ventaja_rey": 1
+                },
+                "inventory": [
+                  "cristal_ocultamiento"
+                ]
+              },
+              "min": 16
+            }
           ]
         },
         {
           "type": "choice",
           "options": [
             {
-              "text": "Ganar mágicamente (modo esqueleto)",
-              "goto": "final_heroico"
+              "text": "Salir de la grieta",
+              "goto": "acto4_sala_trono"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_sala_trono": {
+      "scenario": {
+        "name": "Sala del Trono",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La sala del trono. Techo abovedado, pilares de cristal vivo y, en el centro, sobre una plataforma, una masa colosal y pulsante del tamaño de una casa: el Rey Baboso.",
+            "Su cuerpo translúcido deja ver objetos a medio digerir: espadas, armaduras y lo que parece un zapato escolar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "Puedo olerte, pequeño ser de carne. Tus pasos han perturbado mi dominio desde que entraste."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Así que puedes hablar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "Puedo hacer muchas cosas que tus sentidos no comprenden. He absorbido el conocimiento de cientos como tú.",
+            "Y has traído a una traidora. Una de mis creaciones, vuelta contra mí. Qué decepcionante."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡No soy tu creación! ¡Las Babosas Conscientes existíamos antes de que te volvieras este monstruo!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "Tan ingenua. Todo en este Abismo es parte de mí. Incluida tú."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En su frente, justo como en la visión, brilla un cristal incrustado en la masa gelatinosa."
+          ],
+          "condition": {
+            "flags": {
+              "vision_debilidad": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "Sé lo de tu pacto con el Mago de las Calles."
+          ],
+          "condition": {
+            "flags": {
+              "pacto_mago_rey": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "¿El Mago? Un proveedor. Me envía héroes con permisos falsos. Bien alimentados. Tú eras el pedido de esta semana."
+          ],
+          "condition": {
+            "flags": {
+              "pacto_mago_rey": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Así que tu permiso de salida era... un menú. Qué bonito momento para enterarse."
+          ],
+          "condition": {
+            "flags": {
+              "pacto_mago_rey": true
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Atacar directamente",
+              "goto": "acto4_fase1",
+              "tags": [
+                "valiente"
+              ]
+            },
+            {
+              "text": "Distraerlo mientras preparas un ataque",
+              "goto": "acto4_distraer_rey",
+              "tags": [
+                "estratega"
+              ]
+            },
+            {
+              "text": "Intentar negociar con el Rey",
+              "goto": "acto4_negociacion",
+              "tags": [
+                "charlatan"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_distraer_rey": {
+      "scenario": {
+        "name": "Sala del Trono",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
+      },
+      "sequence": [
+        {
+          "type": "dice",
+          "stat": "sexi",
+          "difficulty": 13,
+          "faces": 20,
+          "description": "Distraer al Rey Baboso",
+          "results": {
+            "critical_success": {
+              "text": "Le preguntas por su dieta. El Rey, halagado, empieza un monólogo de villano de diez minutos. Te da tiempo de sobra para prepararte.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 2
+                }
+              },
+              "goto": "acto4_fase1"
+            },
+            "success": {
+              "text": "Señalas detrás de él: «¡Mira, un héroe mejor que yo!». El Rey se da vuelta. Es enorme, tarda en darse vuelta. Ganas unos segundos preciosos.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 1
+                }
+              },
+              "goto": "acto4_fase1"
+            },
+            "failure": {
+              "text": "«¿Crees que caeré en eso? He absorbido a ilusionistas.» Te ignora y ataca.",
+              "goto": "acto4_fase1"
+            },
+            "critical_failure": {
+              "text": "Intentas hacer una voltereta distractora. Aterrizas en un charco de baba real. El Rey se ríe tanto que tiembla la sala. Luego te ataca, de buen humor.",
+              "effects": {
+                "stats": {
+                  "sexi": -10,
+                  "miedo": 10
+                }
+              },
+              "goto": "acto4_fase1"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_negociacion": {
+      "scenario": {
+        "name": "Sala del Trono",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip12_the_evil_one.ogg",
+        "description": "Pilares de cristal vivo, baba iridiscente y, en el centro, una montaña pulsante con corona."
+      },
+      "sequence": [
+        {
+          "type": "ai_chat",
+          "mode": "persuadir",
+          "npc": "rey_baboso",
+          "maxTurns": 5,
+          "intro": [
+            "¿Negociar? ¿Tú? ¿Conmigo? (Una risa húmeda retumba en la sala.) Habla, bocadillo. Me entretienes."
+          ],
+          "vars": {
+            "objetivo": "que el Rey Baboso abdique, se rinda o al menos dude de seguir con su tiranía",
+            "debilidad": "odia la mala música, teme perder el cristal de su frente y, en el fondo, extraña cuando era una babosa normal y nadie le temía",
+            "npc_descripcion": "Monarca supremo de las babosas: colosal, pegajoso, teatral y con un ego del tamaño de su trono. Habla con voz resonante y húmeda, en plural mayestático a veces."
+          },
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 16,
+            "description": "Convencer al Rey Baboso"
+          },
+          "outcomes": {
+            "success": {
+              "text": "El Rey se queda en silencio. Por primera vez en siglos, duda. Su cristal parpadea. «...No. ¡NO! ¡Soy el Rey!» Pero algo se rompió por dentro. Sus tentáculos tiemblan.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 2
+                },
+                "flags": {
+                  "rey_dudoso": true
+                }
+              },
+              "goto": "acto4_fase2"
+            },
+            "partial": {
+              "text": "«Interesante. Casi me haces pensar. Casi.» El Rey se incorpora. La charla terminó.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": 1
+                }
+              },
+              "goto": "acto4_fase1"
+            },
+            "failure": {
+              "text": "«Suficiente.» El Rey ruge, ofendido. Su baba hierve de furia. Lo hiciste enojar. Bravo, diplomático.",
+              "effects": {
+                "stats": {
+                  "ventaja_rey": -1
+                },
+                "flags": {
+                  "rey_furioso": true
+                }
+              },
+              "goto": "acto4_fase1"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_fase1": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "¿Detenerme? Ni siquiera comprendes lo que soy. Soy la evolución misma."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "De la masa del Rey emergen tentáculos babosos. Muchos. Demasiados. Con opiniones."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Cuidado! ¡Ataca desde varias direcciones a la vez!"
+          ]
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "Tentáculos del Rey",
+            "image": "images/dialogs/tentaculos_rey.png",
+            "hp": 20,
+            "attack": 6,
+            "defense": 0,
+            "firstStrike": true,
+            "firstStrikeText": "¡Un tentáculo te azota antes de que puedas moverte!"
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "daga_rompecristal",
+              "name": "la daga rompe-cristal",
+              "bonus": 8
+            },
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "fragmentos_lagrima",
+              "name": "Lanzar el proyectil de sal y Lágrima",
+              "damage": 25,
+              "text": "Mezclas sal con los fragmentos de la Lágrima y lanzas el proyectil. Atraviesa la baba como si no existiera."
+            },
+            {
+              "itemId": "esencia_plateada",
+              "name": "Arrojar la Esencia de Babosa Plateada",
+              "damage": 30,
+              "text": "La Esencia Plateada salpica al Rey. Donde toca, la baba se vuelve piedra. El Rey aúlla."
+            },
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un puñado de sal. Chisporrotea contra la baba real."
+            },
+            {
+              "itemId": "repelente_genuino",
+              "name": "Rociar el repelente genuino",
+              "damage": 10,
+              "text": "El repelente de Ian (el genuino) hace retroceder a los tentáculos entre chillidos."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón Cristalino te cura con una luz cálida."
+            },
+            {
+              "itemId": "antidoto_real",
+              "name": "Tomar el antídoto real",
+              "heal": 20,
+              "text": "El antídoto de Ian neutraliza el ácido de tus heridas. Ian no mintió. Por una vez."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "Cortas, esquivas y quemas hasta que los tentáculos se retiran chillando hacia el cuerpo del Rey. Primera fase superada. Faltan dos. Respira.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": 10
+                }
+              },
+              "goto": "acto4_interludio"
+            },
+            "defeat": {
+              "text": "La baba real te envuelve. Todo es verde, tibio y definitivo.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "estrangulado por los tentáculos del Rey Baboso"
+                }
+              },
+              "goto": "muerte"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_interludio": {
+      "sequence": [
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "flags": {
+                  "deuda_prestamista": true
+                }
+              },
+              "goto": "acto4_prestamista"
+            },
+            {
+              "goto": "acto4_fase2"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_prestamista": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "¡BOB! ¡AHÍ ESTÁS! ¡Mis 100 monedas! Te dije que siempre te encuentro."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El prestamista. En la sala del trono. En medio de la batalla final. Con un pergamino de cobranza. Te dijeron que te encontraría en el peor momento. Ahí está."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "¿Y este quién es?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "prestamista",
+          "lines": [
+            "Un acreedor, Majestad. Nada personal. Luego le paso una tarjeta."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Pagarle lo que tengas ({dinero} monedas)",
+              "effects": {
+                "setStats": {
+                  "dinero": 0
+                },
+                "flags": {
+                  "deuda_prestamista": false,
+                  "deuda_pagada": true
+                }
+              },
+              "goto": "acto4_fase2",
+              "tags": [
+                "honesto"
+              ]
+            },
+            {
+              "text": "Señalarle al Rey: «Majestad, él tiene más carne que yo»",
+              "goto": "acto4_prestamista_comido",
+              "tags": [
+                "cruel"
+              ]
+            },
+            {
+              "text": "Ignorarlo y seguir peleando",
+              "goto": "acto4_prestamista_comido",
+              "tags": [
+                "frio"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_prestamista_comido": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Rey Baboso mira al prestamista. El prestamista mira al Rey. Un tentáculo. Un sorbo. Silencio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Rey se come al prestamista. Tu deuda queda saldada. Técnicamente. Legalmente es un vacío que ningún abogado querrá investigar."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "Puaj. Sabía a intereses compuestos.",
+            "(El Rey tose. Algo le cayó mal. Su masa se sacude, indigesta.)"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "deuda_prestamista": false,
+              "prestamista_comido": true
+            },
+            "stats": {
+              "ventaja_rey": 1
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Aprovechar la indigestión real",
+              "goto": "acto4_fase2"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_fase2": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Rey se yergue en toda su altura. El cristal de su frente brilla. Es ahora o nunca. Bueno, o dentro de un rato. Pero mejor ahora."
+          ]
+        },
+        {
+          "type": "dice",
+          "stat": "ganas_de_vivir",
+          "difficulty": 18,
+          "faces": 20,
+          "description": "Llegar al cristal de la frente del Rey",
+          "results": {
+            "success": {
+              "text": "Esquivas casi todo. Un tentáculo te roza el hombro, pero llegas lo bastante cerca para ver el cristal con claridad. «Persistente», gruñe el Rey."
+            },
+            "failure": {
+              "text": "Esquivas varios tentáculos, pero el Rey anticipa tu estrategia y un chorro de baba ácida te obliga a retroceder. «Predecible.»"
+            }
+          },
+          "tiers": [
+            {
+              "text": "El miedo te paraliza. Un tentáculo te agarra de la pierna y te acerca a la boca real. En el último segundo, Nerly muerde el tentáculo y caes al suelo, herido pero vivo.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -30,
+                  "miedo": 25
+                },
+                "affinity": {
+                  "nerly": 5
+                }
+              },
+              "natural": 1
+            },
+            {
+              "text": "El tiempo se ralentiza. Rebotas de tentáculo en tentáculo y en pleno vuelo golpeas el centro del cristal, que se agrieta con una luz cegadora. «¡IMPOSIBLE!»",
+              "effects": {
+                "stats": {
+                  "miedo": -25,
+                  "sexi": 20,
+                  "ganas_de_vivir": 15,
+                  "ventaja_rey": 3
+                },
+                "flags": {
+                  "cristal_expuesto": true,
+                  "golpe_critico_rey": true
+                }
+              },
+              "natural": 20
+            },
+            {
+              "text": "Un tentáculo te golpea en el pecho y te lanza contra un pilar de cristal. «¿Este es el gran héroe? Patético.»",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -20,
+                  "miedo": 15
+                }
+              },
+              "max": 5
+            },
+            {
+              "text": "Esquivas varios tentáculos, pero el Rey anticipa tu estrategia y un chorro de baba ácida te obliga a retroceder. «Predecible.»",
+              "effects": {
+                "stats": {
+                  "miedo": 5
+                }
+              },
+              "min": 6,
+              "max": 10
+            },
+            {
+              "text": "Esquivas casi todo. Un tentáculo te roza el hombro, pero llegas lo bastante cerca para ver el cristal con claridad. «Persistente», gruñe el Rey.",
+              "effects": {
+                "stats": {
+                  "miedo": -5,
+                  "sexi": 5,
+                  "ventaja_rey": 1
+                },
+                "flags": {
+                  "cristal_expuesto": true
+                }
+              },
+              "min": 11,
+              "max": 15
+            },
+            {
+              "text": "Te mueves entre los tentáculos como si bailaras y saltas sobre uno. «¡Ahora, Nerly!» Nerly le lanza baba a los ojos. «¡TRAIDORA!» El Rey queda ciego un momento.",
+              "effects": {
+                "stats": {
+                  "miedo": -15,
+                  "sexi": 10,
+                  "ganas_de_vivir": 5,
+                  "ventaja_rey": 2
+                },
+                "flags": {
+                  "cristal_expuesto": true
+                }
+              },
+              "min": 16
+            }
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡BOB! ¡Voy a sujetarle los tentáculos! ¡No te detengas!"
+          ],
+          "condition": {
+            "relationshipTier": {
+              "nerly": "allied"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nerly se lanza sobre el Rey y le envuelve los tentáculos con su propio cuerpo. Es pequeña. Es valiente. Brilla más que nunca."
+          ],
+          "condition": {
+            "relationshipTier": {
+              "nerly": "allied"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ventaja_rey": 1
+            },
+            "flags": {
+              "nerly_ayudo": true
+            }
+          },
+          "condition": {
+            "relationshipTier": {
+              "nerly": "allied"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "(Nerly duda. Te mira. Recuerda la sal, las mentiras, las veces que no la escuchaste. Se queda atrás.)"
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": "<10"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ventaja_rey": 1
+            }
+          },
+          "condition": {
+            "flags": {
+              "vision_debilidad": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Toma, BOB! (Nerly te escupe musgo cicatrizante en la herida. Es asqueroso. Funciona.)"
+          ],
+          "condition": {
+            "affinity": {
+              "nerly": ">=20"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ganas_de_vivir": 15
+            }
+          },
+          "condition": {
+            "affinity": {
+              "nerly": ">=20"
+            }
+          }
+        },
+        {
+          "type": "branch",
+          "branches": [
+            {
+              "condition": {
+                "stats": {
+                  "ventaja_rey": ">=4"
+                }
+              },
+              "goto": "acto4_fase3_debil"
+            },
+            {
+              "condition": {
+                "stats": {
+                  "ventaja_rey": ">=2"
+                }
+              },
+              "goto": "acto4_fase3"
+            },
+            {
+              "goto": "acto4_fase3_fuerte"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_fase3_debil": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Rey está débil. Ciego, indigesto, dudando o con el cristal agrietado: tus preparativos dieron fruto. Hasta tú puedes ganar esto."
+          ]
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "El Rey Baboso (debilitado)",
+            "image": "images/dialogs/rey_baboso.png",
+            "hp": 22,
+            "attack": 6,
+            "defense": 0
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "daga_rompecristal",
+              "name": "la daga rompe-cristal",
+              "bonus": 8
+            },
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "fragmentos_lagrima",
+              "name": "Lanzar el proyectil de sal y Lágrima",
+              "damage": 25,
+              "text": "Mezclas sal con los fragmentos de la Lágrima y lanzas el proyectil. Atraviesa la baba como si no existiera."
+            },
+            {
+              "itemId": "esencia_plateada",
+              "name": "Arrojar la Esencia de Babosa Plateada",
+              "damage": 30,
+              "text": "La Esencia Plateada salpica al Rey. Donde toca, la baba se vuelve piedra. El Rey aúlla."
+            },
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un puñado de sal. Chisporrotea contra la baba real."
+            },
+            {
+              "itemId": "repelente_genuino",
+              "name": "Rociar el repelente genuino",
+              "damage": 10,
+              "text": "El repelente de Ian (el genuino) hace retroceder a los tentáculos entre chillidos."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón Cristalino te cura con una luz cálida."
+            },
+            {
+              "itemId": "antidoto_real",
+              "name": "Tomar el antídoto real",
+              "heal": 20,
+              "text": "El antídoto de Ian neutraliza el ácido de tus heridas. Ian no mintió. Por una vez."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
+              "effects": {
+                "meta": {
+                  "reyes_derrotados": 1
+                },
+                "flags": {
+                  "rey_derrotado": true
+                }
+              },
+              "goto": "acto4_desenlace"
+            },
+            "defeat": {
+              "text": "La baba real te envuelve. Todo es verde, tibio y definitivo.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "absorbido por el Rey Baboso (debilitado, lo cual es aún más humillante)"
+                }
+              },
+              "goto": "muerte"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_fase3": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Rey ruge y concentra toda su masa en protegerse. La pelea de verdad empieza ahora."
+          ]
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "El Rey Baboso",
+            "image": "images/dialogs/rey_baboso.png",
+            "hp": 30,
+            "attack": 7,
+            "defense": 0
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "daga_rompecristal",
+              "name": "la daga rompe-cristal",
+              "bonus": 8
+            },
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "fragmentos_lagrima",
+              "name": "Lanzar el proyectil de sal y Lágrima",
+              "damage": 25,
+              "text": "Mezclas sal con los fragmentos de la Lágrima y lanzas el proyectil. Atraviesa la baba como si no existiera."
+            },
+            {
+              "itemId": "esencia_plateada",
+              "name": "Arrojar la Esencia de Babosa Plateada",
+              "damage": 30,
+              "text": "La Esencia Plateada salpica al Rey. Donde toca, la baba se vuelve piedra. El Rey aúlla."
+            },
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un puñado de sal. Chisporrotea contra la baba real."
+            },
+            {
+              "itemId": "repelente_genuino",
+              "name": "Rociar el repelente genuino",
+              "damage": 10,
+              "text": "El repelente de Ian (el genuino) hace retroceder a los tentáculos entre chillidos."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón Cristalino te cura con una luz cálida."
+            },
+            {
+              "itemId": "antidoto_real",
+              "name": "Tomar el antídoto real",
+              "heal": 20,
+              "text": "El antídoto de Ian neutraliza el ácido de tus heridas. Ian no mintió. Por una vez."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
+              "effects": {
+                "meta": {
+                  "reyes_derrotados": 1
+                },
+                "flags": {
+                  "rey_derrotado": true
+                }
+              },
+              "goto": "acto4_desenlace"
+            },
+            "defeat": {
+              "text": "La baba real te envuelve. Todo es verde, tibio y definitivo.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "absorbido por el Rey Baboso"
+                }
+              },
+              "goto": "muerte"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_fase3_fuerte": {
+      "scenario": {
+        "name": "Batalla Final",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip14_battle_2.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Llegaste sin ventajas, sin visión y sin plan. El Rey está entero y furioso. Esto va a doler. Mucho. Te lo dije desde el principio."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Usa todo lo que tengas, BOB! ¡Sal, pociones, lo que sea!"
+          ]
+        },
+        {
+          "type": "combat",
+          "enemy": {
+            "name": "El Rey Baboso (furioso)",
+            "image": "images/dialogs/rey_baboso.png",
+            "hp": 36,
+            "attack": 7,
+            "defense": 0,
+            "damagePerTurn": 1,
+            "damagePerTurnText": "La baba real hierve a tu alrededor"
+          },
+          "playerStat": "ganas_de_vivir",
+          "attackStat": "sexi",
+          "actions": [
+            "attack",
+            "defend",
+            "use_item"
+          ],
+          "weapons": [
+            {
+              "itemId": "daga_rompecristal",
+              "name": "la daga rompe-cristal",
+              "bonus": 8
+            },
+            {
+              "itemId": "espada_oxidada",
+              "name": "la espada oxidada",
+              "bonus": 4
+            },
+            {
+              "itemId": "bate_beisbol",
+              "name": "el bate de Takashi",
+              "bonus": 3
+            },
+            {
+              "itemId": "daga_ceremonial",
+              "name": "la daga ceremonial",
+              "bonus": 3
+            }
+          ],
+          "combatItems": [
+            {
+              "itemId": "fragmentos_lagrima",
+              "name": "Lanzar el proyectil de sal y Lágrima",
+              "damage": 25,
+              "text": "Mezclas sal con los fragmentos de la Lágrima y lanzas el proyectil. Atraviesa la baba como si no existiera."
+            },
+            {
+              "itemId": "esencia_plateada",
+              "name": "Arrojar la Esencia de Babosa Plateada",
+              "damage": 30,
+              "text": "La Esencia Plateada salpica al Rey. Donde toca, la baba se vuelve piedra. El Rey aúlla."
+            },
+            {
+              "itemId": "sal",
+              "name": "Lanzar sal",
+              "damage": 12,
+              "consume": false,
+              "preventSplit": true,
+              "text": "Lanzas un puñado de sal. Chisporrotea contra la baba real."
+            },
+            {
+              "itemId": "repelente_genuino",
+              "name": "Rociar el repelente genuino",
+              "damage": 10,
+              "text": "El repelente de Ian (el genuino) hace retroceder a los tentáculos entre chillidos."
+            },
+            {
+              "itemId": "pocion_sospechosa",
+              "name": "Beber poción sospechosa",
+              "heal": 25,
+              "text": "Te bebes la poción sospechosa. *hic*"
+            },
+            {
+              "itemId": "corazon_cristalino",
+              "name": "Usar Corazón de Babosa Cristalina",
+              "heal": 40,
+              "text": "El Corazón Cristalino te cura con una luz cálida."
+            },
+            {
+              "itemId": "antidoto_real",
+              "name": "Tomar el antídoto real",
+              "heal": 20,
+              "text": "El antídoto de Ian neutraliza el ácido de tus heridas. Ian no mintió. Por una vez."
+            },
+            {
+              "itemId": "antorcha",
+              "name": "Alzar la antorcha",
+              "damage": 6,
+              "consume": false,
+              "reveal": true,
+              "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            }
+          ],
+          "results": {
+            "victory": {
+              "text": "El cristal de la frente del Rey se agrieta por completo. Un resplandor cegador llena la sala. «¡NOOOOO! ¡SIGLOS DE EVOLUCIÓN! ¡MI IMPERIO!»",
+              "effects": {
+                "meta": {
+                  "reyes_derrotados": 1
+                },
+                "flags": {
+                  "rey_derrotado": true
+                }
+              },
+              "goto": "acto4_desenlace"
+            },
+            "defeat": {
+              "text": "La baba real te envuelve. Todo es verde, tibio y definitivo.",
+              "effects": {
+                "setStats": {
+                  "causa_muerte": "absorbido por un Rey Baboso furioso y sin un solo rasguño"
+                }
+              },
+              "goto": "muerte"
+            }
+          }
+        }
+      ]
+    },
+    "acto4_desenlace": {
+      "scenario": {
+        "name": "Desenlace",
+        "image": "images/scenarios/trono_rey.png",
+        "music": "audio/rpgchip08_castle_on_the_mountain.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El cuerpo del Rey pierde cohesión. Se derrama, se deshace, se evapora en burbujas que explotan con pequeños gritos. El techo empieza a caer."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Está colapsando! ¡Por aquí! ¡Conozco una salida!"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "protagonist",
+          "lines": [
+            "¿Qué pasará con las otras babosas?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Las que no estaban bajo su control sobrevivirán. El Abismo existía antes que él. Solo que ahora, sin su tiranía."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Corren entre derrumbes y baba hirviendo. Emerges a la luz del día justo cuando la entrada principal se desploma detrás de ti en una nube de polvo."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "Lo... lo logramos. De verdad lo derrotaste."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Así termina la gran aventura de BOB, el héroe improbable que, contra todo pronóstico y todo sentido común, derrotó al Rey Baboso."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Lo hiciste en tu primera vida. Estoy... ¿impresionado? Sí. Qué incómodo."
+          ],
+          "condition": {
+            "meta": {
+              "muertes": "==0"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Solo te costó {meta.muertes} muertes. Un récord. No de los buenos."
+          ],
+          "condition": {
+            "meta": {
+              "muertes": ">=1"
+            }
+          }
+        },
+        {
+          "type": "notify",
+          "style": "achievement",
+          "title": "¡El Rey Baboso ha caído!",
+          "text": "Viscaria está a salvo. Por ahora. Elige cómo termina tu historia.",
+          "icon": "👑"
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Regresar a la ciudad como héroe",
+              "goto": "final_heroico",
+              "tags": [
+                "vanidoso"
+              ]
+            },
+            {
+              "text": "Seguir aventurándote con Nerly",
+              "goto": "final_nuevas_aventuras",
+              "tags": [
+                "aventurero"
+              ]
+            },
+            {
+              "text": "Retirarte a una vida tranquila",
+              "goto": "final_retiro",
+              "tags": [
+                "tranquilo"
+              ]
             }
           ]
         }
