@@ -54,7 +54,8 @@
           "options": [
             {
               "text": "Salir (con dignidad)",
-              "goto": "_quit"
+              "goto": "_quit",
+              "sfx": "desinfle"
             }
           ]
         }

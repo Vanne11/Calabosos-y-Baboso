@@ -7,6 +7,8 @@ import { readFileSync } from 'node:fs';
 import { SFX, voiceBlips } from '../../src/audio/sfxCatalog';
 import { AMBIENCES } from '../../src/audio/ambience';
 import { noteFreq, type Voice } from '../../src/audio/synth';
+import { TONES } from '../../src/engine/AiProvider';
+import { DEFAULT_TONE_SFX, CHAT_START_SFX, toneSfx } from '../../src/audio/tones';
 
 const names = JSON.parse(readFileSync('src/audio/sfx-names.json', 'utf8'));
 
@@ -78,6 +80,25 @@ describe('catálogo de efectos', () => {
   it('sfx-names.json coincide con el catálogo (si falla: npm run sfx-names)', () => {
     expect(names.sfx).toEqual(Object.keys(SFX).sort());
     expect(names.ambience).toEqual(Object.keys(AMBIENCES).sort());
+    expect(names.tones).toEqual([...TONES]);
+  });
+
+  it('cada tono de la IA y cada modo de chat apunta a un efecto que existe', () => {
+    expect(Object.keys(DEFAULT_TONE_SFX).sort()).toEqual([...TONES].sort());
+    for (const name of [...Object.values(DEFAULT_TONE_SFX), ...Object.values(CHAT_START_SFX)]) {
+      if (name) expect(SFX[name], name).toBeDefined();
+    }
+    expect(toneSfx('burla')).toBe('risa');
+    expect(toneSfx('neutral')).toBeNull();
+    expect(toneSfx('burla', { burla: 'abucheo' })).toBe('abucheo');
+    expect(toneSfx('chiste', { chiste: 'none' })).toBeNull();
+    expect(toneSfx(undefined)).toBeNull();
+  });
+
+  it('el servidor PHP acepta los mismos tonos que el juego', () => {
+    const php = readFileSync('server/src/PromptRenderer.php', 'utf8');
+    const list = /const TONES = \[([^\]]+)\]/.exec(php)?.[1] ?? '';
+    expect(list.split(',').map((t) => t.trim().replace(/'/g, ''))).toEqual([...TONES]);
   });
 
   it.each(Object.keys(SFX))('"%s" se sintetiza con parámetros válidos', (name) => {

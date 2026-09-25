@@ -297,6 +297,10 @@
       },
       "sequence": [
         {
+          "type": "sound",
+          "sfx": "libro"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -359,6 +363,10 @@
             "No. Ni hablar. Esto es demasiado oscuro hasta para mí, y eso que te voy a dejar pelear con babosas gigantes.",
             "Además el verdugo está de vacaciones. Se cortó a sí mismo. Larga historia."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "badum_tss"
         },
         {
           "type": "effects",
@@ -655,6 +663,11 @@
           "lines": [
             "Nadie te pidió los zapatos. Era una broma. Tu abuela y su cuchara te miran desde el más allá, decepcionadas."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "abucheo",
+          "volume": 0.7
         },
         {
           "type": "choice",
@@ -1115,6 +1128,10 @@
         "description": "ARTÍCULOS PARA AVENTUREROS SUICIDAS. Huele a pociones derramadas y a malas decisiones."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "hipo"
+        },
         {
           "type": "ai_chat",
           "mode": "negociar",
@@ -1606,6 +1623,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "puerta"
+        },
+        {
           "type": "branch",
           "branches": [
             {
@@ -1742,6 +1763,10 @@
       },
       "sequence": [
         {
+          "type": "sound",
+          "sfx": "descubrimiento"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -1872,6 +1897,10 @@
           "lines": [
             "Algún día te lo contaré. Si sobrevives. Lo cual, estadísticamente..."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "misterio"
         },
         {
           "type": "dialog",
@@ -2108,6 +2137,10 @@
               "goto": "acto1_salida"
             }
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "bloqueo"
         },
         {
           "type": "dialog",

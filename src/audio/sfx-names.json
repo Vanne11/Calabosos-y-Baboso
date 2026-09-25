@@ -115,5 +115,18 @@
     "pueblo",
     "taberna",
     "viento"
+  ],
+  "tones": [
+    "neutral",
+    "burla",
+    "chiste",
+    "incomodo",
+    "enojo",
+    "impresionado",
+    "asco",
+    "miedo",
+    "ternura",
+    "triste",
+    "drama"
   ]
 }

@@ -31,14 +31,14 @@ function fakeAi(opts: { available?: boolean; failSayAt?: number; scores?: number
   return {
     calls,
     available: () => opts.available ?? true,
-    narrate: async (p, v) => { calls.push(['narrate', p, v]); return 'burla [red]generada{x}'; },
+    narrate: async (p, v) => { calls.push(['narrate', p, v]); return { text: 'burla [red]generada{x}', tone: 'burla' }; },
     chatStart: async (mode, npc, vars, max) => { calls.push(['start', mode, npc, vars, max]); return { chatId: 'c1', maxTurns: 3, score: 0, maxInputChars: 100 }; },
     chatSay: async (_id, msg) => {
       turn++;
       calls.push(['say', msg]);
       if (opts.failSayAt === turn) return null;
       const score = (opts.scores ?? [30, 80])[turn - 1] ?? 0;
-      return { reply: `r${turn}`, score, done: score >= 70, verdict: score >= 70 ? 'success' : null, turnsLeft: 3 - turn };
+      return { reply: `r${turn}`, score, done: score >= 70, verdict: score >= 70 ? 'success' : null, turnsLeft: 3 - turn, tone: turn === 1 ? 'incomodo' : null };
     },
     chatGiveUp: async (id) => { calls.push(['giveup', id]); },
   };
@@ -64,6 +64,9 @@ describe('ai_chat con IA', () => {
     expect(vars.perfil).toContain('cobarde');
     const replies = out.filter((r) => r.type === 'chat_reply');
     expect(replies[1]).toMatchObject({ delta: 50 });
+    // El tono marcado por la IA llega a la UI (se convierte en sonido)
+    expect(replies[0]).toMatchObject({ tone: 'incomodo' });
+    expect(replies[1]).not.toHaveProperty('tone', expect.anything());
     expect(out.find((r) => r.type === 'chat_end')).toMatchObject({ verdict: 'success', text: 'pasas' });
     expect(last(out)).toMatchObject({ type: 'navigate', scene: 'dentro' });
     expect(engine.state.profile?.chat_persuadir).toBe(1);
@@ -119,7 +122,9 @@ describe('narración con IA (dialog.ai)', () => {
     const engine = makeEngine(manifest, scenes);
     const ai = fakeAi();
     engine.setAiProvider(ai);
-    expect(dialogLines(await drive(engine, 'narr', []))).toEqual(['burla «red»generadax']);
+    const out = await drive(engine, 'narr', []);
+    expect(dialogLines(out)).toEqual(['burla «red»generadax']);
+    expect(out[0]).toMatchObject({ type: 'dialog', tone: 'burla' });
     expect(ai.calls[0][2]).toMatchObject({ nombre_real: 'Pepe', causa: 'x' });
   });
   it('sin IA usa el pool', async () => {

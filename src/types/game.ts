@@ -52,6 +52,8 @@ export interface AudioConfig {
   itemSfx?: string;
   /** Efecto al perder un objeto (por defecto ninguno) */
   removeItemSfx?: string;
+  /** Tono marcado por la IA → efecto (cambia los de src/audio/tones.ts; "none" = silencio) */
+  toneSfx?: Record<string, string>;
 }
 
 export interface StatSfxRule {

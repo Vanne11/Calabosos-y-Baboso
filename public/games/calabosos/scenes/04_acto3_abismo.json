@@ -23,6 +23,15 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "misterio",
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -158,6 +167,10 @@
         "description": "La boca del Abismo exhala un aliento dulce y podrido."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "bloqueo"
+        },
         {
           "type": "dialog",
           "character": "narrator",
@@ -2498,6 +2511,11 @@
         "description": "Cristales de todos los colores que proyectan patrones hipnóticos. Uno de los pocos lugares hermosos del Abismo."
       },
       "sequence": [
+        {
+          "type": "sound",
+          "sfx": "magia",
+          "volume": 0.6
+        },
         {
           "type": "dialog",
           "character": "nerly",

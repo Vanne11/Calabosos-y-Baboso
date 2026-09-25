@@ -98,6 +98,11 @@ function validateGame(gameName) {
     checkSfx(rule.bigUp?.sfx, ctx);
     checkSfx(rule.bigDown?.sfx, ctx);
   }
+  const TONES = new Set(AUDIO_NAMES.tones);
+  for (const [tone, name] of Object.entries(audio.toneSfx ?? {})) {
+    if (!TONES.has(tone)) errors.push(`audio.toneSfx: tono "${tone}" no existe (${[...TONES].join(', ')})`);
+    checkSfx(name, `audio.toneSfx.${tone}`);
+  }
   checkSfx(audio.itemSfx, 'audio.itemSfx');
   checkSfx(audio.removeItemSfx, 'audio.removeItemSfx');
 

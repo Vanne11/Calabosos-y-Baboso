@@ -71,6 +71,10 @@ y se configuran en `game.json`:
 ```
 
 `shake: true` hace que bajar ese stat sacuda la pantalla y la tiña de rojo (proporcional al daño).
+
+**Con IA:** cada modo de conversación tiene su sonido de inicio (rap = redoble, insultos = alarma de combate...)
+y la IA marca el tono de lo que dice (burla, chiste, incómodo, drama...), que suena como reacción.
+Tabla y cómo cambiarla (`audio.toneSfx`): [ia.md → Tono → sonido](ia.md#tono--sonido).
 Todo cambio de stat visible muestra además una cifra flotante (+10 / -5) en la barra de estado.
 
 ## Música compuesta (chiptune)

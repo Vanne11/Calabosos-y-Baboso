@@ -38,6 +38,24 @@ GameEngine (puro) ──usa──▶ AiProvider (interfaz, engine/AiProvider.ts)
 
 Si la IA responde, su línea **reemplaza** a `lines` + `pool`; si no, se muestran `lines` + `pool`. Así el mismo paso sirve con y sin IA. `prompt` es el nombre del prompt `narrate.<prompt>` del servidor.
 
+## Tono → sonido
+
+La IA marca el tono de cada línea del narrador y de cada respuesta en los modos chat (el servidor lo exige en
+su formato JSON). El juego lo convierte en un efecto de reacción, medio segundo después del texto:
+
+| Tono | Efecto | | Tono | Efecto |
+|---|---|---|---|---|
+| burla | risa | | asco | baba |
+| chiste | ba-dum tss | | miedo | latido |
+| incomodo | grillos | | ternura | jingle cursi |
+| enojo | rugido | | triste | jingle de derrota |
+| impresionado | aplausos | | drama | dun dun DUNNN |
+| neutral | (nada) | | | |
+
+En una conversación no se repite el mismo efecto dos turnos seguidos. Cada juego puede cambiarlos en
+`game.json → audio.toneSfx` (`{ "chiste": "grillo", "enojo": "none" }`). Sin IA no hay tono: suenan solo
+los efectos fijos. Tabla por defecto: `src/audio/tones.ts`.
+
 ## Modos chat
 
 Ver [`ai_chat`](pasos/ai-chat.md).

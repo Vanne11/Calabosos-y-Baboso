@@ -517,14 +517,15 @@ export class GameEngine {
       case 'dialog': {
         const dialogStep = step as DialogStep;
         if (dialogStep.ai && this._ai?.available('narrate')) {
-          const aiText = await this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars));
-          if (aiText) {
+          const ai = await this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars));
+          if (ai) {
             yield {
               type: 'dialog',
               character: dialogStep.character,
               characterName: this.getCharacterName(dialogStep.character),
               characterImage: this.manifest.characters[dialogStep.character]?.image,
-              lines: [sanitizeAiText(aiText)],
+              lines: [sanitizeAiText(ai.text)],
+              tone: ai.tone ?? undefined,
             };
             break;
           }
@@ -851,6 +852,7 @@ export class GameEngine {
         delta: reply.score - score,
         meterLabel,
         turnsLeft: reply.turnsLeft,
+        tone: reply.tone ?? undefined,
       };
       score = reply.score;
       turnsLeft = reply.turnsLeft;

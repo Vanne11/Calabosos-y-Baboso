@@ -1,7 +1,7 @@
 <?php
 // POST acciones del modo chat:
 //   { action: "start", sessionId, game, mode, npc, vars: {...}, maxTurns? } → { chatId, maxTurns, turnsLeft, score, maxInputChars }
-//   { action: "say", sessionId, chatId, message }                          → { reply, score, done, verdict, turn, turnsLeft }
+//   { action: "say", sessionId, chatId, message }                          → { reply, score, done, verdict, turn, turnsLeft, tone }
 //   { action: "giveup", sessionId, chatId }                                → { done, verdict, score }
 
 declare(strict_types=1);

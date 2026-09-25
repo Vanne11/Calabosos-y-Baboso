@@ -107,13 +107,22 @@ final class DeepSeekClient
         $last = end($messages);
         $said = is_array($last) ? (string) $last['content'] : '';
         $len = mb_strlen($said, 'UTF-8');
-        if ($json) {
+        $system = is_array($messages[0] ?? null) ? (string) $messages[0]['content'] : '';
+        // Tono de prueba rotativo, para oír los sonidos sin gastar tokens
+        $tone = PromptRenderer::TONES[$len % count(PromptRenderer::TONES)];
+        if ($json && strpos($system, '"line"') !== false) {
+            $content = json_encode([
+                'line' => '[mock] El narrador suspira: qué forma tan original de fracasar.',
+                'tono' => $tone,
+            ], JSON_UNESCAPED_UNICODE);
+        } elseif ($json) {
             // Puntaje determinista según el largo del mensaje (para pruebas)
             $score = min(100, $len * 2);
             $content = json_encode([
                 'reply' => '[mock] Escuché: "' . mb_substr($said, 0, 60, 'UTF-8') . '". No me convences del todo.',
                 'score' => $score,
                 'done' => false,
+                'tono' => $tone,
             ], JSON_UNESCAPED_UNICODE);
         } else {
             $content = '[mock] El narrador suspira: qué forma tan original de fracasar.';

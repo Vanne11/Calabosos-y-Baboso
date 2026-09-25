@@ -1,6 +1,8 @@
 // types/engine.ts
 // Tipos para el motor del juego y comunicación motor↔UI
 
+import type { Tone } from '../engine/AiProvider';
+
 export interface CharacterState {
   level: number;
   xp: number;
@@ -117,6 +119,8 @@ export interface ChatReplyResult {
   delta: number;
   meterLabel: string;
   turnsLeft: number;
+  /** Tono de la respuesta, marcado por la IA */
+  tone?: Tone;
 }
 
 export interface ChatEndResult {
@@ -145,6 +149,8 @@ export interface DialogResult {
   characterName: string;
   characterImage?: string;
   lines: string[];
+  /** Tono marcado por la IA (solo en líneas generadas) */
+  tone?: Tone;
 }
 
 export interface ChoicePrompt {

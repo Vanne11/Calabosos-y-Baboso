@@ -411,7 +411,10 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
     }
     $prompt = ['kind' => $kind, 'body' => (string) ($_POST['body'] ?? ''), 'params' => $params];
     $renderer = new PromptRenderer($prompts);
-    $system = $renderer->system($prompt, $vars, $isChat ? PromptRenderer::chatContract((int) ($params['max_reply_chars'] ?? 400)) : '');
+    $contract = $isChat
+        ? PromptRenderer::chatContract((int) ($params['max_reply_chars'] ?? 400))
+        : ($kind === 'narrate' ? PromptRenderer::narrateContract((int) ($params['max_chars'] ?? 400)) : '');
+    $system = $renderer->system($prompt, $vars, $contract);
     $userMessage = $isChat ? trim((string) ($_POST['test_message'] ?? '')) : 'Escribe la línea ahora.';
 
     $guard = new Guard(App::db(), $settings);
@@ -421,7 +424,7 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
             [['role' => 'system', 'content' => $system], ['role' => 'user', 'content' => $userMessage]],
             (float) ($params['temperature'] ?? 1.0),
             (int) ($params['max_tokens'] ?? 300),
-            $isChat
+            $contract !== ''
         );
     } catch (AiException $e) {
         $guard->recordError('admin', 'test', (string) $meta['key'], $e->getMessage());
@@ -437,7 +440,13 @@ function runPromptTest(array $meta, PromptRepository $prompts, Settings $setting
             $out['error'] = 'La respuesta no cumple el formato JSON: ' . $e->getMessage();
         }
     } else {
-        $out['text'] = NarrateService::cleanLine($result->content, (int) ($params['max_chars'] ?? 400));
+        try {
+            $line = NarrateService::parseLine($result->content, (int) ($params['max_chars'] ?? 400));
+            $out['text'] = $line['text'];
+            $out['tone'] = $line['tone'];
+        } catch (AiException $e) {
+            $out['error'] = $e->getMessage();
+        }
     }
     return $out;
 }

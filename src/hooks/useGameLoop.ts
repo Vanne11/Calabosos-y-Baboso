@@ -8,6 +8,7 @@ import { delay } from '../utils/delay';
 import { audioManager } from '../engine/AudioManager';
 import { sfx } from '../audio/SfxPlayer';
 import { observeState, rebaseFeedback, screenFx, playSfx } from '../audio/gameFeedback';
+import { toneSfx, CHAT_START_SFX } from '../audio/tones';
 import { saveGame } from '../utils/storage';
 import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
@@ -35,6 +36,16 @@ export function useGameLoop() {
   const checkpointSlotRef = useRef(0);
   /** Combate en curso: pista que sonaba antes, para volver a ella al terminar */
   const combatRef = useRef<{ prevTrack: string | null } | null>(null);
+  /** Último tono sonado en la conversación actual (no repetir el mismo efecto turno tras turno) */
+  const lastToneRef = useRef<string | null>(null);
+
+  /** Efecto de reacción al tono que marcó la IA, un poco después del texto */
+  const playTone = (tone: string | undefined, delayMs: number) => {
+    const name = toneSfx(tone as Parameters<typeof toneSfx>[0], engine?.audioConfig?.toneSfx);
+    if (!name || name === lastToneRef.current) return;
+    lastToneRef.current = name;
+    setTimeout(() => sfx.play(name), delayMs);
+  };
 
   const startScene = useCallback(
     async (sceneId: string) => {
@@ -285,6 +296,10 @@ export function useGameLoop() {
             await delay(300, currentSpeed);
           }
         }
+        if (result.tone) {
+          lastToneRef.current = null;
+          playTone(result.tone, 500);
+        }
 
         // Wait for user to press Enter between dialogs
         setShowEnterPrompt(true);
@@ -431,7 +446,8 @@ export function useGameLoop() {
       }
 
       case 'chat_start': {
-        sfx.play('misterio');
+        sfx.play(CHAT_START_SFX[result.mode] ?? 'misterio');
+        lastToneRef.current = null;
         useAppStore.getState().addEntries([
           { type: 'system', content: '[bold purple]╔══════════════════════════════════════════╗[/bold purple]' },
           { type: 'system', content: `[bold purple]  💬 ${CHAT_MODE_TITLES[result.mode] ?? 'Conversación'} con ${result.npcName}[/bold purple]` },
@@ -452,6 +468,7 @@ export function useGameLoop() {
         const isFirstTime = !seenCharacters.has(result.character);
         if (isFirstTime) markCharacterSeen(result.character);
         if (result.delta !== 0) sfx.play(result.delta > 0 ? 'subir' : 'bajar');
+        playTone(result.tone, 450);
         const deltaText = result.delta === 0 ? '' : result.delta > 0 ? ` [green](+${result.delta})[/green]` : ` [red](${result.delta})[/red]`;
         useAppStore.getState().addEntries([
           { type: 'dialogHeader', content: result.characterName, image: result.characterImage, firstAppearance: isFirstTime && !!result.characterImage },

@@ -176,6 +176,7 @@ final class ChatService
             'verdict' => $verdict,
             'turn' => $turn,
             'turnsLeft' => max(0, $maxTurns - $turn),
+            'tone' => $parsed['tone'],
         ];
     }
 
@@ -221,7 +222,7 @@ final class ChatService
 
     /**
      * Interpreta la respuesta JSON del modelo (tolera texto o bloques ``` alrededor).
-     * @return array{reply: string, score: int, done: bool}
+     * @return array{reply: string, score: int, done: bool, tone: ?string}
      */
     public static function parseReply(string $content): array
     {
@@ -237,6 +238,7 @@ final class ChatService
             'reply' => trim($data['reply']),
             'score' => is_numeric($score) ? (int) round((float) $score) : 0,
             'done' => !empty($data['done']),
+            'tone' => PromptRenderer::normalizeTone($data['tono'] ?? ($data['tone'] ?? null)),
         ];
     }
 }

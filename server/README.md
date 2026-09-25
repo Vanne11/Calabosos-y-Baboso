@@ -54,7 +54,9 @@ Por consola también sirve lo clásico: `cp config.example.php config.php` + `ph
 - `narrate.*`: líneas sueltas (`muerte`, `reaccion`, `recap`).
 - `chat.*`: un prompt por modo chat.
 - El juego manda variables con la forma `{{nombre}}`. En los modos chat también existen `{{turn}}`, `{{max_turns}}`, `{{score}}` y `{{npc}}`.
-- El formato JSON de respuesta de los modos chat lo agrega el servidor y **no se puede editar**, para que el juego siempre pueda leerlo.
+- El formato JSON de respuesta (modos chat y líneas del narrador) lo agrega el servidor y **no se puede editar**, para que el juego siempre pueda leerlo.
+- Toda respuesta trae además un **tono** (`neutral`, `burla`, `chiste`, `incomodo`, `enojo`, `impresionado`, `asco`, `miedo`, `ternura`, `triste`, `drama`) que el juego convierte en un efecto de sonido. Un tono fuera de la lista se descarta. La lista vive en `PromptRenderer::TONES` y debe coincidir con `TONES` de `src/engine/AiProvider.ts` (lo verifica un test).
+- Si una línea del narrador no llega en JSON (o llega cortada por el límite de tokens), se usa el texto tal cual, sin tono. En "Probar ahora" del admin se ve el tono detectado.
 
 ## API
 
@@ -63,9 +65,9 @@ Todas las respuestas son JSON. Los errores tienen la forma `{ "error": "codigo",
 | Endpoint | Pedido | Respuesta |
 |---|---|---|
 | `GET api/config.php` | — | `{ aiEnabled, narrate, modes: {persuadir: true, ...}, events, maxInputChars }` |
-| `POST api/narrate.php` | `{ sessionId, game, prompt: "muerte", vars }` | `{ text }` |
+| `POST api/narrate.php` | `{ sessionId, game, prompt: "muerte", vars }` | `{ text, tone }` |
 | `POST api/chat.php` | `{ action: "start", sessionId, game, mode, npc, vars, maxTurns? }` | `{ chatId, maxTurns, turnsLeft, score, maxInputChars }` |
-| | `{ action: "say", sessionId, chatId, message }` | `{ reply, score, done, verdict, turn, turnsLeft }` |
+| | `{ action: "say", sessionId, chatId, message }` | `{ reply, score, done, verdict, turn, turnsLeft, tone }` |
 | | `{ action: "giveup", sessionId, chatId }` | `{ done, verdict, score }` |
 | `POST api/events.php` | `{ sessionId, game, events: [{ type, scene?, data?, t? }] }` | `{ stored }` |
 

@@ -1,5 +1,5 @@
 <?php
-// POST { sessionId, game, prompt: "muerte", vars: {...} } → { text }
+// POST { sessionId, game, prompt: "muerte", vars: {...} } → { text, tone }
 
 declare(strict_types=1);
 
@@ -16,6 +16,5 @@ Api::handle('POST', static function (): array {
     $body = Http::jsonBody();
     $guard = Api::aiRequest($body, 'narrate');
     $service = new NarrateService(App::db(), App::settings(), $guard, DeepSeekClient::fromConfig());
-    $text = $service->narrate((string) $body['sessionId'], (string) ($body['prompt'] ?? ''), $body['vars'] ?? []);
-    return ['text' => $text];
+    return $service->narrate((string) $body['sessionId'], (string) ($body['prompt'] ?? ''), $body['vars'] ?? []);
 });

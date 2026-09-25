@@ -91,10 +91,42 @@ final class PromptRenderer
         return implode("\n\n", $parts);
     }
 
+    /**
+     * Tonos que la IA puede marcar en su respuesta. El juego los convierte en un efecto de sonido
+     * (burla → risa, incomodo → grillos...). Lista cerrada: cualquier otro valor se descarta.
+     */
+    const TONES = ['neutral', 'burla', 'chiste', 'incomodo', 'enojo', 'impresionado', 'asco', 'miedo', 'ternura', 'triste', 'drama'];
+
+    /** Tono válido o null */
+    public static function normalizeTone($value): ?string
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+        $tone = strtolower(trim($value));
+        $tone = strtr($tone, ['ó' => 'o', 'í' => 'i', 'é' => 'e', 'á' => 'a', 'ú' => 'u']);
+        return in_array($tone, self::TONES, true) ? $tone : null;
+    }
+
+    private static function toneGuide(): string
+    {
+        return '"tono": el tono emocional de tu respuesta, uno de: ' . implode(', ', self::TONES)
+            . ' (burla = te ríes de alguien; chiste = remate de un chiste; incomodo = silencio incómodo; '
+            . 'drama = momento dramático o amenazante; usa "neutral" si ninguno encaja)';
+    }
+
     /** Contrato JSON de los modos chat (lo agrega el servidor: no se puede editar desde el admin) */
     public static function chatContract(int $maxReplyChars): string
     {
         return 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
-            . '{"reply": "lo que dices, máximo ' . $maxReplyChars . ' caracteres", "score": número entero de 0 a 100, "done": true o false}';
+            . '{"reply": "lo que dices, máximo ' . $maxReplyChars . ' caracteres", "score": número entero de 0 a 100, "done": true o false, '
+            . '"tono": "..."}. ' . self::toneGuide() . '.';
+    }
+
+    /** Contrato JSON de las líneas del narrador */
+    public static function narrateContract(int $maxChars): string
+    {
+        return 'FORMATO DE RESPUESTA (obligatorio): responde SOLO con un objeto json válido, sin texto fuera de él, con esta forma exacta: '
+            . '{"line": "la línea, máximo ' . $maxChars . ' caracteres", "tono": "..."}. ' . self::toneGuide() . '.';
     }
 }

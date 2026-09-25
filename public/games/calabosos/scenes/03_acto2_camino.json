@@ -295,6 +295,10 @@
           ]
         },
         {
+          "type": "sound",
+          "sfx": "canto_horrible"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -510,6 +514,10 @@
           "lines": [
             "No todas las babosas quieren ser absorbidas por un monarca gigante. El Rey se comió a mi familia. A toda. Hasta a mi tía Gertrudis, que era muy desabrida."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "grillo"
         },
         {
           "type": "dialog",
@@ -846,6 +854,10 @@
       },
       "sequence": [
         {
+          "type": "sound",
+          "sfx": "pasos"
+        },
+        {
           "type": "dialog",
           "character": "takashi",
           "lines": [
@@ -877,6 +889,10 @@
           "lines": [
             "Hola. Aquí no hay zombis, solo entidades gastropódicas. Y un Rey gigante que absorbe todo."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "grito"
         },
         {
           "type": "dialog",
@@ -938,6 +954,10 @@
           }
         },
         {
+          "type": "sound",
+          "sfx": "pasos"
+        },
+        {
           "type": "dialog",
           "character": "narrator",
           "lines": [
@@ -984,6 +1004,10 @@
           "lines": [
             "Con nadie, Takashi. Vete. Shu, shu."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "pasos"
         },
         {
           "type": "dialog",
@@ -1740,6 +1764,10 @@
       },
       "sequence": [
         {
+          "type": "sound",
+          "sfx": "tos"
+        },
+        {
           "type": "dialog",
           "character": "anciano",
           "lines": [
@@ -1822,6 +1850,10 @@
           "lines": [
             "Entré cinco veces. Salí cinco veces. Bueno, cuatro y media: una vez salió solo mi pierna y tuve que volver por el resto."
           ]
+        },
+        {
+          "type": "sound",
+          "sfx": "grillo"
         },
         {
           "type": "dialog",

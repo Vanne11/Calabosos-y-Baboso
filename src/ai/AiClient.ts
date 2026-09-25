@@ -2,7 +2,7 @@
 // Cliente del servidor de IA (server/ en PHP). Implementa AiProvider para el motor.
 // Nunca lanza errores: ante cualquier problema devuelve null y el motor usa su respaldo.
 
-import type { AiProvider, ChatSayInfo, ChatStartInfo, GameEvent } from '../engine/AiProvider';
+import { isTone, type AiProvider, type ChatSayInfo, type ChatStartInfo, type GameEvent, type NarrateReply } from '../engine/AiProvider';
 import type { ChatMode } from '../types/game';
 
 interface ServerConfig {
@@ -107,9 +107,10 @@ export class AiClient implements AiProvider {
     return feature === 'narrate' ? c.narrate : !!c.modes[feature];
   }
 
-  async narrate(prompt: string, vars: Record<string, string>): Promise<string | null> {
-    const res = await this.post<{ text?: string }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
-    return res && typeof res.text === 'string' && res.text.trim() ? res.text.trim() : null;
+  async narrate(prompt: string, vars: Record<string, string>): Promise<NarrateReply | null> {
+    const res = await this.post<{ text?: string; tone?: unknown }>('api/narrate.php', { prompt, vars }, TIMEOUT.narrate);
+    if (!res || typeof res.text !== 'string' || !res.text.trim()) return null;
+    return { text: res.text.trim(), tone: isTone(res.tone) ? res.tone : null };
   }
 
   async chatStart(mode: ChatMode, npc: string, vars: Record<string, string>, maxTurns?: number): Promise<ChatStartInfo | null> {
@@ -119,7 +120,7 @@ export class AiClient implements AiProvider {
 
   async chatSay(chatId: string, message: string): Promise<ChatSayInfo | null> {
     const res = await this.post<ChatSayInfo>('api/chat.php', { action: 'say', chatId, message }, TIMEOUT.chatSay);
-    return res && typeof res.reply === 'string' ? res : null;
+    return res && typeof res.reply === 'string' ? { ...res, tone: isTone(res.tone) ? res.tone : null } : null;
   }
 
   async chatGiveUp(chatId: string): Promise<void> {

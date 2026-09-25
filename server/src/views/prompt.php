@@ -57,9 +57,10 @@ $paramsValue = (string) ($_POST['params'] ?? json_encode((object) ($params ?: []
       <?php if (!empty($test['error'])): ?><p class="error"><?= e($test['error']) ?></p><?php endif; ?>
       <?php if (isset($test['parsed'])): ?>
         <p class="reply"><?= e($test['parsed']['reply']) ?></p>
-        <p class="small">Puntaje: <strong><?= (int) $test['parsed']['score'] ?></strong> · Terminó: <?= $test['parsed']['done'] ? 'sí' : 'no' ?></p>
+        <p class="small">Puntaje: <strong><?= (int) $test['parsed']['score'] ?></strong> · Terminó: <?= $test['parsed']['done'] ? 'sí' : 'no' ?> · Tono: <strong><?= e($test['parsed']['tone'] ?? '—') ?></strong></p>
       <?php elseif (isset($test['text'])): ?>
         <p class="reply"><?= e($test['text']) ?></p>
+        <?php if (array_key_exists('tone', $test)): ?><p class="small">Tono: <strong><?= e($test['tone'] ?? '—') ?></strong></p><?php endif; ?>
       <?php endif; ?>
       <?php if (isset($test['tokens'])): ?><p class="muted small"><?= num($test['tokens']) ?> tokens · <?= num($test['latency']) ?> ms</p><?php endif; ?>
       <?php if (isset($test['raw'])): ?><details><summary>Respuesta cruda</summary><pre><?= e($test['raw']) ?></pre></details><?php endif; ?>
