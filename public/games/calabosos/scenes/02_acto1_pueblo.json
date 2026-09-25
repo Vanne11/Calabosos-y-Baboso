@@ -271,6 +271,15 @@
               }
             },
             {
+              "text": "Abrir la bolsa misteriosa que te regaló el caballo",
+              "condition": {
+                "inventory": [
+                  "bolsa_misteriosa"
+                ]
+              },
+              "goto": "acto1_bolsa"
+            },
+            {
               "text": "Tomar prestado algo de dinero... sin permiso",
               "goto": "acto1_robo",
               "condition": {
@@ -2915,6 +2924,71 @@
             {
               "text": "Caminar hacia el Abismo, {resignado|resignada|resignadx}",
               "goto": "acto2_camino"
+            }
+          ]
+        }
+      ]
+    },
+    "acto1_bolsa": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Abres la bolsa que te regaló el caballo. Tintinea. Huele. Tintinea otra vez."
+          ]
+        },
+        {
+          "type": "random",
+          "outcomes": [
+            {
+              "weight": 2,
+              "text": "Monedas. Treinta. Cada una con un pelo de caballo pegado, como una firma.",
+              "effects": {
+                "stats": {
+                  "dinero": 30
+                },
+                "removeInventory": [
+                  "bolsa_misteriosa"
+                ],
+                "memo": "abrió la bolsa del caballo: tenía 30 monedas"
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Quince monedas y un diente de caballo. El diente te mira. Tú miras las monedas.",
+              "effects": {
+                "stats": {
+                  "dinero": 15
+                },
+                "removeInventory": [
+                  "bolsa_misteriosa"
+                ],
+                "memo": "abrió la bolsa del caballo: 15 monedas y un diente"
+              }
+            },
+            {
+              "weight": 1,
+              "text": "Una herradura de oro... de chocolate. Te la comes. Está rancia. Al fondo, diez monedas pegajosas.",
+              "effects": {
+                "stats": {
+                  "dinero": 10,
+                  "ganas_de_vivir": -5
+                },
+                "removeInventory": [
+                  "bolsa_misteriosa"
+                ],
+                "memo": "abrió la bolsa del caballo y se comió una herradura de chocolate rancio"
+              }
+            }
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Volver a la plaza",
+              "goto": "acto1_decision"
             }
           ]
         }

@@ -730,6 +730,15 @@
                 "cobarde"
               ],
               "sfx": "grito"
+            },
+            {
+              "text": "Tocar el silbato para caballos",
+              "condition": {
+                "inventory": [
+                  "silbato_caballos"
+                ]
+              },
+              "goto": "acto2_silbato"
             }
           ],
           "freeText": {
@@ -1669,6 +1678,14 @@
                 "stats": {
                   "ganas_de_vivir": -5
                 }
+              },
+              "condition": {
+                "flags": {
+                  "relicario_resuelto": true
+                },
+                "notInventory": [
+                  "relicario"
+                ]
               }
             },
             {
@@ -1680,7 +1697,68 @@
                 }
               }
             }
-          ]
+          ],
+          "condition": {
+            "notInventory": [
+              "relicario"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sueñas con tu abuela. Mira el relicario que no vendiste, sonríe, y saca de su delantal una cuchara de madera."
+          ],
+          "condition": {
+            "inventory": [
+              "relicario"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "«Con esta maté a un dragón, {nombre_jugador}. Tú, con suerte, a una babosa. No la pierdas como pierdes todo lo demás.»"
+          ],
+          "condition": {
+            "inventory": [
+              "relicario"
+            ]
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "inventory": [
+              "cuchara_abuela"
+            ],
+            "flags": {
+              "cuchara_recibida": true
+            },
+            "memo": "soñó con su abuela, que le dio su cuchara de madera por no vender el relicario"
+          },
+          "condition": {
+            "inventory": [
+              "relicario"
+            ],
+            "flags": {
+              "cuchara_recibida": false
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Te despiertas con una cuchara de madera en la mano. Real. Tibia. No voy a explicar esto. Hay cosas que ni un narrador omnisciente entiende."
+          ],
+          "condition": {
+            "inventory": [
+              "relicario"
+            ]
+          }
         },
         {
           "type": "sound",
@@ -1930,6 +2008,20 @@
           }
         },
         {
+          "type": "dialog",
+          "character": "anciano",
+          "lines": [
+            "Y cuarto, pero no se lo digas a nadie: los que tocan la Lágrima, entran al trono por la puerta de atrás y se ganan de verdad a la babosa azul... esos ven al que narra. Los patrones, {muchacho|muchacha|muchachx}."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ese viejo habla demasiado. Ignóralo. En serio. IGNÓRALO."
+          ]
+        },
+        {
           "type": "choice",
           "options": [
             {
@@ -2010,6 +2102,63 @@
             {
               "text": "Guardarla",
               "goto": "acto2_anciano"
+            }
+          ]
+        }
+      ]
+    },
+    "acto2_silbato": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Soplas el silbato. Nada. Silencio. Los bandidos se miran y se ríen."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y entonces, a lo lejos, un relincho que suena a volcán. Un caballo mutante del establo atraviesa el bosque echando fuego por el extremo equivocado."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "bandido",
+          "lines": [
+            "¡MAMÁ! ¡El caballo del infierno! ¡Corran, muchachos!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "flags": {
+              "bandidos_humillados": true
+            },
+            "stats": {
+              "dinero": 12,
+              "miedo": -10
+            },
+            "memo": "espantó a los bandidos con un caballo mutante del establo (silbato)",
+            "npcMemo": {
+              "bandido": "Alex le echó encima un caballo mutante que escupía fuego"
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Los bandidos huyen dejando caer su botín: 12 monedas y un cuchillo sin filo. El caballo te mira, resopla y se va. Te quiere. A su manera."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Seguir el camino",
+              "goto": "acto2_viaje2"
             }
           ]
         }

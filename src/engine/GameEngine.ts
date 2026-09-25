@@ -760,10 +760,13 @@ export class GameEngine {
       }
 
       case 'random': {
-        const totalWeight = step.outcomes.reduce((sum, o) => sum + o.weight, 0);
+        // Solo las salidas cuya condición se cumple; si no queda ninguna, el paso no hace nada
+        const eligible = step.outcomes.filter((o) => !o.condition || evaluateCondition(o.condition, this._state));
+        if (!eligible.length) break;
+        const totalWeight = eligible.reduce((sum, o) => sum + o.weight, 0);
         let rand = Math.random() * totalWeight;
-        let chosen = step.outcomes[0];
-        for (const outcome of step.outcomes) {
+        let chosen = eligible[0];
+        for (const outcome of eligible) {
           rand -= outcome.weight;
           if (rand <= 0) { chosen = outcome; break; }
         }
@@ -1466,9 +1469,12 @@ export class GameEngine {
     const hurtPlayer = (amount: number) => {
       if (amount > 0) this.applyState({ stats: { [step.playerStat]: -amount } });
     };
+    /** Protección de los objetos que lleva encima (items[id].armor, cada objeto cuenta una vez) */
+    const armor = () =>
+      [...new Set(this._state.inventory)].reduce((sum, id) => sum + (this.manifest.items?.[id]?.armor ?? 0), 0);
     const enemyStrike = (defenseStat: number, factor = 1) => {
       const base = Math.max(1, enemy.attack - Math.floor(defenseStat / 20));
-      const dmg = Math.max(1, Math.floor((base + Math.floor(Math.random() * 4)) * factor));
+      const dmg = Math.max(1, Math.floor((base + Math.floor(Math.random() * 4)) * factor) - armor());
       hurtPlayer(dmg);
       return dmg;
     };
@@ -1493,6 +1499,12 @@ export class GameEngine {
     };
 
     // Ataque sorpresa (saltarinas)
+    const protection = armor();
+    if (protection > 0) {
+      const names = [...new Set(this._state.inventory)].filter((id) => this.manifest.items?.[id]?.armor).map((id) => this.manifest.items![id].name);
+      yield { type: 'notify', style: 'info', title: 'Protección', text: `${names.join(', ')}: cada golpe te hace ${protection} menos de daño.`, icon: '🛡️' };
+    }
+
     if (enemy.firstStrike) {
       const dmg = enemyStrike(0);
       yield {
@@ -1605,7 +1617,7 @@ export class GameEngine {
         }
       } else if (action.action === 'defend') {
         const enemyBaseDmg = Math.max(1, enemy.attack - Math.floor(defenseStat / 10));
-        enemyDamage = Math.max(1, Math.floor(enemyBaseDmg * 0.5));
+        enemyDamage = Math.max(1, Math.floor(enemyBaseDmg * 0.5) - armor());
         hurtPlayer(enemyDamage);
         parts.push(`Te defiendes. ${enemy.name} te causa solo ${enemyDamage} de daño.`);
       }

@@ -192,3 +192,19 @@ describe('formas de género del protagonista', () => {
     expect(internals(engine).aiVars().genero).toBe('Alex es mujer');
   });
 });
+
+describe('random: salidas con condición', () => {
+  it('solo sale una salida cuya condición se cumple; sin ninguna, el paso no hace nada', async () => {
+    const engine = makeEngine(baseManifest({ initialFlags: { vendio: false } } as Partial<GameManifest>), {
+      a: { sequence: [{ type: 'random' as const, outcomes: [
+        { weight: 100, text: 'reclamo', condition: { flags: { vendio: true } } },
+        { weight: 1, text: 'otro sueño' },
+      ] }] },
+      b: { sequence: [{ type: 'random' as const, outcomes: [{ weight: 1, text: 'nunca', condition: { flags: { vendio: true } } }] }] },
+    });
+    const out = await collect(engine.enterScene('a'));
+    expect(out.find((r) => r.type === 'random_result')).toMatchObject({ text: 'otro sueño' });
+    const none = await collect(engine.enterScene('b'));
+    expect(none.some((r) => r.type === 'random_result')).toBe(false);
+  });
+});

@@ -869,12 +869,12 @@
     },
     "baba_caballo": {
       "name": "Baba de caballo",
-      "description": "Verde, tibia y con opiniones propias.",
+      "description": "Verde, tibia y con opiniones propias. Arrojada, ofende a cualquier babosa: es competencia.",
       "image": "images/items/baba_caballo.png"
     },
     "silbato_caballos": {
       "name": "Silbato para caballos",
-      "description": "Los caballos mutantes te obedecen. A veces.",
+      "description": "Los caballos mutantes te obedecen. A veces. Incluso desde muy lejos.",
       "image": "images/items/silbato_caballos.png"
     },
     "bolsa_misteriosa": {
@@ -884,22 +884,24 @@
     },
     "amuleto_equino": {
       "name": "Amuleto equino",
-      "description": "Lo encontraron en el estómago de un caballo. Límpialo antes de usarlo.",
-      "image": "images/items/amuleto_equino.png"
+      "description": "Salió del estómago de un caballo. Huele a caballo, y las babosas le pegan más flojo a lo que huele a caballo.",
+      "image": "images/items/amuleto_equino.png",
+      "armor": 1
     },
     "mapa_sospechoso": {
       "name": "Mapa sospechoso del Abismo",
-      "description": "Sacado de un cadáver. Todavía está tibio.",
+      "description": "Sacado de un cadáver. Todavía está tibio. Seguro lleva a algún lado. El cadáver también lo creía.",
       "image": "images/items/mapa_sospechoso.png"
     },
     "amuleto_proteccion": {
       "name": "Amuleto de protección menor",
-      "description": "Nadie lo quiso comprar. Por algo será.",
-      "image": "images/items/amuleto_proteccion.png"
+      "description": "Nadie lo quiso comprar, pero en combate amortigua los golpes. Un poco.",
+      "image": "images/items/amuleto_proteccion.png",
+      "armor": 2
     },
     "mapa_detallado": {
       "name": "Mapa detallado del Abismo",
-      "description": "Un mapa de verdad. Qué raro.",
+      "description": "Un mapa de verdad. Marca una grieta sin guardias para entrar al Abismo. Qué raro.",
       "image": "images/items/mapa_detallado.png"
     },
     "daga_ceremonial": {
@@ -909,8 +911,9 @@
     },
     "amuleto_extrano": {
       "name": "Amuleto extraño",
-      "description": "Útil o basura brillante. Quién sabe.",
-      "image": "images/items/amuleto_extrano.png"
+      "description": "Útil o basura brillante. En combate, sorprendentemente útil: amortigua un poco los golpes.",
+      "image": "images/items/amuleto_extrano.png",
+      "armor": 1
     },
     "llave_misteriosa": {
       "name": "Llave misteriosa",
@@ -919,7 +922,7 @@
     },
     "mapa_parcial": {
       "name": "Mapa parcial del Abismo",
-      "description": "Le falta la mitad. La mitad importante, seguro.",
+      "description": "Le falta la mitad. La que tiene muestra un atajo por unas cavernas del Abismo.",
       "image": "images/items/mapa_parcial.png"
     },
     "escroto_elefante": {
@@ -954,12 +957,12 @@
     },
     "huevo_runico": {
       "name": "Huevo rúnico",
-      "description": "Zumba. Tiene runas. No lo hagas tortilla.",
+      "description": "Zumba. Tiene runas. «Aparecerá cuando más lo necesites», dijo el Mago.",
       "image": "images/items/huevo_runico.png"
     },
     "cristal_vision": {
       "name": "Cristal de visión",
-      "description": "Proyecta lo que imaginas. El Mago se asustó.",
+      "description": "Proyecta lo que imaginas: ilusiones muy convincentes. El Mago se asustó.",
       "image": "images/items/cristal_vision.png"
     },
     "permiso_salida": {
@@ -974,8 +977,9 @@
     },
     "camiseta_sobrevivi": {
       "name": "Camiseta «Sobreviví (casi) al Abismo»",
-      "description": "De la tienda de regalos del Abismo. Nadie sabe quién la atiende.",
-      "image": "images/items/camiseta_sobrevivi.png"
+      "description": "De la tienda de regalos del Abismo. Protege un poco en combate. Casi.",
+      "image": "images/items/camiseta_sobrevivi.png",
+      "armor": 1
     },
     "corazon_cristalino": {
       "name": "Corazón de Babosa Cristalina",
@@ -984,12 +988,12 @@
     },
     "residuo_acido": {
       "name": "Residuo ácido",
-      "description": "Lo que quedó de una Babosa Ácida. Burbujea en el frasco.",
+      "description": "Lo que quedó de una Babosa Ácida. Burbujea en el frasco. Arrojado, le come un buen pedazo a cualquier babosa.",
       "image": "images/items/residuo_acido.png"
     },
     "baba_maternal": {
       "name": "Baba maternal",
-      "description": "Regalo de la mamá de la babosita. Las babosas de la cría te reconocen como de la familia.",
+      "description": "Regalo de la mamá de la babosita. Con esto encima, las babosas te toman por una cría.",
       "image": "images/items/baba_maternal.png"
     },
     "huevo_babosa": {
@@ -999,7 +1003,7 @@
     },
     "pocion_ian": {
       "name": "Poción sospechosa de Ian",
-      "description": "Violeta y burbujeante. Nerly quiere olerla antes.",
+      "description": "Violeta y burbujeante. Nerly quiere olerla antes. En combate, quién sabe.",
       "image": "images/items/pocion_ian.png"
     },
     "mapa_dudoso": {
@@ -1034,7 +1038,7 @@
     },
     "cristal_ocultamiento": {
       "name": "Cristal de Ocultamiento",
-      "description": "Confunde los sentidos de las babosas. Brilla azul.",
+      "description": "Confunde los sentidos de las babosas: por un momento dejas de existir para ellas. Brilla azul.",
       "image": "images/items/cristal_ocultamiento.png"
     },
     "daga_rompecristal": {
@@ -1046,6 +1050,11 @@
       "name": "Esencia de Babosa Plateada",
       "description": "Rarísima y letal para el Rey. Donde toca, la baba se vuelve piedra.",
       "image": "images/items/esencia_plateada.png"
+    },
+    "cuchara_abuela": {
+      "name": "Cuchara de madera de la abuela",
+      "description": "Con esta tu abuela mató a un dragón (según ella). Es de madera: el ácido no se la come.",
+      "image": "images/items/cuchara_abuela.png"
     }
   },
   "traits": {

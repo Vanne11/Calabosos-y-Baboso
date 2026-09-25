@@ -259,6 +259,8 @@ export interface ItemDef {
   name: string;
   description: string;
   image?: string;
+  /** Protección pasiva en combate por llevarlo encima: resta este daño a cada golpe enemigo (mínimo 1) */
+  armor?: number;
 }
 
 export type CharacterRole = 'narrator' | 'protagonist' | 'companion' | 'npc';
@@ -580,6 +582,8 @@ export interface RandomOutcome {
   goto?: string;
   /** Efecto que suena con este resultado */
   sfx?: string;
+  /** Solo puede salir si se cumple (ej. el sueño de la abuela solo si vendiste su relicario) */
+  condition?: StepCondition;
 }
 
 // --- Check: comprobación determinista de stat ---

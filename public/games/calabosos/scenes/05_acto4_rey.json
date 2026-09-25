@@ -110,6 +110,24 @@
               "tags": [
                 "charlatan"
               ]
+            },
+            {
+              "text": "Proyectar una ilusión con el Cristal de visión",
+              "condition": {
+                "inventory": [
+                  "cristal_vision"
+                ]
+              },
+              "goto": "acto4_ilusion"
+            },
+            {
+              "text": "Seguir el mapa de Ian",
+              "condition": {
+                "inventory": [
+                  "mapa_dudoso"
+                ]
+              },
+              "goto": "acto4_mapa_ian"
             }
           ]
         }
@@ -185,6 +203,11 @@
               "itemId": "daga_ceremonial",
               "name": "la daga ceremonial",
               "bonus": 3
+            },
+            {
+              "itemId": "cuchara_abuela",
+              "name": "la cuchara de la abuela",
+              "bonus": 6
             }
           ],
           "combatItems": [
@@ -239,6 +262,24 @@
               "consume": false,
               "reveal": true,
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            },
+            {
+              "itemId": "residuo_acido",
+              "name": "Arrojar el residuo ácido",
+              "text": "Le lanzas el frasco de residuo ácido. Chisporrotea, humea y se come un buen pedazo de babosa.",
+              "damage": 15
+            },
+            {
+              "itemId": "pocion_ian",
+              "name": "Beber la poción de Ian",
+              "text": "Te bebes la poción de Ian. Sabe a queso rancio y a milagro. Te sientes {nuevo|nueva|nuevx}.",
+              "heal": 45
+            },
+            {
+              "itemId": "baba_caballo",
+              "name": "Arrojar la baba de caballo",
+              "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
+              "damage": 8
             }
           ],
           "results": {
@@ -835,6 +876,15 @@
               "tags": [
                 "charlatan"
               ]
+            },
+            {
+              "text": "Esconderte con el Cristal de Ocultamiento y atacar por sorpresa",
+              "condition": {
+                "inventory": [
+                  "cristal_ocultamiento"
+                ]
+              },
+              "goto": "acto4_emboscada"
             }
           ],
           "freeText": {
@@ -1070,6 +1120,11 @@
               "itemId": "daga_ceremonial",
               "name": "la daga ceremonial",
               "bonus": 3
+            },
+            {
+              "itemId": "cuchara_abuela",
+              "name": "la cuchara de la abuela",
+              "bonus": 6
             }
           ],
           "combatItems": [
@@ -1124,6 +1179,24 @@
               "consume": false,
               "reveal": true,
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            },
+            {
+              "itemId": "residuo_acido",
+              "name": "Arrojar el residuo ácido",
+              "text": "Le lanzas el frasco de residuo ácido. Chisporrotea, humea y se come un buen pedazo de babosa.",
+              "damage": 15
+            },
+            {
+              "itemId": "pocion_ian",
+              "name": "Beber la poción de Ian",
+              "text": "Te bebes la poción de Ian. Sabe a queso rancio y a milagro. Te sientes {nuevo|nueva|nuevx}.",
+              "heal": 45
+            },
+            {
+              "itemId": "baba_caballo",
+              "name": "Arrojar la baba de caballo",
+              "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
+              "damage": 8
             }
           ],
           "music": "audio/rpgchip14_battle_2.ogg",
@@ -1527,6 +1600,50 @@
           }
         },
         {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En tu mochila, el huevo rúnico empieza a zumbar. Fuerte. Más fuerte. Se abre."
+          ],
+          "condition": {
+            "inventory": [
+              "huevo_runico"
+            ]
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sale un bichito hecho de runas, del tamaño de un pulgar, que salta directo al cristal de la frente del Rey y lo muerde. «Aparecerá cuando más lo necesites», dijo el Mago. Por una vez, un mago no mintió."
+          ],
+          "condition": {
+            "inventory": [
+              "huevo_runico"
+            ]
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ventaja_rey": 1
+            },
+            "flags": {
+              "huevo_eclosionado": true
+            },
+            "removeInventory": [
+              "huevo_runico"
+            ],
+            "memo": "el huevo rúnico del Mago eclosionó y su bichito mordió el cristal del Rey"
+          },
+          "condition": {
+            "inventory": [
+              "huevo_runico"
+            ]
+          }
+        },
+        {
           "type": "branch",
           "branches": [
             {
@@ -1606,6 +1723,11 @@
               "itemId": "daga_ceremonial",
               "name": "la daga ceremonial",
               "bonus": 3
+            },
+            {
+              "itemId": "cuchara_abuela",
+              "name": "la cuchara de la abuela",
+              "bonus": 6
             }
           ],
           "combatItems": [
@@ -1660,6 +1782,24 @@
               "consume": false,
               "reveal": true,
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            },
+            {
+              "itemId": "residuo_acido",
+              "name": "Arrojar el residuo ácido",
+              "text": "Le lanzas el frasco de residuo ácido. Chisporrotea, humea y se come un buen pedazo de babosa.",
+              "damage": 15
+            },
+            {
+              "itemId": "pocion_ian",
+              "name": "Beber la poción de Ian",
+              "text": "Te bebes la poción de Ian. Sabe a queso rancio y a milagro. Te sientes {nuevo|nueva|nuevx}.",
+              "heal": 45
+            },
+            {
+              "itemId": "baba_caballo",
+              "name": "Arrojar la baba de caballo",
+              "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
+              "damage": 8
             }
           ],
           "music": "audio/cyb_jefe.ogg",
@@ -1747,6 +1887,11 @@
               "itemId": "daga_ceremonial",
               "name": "la daga ceremonial",
               "bonus": 3
+            },
+            {
+              "itemId": "cuchara_abuela",
+              "name": "la cuchara de la abuela",
+              "bonus": 6
             }
           ],
           "combatItems": [
@@ -1801,6 +1946,24 @@
               "consume": false,
               "reveal": true,
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            },
+            {
+              "itemId": "residuo_acido",
+              "name": "Arrojar el residuo ácido",
+              "text": "Le lanzas el frasco de residuo ácido. Chisporrotea, humea y se come un buen pedazo de babosa.",
+              "damage": 15
+            },
+            {
+              "itemId": "pocion_ian",
+              "name": "Beber la poción de Ian",
+              "text": "Te bebes la poción de Ian. Sabe a queso rancio y a milagro. Te sientes {nuevo|nueva|nuevx}.",
+              "heal": 45
+            },
+            {
+              "itemId": "baba_caballo",
+              "name": "Arrojar la baba de caballo",
+              "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
+              "damage": 8
             }
           ],
           "music": "audio/cyb_jefe.ogg",
@@ -1897,6 +2060,11 @@
               "itemId": "daga_ceremonial",
               "name": "la daga ceremonial",
               "bonus": 3
+            },
+            {
+              "itemId": "cuchara_abuela",
+              "name": "la cuchara de la abuela",
+              "bonus": 6
             }
           ],
           "combatItems": [
@@ -1951,6 +2119,24 @@
               "consume": false,
               "reveal": true,
               "text": "Alzas la antorcha. Los tentáculos retroceden ante el fuego."
+            },
+            {
+              "itemId": "residuo_acido",
+              "name": "Arrojar el residuo ácido",
+              "text": "Le lanzas el frasco de residuo ácido. Chisporrotea, humea y se come un buen pedazo de babosa.",
+              "damage": 15
+            },
+            {
+              "itemId": "pocion_ian",
+              "name": "Beber la poción de Ian",
+              "text": "Te bebes la poción de Ian. Sabe a queso rancio y a milagro. Te sientes {nuevo|nueva|nuevx}.",
+              "heal": 45
+            },
+            {
+              "itemId": "baba_caballo",
+              "name": "Arrojar la baba de caballo",
+              "text": "Le lanzas la baba de caballo. La babosa, ofendida por la competencia, retrocede asqueada.",
+              "damage": 8
             }
           ],
           "music": "audio/cyb_jefe.ogg",
@@ -2107,6 +2293,150 @@
               "tags": [
                 "tranquilo"
               ]
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_ilusion": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Sostienes el cristal del Mago y piensas en lo único que estas babosas temen más que a ti: al Rey de mal humor."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El cristal proyecta un Rey Baboso gigante que grita «¡A CENAR, INÚTILES!». Las Guardianas se van corriendo. Bueno, arrastrándose rápido."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "nerly",
+          "lines": [
+            "¡Por eso el Mago se asustó de ese cristal!"
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "removeInventory": [
+              "cristal_vision"
+            ],
+            "memo": "engañó a las Guardianas con una ilusión del Cristal de visión"
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El cristal se raja con un chasquido. Cumplió. Descanse en paz, cristal."
+          ]
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Entrar a la sala del trono",
+              "goto": "acto4_sala_trono"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_mapa_ian": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El mapa de Ian marca una «entrada VIP». Nerly te mira como diciendo «te lo dije». No lo dice. Lo dice con las antenas."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La entrada VIP es la puerta principal. Con las Guardianas. Que ahora saben que venías."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "miedo": 10
+            },
+            "removeInventory": [
+              "mapa_dudoso"
+            ],
+            "memo": "siguió el mapa de Ian y lo llevó directo a las Guardianas",
+            "npcMemo": {
+              "nerly": "Alex siguió el mapa de Ian aunque ella le advirtió que era una trampa"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "Pelear, qué remedio",
+              "goto": "acto4_guardianas"
+            }
+          ]
+        }
+      ]
+    },
+    "acto4_emboscada": {
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Aprietas el Cristal de Ocultamiento. Brilla azul y, para los sentidos del Rey, dejas de existir."
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "rey_baboso",
+          "lines": [
+            "¿Dónde estás, bocadillo? Te huelo... no te huelo. ¿POR QUÉ NO TE HUELO?"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Llegas a su costado sin que te note y le clavas un golpe en plena masa. Aúlla. Por una vez, el sorprendido es él."
+          ]
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "ventaja_rey": 1
+            },
+            "flags": {
+              "ventaja_sorpresa": true
+            },
+            "removeInventory": [
+              "cristal_ocultamiento"
+            ],
+            "memo": "atacó por sorpresa al Rey escondido con el Cristal de Ocultamiento",
+            "npcMemo": {
+              "rey_baboso": "Alex se escondió con un cristal y lo atacó por sorpresa"
+            }
+          }
+        },
+        {
+          "type": "choice",
+          "options": [
+            {
+              "text": "¡Ahora, a pelear!",
+              "goto": "acto4_fase1"
             }
           ]
         }

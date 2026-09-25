@@ -27,3 +27,6 @@ Selecciona un resultado al azar basándose en pesos relativos.
   ]
 }
 ```
+
+**Condiciones por salida:** cada salida puede llevar `"condition"`; solo se sortea entre las que se cumplen (si no
+queda ninguna, el paso no hace nada). Ej.: el sueño «vendiste mi relicario» solo si lo vendiste.

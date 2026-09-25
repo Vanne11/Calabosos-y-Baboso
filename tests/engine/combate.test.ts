@@ -132,3 +132,25 @@ describe('puntos seguros', () => {
     expect(makeEngine(manifest, {}).restoreCheckpoint()).toBeNull();
   });
 });
+
+describe('protección de objetos (items.armor)', () => {
+  it('los objetos con armor restan daño a cada golpe (mínimo 1) y se avisa al empezar', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    const m = baseManifest({
+      statDefs: { vida: { label: 'Vida', min: 0, max: 100 } },
+      initialStats: { vida: 100, fuerza: 50 },
+      items: { amuleto: { name: 'Amuleto', description: '', armor: 2 }, piedra: { name: 'Piedra', description: '' } },
+    });
+    const engine = makeEngine(m, {
+      start: { sequence: [{
+        type: 'combat', enemy: { name: 'X', hp: 100, attack: 5, defense: 0 }, playerStat: 'vida', attackStat: 'fuerza',
+        actions: ['attack', 'defend'], results: { victory: { text: 'gana' }, defeat: { text: 'pierde' } },
+      }] },
+    });
+    internals(engine)._state.inventory = ['amuleto', 'amuleto', 'piedra'];
+    const out = await drive(engine, 'start', [{ type: 'combat_action', action: 'defend' }]);
+    expect(out.find((r) => r.type === 'notify')).toMatchObject({ title: 'Protección', text: 'Amuleto: cada golpe te hace 2 menos de daño.' });
+    // defender: floor(5 * 0.5) = 2, menos 2 de protección → mínimo 1
+    expect(engine.state.stats.vida).toBe(99);
+  });
+});

@@ -208,6 +208,236 @@
         {
           "type": "dialog",
           "character": "narrator",
+          "lines": [
+            "Ah, cierto: la recompensa decente que te prometí en la plaza. Aquí está. Cincuenta monedas y el derecho a decir que un narrador cumplió su palabra. Disfrútalo: no se repite."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": 50
+            },
+            "memo": "el Narrador le pagó la recompensa prometida"
+          },
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Y la estatua de barro que te prometí? Ahí está, en un rincón de la plaza. Pequeña. Un perro ya la usó. Promesa cumplida."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_estatua": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna, el Bardo Babosa rapea tu barra ganadora todas las noches. Dice que es suya. Nadie le cree. Todos aplauden."
+          ],
+          "condition": {
+            "flags": {
+              "rap_ganado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna todavía cuentan cómo te bañaron en cerveza tibia. Ya es tradición: los jueves se hace con los turistas."
+          ],
+          "condition": {
+            "flags": {
+              "rap_perdido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo colgó el yelmo y ahora canta en la plaza. Desafina. Le tiran monedas para que pare. Gana más que antes."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_convencido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Los bandidos tuertos pusieron un puesto de insultos a una moneda cada uno. Tu frase es la más cara del menú."
+          ],
+          "condition": {
+            "flags": {
+              "bandidos_humillados": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Tendero sigue contándole a todo el mundo que le mentiste con el precio. Te subió los precios. Para siempre. *hic*"
+          ],
+          "condition": {
+            "flags": {
+              "mintio_tendero": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Del prestamista solo quedó un recibo pegajoso. Nadie lo reclama. Nadie lo extraña."
+          ],
+          "condition": {
+            "flags": {
+              "prestamista_comido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El prestamista te manda una carta de agradecimiento cada semana. Te dan más miedo que el Rey."
+          ],
+          "condition": {
+            "flags": {
+              "deuda_pagada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi salió del Abismo sin un zapato y con un libro de memorias: «Babosas: el apocalipsis que nadie pidió». Te dedica un capítulo. No es amable."
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La babosita del bosque creció. Le cuenta a sus hermanos que un humano la ayudó. Exagera. Dice que eras alto."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En el bosque hay una placa pequeñita: «Aquí una babosita conoció la sal». Nerly la visita a veces. Sola."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y en Viscaria pusieron una placa donde te measte. Es turística. Viene gente a sacarse fotos. No preguntes."
+          ],
+          "condition": {
+            "flags": {
+              "se_meo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Árbol Baboso le contó tu secreto a las ardillas. Las ardillas se lo contaron a todo el bosque. Lo siento."
+          ],
+          "condition": {
+            "flags": {
+              "confeso_arbol": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El bichito de runas que salió del huevo del Mago vive ahora en tu bolsillo. Muerde. Te quiere. Muerde."
+          ],
+          "condition": {
+            "flags": {
+              "huevo_eclosionado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nerly canta vuestra canción en todas las fogatas del Abismo. Las babosas jóvenes se la saben de memoria. La parte tuya también."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_bonita": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Vuestra canción se volvió famosa en el Abismo: la usan para espantar a las plagas. Funciona."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_horrible": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ian sigue vendiendo «ingredientes exóticos» en la plaza. Cuando te ve, cruza la calle. Huele a queso rancio y a culpa."
+          ],
+          "condition": {
+            "flags": {
+              "ian_sospechoso": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
           "lines": [],
           "pool": "recap_final",
           "ai": {
@@ -340,6 +570,236 @@
         {
           "type": "dialog",
           "character": "narrator",
+          "lines": [
+            "Ah, cierto: la recompensa decente que te prometí en la plaza. Aquí está. Cincuenta monedas y el derecho a decir que un narrador cumplió su palabra. Disfrútalo: no se repite."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": 50
+            },
+            "memo": "el Narrador le pagó la recompensa prometida"
+          },
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Y la estatua de barro que te prometí? Ahí está, en un rincón de la plaza. Pequeña. Un perro ya la usó. Promesa cumplida."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_estatua": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna, el Bardo Babosa rapea tu barra ganadora todas las noches. Dice que es suya. Nadie le cree. Todos aplauden."
+          ],
+          "condition": {
+            "flags": {
+              "rap_ganado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna todavía cuentan cómo te bañaron en cerveza tibia. Ya es tradición: los jueves se hace con los turistas."
+          ],
+          "condition": {
+            "flags": {
+              "rap_perdido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo colgó el yelmo y ahora canta en la plaza. Desafina. Le tiran monedas para que pare. Gana más que antes."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_convencido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Los bandidos tuertos pusieron un puesto de insultos a una moneda cada uno. Tu frase es la más cara del menú."
+          ],
+          "condition": {
+            "flags": {
+              "bandidos_humillados": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Tendero sigue contándole a todo el mundo que le mentiste con el precio. Te subió los precios. Para siempre. *hic*"
+          ],
+          "condition": {
+            "flags": {
+              "mintio_tendero": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Del prestamista solo quedó un recibo pegajoso. Nadie lo reclama. Nadie lo extraña."
+          ],
+          "condition": {
+            "flags": {
+              "prestamista_comido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El prestamista te manda una carta de agradecimiento cada semana. Te dan más miedo que el Rey."
+          ],
+          "condition": {
+            "flags": {
+              "deuda_pagada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi salió del Abismo sin un zapato y con un libro de memorias: «Babosas: el apocalipsis que nadie pidió». Te dedica un capítulo. No es amable."
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La babosita del bosque creció. Le cuenta a sus hermanos que un humano la ayudó. Exagera. Dice que eras alto."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En el bosque hay una placa pequeñita: «Aquí una babosita conoció la sal». Nerly la visita a veces. Sola."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y en Viscaria pusieron una placa donde te measte. Es turística. Viene gente a sacarse fotos. No preguntes."
+          ],
+          "condition": {
+            "flags": {
+              "se_meo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Árbol Baboso le contó tu secreto a las ardillas. Las ardillas se lo contaron a todo el bosque. Lo siento."
+          ],
+          "condition": {
+            "flags": {
+              "confeso_arbol": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El bichito de runas que salió del huevo del Mago vive ahora en tu bolsillo. Muerde. Te quiere. Muerde."
+          ],
+          "condition": {
+            "flags": {
+              "huevo_eclosionado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nerly canta vuestra canción en todas las fogatas del Abismo. Las babosas jóvenes se la saben de memoria. La parte tuya también."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_bonita": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Vuestra canción se volvió famosa en el Abismo: la usan para espantar a las plagas. Funciona."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_horrible": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ian sigue vendiendo «ingredientes exóticos» en la plaza. Cuando te ve, cruza la calle. Huele a queso rancio y a culpa."
+          ],
+          "condition": {
+            "flags": {
+              "ian_sospechoso": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
           "lines": [],
           "pool": "recap_final",
           "ai": {
@@ -462,6 +922,236 @@
           "lines": [
             "¿La próxima vez? Pensé que estabas {retirado|retirada|retiradx}. Con esa ambigüedad perfectamente diseñada para una secuela, termina nuestra historia."
           ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ah, cierto: la recompensa decente que te prometí en la plaza. Aquí está. Cincuenta monedas y el derecho a decir que un narrador cumplió su palabra. Disfrútalo: no se repite."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
+            "stats": {
+              "dinero": 50
+            },
+            "memo": "el Narrador le pagó la recompensa prometida"
+          },
+          "condition": {
+            "flags": {
+              "promesa_recompensa": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "¿Y la estatua de barro que te prometí? Ahí está, en un rincón de la plaza. Pequeña. Un perro ya la usó. Promesa cumplida."
+          ],
+          "condition": {
+            "flags": {
+              "promesa_estatua": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna, el Bardo Babosa rapea tu barra ganadora todas las noches. Dice que es suya. Nadie le cree. Todos aplauden."
+          ],
+          "condition": {
+            "flags": {
+              "rap_ganado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Mientras tanto, en la taberna todavía cuentan cómo te bañaron en cerveza tibia. Ya es tradición: los jueves se hace con los turistas."
+          ],
+          "condition": {
+            "flags": {
+              "rap_perdido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El guardia del Abismo colgó el yelmo y ahora canta en la plaza. Desafina. Le tiran monedas para que pare. Gana más que antes."
+          ],
+          "condition": {
+            "flags": {
+              "guardia_convencido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Los bandidos tuertos pusieron un puesto de insultos a una moneda cada uno. Tu frase es la más cara del menú."
+          ],
+          "condition": {
+            "flags": {
+              "bandidos_humillados": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Tendero sigue contándole a todo el mundo que le mentiste con el precio. Te subió los precios. Para siempre. *hic*"
+          ],
+          "condition": {
+            "flags": {
+              "mintio_tendero": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Del prestamista solo quedó un recibo pegajoso. Nadie lo reclama. Nadie lo extraña."
+          ],
+          "condition": {
+            "flags": {
+              "prestamista_comido": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El prestamista te manda una carta de agradecimiento cada semana. Te dan más miedo que el Rey."
+          ],
+          "condition": {
+            "flags": {
+              "deuda_pagada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Takashi salió del Abismo sin un zapato y con un libro de memorias: «Babosas: el apocalipsis que nadie pidió». Te dedica un capítulo. No es amable."
+          ],
+          "condition": {
+            "flags": {
+              "takashi_en_abismo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La babosita del bosque creció. Le cuenta a sus hermanos que un humano la ayudó. Exagera. Dice que eras alto."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salvada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "En el bosque hay una placa pequeñita: «Aquí una babosita conoció la sal». Nerly la visita a veces. Sola."
+          ],
+          "condition": {
+            "flags": {
+              "babosita_salada": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Y en Viscaria pusieron una placa donde te measte. Es turística. Viene gente a sacarse fotos. No preguntes."
+          ],
+          "condition": {
+            "flags": {
+              "se_meo": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El Árbol Baboso le contó tu secreto a las ardillas. Las ardillas se lo contaron a todo el bosque. Lo siento."
+          ],
+          "condition": {
+            "flags": {
+              "confeso_arbol": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "El bichito de runas que salió del huevo del Mago vive ahora en tu bolsillo. Muerde. Te quiere. Muerde."
+          ],
+          "condition": {
+            "flags": {
+              "huevo_eclosionado": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Nerly canta vuestra canción en todas las fogatas del Abismo. Las babosas jóvenes se la saben de memoria. La parte tuya también."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_bonita": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Vuestra canción se volvió famosa en el Abismo: la usan para espantar a las plagas. Funciona."
+          ],
+          "condition": {
+            "flags": {
+              "cancion_horrible": true
+            }
+          }
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "Ian sigue vendiendo «ingredientes exóticos» en la plaza. Cuando te ve, cruza la calle. Huele a queso rancio y a culpa."
+          ],
+          "condition": {
+            "flags": {
+              "ian_sospechoso": true
+            }
+          }
         },
         {
           "type": "dialog",

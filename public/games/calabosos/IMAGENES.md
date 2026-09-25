@@ -163,6 +163,7 @@ Guía de arte del juego. Cada imagen tiene su ficha con archivo, tamaño, escena
 |---|---|---|
 | `bate_beisbol.png` | Bate de béisbol | Bate de madera clara con cinta gris en el mango y algunas abolladuras |
 | `camiseta_sobrevivi.png` | Camiseta «Sobreviví (casi) al Abismo» | Camiseta gris doblada con una babosa estampada; la palabra de arriba tachada a mano (sin texto legible) |
+| `cuchara_abuela.png` | Cuchara de madera de la abuela | Cuchara de madera vieja y gastada, con marcas de quemadura y una pequeña escama de dragón pegada al mango; un leve brillo cálido |
 
 ---
 
