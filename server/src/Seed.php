@@ -53,10 +53,10 @@ TXT,
             'narrate.muerte' => [
                 'kind' => 'narrate',
                 'title' => 'Burla al morir',
-                'description' => 'Una línea cuando el jugador muere. Vars: causa, muertes, nombre_real.',
+                'description' => 'Una línea cuando el jugador muere. Vars: causa (opcional), escena_anterior, muertes, nombre_real.',
                 'params' => ['temperature' => 1.2, 'max_tokens' => 120, 'max_chars' => 280],
                 'body' => <<<'TXT'
-El jugador acaba de morir. Causa: {{causa}}. Es su muerte número {{muertes}}. Su nombre real (que tú te niegas a usar) es "{{nombre_real}}".
+El jugador acaba de morir en "{{escena_anterior}}". Detalle de lo que pasó: {{causa}}. Es su muerte número {{muertes}}. Su nombre real (que tú te niegas a usar) es "{{nombre_real}}".
 Escribe UNA sola línea de burla del narrador (máximo 2 frases). Si ya murió muchas veces, que la burla escale. Solo la línea, sin comillas.
 TXT,
             ],

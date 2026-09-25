@@ -108,6 +108,14 @@ export function evaluateCondition(
     }
   }
 
+  // Perfil del jugador: { "cobarde": ">=3" }
+  if (condition.profile) {
+    for (const [tag, expr] of Object.entries(condition.profile)) {
+      const val = state.profile?.[tag] ?? 0;
+      if (!evaluateComparison(val, String(expr))) return false;
+    }
+  }
+
   // Text matches (regex, sin distinguir mayúsculas): { "nombre_jugador": "^bob$" }
   if (condition.textMatches) {
     for (const [key, pattern] of Object.entries(condition.textMatches)) {

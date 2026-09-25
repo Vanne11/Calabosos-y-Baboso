@@ -15,6 +15,7 @@ Presenta botones de opciones. Cada opción puede tener efectos y/o navegar a otr
         "flags": { "visited_shop": true }
       },
       "goto": "tienda",            // Opcional: escena destino
+      "tags": ["curioso"],          // Opcional: suma al perfil del jugador (ver ../ia.md)
       "condition": { ... }          // Opcional: oculta la opción si no se cumple
     },
     {

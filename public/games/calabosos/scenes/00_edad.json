@@ -14,14 +14,21 @@
             "Ah. Llegaste. Qué entusiasmo tan... presente.",
             "Antes de que empecemos, un detalle legal que mis abogados babosos me obligan a mencionar.",
             "En este juego hay [bold]groserías[/bold], [bold]humor de pis[/bold], babosas con intenciones dudosas y un narrador —yo— sin ningún respeto por ti.",
+            "Ah, y otra cosa: si juegas con el narrador de IA, lo que escribas (tu nombre incluido) viaja a nuestro servidor para que alguien (algo) te conteste. No escribas datos personales, genio. Se apaga con [bold]/ia off[/bold].",
             "Así que dime, con la mano en el corazón o donde sea que tengas la honestidad:"
           ]
         },
         {
           "type": "choice",
           "options": [
-            { "text": "Tengo 18 años o más", "goto": "_age_accept" },
-            { "text": "No, soy menor de edad", "goto": "edad_rechazo" }
+            {
+              "text": "Tengo 18 años o más",
+              "goto": "_age_accept"
+            },
+            {
+              "text": "No, soy menor de edad",
+              "goto": "edad_rechazo"
+            }
           ]
         }
       ]
@@ -44,7 +51,12 @@
         },
         {
           "type": "choice",
-          "options": [{ "text": "Salir (con dignidad)", "goto": "_quit" }]
+          "options": [
+            {
+              "text": "Salir (con dignidad)",
+              "goto": "_quit"
+            }
+          ]
         }
       ]
     }

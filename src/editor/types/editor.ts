@@ -213,6 +213,10 @@ export function getNodeDestinations(steps: SequenceStep[]): string[] {
       }
     } else if (step.type === 'level_up' && step.goto) {
       destinations.push(step.goto);
+    } else if (step.type === 'ai_chat') {
+      for (const outcome of Object.values(step.outcomes)) {
+        if (outcome?.goto) destinations.push(outcome.goto);
+      }
     }
   }
   return [...new Set(destinations)];

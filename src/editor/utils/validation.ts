@@ -328,6 +328,7 @@ export function validateProject(
       }
       if (step.type === 'timed_choice') return step.options.some((o) => !!o.goto);
       if (step.type === 'level_up') return !!step.goto;
+      if (step.type === 'ai_chat') return Object.values(step.outcomes).some((o) => !!o?.goto);
       return false;
     });
 

@@ -21,12 +21,29 @@ import type {
   DEFAULT_RELATIONSHIP_TIERS,
   Effects,
   DialogStep,
+  AiChatStep,
+  ChatOutcome,
+  ChatMode,
 } from '../types/game';
 import type { PlayerState, StepResult, PlayerAction, CharacterState } from '../types/engine';
 import { evaluateCondition } from './ConditionEvaluator';
 import { applyEffects } from './EffectsApplier';
 import { resolveRoll } from './DiceRoller';
-import { interpolate, pickFromPool } from './NarrativeText';
+import { interpolate, pickFromPool, sanitizeAiText } from './NarrativeText';
+import type { AiProvider, GameEventSink, GameEvent } from './AiProvider';
+
+/** Nombre por defecto del medidor de cada modo chat */
+const DEFAULT_METER: Record<ChatMode, string> = {
+  persuadir: 'Convencimiento',
+  negociar: 'Trato',
+  cancion: 'Armonía',
+  rap: 'Público',
+  insultos: 'Duelo',
+  confesion: 'Honestidad',
+};
+
+/** Etiquetas de perfil que se muestran en el resumen para la IA (las más altas primero) */
+const PROFILE_SUMMARY_SIZE = 6;
 
 /** Máximo de reglas encadenadas tras un paso (evita bucles entre reglas) */
 const MAX_RULE_CHAIN = 5;
@@ -37,9 +54,12 @@ export class GameEngine {
   private _basePath: string;
   private _state: PlayerState;
   private _currentScene: string = '';
+  private _previousScene: string = '';
   private _pendingAction: PlayerAction | null = null;
   private _actionResolver: ((action: PlayerAction) => void) | null = null;
   private _metaListener: ((meta: Record<string, number>) => void) | null = null;
+  private _ai: AiProvider | null = null;
+  private _eventSink: GameEventSink | null = null;
 
   constructor(manifest: GameManifest, scenes: ScenesFile, basePath: string = '') {
     this.manifest = manifest;
@@ -122,6 +142,66 @@ export class GameEngine {
   /** Carga los contadores meta persistidos (los lee el game loop al iniciar) */
   loadMeta(meta: Record<string, number>): void {
     this._state = { ...this._state, meta: { ...meta } };
+  }
+
+  /** Proveedor de IA (narración y modos chat). Sin proveedor, el motor usa sus respaldos. */
+  setAiProvider(provider: AiProvider | null): void {
+    this._ai = provider;
+  }
+
+  /** Receptor de eventos de juego (analítica) */
+  setEventSink(sink: GameEventSink | null): void {
+    this._eventSink = sink;
+  }
+
+  private emit(type: string, data?: GameEvent['data']): void {
+    if (!this._eventSink) return;
+    try {
+      this._eventSink({ type, scene: this._currentScene, data });
+    } catch {
+      // La analítica nunca debe romper el juego
+    }
+  }
+
+  /** Suma etiquetas al perfil del jugador */
+  private addProfileTags(tags: string[] | undefined): void {
+    if (!tags?.length) return;
+    const profile = { ...(this._state.profile ?? {}) };
+    for (const tag of tags) profile[tag] = (profile[tag] ?? 0) + 1;
+    this._state = { ...this._state, profile };
+  }
+
+  /** Resumen legible del perfil para la IA: "cobarde ×3, charlatán ×2" */
+  profileSummary(): string {
+    const entries = Object.entries(this._state.profile ?? {})
+      .filter(([, n]) => n > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, PROFILE_SUMMARY_SIZE);
+    const parts = entries.map(([tag, n]) => `${tag.replace(/_/g, ' ')} ×${n}`);
+    const muertes = this._state.meta?.muertes ?? 0;
+    if (muertes > 0) parts.push(`murió ${muertes} ${muertes === 1 ? 'vez' : 'veces'} en total`);
+    return parts.length ? parts.join(', ') : 'recién empieza, todavía no hay datos';
+  }
+
+  /** Variables para la IA: contexto del jugador + variables del paso (con {stat}/{meta.x} resueltos) */
+  private aiVars(extra?: Record<string, string>): Record<string, string> {
+    const stat = (key: string) => {
+      const v = this._state.stats[key];
+      return v === undefined ? '' : String(v);
+    };
+    const vars: Record<string, string> = {
+      perfil: this.profileSummary(),
+      nombre_jugador: stat('nombre_jugador'),
+      nombre_real: stat('nombre_real'),
+      muertes: String(this._state.meta?.muertes ?? 0),
+      partidas: String(this._state.meta?.partidas ?? 0),
+      escena: this.getScenarioName(this._currentScene) ?? this._currentScene,
+      escena_anterior: this.getScenarioName(this._previousScene) ?? this._previousScene,
+    };
+    for (const [key, value] of Object.entries(extra ?? {})) {
+      vars[key] = this.text(value);
+    }
+    return vars;
   }
 
   /** El game loop se suscribe para persistir los contadores meta cuando cambian */
@@ -237,6 +317,7 @@ export class GameEngine {
       if (rule.once) {
         this._state = { ...this._state, rulesFired: [...(this._state.rulesFired ?? []), rule.id] };
       }
+      this.emit('rule', { id: rule.id });
       const dialog = this.buildDialog(rule.character ?? this.getNarratorId(), rule.lines ?? [], rule.pool);
       if (dialog) yield dialog;
       if (rule.effects) {
@@ -322,8 +403,10 @@ export class GameEngine {
       return;
     }
 
+    if (this._currentScene !== sceneId) this._previousScene = this._currentScene;
     this._currentScene = sceneId;
     this._state.visitedScenes = [...this._state.visitedScenes, sceneId];
+    this.emit('scene');
     this._state.sceneCount = (this._state.sceneCount || 0) + 1;
 
     // Expire temporary traits
@@ -384,6 +467,19 @@ export class GameEngine {
     switch (step.type) {
       case 'dialog': {
         const dialogStep = step as DialogStep;
+        if (dialogStep.ai && this._ai?.available('narrate')) {
+          const aiText = await this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars));
+          if (aiText) {
+            yield {
+              type: 'dialog',
+              character: dialogStep.character,
+              characterName: this.getCharacterName(dialogStep.character),
+              characterImage: this.manifest.characters[dialogStep.character]?.image,
+              lines: [sanitizeAiText(aiText)],
+            };
+            break;
+          }
+        }
         const dialog = this.buildDialog(dialogStep.character, dialogStep.lines ?? [], dialogStep.pool, dialogStep.count);
         if (dialog) yield dialog;
         break;
@@ -453,6 +549,7 @@ export class GameEngine {
         };
 
         yield* this.diceHook(result.outcome);
+        this.emit('dice', { stat: step.stat, outcome: result.outcome, total: result.total, difficulty: step.difficulty });
 
         // Navigate if needed
         if (outcomeData.goto) {
@@ -621,7 +718,160 @@ export class GameEngine {
         if (result) return result;
         break;
       }
+
+      case 'ai_chat': {
+        const result = yield* this.processAiChat(step);
+        if (result) return result;
+        break;
+      }
     }
+  }
+
+  // --- Modos chat (ai_chat) ---
+
+  private async *processAiChat(
+    step: AiChatStep
+  ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    const meterLabel = step.meterLabel ?? DEFAULT_METER[step.mode] ?? 'Puntaje';
+    const npcName = this.getCharacterName(step.npc);
+    const npcDef = this.manifest.characters[step.npc];
+    const ai = this._ai;
+
+    const start = ai?.available(step.mode)
+      ? await ai.chatStart(
+          step.mode,
+          step.npc,
+          this.aiVars({ npc_nombre: npcName, npc_descripcion: npcDef?.description ?? '', ...step.vars }),
+          step.maxTurns
+        )
+      : null;
+    if (!ai || !start) {
+      return yield* this.chatFallback(step, false);
+    }
+
+    yield { type: 'chat_start', mode: step.mode, npcName, maxTurns: start.maxTurns, meterLabel, score: start.score };
+    if (step.intro?.length) {
+      const intro = this.buildDialog(step.npc, step.intro);
+      if (intro) yield intro;
+    }
+
+    let score = start.score;
+    let turnsLeft = start.maxTurns;
+    let verdict: 'success' | 'partial' | 'failure' | null = null;
+    let gaveUp = false;
+    const transcript: string[] = [];
+    const playerName = String(this._state.stats.nombre_jugador ?? 'BOB');
+
+    for (;;) {
+      yield { type: 'chat_prompt', npcName, turnsLeft, score, meterLabel, maxInputChars: start.maxInputChars };
+      const action = await this.waitForAction();
+
+      if (action.type === 'chat_giveup') {
+        await ai.chatGiveUp(start.chatId);
+        gaveUp = true;
+        verdict = step.outcomes.done && !step.outcomes.failure ? null : 'failure';
+        break;
+      }
+      if (action.type !== 'chat_message') continue;
+      const message = action.text.trim().slice(0, start.maxInputChars);
+      if (!message) continue;
+
+      const reply = await ai.chatSay(start.chatId, message);
+      if (!reply) {
+        yield {
+          type: 'notify',
+          style: 'warning',
+          title: 'La IA se quedó muda',
+          text: 'Esto se decide a la antigua: con los dados.',
+          icon: '🎲',
+        };
+        return yield* this.chatFallback(step, true);
+      }
+
+      transcript.push(`${playerName}: ${message}`, `${npcName}: ${sanitizeAiText(reply.reply)}`);
+      yield {
+        type: 'chat_reply',
+        character: step.npc,
+        characterName: npcName,
+        characterImage: npcDef?.image,
+        text: sanitizeAiText(reply.reply),
+        score: reply.score,
+        delta: reply.score - score,
+        meterLabel,
+        turnsLeft: reply.turnsLeft,
+      };
+      score = reply.score;
+      turnsLeft = reply.turnsLeft;
+      if (reply.done) {
+        verdict = reply.verdict;
+        break;
+      }
+    }
+
+    if (step.saveAs && transcript.length) {
+      this.applyState({ setStats: { [step.saveAs]: transcript.join('\n') } });
+    }
+    this.addProfileTags([`chat_${step.mode}`, ...(gaveUp ? ['se_rinde'] : [])]);
+    this.emit('chat', { mode: step.mode, npc: step.npc, verdict, score, turns: transcript.length / 2, gaveUp });
+
+    const outcome = this.chatOutcome(step, verdict);
+    yield { type: 'chat_end', verdict, score, meterLabel, gaveUp, text: outcome?.text ? this.text(outcome.text) : undefined };
+    return yield* this.applyChatOutcome(outcome);
+  }
+
+  /** Sin IA (o si falla a mitad): se decide con una tirada */
+  private async *chatFallback(
+    step: AiChatStep,
+    midway: boolean
+  ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    const fb = step.fallback;
+    const faces = fb.faces ?? 20;
+    if (!midway) {
+      const intro = step.intro?.length ? this.buildDialog(step.npc, step.intro) : null;
+      if (intro) yield intro;
+    }
+    const description = fb.description ?? `${DEFAULT_METER[step.mode] ?? 'Tirada'} con ${this.getCharacterName(step.npc)}`;
+    yield { type: 'dice_prompt', description, stat: fb.stat, difficulty: fb.difficulty, faces };
+    await this.waitForAction();
+
+    const statVal = typeof this._state.stats[fb.stat] === 'number' ? (this._state.stats[fb.stat] as number) : 0;
+    const roll = resolveRoll(faces, statVal, fb.difficulty, 10, this.globalDiceModifier());
+    const won = roll.outcome === 'success' || roll.outcome === 'critical_success';
+    const hasVerdict = !!(step.outcomes.success || step.outcomes.failure || step.outcomes.partial);
+    const verdict = hasVerdict ? (won ? 'success' : 'failure') : null;
+    const outcome = this.chatOutcome(step, verdict);
+
+    yield {
+      type: 'dice_result',
+      roll: roll.roll,
+      modifier: roll.modifier,
+      total: roll.total,
+      difficulty: fb.difficulty,
+      outcome: roll.outcome,
+      text: outcome?.text ? this.text(outcome.text) : won ? 'Lo lograste.' : 'No lo lograste.',
+    };
+    yield* this.diceHook(roll.outcome);
+    this.emit('chat', { mode: step.mode, npc: step.npc, verdict, fallback: true, outcome: roll.outcome });
+    return yield* this.applyChatOutcome(outcome);
+  }
+
+  /** Resultado según veredicto: partial cae en failure si no está definido; sin veredicto usa done */
+  private chatOutcome(step: AiChatStep, verdict: 'success' | 'partial' | 'failure' | null): ChatOutcome | undefined {
+    const o = step.outcomes;
+    if (verdict === null) return o.done ?? o.success;
+    if (verdict === 'partial') return o.partial ?? o.failure;
+    return o[verdict] ?? o.done;
+  }
+
+  private async *applyChatOutcome(
+    outcome: ChatOutcome | undefined
+  ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    if (!outcome) return;
+    if (outcome.effects) {
+      this.applyState(outcome.effects);
+      yield { type: 'effects', ...outcome.effects };
+    }
+    if (outcome.goto) return { type: 'navigate', scene: outcome.goto };
   }
 
   private evaluateThreshold(value: number, threshold: string): boolean {
@@ -1527,6 +1777,8 @@ export class GameEngine {
   private async *handleChoiceResult(
     chosen: ChoiceOption
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
+    this.addProfileTags(chosen.tags);
+    this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags });
     if (chosen.effects) {
       this.applyState(chosen.effects);
       yield { type: 'effects', ...chosen.effects };

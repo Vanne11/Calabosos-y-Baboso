@@ -22,7 +22,7 @@ import { useTerminalCommands } from './hooks/useTerminalCommands';
 import { useGameLoop } from './hooks/useGameLoop';
 import { useKeyboardInput } from './hooks/useKeyboardInput';
 import type {
-  ChoicePrompt, DicePrompt, InputPrompt, ExaminePrompt,
+  ChoicePrompt, DicePrompt, InputPrompt, ExaminePrompt, ChatPrompt,
   ShopPrompt, ShopDicePrompt, CombatPrompt, CraftPrompt, PuzzlePrompt,
   UseItemPrompt, TimedChoicePrompt, LevelUpPrompt,
 } from './types/engine';
@@ -114,6 +114,13 @@ const App: React.FC = () => {
       return;
     }
 
+    // Rendirse en un modo chat (necesita enviar la acción al motor)
+    if (phase === 'game' && pendingResult?.type === 'chat_prompt' && trimmed.toLowerCase() === '/rendirse') {
+      addEntry({ type: 'command', content: trimmed });
+      sendAction({ type: 'chat_giveup' });
+      return;
+    }
+
     // In-game slash commands: intercept /commands even when a widget is active
     if (phase === 'game' && trimmed.startsWith('/')) {
       addEntry({ type: 'command', content: trimmed });
@@ -147,6 +154,19 @@ const App: React.FC = () => {
           return;
         }
       }
+    }
+
+    // Modo chat: el jugador escribe su mensaje al NPC
+    if (phase === 'game' && pendingResult?.type === 'chat_prompt') {
+      if (trimmed) {
+        const cp = pendingResult as ChatPrompt;
+        const message = trimmed.slice(0, cp.maxInputChars);
+        const who = playerState?.stats.nombre_jugador ?? 'Tú';
+        addEntry({ type: 'system', content: `[bold cyan]${who}:[/bold cyan] [cyan]${message.replace(/\[/g, '(').replace(/\]/g, ')')}[/cyan]` });
+        addEntry({ type: 'system', content: `[dim italic]${cp.npcName} está pensando...[/dim italic]` });
+        sendAction({ type: 'chat_message', text: message });
+      }
+      return;
     }
 
     // Game input widget
@@ -598,6 +618,9 @@ const App: React.FC = () => {
     placeholder = `Escribe el número de la opción [1-${opts.length}]`;
   } else if (pendingResult?.type === 'input_prompt') {
     placeholder = (pendingResult as InputPrompt).prompt;
+  } else if (pendingResult?.type === 'chat_prompt') {
+    const chp = pendingResult as ChatPrompt;
+    placeholder = `Escríbele a ${chp.npcName} (${chp.turnsLeft} ${chp.turnsLeft === 1 ? 'turno' : 'turnos'}, /rendirse para abandonar)`;
   } else if (pendingResult?.type === 'examine_prompt') {
     const subs = (pendingResult as ExaminePrompt).subjects;
     placeholder = `Selecciona [1-${subs.length}] o [0] salir`;

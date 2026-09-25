@@ -12,6 +12,8 @@ import { assetUrl } from '../utils/assetUrl';
 import { delay } from '../utils/delay';
 import { saveGame, loadSave, listSlots } from '../utils/storage';
 import type { SaveData } from '../utils/storage';
+import { getAiClient } from '../ai/session';
+import { setAiPreference, getAiPreference } from '../ai/AiClient';
 
 export function useTerminalCommands() {
   const addEntry = useAppStore((s) => s.addEntry);
@@ -49,9 +51,36 @@ export function useTerminalCommands() {
 [yellow][bold]/inventario[/bold][/yellow] - Abre el inventario completo. Para admirar tu basura con más detalle.
 [yellow][bold]/about[/bold][/yellow] - Información sobre el juego que estás jugando. Por si ya se te olvidó.
 [yellow][bold]/debug[/bold][/yellow] - Sistema de depuración. Para ver tus errores con más detalle.
+[yellow][bold]/ia[/bold][/yellow] [dim][on|off][/dim] - Estado del narrador con IA, o encenderlo/apagarlo.
+[yellow][bold]/rendirse[/bold][/yellow] - Abandona una conversación (modo chat). Cobarde, pero legal.
 [yellow][bold]/quit[/bold][/yellow] o [yellow][bold]/exit[/bold][/yellow] - Abandona la partida. Nadie te culpará (mentira, sí).
 
 [dim]Usa siempre el prefijo "/" para comandos durante la partida.[/dim]`,
+    });
+  };
+
+  const gameAi = (args: string[]) => {
+    const arg = (args[0] ?? '').toLowerCase();
+    if (arg === 'on' || arg === 'off') {
+      setAiPreference(arg === 'on');
+      addEntry({
+        type: 'system',
+        content: arg === 'on'
+          ? '[green]Narrador con IA: activado.[/green] [dim]Prepárate para burlas nuevas e inéditas.[/dim]'
+          : '[yellow]Narrador con IA: apagado.[/yellow] [dim]Volvemos a las burlas clásicas, que igual duelen.[/dim]',
+      });
+      return;
+    }
+    const client = getAiClient();
+    const st = client?.status();
+    let line: string;
+    if (!client) line = '[dim]Este juego no usa IA.[/dim]';
+    else if (!st?.server) line = '[yellow]No hay conexión con el servidor de IA. Se usan los textos fijos y los dados.[/yellow]';
+    else if (!st.enabled) line = '[yellow]La IA está apagada en el servidor. Se usan los textos fijos y los dados.[/yellow]';
+    else line = `[green]Servidor de IA conectado.[/green] Narración: ${st.narrate ? 'sí' : 'no'} · Modos chat: ${st.modes.length ? st.modes.join(', ') : 'ninguno'}`;
+    addEntry({
+      type: 'system',
+      content: `${line}\nTu preferencia: ${getAiPreference() ? '[green]activada[/green]' : '[yellow]apagada[/yellow]'} [dim](/ia on · /ia off)[/dim]`,
     });
   };
 
@@ -230,6 +259,12 @@ ${lines.join('\n')}
         return true;
       case 'debug':
         handleDebug(args);
+        return true;
+      case 'ia':
+        gameAi(args);
+        return true;
+      case 'rendirse':
+        addEntry({ type: 'system', content: '[dim]Solo puedes rendirte en medio de una conversación. Aquí no hay a quién rendirse.[/dim]' });
         return true;
       case 'inventario':
       case 'inv':

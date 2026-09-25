@@ -2,7 +2,7 @@
 
 # Sistema de Tipos de Pasos (SequenceStep)
 
-El motor soporta **18 tipos de pasos** que se pueden combinar libremente en la secuencia de una escena.
+El motor soporta **20 tipos de pasos** que se pueden combinar libremente en la secuencia de una escena.
 
 | Tipo | Descripción | Input | Documentación |
 |---|---|---|---|
@@ -25,3 +25,4 @@ El motor soporta **18 tipos de pasos** que se pueden combinar libremente en la s
 | `use_item` | Usar item en objetivo (estilo LucasArts) | Sí | [use-item.md](use-item.md) |
 | `timed_choice` | Opciones con temporizador | Sí | [timed-choice.md](timed-choice.md) |
 | `level_up` | Pantalla de subir nivel / skills | Sí | [level-up.md](level-up.md) |
+| `ai_chat` | Conversación libre con un NPC (IA), con respaldo por dados | Sí | [ai-chat.md](ai-chat.md) |

@@ -21,7 +21,10 @@
           "options": [
             {
               "text": "Plantarle cara (tirada de qué tan sexi)",
-              "goto": "acto1_perro_valiente"
+              "goto": "acto1_perro_valiente",
+              "tags": [
+                "valiente"
+              ]
             },
             {
               "text": "Huir gritando",
@@ -31,7 +34,10 @@
                   "pis": 55
                 }
               },
-              "goto": "acto1_perro_huida"
+              "goto": "acto1_perro_huida",
+              "tags": [
+                "cobarde"
+              ]
             },
             {
               "text": "Intentar acariciarlo",
@@ -41,7 +47,10 @@
                   "miedo": 30
                 }
               },
-              "goto": "acto1_perro_caricia"
+              "goto": "acto1_perro_caricia",
+              "tags": [
+                "temerario"
+              ]
             }
           ]
         }
@@ -170,7 +179,10 @@
                   "ganas_de_vivir": -60
                 }
               },
-              "goto": "acto1_plaza"
+              "goto": "acto1_plaza",
+              "tags": [
+                "temerario"
+              ]
             },
             {
               "text": "Retirar la mano (lo que queda de ella)",

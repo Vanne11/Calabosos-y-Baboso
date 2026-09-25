@@ -38,6 +38,8 @@ export interface PlayerState {
   pools?: Record<string, number[]>;
   /** Reglas "once" ya disparadas en esta partida */
   rulesFired?: string[];
+  /** Perfil del jugador: etiquetas acumuladas por sus decisiones */
+  profile?: Record<string, number>;
 }
 
 // Lo que el motor produce paso a paso
@@ -75,7 +77,52 @@ export type StepResult =
   | LevelUpResult
   | RelationshipChangeResult
   | TraitChangeResult
-  | XpGainResult;
+  | XpGainResult
+  | ChatStartResult
+  | ChatPrompt
+  | ChatReplyResult
+  | ChatEndResult;
+
+// --- Modos chat (ai_chat) ---
+
+export interface ChatStartResult {
+  type: 'chat_start';
+  mode: string;
+  npcName: string;
+  maxTurns: number;
+  meterLabel: string;
+  score: number;
+}
+
+export interface ChatPrompt {
+  type: 'chat_prompt';
+  npcName: string;
+  turnsLeft: number;
+  score: number;
+  meterLabel: string;
+  maxInputChars: number;
+}
+
+export interface ChatReplyResult {
+  type: 'chat_reply';
+  character: string;
+  characterName: string;
+  characterImage?: string;
+  text: string;
+  score: number;
+  delta: number;
+  meterLabel: string;
+  turnsLeft: number;
+}
+
+export interface ChatEndResult {
+  type: 'chat_end';
+  verdict: 'success' | 'partial' | 'failure' | null;
+  score: number;
+  meterLabel: string;
+  gaveUp: boolean;
+  text?: string;
+}
 
 export interface ScenarioResult {
   type: 'scenario';
@@ -408,4 +455,6 @@ export type PlayerAction =
   | { type: 'use_item_on'; itemId: string; targetId: string }
   | { type: 'use_item_exit' }
   | { type: 'level_up_skill'; skillId: string }
-  | { type: 'level_up_done' };
+  | { type: 'level_up_done' }
+  | { type: 'chat_message'; text: string }
+  | { type: 'chat_giveup' };

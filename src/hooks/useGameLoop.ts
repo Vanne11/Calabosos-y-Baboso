@@ -9,6 +9,11 @@ import { audioManager } from '../engine/AudioManager';
 import { saveGame } from '../utils/storage';
 import { getMeta, setMeta, ageGateKey, META_COUNTERS_KEY } from '../utils/metaStorage';
 import { AGE_GATE_SCENE, AGE_ACCEPT } from '../engine/GameLoader';
+import { AiClient } from '../ai/AiClient';
+import { setAiClient } from '../ai/session';
+
+/** Servidor de IA por defecto: mismo origen que el juego */
+const DEFAULT_AI_ENDPOINT = '/cyb-api/';
 import type { PlayerAction, StepResult } from '../types/engine';
 
 export function useGameLoop() {
@@ -78,6 +83,21 @@ export function useGameLoop() {
     });
     setPlayerState({ ...engine.state });
 
+    // IA: solo si el juego la declara. Si el servidor no responde, el juego sigue sin IA.
+    const aiConfig = useAppStore.getState().gameManifest?.ai;
+    if (aiConfig) {
+      const client = new AiClient(gameName, aiConfig.endpoint ?? DEFAULT_AI_ENDPOINT);
+      setAiClient(client);
+      const ok = await client.init();
+      engine.setAiProvider(ok ? client : null);
+      engine.setEventSink(ok ? client.track : null);
+      if (debugActive) debugLog(ok ? 'Servidor de IA conectado' : 'Servidor de IA no disponible: modo sin IA', 'INFO');
+    } else {
+      setAiClient(null);
+      engine.setAiProvider(null);
+      engine.setEventSink(null);
+    }
+
     const rating = engine.contentRating;
     if (rating) {
       const gate = rating.gateScene ?? AGE_GATE_SCENE;
@@ -88,7 +108,7 @@ export function useGameLoop() {
       }
     }
     await startScene('start');
-  }, [engine, startScene]);
+  }, [engine, startScene, debugActive]);
 
   const consumeResults = async (iterator: AsyncGenerator<StepResult>) => {
     while (true) {
@@ -113,7 +133,8 @@ export function useGameLoop() {
         value.type === 'examine_prompt' ||
         value.type === 'use_item_prompt' ||
         value.type === 'timed_choice_prompt' ||
-        value.type === 'level_up_prompt'
+        value.type === 'level_up_prompt' ||
+        value.type === 'chat_prompt'
       ) {
         break;
       }
@@ -345,6 +366,55 @@ export function useGameLoop() {
         break;
       }
 
+      case 'chat_start': {
+        useAppStore.getState().addEntries([
+          { type: 'system', content: '[bold purple]╔══════════════════════════════════════════╗[/bold purple]' },
+          { type: 'system', content: `[bold purple]  💬 ${CHAT_MODE_TITLES[result.mode] ?? 'Conversación'} con ${result.npcName}[/bold purple]` },
+          { type: 'system', content: `[dim]  Escribe lo que quieras decir. Tienes ${result.maxTurns} ${result.maxTurns === 1 ? 'turno' : 'turnos'}. [bold]/rendirse[/bold] para abandonar.[/dim]` },
+          { type: 'system', content: '[bold purple]╚══════════════════════════════════════════╝[/bold purple]' },
+          { type: 'system', content: meterLine(result.meterLabel, result.score) },
+          { type: 'system', content: '' },
+        ]);
+        break;
+      }
+
+      case 'chat_prompt':
+        setPendingResult(result);
+        break;
+
+      case 'chat_reply': {
+        const { seenCharacters, markCharacterSeen } = useAppStore.getState();
+        const isFirstTime = !seenCharacters.has(result.character);
+        if (isFirstTime) markCharacterSeen(result.character);
+        const deltaText = result.delta === 0 ? '' : result.delta > 0 ? ` [green](+${result.delta})[/green]` : ` [red](${result.delta})[/red]`;
+        useAppStore.getState().addEntries([
+          { type: 'dialogHeader', content: result.characterName, image: result.characterImage, firstAppearance: isFirstTime && !!result.characterImage },
+          { type: 'dialog', content: result.text },
+          { type: 'system', content: meterLine(result.meterLabel, result.score) + deltaText + (result.turnsLeft > 0 ? ` [dim]· quedan ${result.turnsLeft}[/dim]` : '') },
+          { type: 'system', content: '' },
+        ]);
+        break;
+      }
+
+      case 'chat_end': {
+        const verdictText: Record<string, string> = {
+          success: '[bold green]✔ ¡Lo lograste![/bold green]',
+          partial: '[bold yellow]≈ A medias[/bold yellow]',
+          failure: '[bold red]✘ Fracaso[/bold red]',
+        };
+        const entries: import('../types/terminal').TerminalEntry[] = [
+          { type: 'system', content: result.gaveUp ? '[bold red]🏳 Te rendiste.[/bold red]' : verdictText[result.verdict ?? ''] ?? '[bold purple]Fin de la conversación[/bold purple]' },
+        ];
+        if (result.text) entries.push({ type: 'system', content: result.text });
+        entries.push({ type: 'system', content: '' });
+        useAppStore.getState().addEntries(entries);
+        setShowEnterPrompt(true);
+        await waitForEnterKey();
+        setShowEnterPrompt(false);
+        useAppStore.getState().fadeOldEntries();
+        break;
+      }
+
       case 'notify': {
         const notifyColors: Record<string, string> = {
           achievement: 'green',
@@ -551,6 +621,22 @@ export function useGameLoop() {
   );
 
   return { startScene, startGame, sendAction };
+}
+
+const CHAT_MODE_TITLES: Record<string, string> = {
+  persuadir: 'Persuasión',
+  negociar: 'Negociación',
+  cancion: 'Canción',
+  rap: 'Guerra de rap',
+  insultos: 'Duelo de insultos',
+  confesion: 'Confesión',
+};
+
+/** Medidor de texto: "Convencimiento ██████░░░░ 60%" */
+function meterLine(label: string, score: number): string {
+  const filled = Math.round(Math.max(0, Math.min(100, score)) / 10);
+  const color = score >= 70 ? 'green' : score >= 40 ? 'yellow' : 'red';
+  return `[${color}]${label} ${'█'.repeat(filled)}${'░'.repeat(10 - filled)} ${score}%[/${color}]`;
 }
 
 function waitForEnterKey(): Promise<void> {

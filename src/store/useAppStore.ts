@@ -7,6 +7,7 @@ import type { PlayerState, StepResult } from '../types/engine';
 import type { GameEngine } from '../engine/GameEngine';
 import type { GameManifest } from '../types/game';
 import { audioManager } from '../engine/AudioManager';
+import { setAiClient } from '../ai/session';
 
 export type AppPhase = 'boot' | 'login' | 'shell' | 'game' | 'editor';
 
@@ -250,11 +251,12 @@ export const useAppStore = create<AppStore>((set) => ({
     })),
 }));
 
-// Stop music whenever we leave the game phase
+// Stop music (and close the AI session) whenever we leave the game phase
 let prevPhase: AppPhase = useAppStore.getState().phase;
 useAppStore.subscribe((state) => {
   if (prevPhase === 'game' && state.phase !== 'game') {
     audioManager.stop();
+    setAiClient(null);
   }
   prevPhase = state.phase;
 });

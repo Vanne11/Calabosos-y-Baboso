@@ -23,6 +23,7 @@ interface StepCondition {
   relationshipTier?: Record<string, RelationshipTier>; // { "nerly": "friendly" }
   meta?: Record<string, string>;           // { "muertes": ">=3" } — contadores entre partidas
   textMatches?: Record<string, string>;    // { "nombre_real": "^bob$" } — regex sin distinguir mayúsculas
+  profile?: Record<string, string>;        // { "cobarde": ">=3" } — perfil del jugador (ver ia.md)
 }
 ```
 

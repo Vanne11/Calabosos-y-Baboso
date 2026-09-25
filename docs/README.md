@@ -30,6 +30,7 @@
 - [Sistemas RPG Avanzados](rpg.md) — Niveles, XP, Skills, Traits, Relaciones
 - [Navegación Especial](navegacion.md)
 - [Texto Narrativo: variables, pools, reglas y dados](narrativa.md)
+- [IA en el juego: narración, modos chat, perfil y eventos](ia.md)
 - [Sistema de Guardado](guardado.md)
 
 ## Interfaz y Aplicación

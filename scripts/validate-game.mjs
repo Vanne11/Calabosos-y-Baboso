@@ -17,6 +17,7 @@ import {
 } from './shared/game-data.mjs';
 
 const SPECIAL_DESTINATIONS = new Set(['_quit', '_game_over', '_restart', '_age_accept']);
+const CHAT_MODES = new Set(['persuadir', 'negociar', 'cancion', 'rap', 'insultos', 'confesion']);
 const AGE_GATE_SCENE = '_age_gate';
 
 const args = process.argv.slice(2);
@@ -95,7 +96,11 @@ function validateGame(gameName) {
       }
       if (key === 'character' && typeof value === 'string' && parent.type === 'dialog') {
         if (!characters[value]) errors.push(`${where(id)}: personaje "${value}" no definido`);
-        if (!parent.lines?.length && !parent.pool) errors.push(`${where(id)}: dialog sin "lines" ni "pool"`);
+        if (!parent.lines?.length && !parent.pool) {
+          if (parent.ai) warnings.push(`${where(id)}: dialog solo con "ai" (sin lines/pool): si la IA falla no se muestra nada`);
+          else errors.push(`${where(id)}: dialog sin "lines" ni "pool"`);
+        }
+        if (parent.ai && !parent.ai.prompt) errors.push(`${where(id)}: dialog.ai sin "prompt"`);
       }
       if (key === 'pool' && parent.type === 'dialog') checkPool(value, where(id));
       if ((key === 'inventory' || key === 'removeInventory') && Array.isArray(value)) {
@@ -103,6 +108,21 @@ function validateGame(gameName) {
       }
     });
     edges[id] = [...targets];
+
+    // Modos chat
+    for (const [i, step] of seq.entries()) {
+      if (step?.type !== 'ai_chat') continue;
+      const ctx = `${where(id)} paso ${i + 1} (ai_chat)`;
+      if (!CHAT_MODES.has(step.mode)) errors.push(`${ctx}: modo "${step.mode}" desconocido`);
+      if (!characters[step.npc]) errors.push(`${ctx}: npc "${step.npc}" no definido`);
+      if (!step.fallback?.stat || typeof step.fallback?.difficulty !== 'number') {
+        errors.push(`${ctx}: falta "fallback" { stat, difficulty } (se usa si no hay IA)`);
+      }
+      const outcomes = Object.keys(step.outcomes ?? {});
+      if (!outcomes.length) errors.push(`${ctx}: sin "outcomes"`);
+      if (step.mode !== 'confesion' && !step.outcomes?.success) warnings.push(`${ctx}: sin outcome "success"`);
+      if (step.mode !== 'confesion' && !step.outcomes?.failure) warnings.push(`${ctx}: sin outcome "failure"`);
+    }
 
     if (targets.size === 0) {
       warnings.push(`${where(id)}: sin salida (ningún goto); el jugador queda atascado al terminar`);

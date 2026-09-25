@@ -3,6 +3,77 @@
     "acto3_abismo": {
       "scenario": {
         "name": "Acto III: El Abismo",
+        "image": "images/scenarios/entrada_abismo.png",
+        "music": "audio/rpgchip06_dungeon.ogg"
+      },
+      "sequence": [
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [
+            "La entrada al Abismo de las Babosas. Húmeda, oscura y pegajosa. Como tu historial de navegación.",
+            "Una babosa acorazada bloquea el paso. Lleva un yelmo tres tallas más chico y cara de odiar su trabajo.",
+            "[dim](Acto III en construcción: las tres zonas y las cinco especies. El guardia ya está listo.)[/dim]"
+          ]
+        },
+        {
+          "type": "ai_chat",
+          "mode": "persuadir",
+          "npc": "guardia",
+          "intro": [
+            "Alto ahí, bípedo. Nadie entra al Abismo sin permiso del Rey.",
+            "Y el Rey no da permisos. Así que... fuera."
+          ],
+          "vars": {
+            "objetivo": "que el guardia lo deje entrar al Abismo sin pelear",
+            "debilidad": "está aburridísimo de su turno eterno, adora los halagos a su baba y sueña con ser cantante"
+          },
+          "maxTurns": 5,
+          "fallback": {
+            "stat": "sexi",
+            "difficulty": 13,
+            "description": "Convencer al guardia con tus encantos"
+          },
+          "outcomes": {
+            "success": {
+              "text": "El guardia suspira, se hace a un lado y te desea suerte. Parece casi conmovido. Casi.",
+              "effects": {
+                "stats": {
+                  "sexi": 5
+                },
+                "flags": {
+                  "guardia_convencido": true
+                }
+              },
+              "goto": "acto4_trono"
+            },
+            "partial": {
+              "text": "'Está bien, pasa... pero el peaje son todas tus monedas.' Te vacía los bolsillos con una antena.",
+              "effects": {
+                "setStats": {
+                  "dinero": 0
+                }
+              },
+              "goto": "acto4_trono"
+            },
+            "failure": {
+              "text": "El guardia te empuja con la lanza. Ruedas cuesta abajo hasta un túnel lateral. Lleno de cosas que crujen.",
+              "effects": {
+                "stats": {
+                  "ganas_de_vivir": -25,
+                  "miedo": 30,
+                  "pis": 25
+                }
+              },
+              "goto": "acto3_tunel"
+            }
+          }
+        }
+      ]
+    },
+    "acto3_tunel": {
+      "scenario": {
+        "name": "Túnel lateral",
         "image": "images/scenarios/sala_entrada.png",
         "music": "audio/rpgchip06_dungeon.ogg"
       },
@@ -11,13 +82,18 @@
           "type": "dialog",
           "character": "narrator",
           "lines": [
-            "El Abismo de las Babosas. Húmedo, oscuro y pegajoso. Como tu historial de navegación.",
-            "[dim](Acto III en construcción: el guardia, las tres zonas y las cinco especies.)[/dim]"
+            "Te arrastras por un túnel que huele a pies de troll. Algo te roza la nuca. Decides no averiguar qué.",
+            "Al final, una luz. O un ojo gigante. Resulta ser una luz. Esta vez."
           ]
         },
         {
           "type": "choice",
-          "options": [{ "text": "Ir hacia el trono", "goto": "acto4_trono" }]
+          "options": [
+            {
+              "text": "Seguir hacia el trono",
+              "goto": "acto4_trono"
+            }
+          ]
         }
       ]
     }

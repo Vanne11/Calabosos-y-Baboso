@@ -191,6 +191,19 @@ function createDefaultStep(type: SequenceStep['type']): SequenceStep {
         skillPoints: 1,
         goto: '',
       };
+    case 'ai_chat':
+      return {
+        type: 'ai_chat',
+        mode: 'persuadir',
+        npc: 'narrator',
+        intro: ['¿Y tú qué quieres?'],
+        vars: { objetivo: 'que te deje pasar' },
+        outcomes: {
+          success: { text: 'Te deja pasar.', goto: '' },
+          failure: { text: 'No te deja pasar.', goto: '' },
+        },
+        fallback: { stat: 'reputation', difficulty: 12 },
+      };
   }
 }
 

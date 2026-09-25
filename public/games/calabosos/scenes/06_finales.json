@@ -51,8 +51,19 @@
           "character": "narrator",
           "lines": [
             "Y así, {nombre_jugador} dejó este mundo. Nadie lloró. Bueno, el perro un poco, de risa."
-          ],
-          "pool": "muerte"
+          ]
+        },
+        {
+          "type": "dialog",
+          "character": "narrator",
+          "lines": [],
+          "pool": "muerte",
+          "ai": {
+            "prompt": "muerte",
+            "vars": {
+              "causa": "sus ganas de vivir llegaron a cero"
+            }
+          }
         },
         {
           "type": "notify",

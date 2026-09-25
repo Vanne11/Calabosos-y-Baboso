@@ -176,6 +176,17 @@ const EditorPreview: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         result.push({ text: '', type: 'normal' });
       }
 
+      if (step.type === 'ai_chat') {
+        const npcName = project?.characters[step.npc]?.name || step.npc;
+        result.push({ text: `[💬 Chat IA: ${step.mode}] con ${npcName}${step.maxTurns ? ` · ${step.maxTurns} turnos` : ''}`, type: 'success' });
+        for (const line of step.intro ?? []) result.push({ text: `  ${npcName}: ${line}`, type: 'normal' });
+        result.push({ text: `  Sin IA: tirada de ${step.fallback.stat} (dif. ${step.fallback.difficulty})`, type: 'normal' });
+        for (const [key, outcome] of Object.entries(step.outcomes)) {
+          if (outcome?.goto) result.push({ text: `  ${key} -> ${outcome.goto}`, type: 'option' });
+        }
+        result.push({ text: '', type: 'normal' });
+      }
+
       if (step.type === 'level_up') {
         const charLabel = step.characterId || 'protagonista';
         result.push({ text: `[⬆️ Subir Nivel] ${charLabel}${step.force ? ' (forzado)' : ''}`, type: 'success' });

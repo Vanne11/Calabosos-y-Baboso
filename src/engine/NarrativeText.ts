@@ -80,3 +80,11 @@ export function pickFromPool(
 
   return { lines: picked, used: [...usedSet] };
 }
+
+/**
+ * Texto generado por IA: los corchetes se reemplazan por comillas angulares para que
+ * no se interpreten como etiquetas de formato ([red], [bold]...) ni como variables.
+ */
+export function sanitizeAiText(text: string): string {
+  return text.replace(/\[/g, '«').replace(/\]/g, '»').replace(/[{}]/g, '');
+}

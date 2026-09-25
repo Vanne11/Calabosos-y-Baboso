@@ -26,6 +26,7 @@ import ExamineStepEditor from './steps/ExamineStepEditor';
 import UseItemStepEditor from './steps/UseItemStepEditor';
 import TimedChoiceStepEditor from './steps/TimedChoiceStepEditor';
 import LevelUpStepEditor from './steps/LevelUpStepEditor';
+import AiChatStepEditor from './steps/AiChatStepEditor';
 
 interface SequenceEditorProps {
   nodeId: string;
@@ -52,6 +53,7 @@ const STEP_LABELS: Record<SequenceStep['type'], string> = {
   use_item: 'Usar Item',
   timed_choice: 'Elección Timed',
   level_up: 'Subir Nivel',
+  ai_chat: 'Chat con IA',
 };
 
 const STEP_COLORS: Record<SequenceStep['type'], string> = {
@@ -74,6 +76,7 @@ const STEP_COLORS: Record<SequenceStep['type'], string> = {
   use_item: '#50fa7b',
   timed_choice: '#ff5555',
   level_up: '#50fa7b',
+  ai_chat: '#ff79c6',
 };
 
 const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
@@ -128,6 +131,8 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
         return <TimedChoiceStepEditor step={step} onChange={handleChange as any} />;
       case 'level_up':
         return <LevelUpStepEditor step={step} onChange={handleChange as any} />;
+      case 'ai_chat':
+        return <AiChatStepEditor step={step} onChange={handleChange as any} />;
     }
   };
 
@@ -252,6 +257,9 @@ const SequenceEditor: React.FC<SequenceEditorProps> = ({ nodeId, steps }) => {
         </TerminalButton>
         <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'level_up')}>
           + Subir Nivel
+        </TerminalButton>
+        <TerminalButton variant="ghost" size="sm" onClick={() => addStep(nodeId, 'ai_chat')}>
+          + Chat IA
         </TerminalButton>
       </AddStepRow>
     </Wrapper>

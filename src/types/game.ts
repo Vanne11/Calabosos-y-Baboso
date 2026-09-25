@@ -33,6 +33,8 @@ export interface GameManifest {
   diceHooks?: Partial<Record<'critical_success' | 'success' | 'failure' | 'critical_failure', DiceHook>>;
   /** Modificadores globales de tiradas (ej: el miedo resta) */
   diceModifiers?: DiceModifierDef[];
+  /** Servidor de IA (narración y modos chat). Sin esto el juego no usa IA */
+  ai?: AiConfig;
 }
 
 export interface StatDef {
@@ -78,6 +80,43 @@ export interface DiceModifierDef {
   stat: string;
   per: number;
   amount: number;
+}
+
+export type ChatMode = 'persuadir' | 'negociar' | 'cancion' | 'rap' | 'insultos' | 'confesion';
+
+/** Resultado de un modo chat (o de su tirada de respaldo) */
+export interface ChatOutcome {
+  text?: string;
+  effects?: Effects;
+  goto?: string;
+}
+
+/** Modo chat: el jugador escribe libremente y un NPC responde (IA en el servidor) */
+export interface AiChatStep {
+  type: 'ai_chat';
+  mode: ChatMode;
+  /** Personaje que habla (id en characters) */
+  npc: string;
+  /** Líneas fijas del NPC antes de que el jugador escriba */
+  intro?: string[];
+  /** Variables para el prompt del modo. Admiten {stat} y {meta.clave} */
+  vars?: Record<string, string>;
+  maxTurns?: number;
+  /** Nombre del medidor (default según el modo) */
+  meterLabel?: string;
+  /** Guarda la conversación como texto en esta stat (ej: la canción con Nerly) */
+  saveAs?: string;
+  /** success/partial/failure según el veredicto; done para modos sin veredicto */
+  outcomes: Partial<Record<'success' | 'partial' | 'failure' | 'done', ChatOutcome>>;
+  /** Tirada que decide si no hay IA (éxito → success, fallo → failure) */
+  fallback: { stat: string; difficulty: number; faces?: number; description?: string };
+  condition?: StepCondition;
+}
+
+/** Configuración de IA del juego */
+export interface AiConfig {
+  /** URL base del servidor de IA (default: "/cyb-api/") */
+  endpoint?: string;
 }
 
 export interface ContentRating {
@@ -237,7 +276,8 @@ export type SequenceStep =
   | ExamineStep
   | UseItemStep
   | TimedChoiceStep
-  | LevelUpStep;
+  | LevelUpStep
+  | AiChatStep;
 
 export interface StepCondition {
   stats?: Record<string, string>; // e.g. { "perception": ">=50" }
@@ -262,6 +302,8 @@ export interface StepCondition {
   /** Stats de texto que coinciden con una expresión regular (sin distinguir mayúsculas):
    *  { "nombre_jugador": "^bob$" } */
   textMatches?: Record<string, string>;
+  /** Perfil del jugador (etiquetas acumuladas por decisiones): { "cobarde": ">=3" } */
+  profile?: Record<string, string>;
 }
 
 export interface DialogStep {
@@ -273,7 +315,16 @@ export interface DialogStep {
   pool?: string;
   /** Cuántas líneas sacar del pool (default: 1). Se muestran después de `lines` */
   count?: number;
+  /** Línea generada por IA (reemplaza lines + pool si responde; si no, se usan como respaldo) */
+  ai?: DialogAi;
   condition?: StepCondition;
+}
+
+/** Narración con IA: nombre del prompt en el servidor (narrate.<prompt>) y variables */
+export interface DialogAi {
+  prompt: string;
+  /** Variables para el prompt. Admiten {stat} y {meta.clave} */
+  vars?: Record<string, string>;
 }
 
 export interface ChoiceOption {
@@ -281,6 +332,8 @@ export interface ChoiceOption {
   effects?: Effects;
   goto?: string;
   condition?: StepCondition;
+  /** Etiquetas de perfil que suma esta decisión (ej: ["cobarde"]) */
+  tags?: string[];
 }
 
 export interface ChoiceStep {
