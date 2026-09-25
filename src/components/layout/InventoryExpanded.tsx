@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppStore } from '../../store/useAppStore';
 import { assetUrl } from '../../utils/assetUrl';
+import { itemImageUrl } from '../../utils/itemImage';
 
 const EXPANDED_SLOTS = 24;
 
@@ -454,7 +455,7 @@ const InventoryExpanded: React.FC = () => {
                   <InBadge>IN{idx + 1}</InBadge>
                   {item.count > 1 && <StackBadge>{item.count}</StackBadge>}
                   <SlotIcon
-                    src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
+                    src={itemImageUrl(item.id)}
                     alt={getItemData(item.id, items).name}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
@@ -472,7 +473,7 @@ const InventoryExpanded: React.FC = () => {
       {hoveredData && hovered && (
         <Tooltip style={{ left: hovered.x, top: hovered.y, transform: 'translateY(-100%)' }}>
           <TooltipImage
-            src={assetUrl(`${gameBasePath}/images/items/${hovered.id}.png`)}
+            src={itemImageUrl(hovered.id)}
             alt={hoveredData.name}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />

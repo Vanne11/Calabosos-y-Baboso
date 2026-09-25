@@ -3,8 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useAppStore } from '../../store/useAppStore';
-import { assetUrl } from '../../utils/assetUrl';
+import { itemImageUrl } from '../../utils/itemImage';
 
 type Selection =
   | { mode: 'buy'; index: number }
@@ -60,7 +59,6 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
   onDeceive,
   onExit,
 }) => {
-  const gameBasePath = useAppStore((s) => s.gameBasePath);
   const sel = externalSelection;
   const hasSellItems = sellable && playerInventory.length > 0;
 
@@ -108,7 +106,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
               <SlotNum>{n}</SlotNum>
               {item.haggled && <HaggleBadge>!</HaggleBadge>}
               <SlotIcon
-                src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
+                src={itemImageUrl(item.id)}
                 alt={item.name}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
@@ -126,7 +124,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
         <DetailPanel>
           <DetailHeader>
             <DetailImage
-              src={assetUrl(`${gameBasePath}/images/items/${selectedBuyItem.id}.png`)}
+              src={itemImageUrl(selectedBuyItem.id)}
               alt={selectedBuyItem.name}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
@@ -180,7 +178,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
                   <SlotNum>{n}</SlotNum>
                   {inv.count > 1 && <StackBadge>x{inv.count}</StackBadge>}
                   <SlotIcon
-                    src={assetUrl(`${gameBasePath}/images/items/${inv.id}.png`)}
+                    src={itemImageUrl(inv.id)}
                     alt={inv.name}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
@@ -198,7 +196,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({
             <DetailPanel>
               <DetailHeader>
                 <DetailImage
-                  src={assetUrl(`${gameBasePath}/images/items/${selectedSellItem.id}.png`)}
+                  src={itemImageUrl(selectedSellItem.id)}
                   alt={selectedSellItem.name}
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />

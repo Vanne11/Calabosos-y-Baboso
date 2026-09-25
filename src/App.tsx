@@ -47,6 +47,7 @@ const App: React.FC = () => {
   const pendingResult = useAppStore((s) => s.pendingResult);
   const playerState = useAppStore((s) => s.playerState);
   const usingItem = useAppStore((s) => s.usingItem);
+  const codexMenu = useAppStore((s) => s.codexMenu);
 
   const [inputValue, setInputValue] = useState('');
   const [shopSelection, setShopSelection] = useState<{ mode: 'buy'; index: number } | { mode: 'sell'; itemId: string } | null>(null);
@@ -155,6 +156,22 @@ const App: React.FC = () => {
       }
       await processCommand(trimmed);
       return;
+    }
+
+    // Bestiario abierto: un número lee esa entrada (antes que las opciones), 0 lo cierra; otra cosa lo cierra y sigue
+    if (phase === 'game' && useAppStore.getState().codexMenu && !trimmed.startsWith('/')) {
+      const codexCmd = useAppStore.getState().engine?.codex?.command;
+      if (/^\d+$/.test(trimmed) && codexCmd) {
+        if (trimmed === '0') {
+          useAppStore.getState().setCodexMenu(false);
+          addEntry({ type: 'system', content: '[dim]Cierras el bestiario.[/dim]' });
+        } else {
+          addEntry({ type: 'command', content: trimmed });
+          await processCommand(`/${codexCmd} ${trimmed}`);
+        }
+        return;
+      }
+      useAppStore.getState().setCodexMenu(false);
     }
 
     // Usar objeto: IN[n] elige el objeto del inventario, [1-N] lo usa en ese objetivo, "IN2 1" hace ambas, [0] sale
@@ -680,7 +697,9 @@ const App: React.FC = () => {
 
   // Determine placeholder
   let placeholder = '';
-  if (pendingSlotAction) {
+  if (codexMenu && phase === 'game') {
+    placeholder = 'Número de la entrada del bestiario · [0] cerrar';
+  } else if (pendingSlotAction) {
     placeholder = `Selecciona slot [1-${pendingSlotAction.slots}] o [0] cancelar`;
   } else if (pendingResult?.type === 'choice_prompt') {
     const cp = pendingResult as ChoicePrompt;

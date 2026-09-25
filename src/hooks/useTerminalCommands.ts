@@ -79,9 +79,13 @@ export function useTerminalCommands() {
       return;
     }
     const n = parseInt(args[0] ?? '', 10);
-    if (n >= 1 && n <= unlocked.length) {
-      const e = codex.entries[unlocked[n - 1]];
-      addEntry({ type: 'system', content: `[purple][bold]${e.icon ?? '📖'} ${e.title}[/bold][/purple]\n${e.text}` });
+    if (args[0] !== undefined && !isNaN(n)) {
+      if (n >= 1 && n <= unlocked.length) {
+        const e = codex.entries[unlocked[n - 1]];
+        addEntry({ type: 'system', content: `[purple][bold]${e.icon ?? '📖'} ${e.title}[/bold][/purple]\n${e.text}` });
+      } else {
+        addEntry({ type: 'system', content: `[yellow]No hay entrada [${n}]. Tienes de la 1 a la ${unlocked.length}.[/yellow]` });
+      }
       return;
     }
     const byCat = new Map<string, string[]>();
@@ -93,8 +97,10 @@ export function useTerminalCommands() {
     const body = [...byCat].map(([cat, lines]) => `[cyan]${cat}[/cyan]\n${lines.join('\n')}`).join('\n');
     addEntry({
       type: 'system',
-      content: `[purple][bold]📖 ${codex.title}[/bold][/purple] [dim](${unlocked.length}/${total})[/dim]\n${body}\n[dim]/${codex.command} <número> para leer una entrada.[/dim]`,
+      content: `[purple][bold]📖 ${codex.title}[/bold][/purple] [dim](${unlocked.length}/${total})[/dim]\n${body}\n[dim]Escribe el número para leer una entrada · [0] cerrar.[/dim]`,
     });
+    // Mientras está abierto, un número lee esa entrada (App.tsx)
+    useAppStore.getState().setCodexMenu(true);
   };
 
   const gameAi = (args: string[]) => {
@@ -439,6 +445,15 @@ ${lines.join('\n')}
         // Texto que no es comando: charla libre con quien esté (Nerly, el narrador, el personaje de enfrente)
         if (!isSlash && /\p{L}/u.test(input)) {
           await talk(input);
+          return;
+        }
+        // Un número suelto (fuera de una decisión): quizá quería leer el bestiario
+        const codexCmd = useAppStore.getState().engine?.codex?.command;
+        if (!isSlash && /^\d+$/.test(input.trim()) && codexCmd) {
+          addEntry({
+            type: 'system',
+            content: `[yellow]Ese número no corresponde a nada ahora.[/yellow] [dim]Para leer el bestiario: /${codexCmd} y después el número (o todo junto: /${codexCmd} ${input.trim()}).[/dim]`,
+          });
           return;
         }
         addEntry({

@@ -61,6 +61,10 @@ interface AppStore {
   usingItem: string | null;
   setUsingItem: (itemId: string | null) => void;
 
+  // Bestiario (códice) abierto: un número abre esa entrada, 0 lo cierra
+  codexMenu: boolean;
+  setCodexMenu: (open: boolean) => void;
+
   // Image panel
   currentImage: string | null;
   setCurrentImage: (image: string | null) => void;
@@ -224,6 +228,9 @@ export const useAppStore = create<AppStore>((set) => ({
   usingItem: null,
   setUsingItem: (usingItem) => set({ usingItem }),
 
+  codexMenu: false,
+  setCodexMenu: (codexMenu) => set({ codexMenu }),
+
   // Image
   currentImage: null,
   setCurrentImage: (currentImage) => set({ currentImage }),
@@ -295,6 +302,7 @@ export const useAppStore = create<AppStore>((set) => ({
       currentScene: '',
       pendingResult: null,
       usingItem: null,
+      codexMenu: false,
       pendingSlotAction: null,
       inventoryExpanded: false,
       widgetDimmed: false,

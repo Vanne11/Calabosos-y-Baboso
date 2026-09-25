@@ -36,7 +36,7 @@ Disponibles durante la partida. **Requieren prefijo `/`** para distinguirlos del
 | `/version` | Versión del motor |
 | `/debug` | Sistema de depuración (funciona igual que en shell) |
 | `/ia` · `/ia on` · `/ia off` | Estado del narrador con IA, o activarlo/apagarlo (preferencia guardada en el navegador) |
-| `/<códice>` | El comando del códice del juego (ej. `/bestiario`, `/bestiario 3`); ver [narrativa.md](narrativa.md#códice--bestiario-codex) |
+| `/<códice>` | El comando del códice del juego (ej. `/bestiario`, `/bestiario 3`). Con el bestiario abierto, basta escribir el número; `0` lo cierra. Ver [narrativa.md](narrativa.md#códice--bestiario-codex) |
 | `/debug goto <escena>` | Salta a una escena (solo con `/debug on`; para probar contenido) |
 | `/rendirse` | Abandona la conversación de un modo chat (`ai_chat`) → resultado *failure* |
 | *(texto sin `/`)* | Charla libre: contesta quien esté (el nombrado, el personaje de enfrente, el acompañante o el narrador). No avanza la historia. Límites: `game.json → ai.talk` |

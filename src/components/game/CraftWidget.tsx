@@ -3,8 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useAppStore } from '../../store/useAppStore';
-import { assetUrl } from '../../utils/assetUrl';
+import { itemImageUrl } from '../../utils/itemImage';
 
 interface CraftWidgetProps {
   description?: string;
@@ -26,7 +25,6 @@ const CraftWidget: React.FC<CraftWidgetProps> = ({
   onPickup,
   onExit,
 }) => {
-  const gameBasePath = useAppStore((s) => s.gameBasePath);
   const has = (a: string) => availableActions.includes(a as import('../../types/game').CraftAction);
 
   const selectedItem = selectedIndex !== null ? tableItems[selectedIndex] : null;
@@ -96,7 +94,7 @@ const CraftWidget: React.FC<CraftWidgetProps> = ({
               : <PickBadge>↑</PickBadge>
             }
             <SlotIcon
-              src={assetUrl(`${gameBasePath}/images/items/${item.id}.png`)}
+              src={itemImageUrl(item.id)}
               alt={item.name}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
@@ -110,7 +108,7 @@ const CraftWidget: React.FC<CraftWidgetProps> = ({
         <DetailPanel>
           <DetailHeader>
             <DetailImage
-              src={assetUrl(`${gameBasePath}/images/items/${selectedItem.id}.png`)}
+              src={itemImageUrl(selectedItem.id)}
               alt={selectedItem.name}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
