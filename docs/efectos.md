@@ -32,8 +32,14 @@ interface Effects {
   meta?: Record<string, number>;                // Sumar a contadores: { "muertes": 1 }
   unlockCodex?: string[];                       // Desbloquear entradas del códice: ["babosa_acida"]
   checkpoint?: boolean;                         // Guardar punto seguro aquí (volver con goto "_checkpoint")
+
+  // --- IA ---
+  memo?: string | string[];                     // Hecho para la memoria de la IA: "se meó frente al rey" (admite {stat})
 }
 ```
+
+`memo` no cambia nada en el juego: agrega el hecho a la memoria de la partida que viaja con cada llamada a la IA
+(ver [IA → memoria](ia.md#memoria-de-la-partida)). En las `statRules` se le agrega solo la escena: "se meó encima (en Plaza Principal)".
 
 Después de aplicar cualquier efecto, el motor recorta las stats a los `min`/`max` de `statDefs` y evalúa las [reglas automáticas](narrativa.md#reglas-automáticas-statrules). Todos los pasos (tienda, combate, crafteo...) aplican efectos por el mismo camino (`GameEngine.applyState`).
 

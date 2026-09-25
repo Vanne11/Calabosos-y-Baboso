@@ -12,6 +12,14 @@
         {
           "type": "effects",
           "effects": {
+            "setStats": {
+              "animo_narrador": "aburrido del viaje y un poco celoso de que BOB le haga más caso a Nerly"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
             "checkpoint": true
           }
         },
@@ -1074,7 +1082,8 @@
           "effects": {
             "flags": {
               "takashi_en_abismo": true
-            }
+            },
+            "memo": "mandó a Takashi, un chico inocente con un bate, a morir al Abismo con una mentira"
           }
         },
         {
@@ -1262,7 +1271,8 @@
             "stats": {
               "sexi": -10,
               "ganas_de_vivir": -10
-            }
+            },
+            "memo": "le echó sal a una babosita perdida del bosque, delante de Nerly"
           }
         },
         {

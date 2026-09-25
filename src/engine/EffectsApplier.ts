@@ -4,6 +4,18 @@
 import type { Effects } from '../types/game';
 import type { PlayerState } from '../types/engine';
 
+/** Hechos que se guardan en la memoria de la partida (los más viejos se descartan) */
+export const MEMO_MAX = 30;
+
+/** Suma hechos a la memoria (sin repetir el último, recortada a MEMO_MAX) */
+export function addMemo(state: PlayerState, memo: string | string[] | undefined): PlayerState {
+  const items = (Array.isArray(memo) ? memo : [memo]).map((m) => m?.trim()).filter((m): m is string => !!m);
+  if (!items.length) return state;
+  const memoria = [...(state.memoria ?? [])];
+  for (const item of items) if (memoria[memoria.length - 1] !== item) memoria.push(item);
+  return { ...state, memoria: memoria.slice(-MEMO_MAX) };
+}
+
 export function applyEffects(state: PlayerState, effects: Effects): PlayerState {
   const newState = { ...state };
 
@@ -136,5 +148,5 @@ export function applyEffects(state: PlayerState, effects: Effects): PlayerState 
     newState.characters = chars;
   }
 
-  return newState;
+  return addMemo(newState, effects.memo);
 }

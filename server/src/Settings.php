@@ -46,6 +46,8 @@ final class Settings
                 'max_turns_cap' => 12,
                 'max_vars' => 30,
                 'max_var_chars' => 300,
+                // Variables de contexto (memoria, citas, fichas): PromptRenderer::CONTEXT_VARS
+                'max_context_chars' => 1200,
             ],
         ];
     }

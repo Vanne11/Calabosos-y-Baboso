@@ -13,7 +13,8 @@
           "effects": {
             "meta": {
               "muertes": 1
-            }
+            },
+            "memo": "murió: {causa_muerte}"
           }
         },
         {

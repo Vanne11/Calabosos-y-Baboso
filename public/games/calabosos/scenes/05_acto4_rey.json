@@ -12,6 +12,14 @@
         {
           "type": "effects",
           "effects": {
+            "setStats": {
+              "animo_narrador": "nervioso y extrañamente protector; algo del Rey le toca demasiado cerca"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
             "checkpoint": true
           }
         },
@@ -375,7 +383,8 @@
                 "stats": {
                   "miedo": 20,
                   "pis": 20
-                }
+                },
+                "memo": "tropezó en medio de las Guardianas del Rey intentando distraerlas"
               },
               "goto": "acto4_guardianas",
               "sfx": "caida"
@@ -1254,7 +1263,8 @@
             },
             "stats": {
               "ventaja_rey": 1
-            }
+            },
+            "memo": "el Rey Baboso se comió al prestamista (y su deuda)"
           }
         },
         {
@@ -1945,6 +1955,12 @@
         "sfx": "burbujas"
       },
       "sequence": [
+        {
+          "type": "effects",
+          "effects": {
+            "memo": "derrotó al Rey Baboso y escapó del Abismo con Nerly"
+          }
+        },
         {
           "type": "dialog",
           "character": "narrator",

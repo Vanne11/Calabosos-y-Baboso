@@ -52,7 +52,8 @@ final class NarrateService
         $vars = PromptRenderer::sanitizeVars(
             $rawVars,
             $this->settings->limit('max_vars'),
-            $this->settings->limit('max_var_chars')
+            $this->settings->limit('max_var_chars'),
+            $this->settings->limit('max_context_chars')
         );
         $params = $prompt['params'];
         $maxChars = (int) ($params['max_chars'] ?? 400);

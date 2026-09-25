@@ -53,7 +53,8 @@ final class ChatService
         $vars = PromptRenderer::sanitizeVars(
             $rawVars,
             $this->settings->limit('max_vars'),
-            $this->settings->limit('max_var_chars')
+            $this->settings->limit('max_var_chars'),
+            $this->settings->limit('max_context_chars')
         );
 
         $id = bin2hex(random_bytes(16));

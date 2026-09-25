@@ -42,6 +42,16 @@ export interface PlayerState {
   rulesFired?: string[];
   /** Perfil del jugador: etiquetas acumuladas por sus decisiones */
   profile?: Record<string, number>;
+  /** Memoria de la partida para la IA: hechos en orden (effects.memo y resultados de los chats) */
+  memoria?: string[];
+  /** Decisiones con significado (opciones con tags), con la escena donde las tomó */
+  decisiones?: string[];
+  /** Frases textuales del jugador en los chats (la mejor de cada conversación) */
+  citas?: string[];
+  /** Últimas líneas del narrador con IA (para que no se repita) */
+  iaDijo?: string[];
+  /** Últimos mensajes del jugador tal cual los escribió (modismos, faltas): la IA imita y se burla */
+  habla?: string[];
   /** Entradas del códice desbloqueadas (en orden) */
   codex?: string[];
   /** Último punto de control: escena y copia del estado en ese momento */

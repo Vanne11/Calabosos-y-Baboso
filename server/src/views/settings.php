@@ -34,6 +34,7 @@
         'max_turns_cap' => 'Turnos máximos por conversación',
         'max_vars' => 'Variables máximas por pedido',
         'max_var_chars' => 'Largo máximo de cada variable',
+        'max_context_chars' => 'Largo máximo del contexto (memoria, citas, fichas)',
     ];
     foreach ($labels as $name => $label): ?>
       <label><?= e($label) ?> <input type="number" min="0" name="limits[<?= e($name) ?>]" value="<?= (int) ($s['limits'][$name] ?? 0) ?>"></label>

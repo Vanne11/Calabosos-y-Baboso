@@ -60,6 +60,58 @@ los efectos fijos. Tabla por defecto: `src/audio/tones.ts`.
 
 Ver [`ai_chat`](pasos/ai-chat.md).
 
+## Memoria de la partida
+
+Cada llamada a la IA lleva lo que pasó en la partida, para que haga callbacks concretos en vez de burlas genéricas
+(código: `src/engine/AiContext.ts`). Todo vive en `PlayerState`, se guarda con la partida y **no vuelve atrás
+con `_checkpoint`** (el narrador recuerda tus muertes).
+
+| Variable | De dónde sale | Viajan |
+|---|---|---|
+| `memoria` | `effects.memo` en escenas y reglas + el resultado de cada `ai_chat` ("se batió a rap contra Bardo Babosa y perdió (en Taberna)") | últimos 10 de 30 |
+| `decisiones` | automático: cada opción **con `tags`** que elige el jugador, con su escena | últimas 6 de 12 |
+| `citas` | la frase del jugador que más subió el medidor en cada chat, tal cual | últimas 3 de 8 |
+| `como_escribe` | los últimos mensajes del jugador en los chats, **sin corregir** (modismos, faltas) | 4 |
+| `ya_dijiste` | las últimas líneas del narrador con IA, para que no se repita | 5 |
+| `animo` | la stat `animo_narrador` (texto; el juego la cambia con `setStats` al empezar cada acto) | — |
+
+El servidor agrega esas variables solo, en un bloque "CONTEXTO DE LA PARTIDA" entre el prompt y el contrato de
+formato (`PromptRenderer::contextBlock`), salvo las que el prompt ya use con `{{variable}}`. Así funcionan también
+con prompts editados en el admin. Tienen su propio límite de largo: Ajustes → `max_context_chars` (1200).
+
+### Cómo escribe el jugador
+
+Los jugadores escriben como hablan y con faltas. No se corrige nada: `como_escribe` y `citas` van tal cual, y la
+hoja del narrador pide contestar en el mismo registro, usar sus modismos, burlarse a veces de **una** falta concreta
+(nunca corregir como profesor) y no bajar el puntaje por ortografía.
+
+## Fichas de personaje
+
+`characters.<id>.ai` en `game.json` define la voz de un personaje para la IA:
+
+```jsonc
+"guardia": {
+  "name": "Guardia del Abismo", "description": "...",
+  "ai": {
+    "voz": "Aburrido hasta el alma, bosteza en medio de las frases",
+    "muletillas": ["Mire, joven...", "*bostezo*"],
+    "quiere": "Que su turno termine", "teme": "Que el Rey se entere",
+    "secreto": "Sueña con ser cantante",          // la IA lo insinúa, no lo dice
+    "ejemplos": ["Alto ahí, bípedo. Nadie entra al Abismo sin permiso del Rey."]
+  }
+}
+```
+
+- En un `ai_chat` viaja la ficha del NPC (`npc_ficha`); en la narración, la del narrador (`ficha_narrador`).
+- Los `ejemplos` son lo que más define la voz: dos o tres frases reales del personaje valen más que la descripción.
+
+## Actualizar los prompts de un servidor ya instalado
+
+Los prompts semilla viven en `server/src/Seed.php`. Cuando cambian, una migración llama a `Seed::upgrade()`: si
+el prompt activo es el de la semilla, se activa la versión nueva; si el admin lo editó, la nueva queda en el
+historial **sin activar** (nota "sin activar: este prompt tiene cambios tuyos") para compararla. Las migraciones
+corren solas en el primer pedido después de subir los archivos.
+
 ## Perfil del jugador
 
 Etiquetas que se acumulan en `PlayerState.profile` (se guardan con la partida):

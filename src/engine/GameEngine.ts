@@ -33,6 +33,18 @@ import { applyEffects } from './EffectsApplier';
 import { resolveRoll } from './DiceRoller';
 import { interpolate, pickFromPool, sanitizeAiText } from './NarrativeText';
 import type { AiProvider, GameEventSink, GameEvent } from './AiProvider';
+import {
+  contextVars,
+  characterSheet,
+  pushRecent,
+  chatQuote,
+  chatMemo,
+  AI_MEMORY_FIELDS,
+  CITAS_MAX,
+  DECISIONES_MAX,
+  IA_DIJO_MAX,
+  HABLA_MAX,
+} from './AiContext';
 
 /** Nombre por defecto del medidor de cada modo chat */
 const DEFAULT_METER: Record<ChatMode, string> = {
@@ -177,7 +189,9 @@ export class GameEngine {
     const cp = this._state.checkpoint;
     if (!cp) return null;
     const meta = this._state.meta;
-    this._state = { ...structuredClone(cp.state), meta, checkpoint: cp };
+    // Lo que recuerda la IA (muertes incluidas) no vuelve atrás: el narrador no olvida
+    const memory = Object.fromEntries(AI_MEMORY_FIELDS.map((key) => [key, this._state[key]]));
+    this._state = { ...structuredClone(cp.state), ...memory, meta, checkpoint: cp };
     this.syncSpecialStats();
     return cp.scene;
   }
@@ -206,6 +220,12 @@ export class GameEngine {
     }
   }
 
+  /** Hecho con la escena actual al final, para la memoria de la IA */
+  private memoHere(memo: string): string {
+    const where = this.getScenarioName(this._currentScene);
+    return where ? `${memo} (en ${where})` : memo;
+  }
+
   /** Suma etiquetas al perfil del jugador */
   private addProfileTags(tags: string[] | undefined): void {
     if (!tags?.length) return;
@@ -226,8 +246,11 @@ export class GameEngine {
     return parts.length ? parts.join(', ') : 'recién empieza, todavía no hay datos';
   }
 
-  /** Variables para la IA: contexto del jugador + variables del paso (con {stat}/{meta.x} resueltos) */
-  private aiVars(extra?: Record<string, string>): Record<string, string> {
+  /**
+   * Variables para la IA: contexto del jugador (perfil, memoria, citas, ficha) + variables del paso
+   * (con {stat}/{meta.x} resueltos). Con `npc`, manda la ficha de ese personaje en vez de la del narrador.
+   */
+  private aiVars(extra?: Record<string, string>, npc?: string): Record<string, string> {
     const stat = (key: string) => {
       const v = this._state.stats[key];
       return v === undefined ? '' : String(v);
@@ -240,7 +263,10 @@ export class GameEngine {
       partidas: String(this._state.meta?.partidas ?? 0),
       escena: this.getScenarioName(this._currentScene) ?? this._currentScene,
       escena_anterior: this.getScenarioName(this._previousScene) ?? this._previousScene,
+      ...contextVars(this._state),
     };
+    const sheet = characterSheet(this.manifest.characters[npc ?? this.getNarratorId()]);
+    if (sheet) vars[npc ? 'npc_ficha' : 'ficha_narrador'] = sheet;
     for (const [key, value] of Object.entries(extra ?? {})) {
       vars[key] = this.text(value);
     }
@@ -255,6 +281,10 @@ export class GameEngine {
   /** Aplica efectos al estado: recorta stats, sincroniza especiales y notifica meta */
   private applyState(effects: Effects): void {
     const prevMeta = this._state.meta;
+    if (effects.memo) {
+      const memo = (Array.isArray(effects.memo) ? effects.memo : [effects.memo]).map((m) => this.text(m));
+      effects = { ...effects, memo };
+    }
     this._state = applyEffects(this._state, effects);
     this.clampStats();
     this.syncSpecialStats();
@@ -368,7 +398,8 @@ export class GameEngine {
       const dialog = this.buildDialog(rule.character ?? this.getNarratorId(), rule.lines ?? [], rule.pool);
       if (dialog) yield dialog;
       if (rule.effects) {
-        this.applyState(rule.effects);
+        const memo = rule.effects.memo;
+        this.applyState(memo ? { ...rule.effects, memo: (Array.isArray(memo) ? memo : [memo]).map((m) => this.memoHere(m)) } : rule.effects);
         yield { type: 'effects', ...rule.effects };
       }
       if (rule.goto) return { type: 'navigate', scene: rule.goto };
@@ -519,6 +550,7 @@ export class GameEngine {
         if (dialogStep.ai && this._ai?.available('narrate')) {
           const ai = await this._ai.narrate(dialogStep.ai.prompt, this.aiVars(dialogStep.ai.vars));
           if (ai) {
+            this._state = { ...this._state, iaDijo: pushRecent(this._state.iaDijo, sanitizeAiText(ai.text), IA_DIJO_MAX) };
             yield {
               type: 'dialog',
               character: dialogStep.character,
@@ -794,7 +826,7 @@ export class GameEngine {
       ? await ai.chatStart(
           step.mode,
           step.npc,
-          this.aiVars({ npc_nombre: npcName, npc_descripcion: npcDef?.description ?? '', ...step.vars }),
+          this.aiVars({ npc_nombre: npcName, npc_descripcion: npcDef?.description ?? '', ...step.vars }, step.npc),
           step.maxTurns
         )
       : null;
@@ -813,6 +845,8 @@ export class GameEngine {
     let verdict: 'success' | 'partial' | 'failure' | null = null;
     let gaveUp = false;
     const transcript: string[] = [];
+    // La frase del jugador que más movió el medidor: se guarda como cita
+    let best: { text: string; delta: number } | null = null;
     const playerName = String(this._state.stats.nombre_jugador ?? 'BOB');
 
     for (;;) {
@@ -828,6 +862,7 @@ export class GameEngine {
       if (action.type !== 'chat_message') continue;
       const message = action.text.trim().slice(0, start.maxInputChars);
       if (!message) continue;
+      this._state = { ...this._state, habla: pushRecent(this._state.habla, message, HABLA_MAX) };
 
       const reply = await ai.chatSay(start.chatId, message);
       if (!reply) {
@@ -842,6 +877,7 @@ export class GameEngine {
       }
 
       transcript.push(`${playerName}: ${message}`, `${npcName}: ${sanitizeAiText(reply.reply)}`);
+      if (!best || reply.score - score > best.delta) best = { text: message, delta: reply.score - score };
       yield {
         type: 'chat_reply',
         character: step.npc,
@@ -866,6 +902,10 @@ export class GameEngine {
       this.applyState({ setStats: { [step.saveAs]: transcript.join('\n') } });
     }
     this.addProfileTags([`chat_${step.mode}`, ...(gaveUp ? ['se_rinde'] : [])]);
+    if (best) {
+      this._state = { ...this._state, citas: pushRecent(this._state.citas, chatQuote(best.text, npcName, step.mode), CITAS_MAX) };
+    }
+    if (transcript.length || gaveUp) this.applyState({ memo: this.memoHere(chatMemo(step.mode, npcName, verdict, { gaveUp })) });
     this.emit('chat', { mode: step.mode, npc: step.npc, verdict, score, turns: transcript.length / 2, gaveUp });
 
     const outcome = this.chatOutcome(step, verdict);
@@ -905,6 +945,7 @@ export class GameEngine {
       text: outcome?.text ? this.text(outcome.text) : won ? 'Lo lograste.' : 'No lo lograste.',
     };
     yield* this.diceHook(roll.outcome);
+    this.applyState({ memo: this.memoHere(chatMemo(step.mode, this.getCharacterName(step.npc), verdict, { dice: true })) });
     this.emit('chat', { mode: step.mode, npc: step.npc, verdict, fallback: true, outcome: roll.outcome });
     return yield* this.applyChatOutcome(outcome);
   }
@@ -1888,6 +1929,11 @@ export class GameEngine {
     chosen: ChoiceOption
   ): AsyncGenerator<StepResult, { type: 'navigate'; scene: string } | void> {
     this.addProfileTags(chosen.tags);
+    // Las opciones con tags son decisiones con significado: la IA las recuerda tal cual
+    if (chosen.tags?.length && !chosen.effects?.memo) {
+      const decision = this.memoHere(this.text(chosen.text));
+      this._state = { ...this._state, decisiones: pushRecent(this._state.decisiones, decision, DECISIONES_MAX) };
+    }
     this.emit('choice', { text: chosen.text, goto: chosen.goto, tags: chosen.tags });
     if (chosen.sfx) yield { type: 'sound', sfx: chosen.sfx, volume: 1, wait: false };
     if (chosen.effects) {

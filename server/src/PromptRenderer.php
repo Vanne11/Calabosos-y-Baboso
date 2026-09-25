@@ -9,6 +9,13 @@ final class PromptRenderer
 {
     public const BASE_KEY = 'narrador.base';
 
+    /**
+     * Variables de contexto que manda el juego (memoria de la partida, fichas...). Son más largas que las
+     * demás (límite max_context_chars) y, si el prompt no las usa con {{variable}}, el servidor las agrega
+     * solas en un bloque de contexto: así funcionan también con prompts editados antes de existir.
+     */
+    const CONTEXT_VARS = ['memoria', 'decisiones', 'citas', 'ya_dijiste', 'como_escribe', 'animo', 'npc_ficha', 'ficha_narrador'];
+
     /** @var PromptRepository */
     private $prompts;
 
@@ -37,7 +44,7 @@ final class PromptRenderer
      * @param mixed $raw
      * @return array<string, string>
      */
-    public static function sanitizeVars($raw, int $maxVars, int $maxChars): array
+    public static function sanitizeVars($raw, int $maxVars, int $maxChars, int $maxContextChars = 0): array
     {
         $vars = [];
         if (!is_array($raw)) {
@@ -56,7 +63,8 @@ final class PromptRenderer
             if (!is_scalar($value)) {
                 continue;
             }
-            $vars[$key] = self::truncate(trim((string) $value), $maxChars);
+            $limit = in_array($key, self::CONTEXT_VARS, true) ? max($maxChars, $maxContextChars) : $maxChars;
+            $vars[$key] = self::truncate(trim((string) $value), $limit);
         }
         return $vars;
     }
@@ -77,18 +85,55 @@ final class PromptRenderer
     public function system(array $prompt, array $vars, string $contract = ''): string
     {
         $parts = [];
+        $used = $prompt['body'];
         $useBase = !array_key_exists('use_base', $prompt['params']) || $prompt['params']['use_base'] !== false;
         if ($prompt['kind'] !== 'base' && $useBase) {
             $base = $this->prompts->active(self::BASE_KEY);
             if ($base !== null) {
                 $parts[] = self::fill($base['body'], $vars);
+                $used .= "\n" . $base['body'];
             }
         }
         $parts[] = self::fill($prompt['body'], $vars);
+        $context = self::contextBlock($vars, $used);
+        if ($context !== '') {
+            $parts[] = $context;
+        }
         if ($contract !== '') {
             $parts[] = $contract;
         }
         return implode("\n\n", $parts);
+    }
+
+    /**
+     * Bloque con el contexto de la partida (solo las variables con valor que el prompt no usa ya).
+     * @param array<string, string> $vars
+     */
+    public static function contextBlock(array $vars, string $usedText): string
+    {
+        $sections = [
+            'animo' => 'Tu ánimo en este momento (que se note sin decirlo): %s',
+            'memoria' => "Lo que ha pasado en la partida, del más viejo al más reciente:\n%s",
+            'decisiones' => "Sus decisiones recientes (lo que eligió, tal cual):\n%s",
+            'citas' => "Frases textuales que dijo BOB (puedes citarlas para burlarte o recordárselas):\n%s",
+            'como_escribe' => "Así escribe BOB de verdad (tal cual, con sus modismos y faltas). Contéstale en su mismo registro:\n%s",
+            'ya_dijiste' => "Líneas que YA dijiste hace poco: no las repitas, ni su chiste ni su estructura:\n%s",
+            'ficha_narrador' => "Tu voz, con ejemplos:\n%s",
+            'npc_ficha' => "FICHA DE TU PERSONAJE (interprétalo según ella):\n%s",
+        ];
+        $lines = [];
+        foreach ($sections as $key => $format) {
+            $value = trim($vars[$key] ?? '');
+            if ($value === '' || preg_match('/\{\{\s*' . $key . '\s*\}\}/', $usedText)) {
+                continue;
+            }
+            $lines[] = sprintf($format, $value);
+        }
+        if (!$lines) {
+            return '';
+        }
+        return "CONTEXTO DE LA PARTIDA (úsalo para referencias concretas y callbacks; no lo recites ni lo resumas):\n"
+            . implode("\n\n", $lines);
     }
 
     /**

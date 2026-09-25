@@ -132,3 +132,69 @@ describe('narración con IA (dialog.ai)', () => {
     expect(dialogLines(await drive(engine, 'narr', []))).toEqual(['del pool']);
   });
 });
+
+describe('memoria de la partida para la IA', () => {
+  const memManifest = baseManifest({
+    characters: {
+      narrator: { name: 'N', description: '', role: 'narrator', ai: { voz: 'seco', ejemplos: ['Qué original.'] } },
+      guardia: { name: 'Guardia', description: 'aburrido', ai: { muletillas: ['*bostezo*'], secreto: 'canta' } },
+    },
+    initialStats: { sexi: 50, nombre_jugador: 'BOB', animo_narrador: 'resacoso' },
+    linePools: { burla: ['del pool'] },
+    statRules: [{ id: 'susto', once: true, condition: { stats: { sexi: '<=10' } }, effects: { memo: 'se asustó' } }],
+  });
+  const memScenes = {
+    ...scenes,
+    start: {
+      scenario: { name: 'Plaza' },
+      sequence: [{ type: 'choice' as const, options: [{ text: '«Huyo», dice {nombre_jugador}', tags: ['cobarde'], goto: 'hecho' }] }],
+    },
+    hecho: { sequence: [{ type: 'effects' as const, effects: { memo: '{nombre_jugador} rompió la estatua', checkpoint: true } }] },
+    feo: { scenario: { name: 'Pantano' }, sequence: [{ type: 'effects' as const, effects: { setStats: { sexi: 0 } } }] },
+  };
+
+  it('guarda decisiones con tags, memos con variables y hechos de reglas con la escena', async () => {
+    const engine = makeEngine(memManifest, memScenes);
+    await drive(engine, 'start', [{ type: 'choose', index: 0 }]);
+    await drive(engine, 'hecho', []);
+    await drive(engine, 'feo', []);
+    expect(engine.state.decisiones).toEqual(['«Huyo», dice BOB (en Plaza)']);
+    expect(engine.state.memoria).toEqual(['BOB rompió la estatua', 'se asustó (en Pantano)']);
+  });
+
+  it('el chat guarda la mejor frase tal cual, cómo escribe y el resultado; manda la ficha del NPC', async () => {
+    const engine = makeEngine(memManifest, memScenes);
+    const ai = fakeAi();
+    engine.setAiProvider(ai);
+    await drive(engine, 'chat', [{ type: 'chat_message', text: 'ola wardia' }, { type: 'chat_message', text: 'porfa dejame pasar weon' }]);
+    expect(engine.state.citas).toEqual(['«porfa dejame pasar weon» (a Guardia, intentando convencerlo)']);
+    expect(engine.state.habla).toEqual(['ola wardia', 'porfa dejame pasar weon']);
+    expect(engine.state.memoria).toEqual(['intentó convencer a Guardia y ganó']);
+    const vars = ai.calls[0][3] as Record<string, string>;
+    expect(vars.npc_ficha).toContain('*bostezo*');
+    expect(vars.npc_ficha).toContain('Secreto');
+    expect(vars).not.toHaveProperty('ficha_narrador');
+  });
+
+  it('la narración recibe memoria, ánimo y ficha del narrador, y recuerda lo que dijo', async () => {
+    const engine = makeEngine(memManifest, memScenes);
+    const ai = fakeAi();
+    engine.setAiProvider(ai);
+    await drive(engine, 'hecho', []);
+    await drive(engine, 'narr', []);
+    await drive(engine, 'narr', []);
+    const first = ai.calls[0][2] as Record<string, string>;
+    expect(first).toMatchObject({ memoria: '- BOB rompió la estatua', animo: 'resacoso', ya_dijiste: '' });
+    expect(first.ficha_narrador).toContain('«Qué original.»');
+    expect((ai.calls[1][2] as Record<string, string>).ya_dijiste).toBe('- burla «red»generadax');
+  });
+
+  it('volver al checkpoint no borra la memoria (el narrador no olvida)', async () => {
+    const engine = makeEngine(memManifest, memScenes);
+    await drive(engine, 'hecho', []);
+    await drive(engine, 'feo', []);
+    expect(engine.restoreCheckpoint()).toBe('hecho');
+    expect(engine.state.stats.sexi).toBe(50);
+    expect(engine.state.memoria).toContain('se asustó (en Pantano)');
+  });
+});

@@ -217,6 +217,24 @@ export interface CharacterDef {
   xpCurve?: number[];
   /** Rasgos iniciales del personaje */
   initialTraits?: string[];
+  /** Ficha para la IA: cómo habla y qué lo mueve (ver docs/ia.md) */
+  ai?: CharacterAi;
+}
+
+/** Ficha de personaje para la IA. Todo es opcional; los ejemplos son lo que más define la voz */
+export interface CharacterAi {
+  /** Cómo habla: registro, ritmo, manías */
+  voz?: string;
+  /** Palabras o frases que repite */
+  muletillas?: string[];
+  /** Qué quiere (en general o de BOB) */
+  quiere?: string;
+  /** A qué le teme o qué lo saca de quicio */
+  teme?: string;
+  /** Algo que oculta (la IA lo insinúa, no lo dice directo) */
+  secreto?: string;
+  /** Frases de ejemplo con su voz */
+  ejemplos?: string[];
 }
 
 // --- Skill Trees ---
@@ -863,6 +881,8 @@ export interface Effects {
   unlockCodex?: string[];
   /** Guardar un punto de control en la escena actual (se vuelve con goto "_checkpoint") */
   checkpoint?: boolean;
+  /** Hecho para la memoria de la IA ("se meó frente al rey"). Admite {variables} */
+  memo?: string | string[];
 }
 
 // --- Conditions file ---

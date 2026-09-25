@@ -12,6 +12,14 @@
         {
           "type": "effects",
           "effects": {
+            "setStats": {
+              "animo_narrador": "emocionado como fan del terror: por fin va a haber muertes"
+            }
+          }
+        },
+        {
+          "type": "effects",
+          "effects": {
             "checkpoint": true
           }
         },
@@ -1741,7 +1749,8 @@
                 "stats": {
                   "miedo": 25,
                   "pis": 20
-                }
+                },
+                "memo": "le estornudó en la cara a una Babosa Explosiva"
               },
               "goto": "acto3_explosiva_pelea",
               "sfx": "tos"
@@ -2395,7 +2404,8 @@
                 ],
                 "flags": {
                   "vision_mala": true
-                }
+                },
+                "memo": "tocó la Lágrima de Cristal, vio mil futuros horribles y le quedó un mechón blanco"
               },
               "natural": 1,
               "sfx": "magia_oscura"
@@ -2418,7 +2428,8 @@
                 "unlockCodex": [
                   "origen_rey",
                   "punto_debil_rey"
-                ]
+                ],
+                "memo": "la Lágrima de Cristal le reveló el punto débil del Rey"
               },
               "natural": 20,
               "sfx": "magia"

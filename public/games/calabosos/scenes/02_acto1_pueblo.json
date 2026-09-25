@@ -11,6 +11,14 @@
       },
       "sequence": [
         {
+          "type": "effects",
+          "effects": {
+            "setStats": {
+              "animo_narrador": "con resaca de narrar el prólogo; impaciente, quiere que BOB tome una decisión ya"
+            }
+          }
+        },
+        {
           "type": "dialog",
           "character": "protagonist",
           "lines": [
@@ -440,7 +448,8 @@
                 },
                 "addTraits": [
                   "quemado"
-                ]
+                ],
+                "memo": "un caballo mutante le prendió fuego con un pedo mientras limpiaba el establo"
               },
               "natural": 1,
               "sfx": "pedo"
@@ -456,7 +465,8 @@
                 "inventory": [
                   "bolsa_misteriosa",
                   "amuleto_equino"
-                ]
+                ],
+                "memo": "los caballos mutantes lo adoraron; es un encantador de caballos"
               },
               "natural": 20
             },
@@ -470,7 +480,8 @@
                 },
                 "inventory": [
                   "baba_caballo"
-                ]
+                ],
+                "memo": "los caballos del establo lo mordieron, lo pisaron y le escupieron algo verde"
               },
               "max": 5,
               "sfx": "golpe"
@@ -559,7 +570,8 @@
                 "stats": {
                   "dinero": 35,
                   "sexi": -5
-                }
+                },
+                "memo": "probó una poción que lo hizo hablar en rimas una hora"
               },
               "sfx": "magia"
             },
@@ -570,7 +582,8 @@
                 "stats": {
                   "dinero": 40,
                   "pis": 60
-                }
+                },
+                "memo": "probó una poción diurética experimental"
               }
             },
             {
@@ -580,7 +593,8 @@
                 "stats": {
                   "dinero": 30,
                   "miedo": 25
-                }
+                },
+                "memo": "probó una poción, vio a Dios y era una babosa"
               },
               "sfx": "misterio"
             }
@@ -753,7 +767,8 @@
                 "stats": {
                   "dinero": 15,
                   "sexi": -10
-                }
+                },
+                "memo": "vendió el relicario de su abuela por 15 monedas y encima le dio las gracias al estafador"
               },
               "natural": 1,
               "sfx": "risa"
@@ -768,7 +783,8 @@
                 "inventory": [
                   "mapa_detallado",
                   "daga_ceremonial"
-                ]
+                ],
+                "memo": "le sacó 100 monedas y una daga al prestamista por el relicario de su abuela"
               },
               "natural": 20
             },
@@ -952,7 +968,8 @@
                 },
                 "flags": {
                   "reclutado_por_guardia": true
-                }
+                },
+                "memo": "intentó robarle a un noble que era el Jefe de la Guardia disfrazado; lo reclutaron a la fuerza"
               },
               "natural": 1,
               "sfx": "alerta"
@@ -967,7 +984,8 @@
                 "inventory": [
                   "llave_misteriosa",
                   "mapa_parcial"
-                ]
+                ],
+                "memo": "le robó al noble 100 monedas, una llave y un mapa sin que se diera cuenta"
               },
               "natural": 20
             },
@@ -978,7 +996,8 @@
                   "sexi": -15,
                   "miedo": 15,
                   "pis": 20
-                }
+                },
+                "memo": "lo pillaron robando y huyó por el mercado meándose de miedo"
               },
               "max": 5,
               "sfx": "huida"
@@ -1561,7 +1580,8 @@
                 "stats": {
                   "dinero": -5,
                   "sexi": -5
-                }
+                },
+                "memo": "se durmió borracho en la taberna y le dibujaron un bigote"
               },
               "sfx": "ronquido"
             },
@@ -1572,7 +1592,8 @@
                 "stats": {
                   "dinero": 8,
                   "sexi": 5
-                }
+                },
+                "memo": "cantó a dúo con un borracho en la taberna y lo hizo bien; el Bardo lo odia"
               },
               "sfx": "aplauso"
             }
@@ -2007,7 +2028,8 @@
                 },
                 "flags": {
                   "nerly_derretida": true
-                }
+                },
+                "memo": "le tiró la sal encima a Nerly y la derritió (se regeneró, pero le guarda rencor)"
               },
               "natural": 1,
               "sfx": "acido"
@@ -2036,7 +2058,8 @@
                 },
                 "affinity": {
                   "nerly": -15
-                }
+                },
+                "memo": "le dejó una ampolla de sal a Nerly"
               },
               "max": 5,
               "sfx": "acido"
@@ -2260,7 +2283,8 @@
                   "ganas_de_vivir": -25,
                   "dinero": -5,
                   "sexi": -10
-                }
+                },
+                "memo": "intentó saltar el muro de la ciudad y cayó de cabeza en un carro de coles"
               },
               "goto": "acto1_mago",
               "sfx": "caida"
@@ -2319,7 +2343,8 @@
                 "stats": {
                   "sexi": -15,
                   "pis": 15
-                }
+                },
+                "memo": "intentó intimidar a los guardias y se le escapó un gallo"
               },
               "goto": "acto1_mago",
               "sfx": "gallo"
@@ -2461,7 +2486,8 @@
                 },
                 "addTraits": [
                   "pelo_rosa"
-                ]
+                ],
+                "memo": "el Mago le dejó el pelo rosa brillante"
               },
               "natural": 1,
               "sfx": "teletransporte"

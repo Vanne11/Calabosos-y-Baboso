@@ -111,6 +111,9 @@ final class Db
             if ($target === 1) {
                 Seed::run($this);
             }
+            if ($target === 3) {
+                Seed::upgrade($this, 'Actualización: memoria de la partida, voz menos de IA y cómo escribe el jugador');
+            }
         }
     }
 
@@ -222,6 +225,9 @@ CREATE INDEX idx_events_type ON events(game, type, created_at);
 SQL,
             2 => <<<'SQL'
 CREATE INDEX IF NOT EXISTS idx_events_session ON events(game, created_at, session_id);
+SQL,
+            3 => <<<'SQL'
+CREATE INDEX IF NOT EXISTS idx_chats_session ON chats(session_id, npc, created_at);
 SQL,
         ];
     }
